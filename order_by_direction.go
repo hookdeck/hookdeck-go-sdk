@@ -13,8 +13,8 @@ type OrderByDirection uint8
 const (
 	OrderByDirectionAsc OrderByDirection = iota + 1
 	OrderByDirectionDesc
-	OrderByDirectionAsc
-	OrderByDirectionDesc
+	OrderByDirectionASC
+	OrderByDirectionDESC
 )
 
 func (o OrderByDirection) String() string {
@@ -25,9 +25,9 @@ func (o OrderByDirection) String() string {
 		return "asc"
 	case OrderByDirectionDesc:
 		return "desc"
-	case OrderByDirectionAsc:
+	case OrderByDirectionASC:
 		return "ASC"
-	case OrderByDirectionDesc:
+	case OrderByDirectionDESC:
 		return "DESC"
 	}
 }
@@ -49,10 +49,10 @@ func (o *OrderByDirection) UnmarshalJSON(data []byte) error {
 		value := OrderByDirectionDesc
 		*o = value
 	case "ASC":
-		value := OrderByDirectionAsc
+		value := OrderByDirectionASC
 		*o = value
 	case "DESC":
-		value := OrderByDirectionDesc
+		value := OrderByDirectionDESC
 		*o = value
 	}
 	return nil

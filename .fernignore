@@ -1,3 +1,6 @@
 # Specify files that shouldn't be modified by Fern
 
 README.md
+
+# Temporarily ignored (re: https://github.com/fern-api/fern-go/issues/4)
+order_by_direction.go
