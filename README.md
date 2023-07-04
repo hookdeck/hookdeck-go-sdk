@@ -20,8 +20,6 @@ import (
 
 func run() error {
   client := hookdeck.NewClient(
-    "https://api.hookdeck.com",
-    http.DefaultClient,
     core.ClientWithAuthBearer("<YOUR_API_KEY>"),
   )
 }
@@ -30,7 +28,6 @@ func run() error {
 ## Known Gaps
 Fern's Go SDK generator is currently in beta and we are working on the following features to improve the generated SDK: 
 1. Docs: The SDK will embed any docs defined in your OpenAPI within the SDK itself
-2. First-class support for default URL: Rather than having the client specify `https://api.hookdeck.com`, this will be the default behavior in the SDK. 
 
 ## Beta status
 
