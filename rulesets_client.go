@@ -165,7 +165,7 @@ func (r *rulesetsClient) CreateRuleset(ctx context.Context, request *CreateRules
 		return apiError
 	}
 
-	var response Ruleset
+	response := new(Ruleset)
 	if err := core.DoRequest(
 		ctx,
 		r.httpClient,
@@ -214,7 +214,7 @@ func (r *rulesetsClient) UpsertRuleset(ctx context.Context, request *UpsertRules
 		return apiError
 	}
 
-	var response Ruleset
+	response := new(Ruleset)
 	if err := core.DoRequest(
 		ctx,
 		r.httpClient,
@@ -256,7 +256,7 @@ func (r *rulesetsClient) GetRuleset(ctx context.Context, id string) (*Ruleset, e
 		return apiError
 	}
 
-	var response Ruleset
+	response := new(Ruleset)
 	if err := core.DoRequest(
 		ctx,
 		r.httpClient,
@@ -312,7 +312,7 @@ func (r *rulesetsClient) UpdateRuleset(ctx context.Context, id string, request *
 		return apiError
 	}
 
-	var response Ruleset
+	response := new(Ruleset)
 	if err := core.DoRequest(
 		ctx,
 		r.httpClient,
@@ -354,7 +354,7 @@ func (r *rulesetsClient) ArchiveRuleset(ctx context.Context, id string) (*Rulese
 		return apiError
 	}
 
-	var response Ruleset
+	response := new(Ruleset)
 	if err := core.DoRequest(
 		ctx,
 		r.httpClient,
@@ -396,7 +396,7 @@ func (r *rulesetsClient) UnarchiveRuleset(ctx context.Context, id string) (*Rule
 		return apiError
 	}
 
-	var response Ruleset
+	response := new(Ruleset)
 	if err := core.DoRequest(
 		ctx,
 		r.httpClient,

@@ -141,7 +141,7 @@ func (a *attemptsClient) GetAttempt(ctx context.Context, id string) (*EventAttem
 		return apiError
 	}
 
-	var response EventAttempt
+	response := new(EventAttempt)
 	if err := core.DoRequest(
 		ctx,
 		a.httpClient,
