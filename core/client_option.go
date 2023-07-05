@@ -11,35 +11,19 @@ type ClientOption func(*ClientOptions)
 type ClientOptions struct {
 	BaseURL    string
 	HTTPClient HTTPClient
+	HTTPHeader http.Header
 	Bearer     string
 }
 
 func NewClientOptions() *ClientOptions {
 	return &ClientOptions{
 		HTTPClient: http.DefaultClient,
-	}
-}
-
-func ClientWithBaseURL(baseURL string) ClientOption {
-	return func(opts *ClientOptions) {
-		opts.BaseURL = baseURL
-	}
-}
-
-func ClientWithHTTPClient(httpClient HTTPClient) ClientOption {
-	return func(opts *ClientOptions) {
-		opts.HTTPClient = httpClient
-	}
-}
-
-func ClientWithAuthBearer(bearer string) ClientOption {
-	return func(opts *ClientOptions) {
-		opts.Bearer = bearer
+		HTTPHeader: make(http.Header),
 	}
 }
 
 func (c *ClientOptions) ToHeader() http.Header {
-	header := make(http.Header)
+	header := c.HTTPHeader
 	if c.Bearer != "" {
 		header.Set("Authorization", "Bearer "+c.Bearer)
 	}
