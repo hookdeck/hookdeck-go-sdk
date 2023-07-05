@@ -15,12 +15,11 @@ import (
   "net/http"
 
   hookdeck "github.com/fern-hookdeck/hookdeck-go"
-  "github.com/fern-hookdeck/hookdeck-go/core"
 )
 
 func run() error {
   client := hookdeck.NewClient(
-    core.ClientWithAuthBearer("<YOUR_API_KEY>"),
+    hookdeck.ClientWithAuthBearer("<YOUR_API_KEY>"),
   )
 }
 ```
