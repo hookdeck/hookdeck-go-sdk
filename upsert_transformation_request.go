@@ -2,6 +2,7 @@
 
 package api
 
+// UpsertTransformationRequest is an in-lined request used by the UpsertTransformation endpoint.
 type UpsertTransformationRequest struct {
 	// A unique, human-friendly name for the transformation <span style="white-space: nowrap">`<= 155 characters`</span>
 	Name string `json:"name,omitempty"`

@@ -2,6 +2,7 @@
 
 package api
 
+// GetRequestsRequest is an in-lined request used by the GetRequests endpoint.
 type GetRequestsRequest struct {
 	Id             *string                                             `json:"-"`
 	Status         *GetRequestsRequestStatus                           `json:"-"`

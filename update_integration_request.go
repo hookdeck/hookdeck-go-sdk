@@ -2,6 +2,7 @@
 
 package api
 
+// UpdateIntegrationRequest is an in-lined request used by the UpdateIntegration endpoint.
 type UpdateIntegrationRequest struct {
 	// Label of the integration
 	Label *string `json:"label,omitempty"`

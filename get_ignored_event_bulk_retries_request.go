@@ -2,6 +2,7 @@
 
 package api
 
+// GetIgnoredEventBulkRetriesRequest is an in-lined request used by the GetIgnoredEventBulkRetries endpoint.
 type GetIgnoredEventBulkRetriesRequest struct {
 	CancelledAt       *string                                                                   `json:"-"`
 	CompletedAt       *string                                                                   `json:"-"`

@@ -2,6 +2,7 @@
 
 package api
 
+// CreateDestinationRequest is an in-lined request used by the CreateDestination endpoint.
 type CreateDestinationRequest struct {
 	// Name for the destination <span style="white-space: nowrap">`<= 155 characters`</span>
 	Name string `json:"name,omitempty"`

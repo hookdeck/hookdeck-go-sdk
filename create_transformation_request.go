@@ -2,6 +2,7 @@
 
 package api
 
+// CreateTransformationRequest is an in-lined request used by the CreateTransformation endpoint.
 type CreateTransformationRequest struct {
 	// A unique, human-friendly name for the transformation <span style="white-space: nowrap">`<= 155 characters`</span>
 	Name string `json:"name,omitempty"`

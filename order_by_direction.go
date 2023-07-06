@@ -11,8 +11,8 @@ import (
 type OrderByDirection uint8
 
 const (
-	OrderByDirectionAsc OrderByDirection = iota + 1
-	OrderByDirectionDesc
+	OrderByDirectionasc OrderByDirection = iota + 1
+	OrderByDirectiondesc
 	OrderByDirectionASC
 	OrderByDirectionDESC
 )
@@ -21,9 +21,9 @@ func (o OrderByDirection) String() string {
 	switch o {
 	default:
 		return strconv.Itoa(int(o))
-	case OrderByDirectionAsc:
+	case OrderByDirectionasc:
 		return "asc"
-	case OrderByDirectionDesc:
+	case OrderByDirectiondesc:
 		return "desc"
 	case OrderByDirectionASC:
 		return "ASC"
@@ -43,10 +43,10 @@ func (o *OrderByDirection) UnmarshalJSON(data []byte) error {
 	}
 	switch raw {
 	case "asc":
-		value := OrderByDirectionAsc
+		value := OrderByDirectionasc
 		*o = value
 	case "desc":
-		value := OrderByDirectionDesc
+		value := OrderByDirectiondesc
 		*o = value
 	case "ASC":
 		value := OrderByDirectionASC

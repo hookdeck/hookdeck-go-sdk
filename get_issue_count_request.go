@@ -2,6 +2,7 @@
 
 package api
 
+// GetIssueCountRequest is an in-lined request used by the GetIssueCount endpoint.
 type GetIssueCountRequest struct {
 	Id             *string                                                 `json:"-"`
 	IssueTriggerId *string                                                 `json:"-"`

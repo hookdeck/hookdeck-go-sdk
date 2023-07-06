@@ -2,6 +2,7 @@
 
 package api
 
+// UpsertIssueTriggerRequest is an in-lined request used by the UpsertIssueTrigger endpoint.
 type UpsertIssueTriggerRequest struct {
 	Type IssueType `json:"type,omitempty"`
 	// Configuration object for the specific issue type selected

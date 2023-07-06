@@ -2,6 +2,7 @@
 
 package api
 
+// GetTransformationExecutionsRequest is an in-lined request used by the GetTransformationExecutions endpoint.
 type GetTransformationExecutionsRequest struct {
 	LogLevel  *GetTransformationExecutionsRequestLogLevelGetTransformationExecutionsRequestLogLevel `json:"-"`
 	WebhookId *string                                                                               `json:"-"`

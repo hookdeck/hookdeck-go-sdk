@@ -2,6 +2,7 @@
 
 package api
 
+// TestTransformationRequest is an in-lined request used by the TestTransformation endpoint.
 type TestTransformationRequest struct {
 	// Key-value environment variables to be passed to the transformation
 	Env *TestTransformationRequestEnv `json:"env,omitempty"`

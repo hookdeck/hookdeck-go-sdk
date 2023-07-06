@@ -2,6 +2,7 @@
 
 package api
 
+// CreateIntegrationRequest is an in-lined request used by the CreateIntegration endpoint.
 type CreateIntegrationRequest struct {
 	// Label of the integration
 	Label string `json:"label,omitempty"`

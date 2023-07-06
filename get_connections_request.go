@@ -2,6 +2,7 @@
 
 package api
 
+// GetConnectionsRequest is an in-lined request used by the GetConnections endpoint.
 type GetConnectionsRequest struct {
 	Id            *string                                           `json:"-"`
 	Name          *string                                           `json:"-"`

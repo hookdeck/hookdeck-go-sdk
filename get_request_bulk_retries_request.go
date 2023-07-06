@@ -2,6 +2,7 @@
 
 package api
 
+// GetRequestBulkRetriesRequest is an in-lined request used by the GetRequestBulkRetries endpoint.
 type GetRequestBulkRetriesRequest struct {
 	CancelledAt       *string                                                         `json:"-"`
 	CompletedAt       *string                                                         `json:"-"`

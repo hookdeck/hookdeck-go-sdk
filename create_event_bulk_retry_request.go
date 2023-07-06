@@ -2,6 +2,7 @@
 
 package api
 
+// CreateEventBulkRetryRequest is an in-lined request used by the CreateEventBulkRetry endpoint.
 type CreateEventBulkRetryRequest struct {
 	// Filter properties for the events to be included in the bulk retry
 	Query *CreateEventBulkRetryRequestQuery `json:"query,omitempty"`

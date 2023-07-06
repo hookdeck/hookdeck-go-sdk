@@ -2,6 +2,7 @@
 
 package api
 
+// CreateConnectionRequest is an in-lined request used by the CreateConnection endpoint.
 type CreateConnectionRequest struct {
 	// A unique name of the connection for the source <span style="white-space: nowrap">`<= 155 characters`</span>
 	Name string `json:"name,omitempty"`

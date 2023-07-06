@@ -2,6 +2,7 @@
 
 package api
 
+// GetEventsRequest is an in-lined request used by the GetEvents endpoint.
 type GetEventsRequest struct {
 	Id             *string                                         `json:"-"`
 	Status         *EventStatus                                    `json:"-"`

@@ -2,6 +2,7 @@
 
 package api
 
+// ToggleWebhookNotificationsRequest is an in-lined request used by the ToggleWebhookNotifications endpoint.
 type ToggleWebhookNotificationsRequest struct {
 	// Enable or disable webhook notifications on the workspace
 	Enabled *bool `json:"enabled,omitempty"`

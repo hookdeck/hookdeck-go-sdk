@@ -2,6 +2,7 @@
 
 package api
 
+// GetBookmarksRequest is an in-lined request used by the GetBookmarks endpoint.
 type GetBookmarksRequest struct {
 	Id          *string                                       `json:"-"`
 	Name        *string                                       `json:"-"`

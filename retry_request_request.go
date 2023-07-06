@@ -2,6 +2,7 @@
 
 package api
 
+// RetryRequestRequest is an in-lined request used by the RetryRequest endpoint.
 type RetryRequestRequest struct {
 	// Subset of webhook_ids to re-run the event logic on. Useful to retry only specific ignored_events
 	WebhookIds []string `json:"webhook_ids,omitempty"`

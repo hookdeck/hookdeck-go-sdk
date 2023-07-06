@@ -2,6 +2,7 @@
 
 package api
 
+// GetIssueTriggersRequest is an in-lined request used by the GetIssueTriggers endpoint.
 type GetIssueTriggersRequest struct {
 	Name       *string                                                       `json:"-"`
 	Type       *IssueType                                                    `json:"-"`

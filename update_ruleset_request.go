@@ -2,6 +2,7 @@
 
 package api
 
+// UpdateRulesetRequest is an in-lined request used by the UpdateRuleset endpoint.
 type UpdateRulesetRequest struct {
 	// Name for the ruleset <span style="white-space: nowrap">`<= 155 characters`</span>
 	Name *string `json:"name,omitempty"`

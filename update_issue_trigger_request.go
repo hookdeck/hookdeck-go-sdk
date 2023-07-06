@@ -2,6 +2,7 @@
 
 package api
 
+// UpdateIssueTriggerRequest is an in-lined request used by the UpdateIssueTrigger endpoint.
 type UpdateIssueTriggerRequest struct {
 	// Configuration object for the specific issue type selected
 	Configs  *UpdateIssueTriggerRequestConfigs `json:"configs,omitempty"`

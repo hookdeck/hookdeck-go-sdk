@@ -2,6 +2,7 @@
 
 package api
 
+// GetEventBulkRetriesRequest is an in-lined request used by the GetEventBulkRetries endpoint.
 type GetEventBulkRetriesRequest struct {
 	CancelledAt       *string                                                     `json:"-"`
 	CompletedAt       *string                                                     `json:"-"`

@@ -2,6 +2,7 @@
 
 package api
 
+// CreateIssueTriggerRequest is an in-lined request used by the CreateIssueTrigger endpoint.
 type CreateIssueTriggerRequest struct {
 	Type IssueType `json:"type,omitempty"`
 	// Configuration object for the specific issue type selected

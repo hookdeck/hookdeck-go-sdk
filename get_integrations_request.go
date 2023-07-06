@@ -2,6 +2,7 @@
 
 package api
 
+// GetIntegrationsRequest is an in-lined request used by the GetIntegrations endpoint.
 type GetIntegrationsRequest struct {
 	Label    *string              `json:"-"`
 	Provider *IntegrationProvider `json:"-"`

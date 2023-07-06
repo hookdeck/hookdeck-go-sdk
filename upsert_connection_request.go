@@ -2,6 +2,7 @@
 
 package api
 
+// UpsertConnectionRequest is an in-lined request used by the UpsertConnection endpoint.
 type UpsertConnectionRequest struct {
 	// A unique name of the connection for the source <span style="white-space: nowrap">`<= 155 characters`</span>
 	Name string `json:"name,omitempty"`

@@ -2,6 +2,7 @@
 
 package api
 
+// GetRulesetsRequest is an in-lined request used by the GetRulesets endpoint.
 type GetRulesetsRequest struct {
 	Id         *string                                     `json:"-"`
 	Name       *string                                     `json:"-"`

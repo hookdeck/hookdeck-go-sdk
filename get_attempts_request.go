@@ -2,6 +2,7 @@
 
 package api
 
+// GetAttemptsRequest is an in-lined request used by the GetAttempts endpoint.
 type GetAttemptsRequest struct {
 	EventId *string                                     `json:"-"`
 	OrderBy *string                                     `json:"-"`

@@ -2,6 +2,7 @@
 
 package api
 
+// UpdateIssueRequest is an in-lined request used by the UpdateIssue endpoint.
 type UpdateIssueRequest struct {
 	// New status
 	Status UpdateIssueRequestStatus `json:"status,omitempty"`

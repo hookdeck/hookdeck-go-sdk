@@ -2,6 +2,7 @@
 
 package api
 
+// CreateIgnoredEventBulkRetryRequest is an in-lined request used by the CreateIgnoredEventBulkRetry endpoint.
 type CreateIgnoredEventBulkRetryRequest struct {
 	// Filter by the bulk retry ignored event query object
 	Query *CreateIgnoredEventBulkRetryRequestQuery `json:"query,omitempty"`

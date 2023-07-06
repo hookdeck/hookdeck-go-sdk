@@ -2,6 +2,7 @@
 
 package api
 
+// GetDestinationsRequest is an in-lined request used by the GetDestinations endpoint.
 type GetDestinationsRequest struct {
 	Id         *string                                             `json:"-"`
 	Name       *string                                             `json:"-"`

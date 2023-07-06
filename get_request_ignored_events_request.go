@@ -2,6 +2,7 @@
 
 package api
 
+// GetRequestIgnoredEventsRequest is an in-lined request used by the GetRequestIgnoredEvents endpoint.
 type GetRequestIgnoredEventsRequest struct {
 	Id      *string                                                             `json:"-"`
 	OrderBy *string                                                             `json:"-"`

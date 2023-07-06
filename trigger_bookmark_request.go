@@ -2,6 +2,7 @@
 
 package api
 
+// TriggerBookmarkRequest is an in-lined request used by the TriggerBookmark endpoint.
 type TriggerBookmarkRequest struct {
 	// Bookmark target
 	Target *TriggerBookmarkRequestTarget `json:"target,omitempty"`

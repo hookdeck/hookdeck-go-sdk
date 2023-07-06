@@ -2,6 +2,7 @@
 
 package api
 
+// CreateBookmarkRequest is an in-lined request used by the CreateBookmark endpoint.
 type CreateBookmarkRequest struct {
 	// ID of the event data to bookmark <span style="white-space: nowrap">`<= 255 characters`</span>
 	EventDataId string `json:"event_data_id,omitempty"`

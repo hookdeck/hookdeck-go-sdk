@@ -2,6 +2,7 @@
 
 package api
 
+// UpsertDestinationRequest is an in-lined request used by the UpsertDestination endpoint.
 type UpsertDestinationRequest struct {
 	// Name for the destination <span style="white-space: nowrap">`<= 155 characters`</span>
 	Name string `json:"name,omitempty"`

@@ -2,6 +2,7 @@
 
 package api
 
+// GetSourcesRequest is an in-lined request used by the GetSources endpoint.
 type GetSourcesRequest struct {
 	Id            *string                                   `json:"-"`
 	Name          *string                                   `json:"-"`

@@ -2,6 +2,7 @@
 
 package api
 
+// GetIssuesRequest is an in-lined request used by the GetIssues endpoint.
 type GetIssuesRequest struct {
 	Id             *string                                         `json:"-"`
 	IssueTriggerId *string                                         `json:"-"`

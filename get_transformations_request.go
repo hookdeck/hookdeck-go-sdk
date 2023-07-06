@@ -2,6 +2,7 @@
 
 package api
 
+// GetTransformationsRequest is an in-lined request used by the GetTransformations endpoint.
 type GetTransformationsRequest struct {
 	Id      *string                                                   `json:"-"`
 	Name    *string                                                   `json:"-"`

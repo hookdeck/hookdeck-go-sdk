@@ -2,6 +2,7 @@
 
 package api
 
+// UpdateBookmarkRequest is an in-lined request used by the UpdateBookmark endpoint.
 type UpdateBookmarkRequest struct {
 	// ID of the event data to bookmark <span style="white-space: nowrap">`<= 255 characters`</span>
 	EventDataId *string `json:"event_data_id,omitempty"`
