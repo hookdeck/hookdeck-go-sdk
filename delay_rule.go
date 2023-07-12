@@ -8,7 +8,7 @@ import (
 
 type DelayRule struct {
 	// Delay to introduce in MS
-	Delay int `json:"delay,omitempty"`
+	Delay int `json:"delay"`
 	type_ string
 }
 
@@ -31,7 +31,7 @@ func (d *DelayRule) MarshalJSON() ([]byte, error) {
 	type embed DelayRule
 	var marshaler = struct {
 		embed
-		Type string `json:"type,omitempty"`
+		Type string `json:"type"`
 	}{
 		embed: embed(*d),
 		Type:  "delay",

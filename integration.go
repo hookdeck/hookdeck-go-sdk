@@ -4,11 +4,11 @@ package api
 
 type Integration struct {
 	// ID of the integration
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// ID of the workspace
-	TeamId string `json:"team_id,omitempty"`
+	TeamId string `json:"team_id"`
 	// Label of the integration
-	Label    string              `json:"label,omitempty"`
+	Label    string              `json:"label"`
 	Provider IntegrationProvider `json:"provider,omitempty"`
 	// List of features to enable (see features list below)
 	Features []IntegrationFeature `json:"features,omitempty"`
@@ -17,7 +17,7 @@ type Integration struct {
 	// List of source IDs the integration is attached to
 	Sources []string `json:"sources,omitempty"`
 	// Date the integration was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// Date the integration was created
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at"`
 }

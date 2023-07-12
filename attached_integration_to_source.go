@@ -3,5 +3,5 @@
 package api
 
 type AttachedIntegrationToSource struct {
-	Success bool `json:"success,omitempty"`
+	Success bool `json:"success"`
 }

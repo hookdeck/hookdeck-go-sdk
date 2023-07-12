@@ -5,5 +5,5 @@ package api
 // UpsertSourceRequest is an in-lined request used by the UpsertSource endpoint.
 type UpsertSourceRequest struct {
 	// A unique name for the source <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 }

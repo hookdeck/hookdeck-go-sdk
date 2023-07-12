@@ -4,7 +4,7 @@ package api
 
 // Configurations for a 'Backpressure' issue trigger
 type IssueTriggerBackpressureConfigs struct {
-	Delay IssueTriggerBackpressureDelay `json:"delay,omitempty"`
+	Delay IssueTriggerBackpressureDelay `json:"delay"`
 	// A pattern to match on the destination name or array of destination IDs. Use `*` as wildcard.
 	Destinations *IssueTriggerBackpressureConfigsDestinations `json:"destinations,omitempty"`
 }

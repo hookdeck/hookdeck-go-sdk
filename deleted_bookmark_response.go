@@ -4,5 +4,5 @@ package api
 
 type DeletedBookmarkResponse struct {
 	// Bookmark ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 }

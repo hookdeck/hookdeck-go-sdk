@@ -4,15 +4,15 @@ package api
 
 type BatchOperation struct {
 	// ID of the bulk retry
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// ID of the workspace
-	TeamId string `json:"team_id,omitempty"`
+	TeamId string `json:"team_id"`
 	// Query object to filter records
 	Query *BatchOperationQuery `json:"query,omitempty"`
 	// Date the bulk retry was created
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at"`
 	// Last time the bulk retry was updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// Date the bulk retry was cancelled
 	CancelledAt *string `json:"cancelled_at,omitempty"`
 	// Date the bulk retry was completed
@@ -26,7 +26,7 @@ type BatchOperation struct {
 	// Number of events that were successfully delivered
 	CompletedCount *int `json:"completed_count,omitempty"`
 	// Indicates if the bulk retry is currently in progress
-	InProgress bool `json:"in_progress,omitempty"`
+	InProgress bool `json:"in_progress"`
 	// Progression of the batch operations, values 0 - 1
 	Progress *float64 `json:"progress,omitempty"`
 	// Number of events that failed to be delivered

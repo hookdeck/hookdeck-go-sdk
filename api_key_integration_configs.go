@@ -3,6 +3,6 @@
 package api
 
 type ApiKeyIntegrationConfigs struct {
-	HeaderKey string `json:"header_key,omitempty"`
-	ApiKey    string `json:"api_key,omitempty"`
+	HeaderKey string `json:"header_key"`
+	ApiKey    string `json:"api_key"`
 }

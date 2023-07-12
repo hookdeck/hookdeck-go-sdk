@@ -5,19 +5,19 @@ package api
 // Associated [Ruleset](#ruleset-object) object
 type Ruleset struct {
 	// ID of the ruleset
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// A unique name for the ruleset
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// ID of the workspace
-	TeamId string `json:"team_id,omitempty"`
+	TeamId string `json:"team_id"`
 	// Array of rules to apply
 	Rules []*Rule `json:"rules,omitempty"`
 	// Default ruleset of Workspace
-	IsTeamDefault bool `json:"is_team_default,omitempty"`
+	IsTeamDefault bool `json:"is_team_default"`
 	// Date the ruleset was archived
 	ArchivedAt *string `json:"archived_at,omitempty"`
 	// Date the ruleset was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// Date the ruleset was created
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at"`
 }

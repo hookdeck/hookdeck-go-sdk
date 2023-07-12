@@ -5,5 +5,5 @@ package api
 // Slack channel for an issue trigger
 type IssueTriggerSlackChannel struct {
 	// Channel name
-	ChannelName string `json:"channel_name,omitempty"`
+	ChannelName string `json:"channel_name"`
 }

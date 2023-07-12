@@ -34,7 +34,7 @@ func (r *RetryRule) MarshalJSON() ([]byte, error) {
 	type embed RetryRule
 	var marshaler = struct {
 		embed
-		Type string `json:"type,omitempty"`
+		Type string `json:"type"`
 	}{
 		embed: embed(*r),
 		Type:  "retry",

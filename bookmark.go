@@ -4,22 +4,22 @@ package api
 
 type Bookmark struct {
 	// ID of the bookmark
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// ID of the workspace
-	TeamId string `json:"team_id,omitempty"`
+	TeamId string `json:"team_id"`
 	// ID of the associated connection
-	WebhookId string `json:"webhook_id,omitempty"`
+	WebhookId string `json:"webhook_id"`
 	// ID of the bookmarked event data
-	EventDataId string `json:"event_data_id,omitempty"`
+	EventDataId string `json:"event_data_id"`
 	// Descriptive name of the bookmark
-	Label string `json:"label,omitempty"`
+	Label string `json:"label"`
 	// Alternate alias for the bookmark
 	Alias *string         `json:"alias,omitempty"`
 	Data  *ShortEventData `json:"data,omitempty"`
 	// Date the bookmark was last manually triggered
 	LastUsedAt *string `json:"last_used_at,omitempty"`
 	// Date the bookmark was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// Date the bookmark was created
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at"`
 }

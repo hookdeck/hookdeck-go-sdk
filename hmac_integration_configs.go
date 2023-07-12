@@ -3,8 +3,8 @@
 package api
 
 type HmacIntegrationConfigs struct {
-	WebhookSecretKey string                         `json:"webhook_secret_key,omitempty"`
+	WebhookSecretKey string                         `json:"webhook_secret_key"`
 	Algorithm        HmacAlgorithms                 `json:"algorithm,omitempty"`
-	HeaderKey        string                         `json:"header_key,omitempty"`
+	HeaderKey        string                         `json:"header_key"`
 	Encoding         HmacIntegrationConfigsEncoding `json:"encoding,omitempty"`
 }

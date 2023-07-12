@@ -4,7 +4,7 @@ package api
 
 type TransformationExecutorOutputRequest struct {
 	Headers     *TransformationExecutorOutputRequestHeaders     `json:"headers,omitempty"`
-	Path        string                                          `json:"path,omitempty"`
+	Path        string                                          `json:"path"`
 	Query       *TransformationExecutorOutputRequestQuery       `json:"query,omitempty"`
 	ParsedQuery *TransformationExecutorOutputRequestParsedQuery `json:"parsed_query,omitempty"`
 	Body        *TransformationExecutorOutputRequestBody        `json:"body,omitempty"`

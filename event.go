@@ -4,21 +4,21 @@ package api
 
 type Event struct {
 	// ID of the event
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// ID of the workspace
-	TeamId string `json:"team_id,omitempty"`
+	TeamId string `json:"team_id"`
 	// ID of the associated connection
-	WebhookId string `json:"webhook_id,omitempty"`
+	WebhookId string `json:"webhook_id"`
 	// ID of the associated source
-	SourceId string `json:"source_id,omitempty"`
+	SourceId string `json:"source_id"`
 	// ID of the associated destination
-	DestinationId string `json:"destination_id,omitempty"`
+	DestinationId string `json:"destination_id"`
 	// ID of the request data
-	EventDataId string `json:"event_data_id,omitempty"`
+	EventDataId string `json:"event_data_id"`
 	// ID of the request that created the event
-	RequestId string `json:"request_id,omitempty"`
+	RequestId string `json:"request_id"`
 	// Number of delivery attempts made
-	Attempts int        `json:"attempts,omitempty"`
+	Attempts int        `json:"attempts"`
 	Data     *EventData `json:"data,omitempty"`
 	// Date of the most recently attempted retry
 	LastAttemptAt *string `json:"last_attempt_at,omitempty"`
@@ -32,9 +32,9 @@ type Event struct {
 	// ID of the CLI the event is sent to
 	CliId *string `json:"cli_id,omitempty"`
 	// Date the event was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// Date the event was created
-	CreatedAt       string  `json:"created_at,omitempty"`
+	CreatedAt       string  `json:"created_at"`
 	CreatedAtId     *string `json:"created_at_id,omitempty"`
 	LastAttemptAtId *string `json:"last_attempt_at_id,omitempty"`
 }

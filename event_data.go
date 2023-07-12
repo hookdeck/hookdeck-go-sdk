@@ -3,7 +3,7 @@
 package api
 
 type EventData struct {
-	Path           string                `json:"path,omitempty"`
+	Path           string                `json:"path"`
 	Query          *string               `json:"query,omitempty"`
 	ParsedQuery    *EventDataParsedQuery `json:"parsed_query,omitempty"`
 	Headers        *EventDataHeaders     `json:"headers,omitempty"`

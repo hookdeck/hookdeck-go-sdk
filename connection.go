@@ -4,11 +4,11 @@ package api
 
 type Connection struct {
 	// ID of the connection
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// Unique name of the connection for this source
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// ID of the workspace
-	TeamId      string       `json:"team_id,omitempty"`
+	TeamId      string       `json:"team_id"`
 	Destination *Destination `json:"destination,omitempty"`
 	Source      *Source      `json:"source,omitempty"`
 	Ruleset     *Ruleset     `json:"ruleset,omitempty"`
@@ -21,7 +21,7 @@ type Connection struct {
 	// Date the connection was paused
 	PausedAt *string `json:"paused_at,omitempty"`
 	// Date the connection was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// Date the connection was created
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at"`
 }

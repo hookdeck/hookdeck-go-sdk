@@ -3,5 +3,5 @@
 package api
 
 type TransformationFailedMeta struct {
-	TransformationId string `json:"transformation_id,omitempty"`
+	TransformationId string `json:"transformation_id"`
 }

@@ -9,5 +9,5 @@ type UpsertIssueTriggerRequest struct {
 	Configs  *UpsertIssueTriggerRequestConfigs `json:"configs,omitempty"`
 	Channels *IssueTriggerChannels             `json:"channels,omitempty"`
 	// Required unique name to use as reference when using the API <span style="white-space: nowrap">`<= 255 characters`</span>
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 }

@@ -3,7 +3,7 @@
 package api
 
 type ToggleWebhookNotifications struct {
-	Enabled  bool           `json:"enabled,omitempty"`
+	Enabled  bool           `json:"enabled"`
 	Topics   *[]TopicsValue `json:"topics,omitempty"`
-	SourceId string         `json:"source_id,omitempty"`
+	SourceId string         `json:"source_id"`
 }

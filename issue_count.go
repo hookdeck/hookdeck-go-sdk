@@ -4,5 +4,5 @@ package api
 
 type IssueCount struct {
 	// Number of issues
-	Count int `json:"count,omitempty"`
+	Count int `json:"count"`
 }

@@ -5,9 +5,9 @@ package api
 // Integration object
 type SourceIntegration struct {
 	// ID of the integration
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// Label of the integration
-	Label    string              `json:"label,omitempty"`
+	Label    string              `json:"label"`
 	Provider IntegrationProvider `json:"provider,omitempty"`
 	// List of enabled features
 	Features []IntegrationFeature `json:"features,omitempty"`

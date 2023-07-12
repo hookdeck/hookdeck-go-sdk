@@ -3,5 +3,5 @@
 package api
 
 type HandledHmacConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key,omitempty"`
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }

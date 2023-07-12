@@ -3,12 +3,12 @@
 package api
 
 type IgnoredEvent struct {
-	Id        string            `json:"id,omitempty"`
-	TeamId    string            `json:"team_id,omitempty"`
-	WebhookId string            `json:"webhook_id,omitempty"`
+	Id        string            `json:"id"`
+	TeamId    string            `json:"team_id"`
+	WebhookId string            `json:"webhook_id"`
 	Cause     IgnoredEventCause `json:"cause,omitempty"`
-	RequestId string            `json:"request_id,omitempty"`
+	RequestId string            `json:"request_id"`
 	Meta      *IgnoredEventMeta `json:"meta,omitempty"`
-	UpdatedAt string            `json:"updated_at,omitempty"`
-	CreatedAt string            `json:"created_at,omitempty"`
+	UpdatedAt string            `json:"updated_at"`
+	CreatedAt string            `json:"created_at"`
 }

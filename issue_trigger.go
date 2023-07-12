@@ -4,7 +4,7 @@ package api
 
 type IssueTrigger struct {
 	// ID of the issue trigger
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// ID of the workspace
 	TeamId *string `json:"team_id,omitempty"`
 	// Optional unique name to use as reference when using the API
@@ -15,9 +15,9 @@ type IssueTrigger struct {
 	// ISO timestamp for when the issue trigger was disabled
 	DisabledAt *string `json:"disabled_at,omitempty"`
 	// ISO timestamp for when the issue trigger was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// ISO timestamp for when the issue trigger was created
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at"`
 	// ISO timestamp for when the issue trigger was deleted
 	DeletedAt *string `json:"deleted_at,omitempty"`
 }

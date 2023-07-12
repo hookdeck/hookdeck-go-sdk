@@ -9,16 +9,16 @@ import (
 // Delivery issue
 type DeliveryIssueWithData struct {
 	// Issue ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// ID of the workspace
-	TeamId string      `json:"team_id,omitempty"`
+	TeamId string      `json:"team_id"`
 	Status IssueStatus `json:"status,omitempty"`
 	// ISO timestamp for when the issue was last opened
-	OpenedAt string `json:"opened_at,omitempty"`
+	OpenedAt string `json:"opened_at"`
 	// ISO timestamp for when the issue was first opened
-	FirstSeenAt string `json:"first_seen_at,omitempty"`
+	FirstSeenAt string `json:"first_seen_at"`
 	// ISO timestamp for when the issue last occured
-	LastSeenAt string `json:"last_seen_at,omitempty"`
+	LastSeenAt string `json:"last_seen_at"`
 	// ID of the team member who last updated the issue status
 	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
 	// ISO timestamp for when the issue was dismissed
@@ -26,9 +26,9 @@ type DeliveryIssueWithData struct {
 	AutoResolvedAt *string `json:"auto_resolved_at,omitempty"`
 	MergedWith     *string `json:"merged_with,omitempty"`
 	// ISO timestamp for when the issue was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// ISO timestamp for when the issue was created
-	CreatedAt       string                        `json:"created_at,omitempty"`
+	CreatedAt       string                        `json:"created_at"`
 	AggregationKeys *DeliveryIssueAggregationKeys `json:"aggregation_keys,omitempty"`
 	Reference       *DeliveryIssueReference       `json:"reference,omitempty"`
 	Data            *DeliveryIssueData            `json:"data,omitempty"`
@@ -54,7 +54,7 @@ func (d *DeliveryIssueWithData) MarshalJSON() ([]byte, error) {
 	type embed DeliveryIssueWithData
 	var marshaler = struct {
 		embed
-		Type string `json:"type,omitempty"`
+		Type string `json:"type"`
 	}{
 		embed: embed(*d),
 		Type:  "delivery",

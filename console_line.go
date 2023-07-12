@@ -4,5 +4,5 @@ package api
 
 type ConsoleLine struct {
 	Type    ConsoleLineType `json:"type,omitempty"`
-	Message string          `json:"message,omitempty"`
+	Message string          `json:"message"`
 }

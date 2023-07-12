@@ -5,7 +5,7 @@ package api
 // CreateRulesetRequest is an in-lined request used by the CreateRuleset endpoint.
 type CreateRulesetRequest struct {
 	// Name for the ruleset <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// Array of rules to apply
 	Rules         *[]*Rule `json:"rules,omitempty"`
 	IsTeamDefault *bool    `json:"is_team_default,omitempty"`

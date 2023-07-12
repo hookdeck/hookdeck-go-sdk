@@ -33,7 +33,7 @@ func (f *FilterRule) MarshalJSON() ([]byte, error) {
 	type embed FilterRule
 	var marshaler = struct {
 		embed
-		Type string `json:"type,omitempty"`
+		Type string `json:"type"`
 	}{
 		embed: embed(*f),
 		Type:  "filter",

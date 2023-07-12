@@ -5,9 +5,9 @@ package api
 // You can optionally define a new transformation while creating a transform rule
 type TransformFullTransformation struct {
 	// The unique name of the transformation
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// A string representation of your JavaScript (ES6) code to run
-	Code string `json:"code,omitempty"`
+	Code string `json:"code"`
 	// A key-value object of environment variables to encrypt and expose to your transformation code
 	Env *map[string]*string `json:"env,omitempty"`
 }

@@ -5,11 +5,11 @@ package api
 // Associated [Destination](#destination-object) object
 type Destination struct {
 	// ID of the destination
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// A unique, human-friendly name for the destination
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// ID of the workspace
-	TeamId                 string `json:"team_id,omitempty"`
+	TeamId                 string `json:"team_id"`
 	PathForwardingDisabled *bool  `json:"path_forwarding_disabled,omitempty"`
 	// HTTP endpoint of the destination
 	Url *string `json:"url,omitempty"`
@@ -21,7 +21,7 @@ type Destination struct {
 	// Date the destination was archived
 	ArchivedAt *string `json:"archived_at,omitempty"`
 	// Date the destination was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// Date the destination was created
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at"`
 }

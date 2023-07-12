@@ -5,7 +5,7 @@ package api
 // CreateIntegrationRequest is an in-lined request used by the CreateIntegration endpoint.
 type CreateIntegrationRequest struct {
 	// Label of the integration
-	Label string `json:"label,omitempty"`
+	Label string `json:"label"`
 	// Decrypted Key/Value object of the associated configuration for that provider
 	Configs  *CreateIntegrationRequestConfigs `json:"configs,omitempty"`
 	Provider IntegrationProvider              `json:"provider,omitempty"`

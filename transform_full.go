@@ -33,7 +33,7 @@ func (t *TransformFull) MarshalJSON() ([]byte, error) {
 	type embed TransformFull
 	var marshaler = struct {
 		embed
-		Type string `json:"type,omitempty"`
+		Type string `json:"type"`
 	}{
 		embed: embed(*t),
 		Type:  "transform",

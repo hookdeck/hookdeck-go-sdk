@@ -3,7 +3,7 @@
 package api
 
 type ShortEventData struct {
-	Path           string                     `json:"path,omitempty"`
+	Path           string                     `json:"path"`
 	Query          *string                    `json:"query,omitempty"`
 	ParsedQuery    *ShortEventDataParsedQuery `json:"parsed_query,omitempty"`
 	Headers        *ShortEventDataHeaders     `json:"headers,omitempty"`

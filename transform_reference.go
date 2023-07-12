@@ -8,7 +8,7 @@ import (
 
 type TransformReference struct {
 	// ID of the attached transformation object. Optional input, always set once the rule is defined
-	TransformationId string `json:"transformation_id,omitempty"`
+	TransformationId string `json:"transformation_id"`
 	type_            string
 }
 
@@ -31,7 +31,7 @@ func (t *TransformReference) MarshalJSON() ([]byte, error) {
 	type embed TransformReference
 	var marshaler = struct {
 		embed
-		Type string `json:"type,omitempty"`
+		Type string `json:"type"`
 	}{
 		embed: embed(*t),
 		Type:  "transform",

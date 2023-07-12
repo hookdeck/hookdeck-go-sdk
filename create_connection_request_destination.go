@@ -5,7 +5,7 @@ package api
 // Destination input object
 type CreateConnectionRequestDestination struct {
 	// Name for the destination <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// Endpoint of the destination
 	Url *string `json:"url,omitempty"`
 	// Path for the CLI destination

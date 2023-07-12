@@ -4,7 +4,7 @@ package api
 
 // Reference to the event request transformation an issue is being created for.
 type TransformationIssueReference struct {
-	TransformationExecutionId string `json:"transformation_execution_id,omitempty"`
+	TransformationExecutionId string `json:"transformation_execution_id"`
 	// Deprecated but still found on historical issues
 	TriggerEventRequestTransformationId *string `json:"trigger_event_request_transformation_id,omitempty"`
 }

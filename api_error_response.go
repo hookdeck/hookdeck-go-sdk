@@ -5,10 +5,10 @@ package api
 // Error response model
 type ApiErrorResponse struct {
 	// Error code
-	Code string `json:"code,omitempty"`
+	Code string `json:"code"`
 	// Status code
-	Status float64 `json:"status,omitempty"`
+	Status float64 `json:"status"`
 	// Error description
-	Message string                `json:"message,omitempty"`
+	Message string                `json:"message"`
 	Data    *ApiErrorResponseData `json:"data,omitempty"`
 }

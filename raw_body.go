@@ -3,5 +3,5 @@
 package api
 
 type RawBody struct {
-	Body string `json:"body,omitempty"`
+	Body string `json:"body"`
 }

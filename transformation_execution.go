@@ -3,16 +3,16 @@
 package api
 
 type TransformationExecution struct {
-	Id                     string                          `json:"id,omitempty"`
-	TransformedEventDataId string                          `json:"transformed_event_data_id,omitempty"`
-	OriginalEventDataId    string                          `json:"original_event_data_id,omitempty"`
-	TransformationId       string                          `json:"transformation_id,omitempty"`
-	TeamId                 string                          `json:"team_id,omitempty"`
-	WebhookId              string                          `json:"webhook_id,omitempty"`
+	Id                     string                          `json:"id"`
+	TransformedEventDataId string                          `json:"transformed_event_data_id"`
+	OriginalEventDataId    string                          `json:"original_event_data_id"`
+	TransformationId       string                          `json:"transformation_id"`
+	TeamId                 string                          `json:"team_id"`
+	WebhookId              string                          `json:"webhook_id"`
 	LogLevel               TransformationExecutionLogLevel `json:"log_level,omitempty"`
 	Logs                   []*ConsoleLine                  `json:"logs,omitempty"`
-	UpdatedAt              string                          `json:"updated_at,omitempty"`
-	CreatedAt              string                          `json:"created_at,omitempty"`
+	UpdatedAt              string                          `json:"updated_at"`
+	CreatedAt              string                          `json:"created_at"`
 	OriginalEventData      *ShortEventData                 `json:"original_event_data,omitempty"`
 	TransformedEventData   *ShortEventData                 `json:"transformed_event_data,omitempty"`
 	IssueId                *string                         `json:"issue_id,omitempty"`

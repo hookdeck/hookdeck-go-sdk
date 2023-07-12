@@ -4,11 +4,11 @@ package api
 
 type EventAttempt struct {
 	// Attempt ID
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// Team ID
-	TeamId string `json:"team_id,omitempty"`
+	TeamId string `json:"team_id"`
 	// Event ID
-	EventId string `json:"event_id,omitempty"`
+	EventId string `json:"event_id"`
 	// Attempt's HTTP response code
 	ResponseStatus *int `json:"response_status,omitempty"`
 	// Sequential number of attempts (up to and including this one) made for the associated event
@@ -33,9 +33,9 @@ type EventAttempt struct {
 	// Time elapsed between attempt initiation and a response from the destination (in ms)
 	ResponseLatency *int `json:"response_latency,omitempty"`
 	// Date the attempt was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// Date the attempt was created
-	CreatedAt string        `json:"created_at,omitempty"`
+	CreatedAt string        `json:"created_at"`
 	State     *AttemptState `json:"state,omitempty"`
 	// Date the attempt was archived
 	ArchivedAt    *string `json:"archived_at,omitempty"`

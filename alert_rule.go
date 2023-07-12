@@ -30,7 +30,7 @@ func (a *AlertRule) MarshalJSON() ([]byte, error) {
 	type embed AlertRule
 	var marshaler = struct {
 		embed
-		Type string `json:"type,omitempty"`
+		Type string `json:"type"`
 	}{
 		embed: embed(*a),
 		Type:  "alert",

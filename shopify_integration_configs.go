@@ -3,7 +3,7 @@
 package api
 
 type ShopifyIntegrationConfigs struct {
-	WebhookSecretKey string                                    `json:"webhook_secret_key,omitempty"`
+	WebhookSecretKey string                                    `json:"webhook_secret_key"`
 	RateLimitPeriod  *ShopifyIntegrationConfigsRateLimitPeriod `json:"rate_limit_period,omitempty"`
 	RateLimit        *float64                                  `json:"rate_limit,omitempty"`
 	ApiKey           *string                                   `json:"api_key,omitempty"`

@@ -11,9 +11,6 @@ import (
 )
 
 const (
-	// acceptHeader is the Accept header.
-	acceptHeader = "Accept"
-
 	// contentType specifies the JSON Content-Type header value.
 	contentType       = "application/json"
 	contentTypeHeader = "Content-Type"
@@ -34,7 +31,6 @@ const (
 // fernHeaders specifies all of the standard Fern headers in
 // a set so that they're easier to access and reference.
 var fernHeaders = map[string]string{
-	acceptHeader:         contentType,
 	contentTypeHeader:    contentType,
 	fernLanguageHeader:   fernLanguage,
 	fernSDKNameHeader:    fernSDKName,
@@ -98,11 +94,15 @@ func DoRequest(
 ) error {
 	var requestBody io.Reader
 	if request != nil {
-		requestBytes, err := json.Marshal(request)
-		if err != nil {
-			return err
+		if body, ok := request.(io.Reader); ok {
+			requestBody = body
+		} else {
+			requestBytes, err := json.Marshal(request)
+			if err != nil {
+				return err
+			}
+			requestBody = bytes.NewReader(requestBytes)
 		}
-		requestBody = bytes.NewReader(requestBytes)
 	}
 	req, err := newRequest(ctx, url, method, endpointHeaders, requestBody)
 	if err != nil {
@@ -146,9 +146,15 @@ func DoRequest(
 
 	// Mutate the response parameter in-place.
 	if response != nil {
-		decoder := json.NewDecoder(resp.Body)
-		if err := decoder.Decode(response); err != nil {
-			return err
+		if writer, ok := response.(io.Writer); ok {
+			if _, err := io.Copy(writer, resp.Body); err != nil {
+				return err
+			}
+		} else {
+			decoder := json.NewDecoder(resp.Body)
+			if err := decoder.Decode(response); err != nil {
+				return err
+			}
 		}
 	}
 

@@ -5,9 +5,9 @@ package api
 // UpsertTransformationRequest is an in-lined request used by the UpsertTransformation endpoint.
 type UpsertTransformationRequest struct {
 	// A unique, human-friendly name for the transformation <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// JavaScript code to be executed
-	Code string `json:"code,omitempty"`
+	Code string `json:"code"`
 	// Key-value environment variables to be passed to the transformation
 	Env *map[string]*UpsertTransformationRequestEnvValue `json:"env,omitempty"`
 }

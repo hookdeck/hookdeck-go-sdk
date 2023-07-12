@@ -4,9 +4,9 @@ package api
 
 type Request struct {
 	// ID of the request
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// ID of the workspace
-	TeamId string `json:"team_id,omitempty"`
+	TeamId string `json:"team_id"`
 	// Whether or not the request was verified when received
 	Verified *bool `json:"verified,omitempty"`
 	// ID of the request data
@@ -22,7 +22,7 @@ type Request struct {
 	IngestedAt   *string `json:"ingested_at,omitempty"`
 	IngestedAtId *string `json:"ingested_at_id,omitempty"`
 	// ID of the associated source
-	SourceId string `json:"source_id,omitempty"`
+	SourceId string `json:"source_id"`
 	// The count of events created from this request (CLI events not included)
 	EventsCount *int `json:"events_count,omitempty"`
 	// The count of CLI events created from this request
@@ -30,7 +30,7 @@ type Request struct {
 	IgnoredCount   *int         `json:"ignored_count,omitempty"`
 	Data           *RequestData `json:"data,omitempty"`
 	// Date the event was last updated
-	UpdatedAt string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 	// Date the event was created
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at"`
 }

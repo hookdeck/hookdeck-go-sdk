@@ -3,7 +3,7 @@
 package api
 
 type RequestData struct {
-	Path           string                  `json:"path,omitempty"`
+	Path           string                  `json:"path"`
 	Query          *string                 `json:"query,omitempty"`
 	ParsedQuery    *RequestDataParsedQuery `json:"parsed_query,omitempty"`
 	Headers        *RequestDataHeaders     `json:"headers,omitempty"`

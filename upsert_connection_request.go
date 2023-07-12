@@ -5,7 +5,7 @@ package api
 // UpsertConnectionRequest is an in-lined request used by the UpsertConnection endpoint.
 type UpsertConnectionRequest struct {
 	// A unique name of the connection for the source <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// ID of a destination to bind to the connection
 	DestinationId *string `json:"destination_id,omitempty"`
 	// ID of a source to bind to the connection

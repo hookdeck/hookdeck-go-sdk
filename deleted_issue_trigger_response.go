@@ -3,5 +3,5 @@
 package api
 
 type DeletedIssueTriggerResponse struct {
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 }
