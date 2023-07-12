@@ -32,6 +32,15 @@ func run() error {
   client := hookdeck.NewClient(
     hookdeck.ClientWithAuthBearer("<YOUR_API_KEY>"),
   )
+  attempts, err := client.Attempts().GetAttempts(
+    context.TODO(),
+    &hookdeck.GetAttemptsRequest{
+      EventId: hookdeck.String("<event_id>"),
+    },
+  )
+  if err != nil {
+    return err
+  }
 }
 ```
 
