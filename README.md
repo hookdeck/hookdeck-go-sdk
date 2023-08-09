@@ -25,12 +25,13 @@ import (
   "fmt"
   "net/http"
 
-  hookdeck "github.com/fern-hookdeck/hookdeck-go"
+  hookdeck "github.com/fern-api/hookdeck-go"
+  hookdeckClient "github.com/fern-api/hookdeck-go/client"
 )
 
 func run() error {
-  client := hookdeck.NewClient(
-    hookdeck.ClientWithAuthBearer("<YOUR_API_KEY>"),
+  client := hookdeckClient.NewClient(
+    hookdeckClient.ClientWithAuthToken("<YOUR_API_KEY>"),
   )
   attempts, err := client.Attempts().GetAttempts(
     context.TODO(),
