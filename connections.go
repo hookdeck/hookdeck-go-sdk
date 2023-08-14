@@ -38,6 +38,14 @@ type GetConnectionsRequest struct {
 	Prev          *string                       `json:"-"`
 }
 
+type UpdateConnectionRequest struct {
+	// <span style="white-space: nowrap">`<= 155 characters`</span>
+	Name *string `json:"name,omitempty"`
+	// Description for the connection
+	Description *string `json:"description,omitempty"`
+	Rules       []*Rule `json:"rules,omitempty"`
+}
+
 type UpsertConnectionRequest struct {
 	// A unique name of the connection for the source
 	Name *string `json:"name,omitempty"`

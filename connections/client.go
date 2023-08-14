@@ -20,6 +20,9 @@ type Client interface {
 	GetConnections(ctx context.Context, request *hookdeckgo.GetConnectionsRequest) (*hookdeckgo.ConnectionPaginatedResult, error)
 	CreateConnection(ctx context.Context, request *hookdeckgo.CreateConnectionRequest) (*hookdeckgo.Connection, error)
 	UpsertConnection(ctx context.Context, request *hookdeckgo.UpsertConnectionRequest) (*hookdeckgo.Connection, error)
+	GetConnection(ctx context.Context, id string) (*hookdeckgo.Connection, error)
+	UpdateConnection(ctx context.Context, id string, request *hookdeckgo.UpdateConnectionRequest) (*hookdeckgo.Connection, error)
+	DeleteConnection(ctx context.Context, id string) (*hookdeckgo.DeleteConnectionResponse, error)
 	ArchiveConnection(ctx context.Context, id string) (*hookdeckgo.Connection, error)
 	UnarchiveConnection(ctx context.Context, id string) (*hookdeckgo.Connection, error)
 	PauseConnection(ctx context.Context, id string) (*hookdeckgo.Connection, error)
@@ -228,6 +231,149 @@ func (c *client) UpsertConnection(ctx context.Context, request *hookdeckgo.Upser
 		endpointURL,
 		http.MethodPut,
 		request,
+		&response,
+		false,
+		c.header,
+		errorDecoder,
+	); err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+func (c *client) GetConnection(ctx context.Context, id string) (*hookdeckgo.Connection, error) {
+	baseURL := "https://api.hookdeck.com/2023-07-01"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v", id)
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 404:
+			value := new(hookdeckgo.NotFoundError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *hookdeckgo.Connection
+	if err := core.DoRequest(
+		ctx,
+		c.httpClient,
+		endpointURL,
+		http.MethodGet,
+		nil,
+		&response,
+		false,
+		c.header,
+		errorDecoder,
+	); err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+func (c *client) UpdateConnection(ctx context.Context, id string, request *hookdeckgo.UpdateConnectionRequest) (*hookdeckgo.Connection, error) {
+	baseURL := "https://api.hookdeck.com/2023-07-01"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v", id)
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 400:
+			value := new(hookdeckgo.BadRequestError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		case 404:
+			value := new(hookdeckgo.NotFoundError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		case 422:
+			value := new(hookdeckgo.UnprocessableEntityError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *hookdeckgo.Connection
+	if err := core.DoRequest(
+		ctx,
+		c.httpClient,
+		endpointURL,
+		http.MethodPut,
+		request,
+		&response,
+		false,
+		c.header,
+		errorDecoder,
+	); err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+func (c *client) DeleteConnection(ctx context.Context, id string) (*hookdeckgo.DeleteConnectionResponse, error) {
+	baseURL := "https://api.hookdeck.com/2023-07-01"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v", id)
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 404:
+			value := new(hookdeckgo.NotFoundError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return err
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *hookdeckgo.DeleteConnectionResponse
+	if err := core.DoRequest(
+		ctx,
+		c.httpClient,
+		endpointURL,
+		http.MethodDelete,
+		nil,
 		&response,
 		false,
 		c.header,

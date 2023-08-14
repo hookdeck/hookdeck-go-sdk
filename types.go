@@ -3457,6 +3457,11 @@ func (d *DelayRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(marshaler)
 }
 
+type DeleteConnectionResponse struct {
+	// ID of the connection
+	Id string `json:"id"`
+}
+
 type DeleteCustomDomainSchema struct {
 	// The custom hostname ID
 	Id string `json:"id"`
