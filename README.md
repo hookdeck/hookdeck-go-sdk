@@ -3,14 +3,14 @@
 The HookDeck Go library provides convenient access to the HookDeck API from Go.
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-SDK%20generated%20by%20Fern-brightgreen)](https://github.com/fern-api/fern)
-[![go shield](https://img.shields.io/badge/go-docs-blue)](https://pkg.go.dev/github.com/fern-hookdeck/hookdeck-go)
+[![go shield](https://img.shields.io/badge/go-docs-blue)](https://pkg.go.dev/github.com/hookdeck/hookdeck-go-sdk)
 
 ## Installation
 
 Run the following command to use the HookDeck Go library in your Go module:
 
 ```sh
-go get github.com/fern-hookdeck/hookdeck-go
+go get github.com/hookdeck/hookdeck-go-sdk
 ```
 
 This module requires Go version >= 1.19.
@@ -25,8 +25,8 @@ import (
   "fmt"
   "net/http"
 
-  hookdeck "github.com/fern-api/hookdeck-go"
-  hookdeckClient "github.com/fern-api/hookdeck-go/client"
+  hookdeck "github.com/hookdeck/hookdeck-go-sdk"
+  hookdeckClient "github.com/hookdeck/hookdeck-go-sdk/client"
 )
 
 func run() error {
