@@ -23,16 +23,12 @@ This module requires Go version >= 1.19.
 
 ```go
 import (
-  "context"
-  "fmt"
-
   hookdeck "github.com/hookdeck/hookdeck-go-sdk"
   hookdeckclient "github.com/hookdeck/hookdeck-go-sdk/client"
 )
 
 client := hookdeckclient.NewClient(
-  hookdeckclient.ClientWithAuthApiKey("<YOUR_API_KEY>"),
-  hookdeckclient.ClientWithHeaderAccountToken("<YOUR_ACCOUNT_TOKEN>"),
+  hookdeckclient.ClientWithAuthToken("<YOUR_AUTH_TOKEN>"),
 )
 ```
 
@@ -44,39 +40,120 @@ package main
 import (
   "context"
   "fmt"
-  "net/http"
 
   hookdeck "github.com/hookdeck/hookdeck-go-sdk"
-  hookdeckClient "github.com/hookdeck/hookdeck-go-sdk/client"
+  hookdeckclient "github.com/hookdeck/hookdeck-go-sdk/client"
 )
 
-func run() error {
-  client := hookdeckClient.NewClient(
-    hookdeckClient.ClientWithAuthToken("<YOUR_API_KEY>"),
-  )
-  attempts, err := client.Attempts().GetAttempts(
-    context.TODO(),
-    &hookdeck.GetAttemptsRequest{
-      EventId: hookdeck.String("<event_id>"),
-    },
-  )
-  if err != nil {
-    return err
-  }
+client := hookdeckclient.NewClient(
+  hookdeckclient.ClientWithAuthToken("<YOUR_API_KEY>"),
+)
+attempts, err := client.Attempts().GetAttempts(
+  context.TODO(),
+  &hookdeck.GetAttemptsRequest{
+    EventId: hookdeck.String("<EVENT_ID>"),
+  },
+)
+if err != nil {
+  return err
 }
+fmt.Printf("Got %d attempts\n", *attempts.Count)
 ```
 
 ## Timeouts
 
-TODO
+Setting a timeout for each individual request is as simple as using the standard
+`context` library. Setting a one second timeout for an individual API call looks
+like the following:
+
+```go
+ctx, cancel := context.WithTimeout(context.TODO(), time.Second)
+defer cancel()
+attempts, err := client.Attempts().GetAttempts(
+  context.TODO(),
+  &hookdeck.GetAttemptsRequest{
+    EventId: hookdeck.String("<EVENT_ID>"),
+  },
+)
+if err != nil {
+  return err
+}
+```
 
 ## Client Options
 
-TODO
+A variety of client options are included to adapt the behavior of the library, which includes
+configuring authorization tokens to be sent on every request, or providing your own instrumented
+`*http.Client`. Both of these options are shown below:
+
+```go
+client := hookdeckclient.NewClient(
+  hookdeckclient.ClientWithAuthToken("<YOUR_AUTH_TOKEN>"),
+  hookdeckclient.ClientWithHTTPClient(
+    &http.Client{
+      Timeout: 5 * time.Second,
+    },
+  ),
+)
+```
+
+> Providing your own `*http.Client` is recommended. Otherwise, the `http.DefaultClient` will be used,
+> and your client will wait indefinitely for a response (unless the per-request, context-based timeout
+> is used).
 
 ## Errors
 
-TODO
+Structured error types are returned from API calls that return non-success status codes. For example,
+you can check if the error was due to a bad request (i.e. status code 400) with the following:
+
+```go
+attempts, err := client.Attempts().GetAttempts(
+  context.TODO(),
+  &hookdeck.GetAttemptsRequest{
+    EventId: hookdeck.String("<EVENT_ID>"),
+  },
+)
+if err != nil {
+  if badRequestErr, ok := err.(*hookdeck.BadRequestError);
+    // Do something with the bad request ...
+  }
+  return err
+}
+```
+
+These errors are also compatible with the `errors.Is` and `errors.As` APIs, so you can access the error
+like so:
+
+```go
+attempts, err := client.Attempts().GetAttempts(
+  context.TODO(),
+  &hookdeck.GetAttemptsRequest{
+    EventId: hookdeck.String("<EVENT_ID>"),
+  },
+)
+if err != nil {
+  var badRequestErr *hookdeck.BadRequestError
+  if errors.As(err, badRequestErr); ok {
+    // Do something with the bad request ...
+  }
+  return err
+}
+```
+
+If you'd like to wrap the errors with additional information and still retain the ability to access the type
+with `errors.Is` and `errors.As`, you can use the `%w` directive:
+
+```go
+attempts, err := client.Attempts().GetAttempts(
+  context.TODO(),
+  &hookdeck.GetAttemptsRequest{
+    EventId: hookdeck.String("<EVENT_ID>"),
+  },
+)
+if err != nil {
+  return fmt.Errorf("failed to get attempts: %w", err)
+}
+```
 
 ## Beta status
 
