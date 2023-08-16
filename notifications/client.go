@@ -5,15 +5,15 @@ package notifications
 import (
 	context "context"
 	fmt "fmt"
-	hookdeckgo "github.com/fern-hookdeck/hookdeck-go"
-	core "github.com/fern-hookdeck/hookdeck-go/core"
+	hookdeckgosdk "github.com/hookdeck/hookdeck-go-sdk"
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	http "net/http"
 )
 
 type Client interface {
-	ListCustomDomains(ctx context.Context, teamId string) (hookdeckgo.ListCustomDomainSchema, error)
-	AddCustomDomain(ctx context.Context, teamId string, request *hookdeckgo.AddCustomHostname) (*hookdeckgo.AddCustomHostname, error)
-	DeleteCustomDomain(ctx context.Context, teamId string, domainId string) (*hookdeckgo.DeleteCustomDomainSchema, error)
+	ListCustomDomains(ctx context.Context, teamId string) (hookdeckgosdk.ListCustomDomainSchema, error)
+	AddCustomDomain(ctx context.Context, teamId string, request *hookdeckgosdk.AddCustomHostname) (*hookdeckgosdk.AddCustomHostname, error)
+	DeleteCustomDomain(ctx context.Context, teamId string, domainId string) (*hookdeckgosdk.DeleteCustomDomainSchema, error)
 }
 
 func NewClient(opts ...core.ClientOption) Client {
@@ -34,14 +34,14 @@ type client struct {
 	header     http.Header
 }
 
-func (c *client) ListCustomDomains(ctx context.Context, teamId string) (hookdeckgo.ListCustomDomainSchema, error) {
+func (c *client) ListCustomDomains(ctx context.Context, teamId string) (hookdeckgosdk.ListCustomDomainSchema, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
 	endpointURL := fmt.Sprintf(baseURL+"/"+"teams/%v/custom_domains", teamId)
 
-	var response hookdeckgo.ListCustomDomainSchema
+	var response hookdeckgosdk.ListCustomDomainSchema
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -58,14 +58,14 @@ func (c *client) ListCustomDomains(ctx context.Context, teamId string) (hookdeck
 	return response, nil
 }
 
-func (c *client) AddCustomDomain(ctx context.Context, teamId string, request *hookdeckgo.AddCustomHostname) (*hookdeckgo.AddCustomHostname, error) {
+func (c *client) AddCustomDomain(ctx context.Context, teamId string, request *hookdeckgosdk.AddCustomHostname) (*hookdeckgosdk.AddCustomHostname, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
 	endpointURL := fmt.Sprintf(baseURL+"/"+"teams/%v/custom_domains", teamId)
 
-	var response *hookdeckgo.AddCustomHostname
+	var response *hookdeckgosdk.AddCustomHostname
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -82,14 +82,14 @@ func (c *client) AddCustomDomain(ctx context.Context, teamId string, request *ho
 	return response, nil
 }
 
-func (c *client) DeleteCustomDomain(ctx context.Context, teamId string, domainId string) (*hookdeckgo.DeleteCustomDomainSchema, error) {
+func (c *client) DeleteCustomDomain(ctx context.Context, teamId string, domainId string) (*hookdeckgosdk.DeleteCustomDomainSchema, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
 	endpointURL := fmt.Sprintf(baseURL+"/"+"teams/%v/custom_domains/%v", teamId, domainId)
 
-	var response *hookdeckgo.DeleteCustomDomainSchema
+	var response *hookdeckgosdk.DeleteCustomDomainSchema
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,

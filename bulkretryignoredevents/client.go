@@ -8,8 +8,8 @@ import (
 	json "encoding/json"
 	errors "errors"
 	fmt "fmt"
-	hookdeckgo "github.com/fern-hookdeck/hookdeck-go"
-	core "github.com/fern-hookdeck/hookdeck-go/core"
+	hookdeckgosdk "github.com/hookdeck/hookdeck-go-sdk"
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	io "io"
 	http "net/http"
 	url "net/url"
@@ -17,11 +17,11 @@ import (
 )
 
 type Client interface {
-	GetIgnoredEventBulkRetries(ctx context.Context, request *hookdeckgo.GetIgnoredEventBulkRetriesRequest) (*hookdeckgo.BatchOperationPaginatedResult, error)
-	CreateIgnoredEventBulkRetry(ctx context.Context, request *hookdeckgo.CreateIgnoredEventBulkRetryRequest) (*hookdeckgo.BatchOperation, error)
-	GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookdeckgo.GenerateIgnoredEventBulkRetryPlanResponse, error)
-	GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgo.BatchOperation, error)
-	CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgo.BatchOperation, error)
+	GetIgnoredEventBulkRetries(ctx context.Context, request *hookdeckgosdk.GetIgnoredEventBulkRetriesRequest) (*hookdeckgosdk.BatchOperationPaginatedResult, error)
+	CreateIgnoredEventBulkRetry(ctx context.Context, request *hookdeckgosdk.CreateIgnoredEventBulkRetryRequest) (*hookdeckgosdk.BatchOperation, error)
+	GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk.GenerateIgnoredEventBulkRetryPlanResponse, error)
+	GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error)
+	CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error)
 }
 
 func NewClient(opts ...core.ClientOption) Client {
@@ -42,7 +42,7 @@ type client struct {
 	header     http.Header
 }
 
-func (c *client) GetIgnoredEventBulkRetries(ctx context.Context, request *hookdeckgo.GetIgnoredEventBulkRetriesRequest) (*hookdeckgo.BatchOperationPaginatedResult, error) {
+func (c *client) GetIgnoredEventBulkRetries(ctx context.Context, request *hookdeckgosdk.GetIgnoredEventBulkRetriesRequest) (*hookdeckgosdk.BatchOperationPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -96,14 +96,14 @@ func (c *client) GetIgnoredEventBulkRetries(ctx context.Context, request *hookde
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -113,7 +113,7 @@ func (c *client) GetIgnoredEventBulkRetries(ctx context.Context, request *hookde
 		return apiError
 	}
 
-	var response *hookdeckgo.BatchOperationPaginatedResult
+	var response *hookdeckgosdk.BatchOperationPaginatedResult
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -130,7 +130,7 @@ func (c *client) GetIgnoredEventBulkRetries(ctx context.Context, request *hookde
 	return response, nil
 }
 
-func (c *client) CreateIgnoredEventBulkRetry(ctx context.Context, request *hookdeckgo.CreateIgnoredEventBulkRetryRequest) (*hookdeckgo.BatchOperation, error) {
+func (c *client) CreateIgnoredEventBulkRetry(ctx context.Context, request *hookdeckgosdk.CreateIgnoredEventBulkRetryRequest) (*hookdeckgosdk.BatchOperation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -146,14 +146,14 @@ func (c *client) CreateIgnoredEventBulkRetry(ctx context.Context, request *hookd
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -163,7 +163,7 @@ func (c *client) CreateIgnoredEventBulkRetry(ctx context.Context, request *hookd
 		return apiError
 	}
 
-	var response *hookdeckgo.BatchOperation
+	var response *hookdeckgosdk.BatchOperation
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -180,7 +180,7 @@ func (c *client) CreateIgnoredEventBulkRetry(ctx context.Context, request *hookd
 	return response, nil
 }
 
-func (c *client) GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookdeckgo.GenerateIgnoredEventBulkRetryPlanResponse, error) {
+func (c *client) GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk.GenerateIgnoredEventBulkRetryPlanResponse, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -196,14 +196,14 @@ func (c *client) GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookde
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -213,7 +213,7 @@ func (c *client) GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookde
 		return apiError
 	}
 
-	var response *hookdeckgo.GenerateIgnoredEventBulkRetryPlanResponse
+	var response *hookdeckgosdk.GenerateIgnoredEventBulkRetryPlanResponse
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -230,7 +230,7 @@ func (c *client) GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookde
 	return response, nil
 }
 
-func (c *client) GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgo.BatchOperation, error) {
+func (c *client) GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -246,7 +246,7 @@ func (c *client) GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hook
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -256,7 +256,7 @@ func (c *client) GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hook
 		return apiError
 	}
 
-	var response *hookdeckgo.BatchOperation
+	var response *hookdeckgosdk.BatchOperation
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -273,7 +273,7 @@ func (c *client) GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hook
 	return response, nil
 }
 
-func (c *client) CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgo.BatchOperation, error) {
+func (c *client) CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -289,7 +289,7 @@ func (c *client) CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*h
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -299,7 +299,7 @@ func (c *client) CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*h
 		return apiError
 	}
 
-	var response *hookdeckgo.BatchOperation
+	var response *hookdeckgosdk.BatchOperation
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,

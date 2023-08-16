@@ -4,7 +4,7 @@ package api
 
 import (
 	json "encoding/json"
-	core "github.com/fern-hookdeck/hookdeck-go/core"
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 )
 
 type BadRequestError struct {

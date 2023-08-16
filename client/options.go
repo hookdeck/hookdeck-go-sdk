@@ -3,7 +3,7 @@
 package client
 
 import (
-	core "github.com/fern-hookdeck/hookdeck-go/core"
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	http "net/http"
 )
 

@@ -8,8 +8,8 @@ import (
 	json "encoding/json"
 	errors "errors"
 	fmt "fmt"
-	hookdeckgo "github.com/fern-hookdeck/hookdeck-go"
-	core "github.com/fern-hookdeck/hookdeck-go/core"
+	hookdeckgosdk "github.com/hookdeck/hookdeck-go-sdk"
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	io "io"
 	http "net/http"
 	url "net/url"
@@ -17,14 +17,14 @@ import (
 )
 
 type Client interface {
-	GetIssueTriggers(ctx context.Context, request *hookdeckgo.GetIssueTriggersRequest) (*hookdeckgo.IssueTriggerPaginatedResult, error)
-	CreateIssueTrigger(ctx context.Context, request *hookdeckgo.CreateIssueTriggerRequest) (*hookdeckgo.IssueTrigger, error)
-	UpsertIssueTrigger(ctx context.Context, request *hookdeckgo.UpsertIssueTriggerRequest) (*hookdeckgo.IssueTrigger, error)
-	GetIssueTrigger(ctx context.Context, id string) (*hookdeckgo.IssueTrigger, error)
-	UpdateIssueTrigger(ctx context.Context, id string, request *hookdeckgo.UpdateIssueTriggerRequest) (*hookdeckgo.IssueTrigger, error)
-	DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgo.DeletedIssueTriggerResponse, error)
-	DisableIssueTrigger(ctx context.Context, id string) (*hookdeckgo.IssueTrigger, error)
-	EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgo.IssueTrigger, error)
+	GetIssueTriggers(ctx context.Context, request *hookdeckgosdk.GetIssueTriggersRequest) (*hookdeckgosdk.IssueTriggerPaginatedResult, error)
+	CreateIssueTrigger(ctx context.Context, request *hookdeckgosdk.CreateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error)
+	UpsertIssueTrigger(ctx context.Context, request *hookdeckgosdk.UpsertIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error)
+	GetIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error)
+	UpdateIssueTrigger(ctx context.Context, id string, request *hookdeckgosdk.UpdateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error)
+	DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.DeletedIssueTriggerResponse, error)
+	DisableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error)
+	EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error)
 }
 
 func NewClient(opts ...core.ClientOption) Client {
@@ -45,7 +45,7 @@ type client struct {
 	header     http.Header
 }
 
-func (c *client) GetIssueTriggers(ctx context.Context, request *hookdeckgo.GetIssueTriggersRequest) (*hookdeckgo.IssueTriggerPaginatedResult, error) {
+func (c *client) GetIssueTriggers(ctx context.Context, request *hookdeckgosdk.GetIssueTriggersRequest) (*hookdeckgosdk.IssueTriggerPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -90,14 +90,14 @@ func (c *client) GetIssueTriggers(ctx context.Context, request *hookdeckgo.GetIs
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -107,7 +107,7 @@ func (c *client) GetIssueTriggers(ctx context.Context, request *hookdeckgo.GetIs
 		return apiError
 	}
 
-	var response *hookdeckgo.IssueTriggerPaginatedResult
+	var response *hookdeckgosdk.IssueTriggerPaginatedResult
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -124,7 +124,7 @@ func (c *client) GetIssueTriggers(ctx context.Context, request *hookdeckgo.GetIs
 	return response, nil
 }
 
-func (c *client) CreateIssueTrigger(ctx context.Context, request *hookdeckgo.CreateIssueTriggerRequest) (*hookdeckgo.IssueTrigger, error) {
+func (c *client) CreateIssueTrigger(ctx context.Context, request *hookdeckgosdk.CreateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -140,14 +140,14 @@ func (c *client) CreateIssueTrigger(ctx context.Context, request *hookdeckgo.Cre
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -157,7 +157,7 @@ func (c *client) CreateIssueTrigger(ctx context.Context, request *hookdeckgo.Cre
 		return apiError
 	}
 
-	var response *hookdeckgo.IssueTrigger
+	var response *hookdeckgosdk.IssueTrigger
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -174,7 +174,7 @@ func (c *client) CreateIssueTrigger(ctx context.Context, request *hookdeckgo.Cre
 	return response, nil
 }
 
-func (c *client) UpsertIssueTrigger(ctx context.Context, request *hookdeckgo.UpsertIssueTriggerRequest) (*hookdeckgo.IssueTrigger, error) {
+func (c *client) UpsertIssueTrigger(ctx context.Context, request *hookdeckgosdk.UpsertIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -190,14 +190,14 @@ func (c *client) UpsertIssueTrigger(ctx context.Context, request *hookdeckgo.Ups
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -207,7 +207,7 @@ func (c *client) UpsertIssueTrigger(ctx context.Context, request *hookdeckgo.Ups
 		return apiError
 	}
 
-	var response *hookdeckgo.IssueTrigger
+	var response *hookdeckgosdk.IssueTrigger
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -224,7 +224,7 @@ func (c *client) UpsertIssueTrigger(ctx context.Context, request *hookdeckgo.Ups
 	return response, nil
 }
 
-func (c *client) GetIssueTrigger(ctx context.Context, id string) (*hookdeckgo.IssueTrigger, error) {
+func (c *client) GetIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -240,7 +240,7 @@ func (c *client) GetIssueTrigger(ctx context.Context, id string) (*hookdeckgo.Is
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -250,7 +250,7 @@ func (c *client) GetIssueTrigger(ctx context.Context, id string) (*hookdeckgo.Is
 		return apiError
 	}
 
-	var response *hookdeckgo.IssueTrigger
+	var response *hookdeckgosdk.IssueTrigger
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -267,7 +267,7 @@ func (c *client) GetIssueTrigger(ctx context.Context, id string) (*hookdeckgo.Is
 	return response, nil
 }
 
-func (c *client) UpdateIssueTrigger(ctx context.Context, id string, request *hookdeckgo.UpdateIssueTriggerRequest) (*hookdeckgo.IssueTrigger, error) {
+func (c *client) UpdateIssueTrigger(ctx context.Context, id string, request *hookdeckgosdk.UpdateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -283,14 +283,14 @@ func (c *client) UpdateIssueTrigger(ctx context.Context, id string, request *hoo
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -300,7 +300,7 @@ func (c *client) UpdateIssueTrigger(ctx context.Context, id string, request *hoo
 		return apiError
 	}
 
-	var response *hookdeckgo.IssueTrigger
+	var response *hookdeckgosdk.IssueTrigger
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -317,7 +317,7 @@ func (c *client) UpdateIssueTrigger(ctx context.Context, id string, request *hoo
 	return response, nil
 }
 
-func (c *client) DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgo.DeletedIssueTriggerResponse, error) {
+func (c *client) DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.DeletedIssueTriggerResponse, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -333,7 +333,7 @@ func (c *client) DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgo
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -343,7 +343,7 @@ func (c *client) DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgo
 		return apiError
 	}
 
-	var response *hookdeckgo.DeletedIssueTriggerResponse
+	var response *hookdeckgosdk.DeletedIssueTriggerResponse
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -360,7 +360,7 @@ func (c *client) DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgo
 	return response, nil
 }
 
-func (c *client) DisableIssueTrigger(ctx context.Context, id string) (*hookdeckgo.IssueTrigger, error) {
+func (c *client) DisableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -376,7 +376,7 @@ func (c *client) DisableIssueTrigger(ctx context.Context, id string) (*hookdeckg
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -386,7 +386,7 @@ func (c *client) DisableIssueTrigger(ctx context.Context, id string) (*hookdeckg
 		return apiError
 	}
 
-	var response *hookdeckgo.IssueTrigger
+	var response *hookdeckgosdk.IssueTrigger
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -403,7 +403,7 @@ func (c *client) DisableIssueTrigger(ctx context.Context, id string) (*hookdeckg
 	return response, nil
 }
 
-func (c *client) EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgo.IssueTrigger, error) {
+func (c *client) EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -419,7 +419,7 @@ func (c *client) EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgo
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -429,7 +429,7 @@ func (c *client) EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgo
 		return apiError
 	}
 
-	var response *hookdeckgo.IssueTrigger
+	var response *hookdeckgosdk.IssueTrigger
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,

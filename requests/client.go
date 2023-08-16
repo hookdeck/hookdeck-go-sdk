@@ -8,8 +8,8 @@ import (
 	json "encoding/json"
 	errors "errors"
 	fmt "fmt"
-	hookdeckgo "github.com/fern-hookdeck/hookdeck-go"
-	core "github.com/fern-hookdeck/hookdeck-go/core"
+	hookdeckgosdk "github.com/hookdeck/hookdeck-go-sdk"
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	io "io"
 	http "net/http"
 	url "net/url"
@@ -17,12 +17,12 @@ import (
 )
 
 type Client interface {
-	GetRequests(ctx context.Context, request *hookdeckgo.GetRequestsRequest) (*hookdeckgo.RequestPaginatedResult, error)
-	GetRequest(ctx context.Context, id string) (*hookdeckgo.Request, error)
-	GetRequestRawBody(ctx context.Context, id string) (*hookdeckgo.RawBody, error)
-	RetryRequest(ctx context.Context, id string, request *hookdeckgo.RetryRequestRequest) (*hookdeckgo.RetryRequest, error)
-	GetRequestEvents(ctx context.Context, id string, request *hookdeckgo.GetRequestEventsRequest) (*hookdeckgo.EventPaginatedResult, error)
-	GetRequestIgnoredEvents(ctx context.Context, id string, request *hookdeckgo.GetRequestIgnoredEventsRequest) (*hookdeckgo.IgnoredEventPaginatedResult, error)
+	GetRequests(ctx context.Context, request *hookdeckgosdk.GetRequestsRequest) (*hookdeckgosdk.RequestPaginatedResult, error)
+	GetRequest(ctx context.Context, id string) (*hookdeckgosdk.Request, error)
+	GetRequestRawBody(ctx context.Context, id string) (*hookdeckgosdk.RawBody, error)
+	RetryRequest(ctx context.Context, id string, request *hookdeckgosdk.RetryRequestRequest) (*hookdeckgosdk.RetryRequest, error)
+	GetRequestEvents(ctx context.Context, id string, request *hookdeckgosdk.GetRequestEventsRequest) (*hookdeckgosdk.EventPaginatedResult, error)
+	GetRequestIgnoredEvents(ctx context.Context, id string, request *hookdeckgosdk.GetRequestIgnoredEventsRequest) (*hookdeckgosdk.IgnoredEventPaginatedResult, error)
 }
 
 func NewClient(opts ...core.ClientOption) Client {
@@ -43,7 +43,7 @@ type client struct {
 	header     http.Header
 }
 
-func (c *client) GetRequests(ctx context.Context, request *hookdeckgo.GetRequestsRequest) (*hookdeckgo.RequestPaginatedResult, error) {
+func (c *client) GetRequests(ctx context.Context, request *hookdeckgosdk.GetRequestsRequest) (*hookdeckgosdk.RequestPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -124,14 +124,14 @@ func (c *client) GetRequests(ctx context.Context, request *hookdeckgo.GetRequest
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -141,7 +141,7 @@ func (c *client) GetRequests(ctx context.Context, request *hookdeckgo.GetRequest
 		return apiError
 	}
 
-	var response *hookdeckgo.RequestPaginatedResult
+	var response *hookdeckgosdk.RequestPaginatedResult
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -158,7 +158,7 @@ func (c *client) GetRequests(ctx context.Context, request *hookdeckgo.GetRequest
 	return response, nil
 }
 
-func (c *client) GetRequest(ctx context.Context, id string) (*hookdeckgo.Request, error) {
+func (c *client) GetRequest(ctx context.Context, id string) (*hookdeckgosdk.Request, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -174,7 +174,7 @@ func (c *client) GetRequest(ctx context.Context, id string) (*hookdeckgo.Request
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -184,7 +184,7 @@ func (c *client) GetRequest(ctx context.Context, id string) (*hookdeckgo.Request
 		return apiError
 	}
 
-	var response *hookdeckgo.Request
+	var response *hookdeckgosdk.Request
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -201,7 +201,7 @@ func (c *client) GetRequest(ctx context.Context, id string) (*hookdeckgo.Request
 	return response, nil
 }
 
-func (c *client) GetRequestRawBody(ctx context.Context, id string) (*hookdeckgo.RawBody, error) {
+func (c *client) GetRequestRawBody(ctx context.Context, id string) (*hookdeckgosdk.RawBody, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -217,7 +217,7 @@ func (c *client) GetRequestRawBody(ctx context.Context, id string) (*hookdeckgo.
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -227,7 +227,7 @@ func (c *client) GetRequestRawBody(ctx context.Context, id string) (*hookdeckgo.
 		return apiError
 	}
 
-	var response *hookdeckgo.RawBody
+	var response *hookdeckgosdk.RawBody
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -244,7 +244,7 @@ func (c *client) GetRequestRawBody(ctx context.Context, id string) (*hookdeckgo.
 	return response, nil
 }
 
-func (c *client) RetryRequest(ctx context.Context, id string, request *hookdeckgo.RetryRequestRequest) (*hookdeckgo.RetryRequest, error) {
+func (c *client) RetryRequest(ctx context.Context, id string, request *hookdeckgosdk.RetryRequestRequest) (*hookdeckgosdk.RetryRequest, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -260,21 +260,21 @@ func (c *client) RetryRequest(ctx context.Context, id string, request *hookdeckg
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -284,7 +284,7 @@ func (c *client) RetryRequest(ctx context.Context, id string, request *hookdeckg
 		return apiError
 	}
 
-	var response *hookdeckgo.RetryRequest
+	var response *hookdeckgosdk.RetryRequest
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -301,7 +301,7 @@ func (c *client) RetryRequest(ctx context.Context, id string, request *hookdeckg
 	return response, nil
 }
 
-func (c *client) GetRequestEvents(ctx context.Context, id string, request *hookdeckgo.GetRequestEventsRequest) (*hookdeckgo.EventPaginatedResult, error) {
+func (c *client) GetRequestEvents(ctx context.Context, id string, request *hookdeckgosdk.GetRequestEventsRequest) (*hookdeckgosdk.EventPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -403,21 +403,21 @@ func (c *client) GetRequestEvents(ctx context.Context, id string, request *hookd
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -427,7 +427,7 @@ func (c *client) GetRequestEvents(ctx context.Context, id string, request *hookd
 		return apiError
 	}
 
-	var response *hookdeckgo.EventPaginatedResult
+	var response *hookdeckgosdk.EventPaginatedResult
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -444,7 +444,7 @@ func (c *client) GetRequestEvents(ctx context.Context, id string, request *hookd
 	return response, nil
 }
 
-func (c *client) GetRequestIgnoredEvents(ctx context.Context, id string, request *hookdeckgo.GetRequestIgnoredEventsRequest) (*hookdeckgo.IgnoredEventPaginatedResult, error) {
+func (c *client) GetRequestIgnoredEvents(ctx context.Context, id string, request *hookdeckgosdk.GetRequestIgnoredEventsRequest) (*hookdeckgosdk.IgnoredEventPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -483,21 +483,21 @@ func (c *client) GetRequestIgnoredEvents(ctx context.Context, id string, request
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -507,7 +507,7 @@ func (c *client) GetRequestIgnoredEvents(ctx context.Context, id string, request
 		return apiError
 	}
 
-	var response *hookdeckgo.IgnoredEventPaginatedResult
+	var response *hookdeckgosdk.IgnoredEventPaginatedResult
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,

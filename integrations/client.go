@@ -8,21 +8,21 @@ import (
 	json "encoding/json"
 	errors "errors"
 	fmt "fmt"
-	hookdeckgo "github.com/fern-hookdeck/hookdeck-go"
-	core "github.com/fern-hookdeck/hookdeck-go/core"
+	hookdeckgosdk "github.com/hookdeck/hookdeck-go-sdk"
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	io "io"
 	http "net/http"
 	url "net/url"
 )
 
 type Client interface {
-	GetIntegrations(ctx context.Context, request *hookdeckgo.GetIntegrationsRequest) (*hookdeckgo.IntegrationPaginatedResult, error)
-	CreateIntegration(ctx context.Context, request *hookdeckgo.CreateIntegrationRequest) (*hookdeckgo.Integration, error)
-	GetIntegration(ctx context.Context, id string) (*hookdeckgo.Integration, error)
-	UpdateIntegration(ctx context.Context, id string, request *hookdeckgo.UpdateIntegrationRequest) (*hookdeckgo.Integration, error)
-	DeleteIntegration(ctx context.Context, id string) (*hookdeckgo.DeletedIntegration, error)
-	AttachIntegrationToSource(ctx context.Context, id string, sourceId string) (*hookdeckgo.AttachedIntegrationToSource, error)
-	DetachIntegrationToSource(ctx context.Context, id string, sourceId string) (*hookdeckgo.DetachedIntegrationFromSource, error)
+	GetIntegrations(ctx context.Context, request *hookdeckgosdk.GetIntegrationsRequest) (*hookdeckgosdk.IntegrationPaginatedResult, error)
+	CreateIntegration(ctx context.Context, request *hookdeckgosdk.CreateIntegrationRequest) (*hookdeckgosdk.Integration, error)
+	GetIntegration(ctx context.Context, id string) (*hookdeckgosdk.Integration, error)
+	UpdateIntegration(ctx context.Context, id string, request *hookdeckgosdk.UpdateIntegrationRequest) (*hookdeckgosdk.Integration, error)
+	DeleteIntegration(ctx context.Context, id string) (*hookdeckgosdk.DeletedIntegration, error)
+	AttachIntegrationToSource(ctx context.Context, id string, sourceId string) (*hookdeckgosdk.AttachedIntegrationToSource, error)
+	DetachIntegrationToSource(ctx context.Context, id string, sourceId string) (*hookdeckgosdk.DetachedIntegrationFromSource, error)
 }
 
 func NewClient(opts ...core.ClientOption) Client {
@@ -43,7 +43,7 @@ type client struct {
 	header     http.Header
 }
 
-func (c *client) GetIntegrations(ctx context.Context, request *hookdeckgo.GetIntegrationsRequest) (*hookdeckgo.IntegrationPaginatedResult, error) {
+func (c *client) GetIntegrations(ctx context.Context, request *hookdeckgosdk.GetIntegrationsRequest) (*hookdeckgosdk.IntegrationPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -70,14 +70,14 @@ func (c *client) GetIntegrations(ctx context.Context, request *hookdeckgo.GetInt
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -87,7 +87,7 @@ func (c *client) GetIntegrations(ctx context.Context, request *hookdeckgo.GetInt
 		return apiError
 	}
 
-	var response *hookdeckgo.IntegrationPaginatedResult
+	var response *hookdeckgosdk.IntegrationPaginatedResult
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -104,7 +104,7 @@ func (c *client) GetIntegrations(ctx context.Context, request *hookdeckgo.GetInt
 	return response, nil
 }
 
-func (c *client) CreateIntegration(ctx context.Context, request *hookdeckgo.CreateIntegrationRequest) (*hookdeckgo.Integration, error) {
+func (c *client) CreateIntegration(ctx context.Context, request *hookdeckgosdk.CreateIntegrationRequest) (*hookdeckgosdk.Integration, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -120,14 +120,14 @@ func (c *client) CreateIntegration(ctx context.Context, request *hookdeckgo.Crea
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -137,7 +137,7 @@ func (c *client) CreateIntegration(ctx context.Context, request *hookdeckgo.Crea
 		return apiError
 	}
 
-	var response *hookdeckgo.Integration
+	var response *hookdeckgosdk.Integration
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -154,7 +154,7 @@ func (c *client) CreateIntegration(ctx context.Context, request *hookdeckgo.Crea
 	return response, nil
 }
 
-func (c *client) GetIntegration(ctx context.Context, id string) (*hookdeckgo.Integration, error) {
+func (c *client) GetIntegration(ctx context.Context, id string) (*hookdeckgosdk.Integration, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -170,7 +170,7 @@ func (c *client) GetIntegration(ctx context.Context, id string) (*hookdeckgo.Int
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -180,7 +180,7 @@ func (c *client) GetIntegration(ctx context.Context, id string) (*hookdeckgo.Int
 		return apiError
 	}
 
-	var response *hookdeckgo.Integration
+	var response *hookdeckgosdk.Integration
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -197,7 +197,7 @@ func (c *client) GetIntegration(ctx context.Context, id string) (*hookdeckgo.Int
 	return response, nil
 }
 
-func (c *client) UpdateIntegration(ctx context.Context, id string, request *hookdeckgo.UpdateIntegrationRequest) (*hookdeckgo.Integration, error) {
+func (c *client) UpdateIntegration(ctx context.Context, id string, request *hookdeckgosdk.UpdateIntegrationRequest) (*hookdeckgosdk.Integration, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -213,21 +213,21 @@ func (c *client) UpdateIntegration(ctx context.Context, id string, request *hook
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 422:
-			value := new(hookdeckgo.UnprocessableEntityError)
+			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -237,7 +237,7 @@ func (c *client) UpdateIntegration(ctx context.Context, id string, request *hook
 		return apiError
 	}
 
-	var response *hookdeckgo.Integration
+	var response *hookdeckgosdk.Integration
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -254,7 +254,7 @@ func (c *client) UpdateIntegration(ctx context.Context, id string, request *hook
 	return response, nil
 }
 
-func (c *client) DeleteIntegration(ctx context.Context, id string) (*hookdeckgo.DeletedIntegration, error) {
+func (c *client) DeleteIntegration(ctx context.Context, id string) (*hookdeckgosdk.DeletedIntegration, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -270,7 +270,7 @@ func (c *client) DeleteIntegration(ctx context.Context, id string) (*hookdeckgo.
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -280,7 +280,7 @@ func (c *client) DeleteIntegration(ctx context.Context, id string) (*hookdeckgo.
 		return apiError
 	}
 
-	var response *hookdeckgo.DeletedIntegration
+	var response *hookdeckgosdk.DeletedIntegration
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -297,7 +297,7 @@ func (c *client) DeleteIntegration(ctx context.Context, id string) (*hookdeckgo.
 	return response, nil
 }
 
-func (c *client) AttachIntegrationToSource(ctx context.Context, id string, sourceId string) (*hookdeckgo.AttachedIntegrationToSource, error) {
+func (c *client) AttachIntegrationToSource(ctx context.Context, id string, sourceId string) (*hookdeckgosdk.AttachedIntegrationToSource, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -313,14 +313,14 @@ func (c *client) AttachIntegrationToSource(ctx context.Context, id string, sourc
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -330,7 +330,7 @@ func (c *client) AttachIntegrationToSource(ctx context.Context, id string, sourc
 		return apiError
 	}
 
-	var response *hookdeckgo.AttachedIntegrationToSource
+	var response *hookdeckgosdk.AttachedIntegrationToSource
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,
@@ -347,7 +347,7 @@ func (c *client) AttachIntegrationToSource(ctx context.Context, id string, sourc
 	return response, nil
 }
 
-func (c *client) DetachIntegrationToSource(ctx context.Context, id string, sourceId string) (*hookdeckgo.DetachedIntegrationFromSource, error) {
+func (c *client) DetachIntegrationToSource(ctx context.Context, id string, sourceId string) (*hookdeckgosdk.DetachedIntegrationFromSource, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -363,14 +363,14 @@ func (c *client) DetachIntegrationToSource(ctx context.Context, id string, sourc
 		decoder := json.NewDecoder(bytes.NewReader(raw))
 		switch statusCode {
 		case 400:
-			value := new(hookdeckgo.BadRequestError)
+			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
 			}
 			return value
 		case 404:
-			value := new(hookdeckgo.NotFoundError)
+			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
 				return err
@@ -380,7 +380,7 @@ func (c *client) DetachIntegrationToSource(ctx context.Context, id string, sourc
 		return apiError
 	}
 
-	var response *hookdeckgo.DetachedIntegrationFromSource
+	var response *hookdeckgosdk.DetachedIntegrationFromSource
 	if err := core.DoRequest(
 		ctx,
 		c.httpClient,

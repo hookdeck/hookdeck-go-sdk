@@ -1,4 +1,4 @@
-module github.com/fern-hookdeck/hookdeck-go
+module github.com/hookdeck/hookdeck-go-sdk
 
 go 1.19
 
