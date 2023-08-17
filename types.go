@@ -5,7 +5,6 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	strconv "strconv"
 	time "time"
 )
 
@@ -150,314 +149,172 @@ type AttachedIntegrationToSource struct {
 }
 
 // Error code of the delivery attempt
-type AttemptErrorCodes uint
+type AttemptErrorCodes string
 
 const (
-	AttemptErrorCodesCancelled AttemptErrorCodes = iota + 1
-	AttemptErrorCodesTimeout
-	AttemptErrorCodesNotFound
-	AttemptErrorCodesConnectionRefused
-	AttemptErrorCodesConnectionReset
-	AttemptErrorCodesMissingUrl
-	AttemptErrorCodesCli
-	AttemptErrorCodesCliUnavailable
-	AttemptErrorCodesSelfSignedCert
-	AttemptErrorCodesErrTlsCertAltnameInvalid
-	AttemptErrorCodesSslErrorCaUnknown
-	AttemptErrorCodesTtlExpired
-	AttemptErrorCodesDataArchived
-	AttemptErrorCodesSslCertExpired
-	AttemptErrorCodesBulkRetryCancelled
-	AttemptErrorCodesDnsLookupFailed
-	AttemptErrorCodesHostUnreachable
-	AttemptErrorCodesProtocolError
-	AttemptErrorCodesSocketClosed
-	AttemptErrorCodesUnknown
+	AttemptErrorCodesCancelled                AttemptErrorCodes = "CANCELLED"
+	AttemptErrorCodesTimeout                  AttemptErrorCodes = "TIMEOUT"
+	AttemptErrorCodesNotFound                 AttemptErrorCodes = "NOT_FOUND"
+	AttemptErrorCodesConnectionRefused        AttemptErrorCodes = "CONNECTION_REFUSED"
+	AttemptErrorCodesConnectionReset          AttemptErrorCodes = "CONNECTION_RESET"
+	AttemptErrorCodesMissingUrl               AttemptErrorCodes = "MISSING_URL"
+	AttemptErrorCodesCli                      AttemptErrorCodes = "CLI"
+	AttemptErrorCodesCliUnavailable           AttemptErrorCodes = "CLI_UNAVAILABLE"
+	AttemptErrorCodesSelfSignedCert           AttemptErrorCodes = "SELF_SIGNED_CERT"
+	AttemptErrorCodesErrTlsCertAltnameInvalid AttemptErrorCodes = "ERR_TLS_CERT_ALTNAME_INVALID"
+	AttemptErrorCodesSslErrorCaUnknown        AttemptErrorCodes = "SSL_ERROR_CA_UNKNOWN"
+	AttemptErrorCodesTtlExpired               AttemptErrorCodes = "TTL_EXPIRED"
+	AttemptErrorCodesDataArchived             AttemptErrorCodes = "DATA_ARCHIVED"
+	AttemptErrorCodesSslCertExpired           AttemptErrorCodes = "SSL_CERT_EXPIRED"
+	AttemptErrorCodesBulkRetryCancelled       AttemptErrorCodes = "BULK_RETRY_CANCELLED"
+	AttemptErrorCodesDnsLookupFailed          AttemptErrorCodes = "DNS_LOOKUP_FAILED"
+	AttemptErrorCodesHostUnreachable          AttemptErrorCodes = "HOST_UNREACHABLE"
+	AttemptErrorCodesProtocolError            AttemptErrorCodes = "PROTOCOL_ERROR"
+	AttemptErrorCodesSocketClosed             AttemptErrorCodes = "SOCKET_CLOSED"
+	AttemptErrorCodesUnknown                  AttemptErrorCodes = "UNKNOWN"
 )
 
-func (a AttemptErrorCodes) String() string {
-	switch a {
-	default:
-		return strconv.Itoa(int(a))
-	case AttemptErrorCodesCancelled:
-		return "CANCELLED"
-	case AttemptErrorCodesTimeout:
-		return "TIMEOUT"
-	case AttemptErrorCodesNotFound:
-		return "NOT_FOUND"
-	case AttemptErrorCodesConnectionRefused:
-		return "CONNECTION_REFUSED"
-	case AttemptErrorCodesConnectionReset:
-		return "CONNECTION_RESET"
-	case AttemptErrorCodesMissingUrl:
-		return "MISSING_URL"
-	case AttemptErrorCodesCli:
-		return "CLI"
-	case AttemptErrorCodesCliUnavailable:
-		return "CLI_UNAVAILABLE"
-	case AttemptErrorCodesSelfSignedCert:
-		return "SELF_SIGNED_CERT"
-	case AttemptErrorCodesErrTlsCertAltnameInvalid:
-		return "ERR_TLS_CERT_ALTNAME_INVALID"
-	case AttemptErrorCodesSslErrorCaUnknown:
-		return "SSL_ERROR_CA_UNKNOWN"
-	case AttemptErrorCodesTtlExpired:
-		return "TTL_EXPIRED"
-	case AttemptErrorCodesDataArchived:
-		return "DATA_ARCHIVED"
-	case AttemptErrorCodesSslCertExpired:
-		return "SSL_CERT_EXPIRED"
-	case AttemptErrorCodesBulkRetryCancelled:
-		return "BULK_RETRY_CANCELLED"
-	case AttemptErrorCodesDnsLookupFailed:
-		return "DNS_LOOKUP_FAILED"
-	case AttemptErrorCodesHostUnreachable:
-		return "HOST_UNREACHABLE"
-	case AttemptErrorCodesProtocolError:
-		return "PROTOCOL_ERROR"
-	case AttemptErrorCodesSocketClosed:
-		return "SOCKET_CLOSED"
-	case AttemptErrorCodesUnknown:
-		return "UNKNOWN"
-	}
-}
-
-func (a AttemptErrorCodes) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", a.String())), nil
-}
-
-func (a *AttemptErrorCodes) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewAttemptErrorCodesFromString(s string) (AttemptErrorCodes, error) {
+	switch s {
 	case "CANCELLED":
-		value := AttemptErrorCodesCancelled
-		*a = value
+		return AttemptErrorCodesCancelled, nil
 	case "TIMEOUT":
-		value := AttemptErrorCodesTimeout
-		*a = value
+		return AttemptErrorCodesTimeout, nil
 	case "NOT_FOUND":
-		value := AttemptErrorCodesNotFound
-		*a = value
+		return AttemptErrorCodesNotFound, nil
 	case "CONNECTION_REFUSED":
-		value := AttemptErrorCodesConnectionRefused
-		*a = value
+		return AttemptErrorCodesConnectionRefused, nil
 	case "CONNECTION_RESET":
-		value := AttemptErrorCodesConnectionReset
-		*a = value
+		return AttemptErrorCodesConnectionReset, nil
 	case "MISSING_URL":
-		value := AttemptErrorCodesMissingUrl
-		*a = value
+		return AttemptErrorCodesMissingUrl, nil
 	case "CLI":
-		value := AttemptErrorCodesCli
-		*a = value
+		return AttemptErrorCodesCli, nil
 	case "CLI_UNAVAILABLE":
-		value := AttemptErrorCodesCliUnavailable
-		*a = value
+		return AttemptErrorCodesCliUnavailable, nil
 	case "SELF_SIGNED_CERT":
-		value := AttemptErrorCodesSelfSignedCert
-		*a = value
+		return AttemptErrorCodesSelfSignedCert, nil
 	case "ERR_TLS_CERT_ALTNAME_INVALID":
-		value := AttemptErrorCodesErrTlsCertAltnameInvalid
-		*a = value
+		return AttemptErrorCodesErrTlsCertAltnameInvalid, nil
 	case "SSL_ERROR_CA_UNKNOWN":
-		value := AttemptErrorCodesSslErrorCaUnknown
-		*a = value
+		return AttemptErrorCodesSslErrorCaUnknown, nil
 	case "TTL_EXPIRED":
-		value := AttemptErrorCodesTtlExpired
-		*a = value
+		return AttemptErrorCodesTtlExpired, nil
 	case "DATA_ARCHIVED":
-		value := AttemptErrorCodesDataArchived
-		*a = value
+		return AttemptErrorCodesDataArchived, nil
 	case "SSL_CERT_EXPIRED":
-		value := AttemptErrorCodesSslCertExpired
-		*a = value
+		return AttemptErrorCodesSslCertExpired, nil
 	case "BULK_RETRY_CANCELLED":
-		value := AttemptErrorCodesBulkRetryCancelled
-		*a = value
+		return AttemptErrorCodesBulkRetryCancelled, nil
 	case "DNS_LOOKUP_FAILED":
-		value := AttemptErrorCodesDnsLookupFailed
-		*a = value
+		return AttemptErrorCodesDnsLookupFailed, nil
 	case "HOST_UNREACHABLE":
-		value := AttemptErrorCodesHostUnreachable
-		*a = value
+		return AttemptErrorCodesHostUnreachable, nil
 	case "PROTOCOL_ERROR":
-		value := AttemptErrorCodesProtocolError
-		*a = value
+		return AttemptErrorCodesProtocolError, nil
 	case "SOCKET_CLOSED":
-		value := AttemptErrorCodesSocketClosed
-		*a = value
+		return AttemptErrorCodesSocketClosed, nil
 	case "UNKNOWN":
-		value := AttemptErrorCodesUnknown
-		*a = value
+		return AttemptErrorCodesUnknown, nil
 	}
-	return nil
+	var t AttemptErrorCodes
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type AttemptState uint
+func (a AttemptErrorCodes) Ptr() *AttemptErrorCodes {
+	return &a
+}
+
+type AttemptState string
 
 const (
-	AttemptStateDelivering AttemptState = iota + 1
-	AttemptStateQueued
-	AttemptStatePending
-	AttemptStateCompleted
-	AttemptStateHold
+	AttemptStateDelivering AttemptState = "DELIVERING"
+	AttemptStateQueued     AttemptState = "QUEUED"
+	AttemptStatePending    AttemptState = "PENDING"
+	AttemptStateCompleted  AttemptState = "COMPLETED"
+	AttemptStateHold       AttemptState = "HOLD"
 )
 
-func (a AttemptState) String() string {
-	switch a {
-	default:
-		return strconv.Itoa(int(a))
-	case AttemptStateDelivering:
-		return "DELIVERING"
-	case AttemptStateQueued:
-		return "QUEUED"
-	case AttemptStatePending:
-		return "PENDING"
-	case AttemptStateCompleted:
-		return "COMPLETED"
-	case AttemptStateHold:
-		return "HOLD"
-	}
-}
-
-func (a AttemptState) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", a.String())), nil
-}
-
-func (a *AttemptState) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewAttemptStateFromString(s string) (AttemptState, error) {
+	switch s {
 	case "DELIVERING":
-		value := AttemptStateDelivering
-		*a = value
+		return AttemptStateDelivering, nil
 	case "QUEUED":
-		value := AttemptStateQueued
-		*a = value
+		return AttemptStateQueued, nil
 	case "PENDING":
-		value := AttemptStatePending
-		*a = value
+		return AttemptStatePending, nil
 	case "COMPLETED":
-		value := AttemptStateCompleted
-		*a = value
+		return AttemptStateCompleted, nil
 	case "HOLD":
-		value := AttemptStateHold
-		*a = value
+		return AttemptStateHold, nil
 	}
-	return nil
+	var t AttemptState
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AttemptState) Ptr() *AttemptState {
+	return &a
 }
 
 // Attempt status
-type AttemptStatus uint
+type AttemptStatus string
 
 const (
-	AttemptStatusQueued AttemptStatus = iota + 1
-	AttemptStatusFailed
-	AttemptStatusSuccessful
-	AttemptStatusHold
+	AttemptStatusQueued     AttemptStatus = "QUEUED"
+	AttemptStatusFailed     AttemptStatus = "FAILED"
+	AttemptStatusSuccessful AttemptStatus = "SUCCESSFUL"
+	AttemptStatusHold       AttemptStatus = "HOLD"
 )
 
-func (a AttemptStatus) String() string {
-	switch a {
-	default:
-		return strconv.Itoa(int(a))
-	case AttemptStatusQueued:
-		return "QUEUED"
-	case AttemptStatusFailed:
-		return "FAILED"
-	case AttemptStatusSuccessful:
-		return "SUCCESSFUL"
-	case AttemptStatusHold:
-		return "HOLD"
-	}
-}
-
-func (a AttemptStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", a.String())), nil
-}
-
-func (a *AttemptStatus) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewAttemptStatusFromString(s string) (AttemptStatus, error) {
+	switch s {
 	case "QUEUED":
-		value := AttemptStatusQueued
-		*a = value
+		return AttemptStatusQueued, nil
 	case "FAILED":
-		value := AttemptStatusFailed
-		*a = value
+		return AttemptStatusFailed, nil
 	case "SUCCESSFUL":
-		value := AttemptStatusSuccessful
-		*a = value
+		return AttemptStatusSuccessful, nil
 	case "HOLD":
-		value := AttemptStatusHold
-		*a = value
+		return AttemptStatusHold, nil
 	}
-	return nil
+	var t AttemptStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AttemptStatus) Ptr() *AttemptStatus {
+	return &a
 }
 
 // How the attempt was triggered
-type AttemptTrigger uint
+type AttemptTrigger string
 
 const (
-	AttemptTriggerInitial AttemptTrigger = iota + 1
-	AttemptTriggerManual
-	AttemptTriggerBulkRetry
-	AttemptTriggerUnpause
-	AttemptTriggerAutomatic
+	AttemptTriggerInitial   AttemptTrigger = "INITIAL"
+	AttemptTriggerManual    AttemptTrigger = "MANUAL"
+	AttemptTriggerBulkRetry AttemptTrigger = "BULK_RETRY"
+	AttemptTriggerUnpause   AttemptTrigger = "UNPAUSE"
+	AttemptTriggerAutomatic AttemptTrigger = "AUTOMATIC"
 )
 
-func (a AttemptTrigger) String() string {
-	switch a {
-	default:
-		return strconv.Itoa(int(a))
-	case AttemptTriggerInitial:
-		return "INITIAL"
-	case AttemptTriggerManual:
-		return "MANUAL"
-	case AttemptTriggerBulkRetry:
-		return "BULK_RETRY"
-	case AttemptTriggerUnpause:
-		return "UNPAUSE"
-	case AttemptTriggerAutomatic:
-		return "AUTOMATIC"
-	}
-}
-
-func (a AttemptTrigger) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", a.String())), nil
-}
-
-func (a *AttemptTrigger) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewAttemptTriggerFromString(s string) (AttemptTrigger, error) {
+	switch s {
 	case "INITIAL":
-		value := AttemptTriggerInitial
-		*a = value
+		return AttemptTriggerInitial, nil
 	case "MANUAL":
-		value := AttemptTriggerManual
-		*a = value
+		return AttemptTriggerManual, nil
 	case "BULK_RETRY":
-		value := AttemptTriggerBulkRetry
-		*a = value
+		return AttemptTriggerBulkRetry, nil
 	case "UNPAUSE":
-		value := AttemptTriggerUnpause
-		*a = value
+		return AttemptTriggerUnpause, nil
 	case "AUTOMATIC":
-		value := AttemptTriggerAutomatic
-		*a = value
+		return AttemptTriggerAutomatic, nil
 	}
-	return nil
+	var t AttemptTrigger
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AttemptTrigger) Ptr() *AttemptTrigger {
+	return &a
 }
 
 type AwsSns struct {
@@ -862,60 +719,35 @@ type ConsoleLine struct {
 	Message string          `json:"message"`
 }
 
-type ConsoleLineType uint
+type ConsoleLineType string
 
 const (
-	ConsoleLineTypeError ConsoleLineType = iota + 1
-	ConsoleLineTypeLog
-	ConsoleLineTypeWarn
-	ConsoleLineTypeInfo
-	ConsoleLineTypeDebug
+	ConsoleLineTypeError ConsoleLineType = "error"
+	ConsoleLineTypeLog   ConsoleLineType = "log"
+	ConsoleLineTypeWarn  ConsoleLineType = "warn"
+	ConsoleLineTypeInfo  ConsoleLineType = "info"
+	ConsoleLineTypeDebug ConsoleLineType = "debug"
 )
 
-func (c ConsoleLineType) String() string {
-	switch c {
-	default:
-		return strconv.Itoa(int(c))
-	case ConsoleLineTypeError:
-		return "error"
-	case ConsoleLineTypeLog:
-		return "log"
-	case ConsoleLineTypeWarn:
-		return "warn"
-	case ConsoleLineTypeInfo:
-		return "info"
-	case ConsoleLineTypeDebug:
-		return "debug"
-	}
-}
-
-func (c ConsoleLineType) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", c.String())), nil
-}
-
-func (c *ConsoleLineType) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewConsoleLineTypeFromString(s string) (ConsoleLineType, error) {
+	switch s {
 	case "error":
-		value := ConsoleLineTypeError
-		*c = value
+		return ConsoleLineTypeError, nil
 	case "log":
-		value := ConsoleLineTypeLog
-		*c = value
+		return ConsoleLineTypeLog, nil
 	case "warn":
-		value := ConsoleLineTypeWarn
-		*c = value
+		return ConsoleLineTypeWarn, nil
 	case "info":
-		value := ConsoleLineTypeInfo
-		*c = value
+		return ConsoleLineTypeInfo, nil
 	case "debug":
-		value := ConsoleLineTypeDebug
-		*c = value
+		return ConsoleLineTypeDebug, nil
 	}
-	return nil
+	var t ConsoleLineType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConsoleLineType) Ptr() *ConsoleLineType {
+	return &c
 }
 
 // Destination input object
@@ -938,48 +770,29 @@ type CreateConnectionRequestDestination struct {
 }
 
 // Period to rate limit attempts
-type CreateConnectionRequestDestinationRateLimitPeriod uint
+type CreateConnectionRequestDestinationRateLimitPeriod string
 
 const (
-	CreateConnectionRequestDestinationRateLimitPeriodSecond CreateConnectionRequestDestinationRateLimitPeriod = iota + 1
-	CreateConnectionRequestDestinationRateLimitPeriodMinute
-	CreateConnectionRequestDestinationRateLimitPeriodHour
+	CreateConnectionRequestDestinationRateLimitPeriodSecond CreateConnectionRequestDestinationRateLimitPeriod = "second"
+	CreateConnectionRequestDestinationRateLimitPeriodMinute CreateConnectionRequestDestinationRateLimitPeriod = "minute"
+	CreateConnectionRequestDestinationRateLimitPeriodHour   CreateConnectionRequestDestinationRateLimitPeriod = "hour"
 )
 
-func (c CreateConnectionRequestDestinationRateLimitPeriod) String() string {
-	switch c {
-	default:
-		return strconv.Itoa(int(c))
-	case CreateConnectionRequestDestinationRateLimitPeriodSecond:
-		return "second"
-	case CreateConnectionRequestDestinationRateLimitPeriodMinute:
-		return "minute"
-	case CreateConnectionRequestDestinationRateLimitPeriodHour:
-		return "hour"
-	}
-}
-
-func (c CreateConnectionRequestDestinationRateLimitPeriod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", c.String())), nil
-}
-
-func (c *CreateConnectionRequestDestinationRateLimitPeriod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewCreateConnectionRequestDestinationRateLimitPeriodFromString(s string) (CreateConnectionRequestDestinationRateLimitPeriod, error) {
+	switch s {
 	case "second":
-		value := CreateConnectionRequestDestinationRateLimitPeriodSecond
-		*c = value
+		return CreateConnectionRequestDestinationRateLimitPeriodSecond, nil
 	case "minute":
-		value := CreateConnectionRequestDestinationRateLimitPeriodMinute
-		*c = value
+		return CreateConnectionRequestDestinationRateLimitPeriodMinute, nil
 	case "hour":
-		value := CreateConnectionRequestDestinationRateLimitPeriodHour
-		*c = value
+		return CreateConnectionRequestDestinationRateLimitPeriodHour, nil
 	}
-	return nil
+	var t CreateConnectionRequestDestinationRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CreateConnectionRequestDestinationRateLimitPeriod) Ptr() *CreateConnectionRequestDestinationRateLimitPeriod {
+	return &c
 }
 
 // Source input object
@@ -994,48 +807,29 @@ type CreateConnectionRequestSource struct {
 }
 
 // Period to rate limit attempts
-type CreateDestinationRequestRateLimitPeriod uint
+type CreateDestinationRequestRateLimitPeriod string
 
 const (
-	CreateDestinationRequestRateLimitPeriodSecond CreateDestinationRequestRateLimitPeriod = iota + 1
-	CreateDestinationRequestRateLimitPeriodMinute
-	CreateDestinationRequestRateLimitPeriodHour
+	CreateDestinationRequestRateLimitPeriodSecond CreateDestinationRequestRateLimitPeriod = "second"
+	CreateDestinationRequestRateLimitPeriodMinute CreateDestinationRequestRateLimitPeriod = "minute"
+	CreateDestinationRequestRateLimitPeriodHour   CreateDestinationRequestRateLimitPeriod = "hour"
 )
 
-func (c CreateDestinationRequestRateLimitPeriod) String() string {
-	switch c {
-	default:
-		return strconv.Itoa(int(c))
-	case CreateDestinationRequestRateLimitPeriodSecond:
-		return "second"
-	case CreateDestinationRequestRateLimitPeriodMinute:
-		return "minute"
-	case CreateDestinationRequestRateLimitPeriodHour:
-		return "hour"
-	}
-}
-
-func (c CreateDestinationRequestRateLimitPeriod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", c.String())), nil
-}
-
-func (c *CreateDestinationRequestRateLimitPeriod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewCreateDestinationRequestRateLimitPeriodFromString(s string) (CreateDestinationRequestRateLimitPeriod, error) {
+	switch s {
 	case "second":
-		value := CreateDestinationRequestRateLimitPeriodSecond
-		*c = value
+		return CreateDestinationRequestRateLimitPeriodSecond, nil
 	case "minute":
-		value := CreateDestinationRequestRateLimitPeriodMinute
-		*c = value
+		return CreateDestinationRequestRateLimitPeriodMinute, nil
 	case "hour":
-		value := CreateDestinationRequestRateLimitPeriodHour
-		*c = value
+		return CreateDestinationRequestRateLimitPeriodHour, nil
 	}
-	return nil
+	var t CreateDestinationRequestRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CreateDestinationRequestRateLimitPeriod) Ptr() *CreateDestinationRequestRateLimitPeriod {
+	return &c
 }
 
 // Filter properties for the events to be included in the bulk retry
@@ -3296,42 +3090,26 @@ func (c *CreateRequestBulkRetryRequestQuerySourceId) Accept(visitor CreateReques
 }
 
 // Filter by status
-type CreateRequestBulkRetryRequestQueryStatus uint
+type CreateRequestBulkRetryRequestQueryStatus string
 
 const (
-	CreateRequestBulkRetryRequestQueryStatusAccepted CreateRequestBulkRetryRequestQueryStatus = iota + 1
-	CreateRequestBulkRetryRequestQueryStatusRejected
+	CreateRequestBulkRetryRequestQueryStatusAccepted CreateRequestBulkRetryRequestQueryStatus = "accepted"
+	CreateRequestBulkRetryRequestQueryStatusRejected CreateRequestBulkRetryRequestQueryStatus = "rejected"
 )
 
-func (c CreateRequestBulkRetryRequestQueryStatus) String() string {
-	switch c {
-	default:
-		return strconv.Itoa(int(c))
-	case CreateRequestBulkRetryRequestQueryStatusAccepted:
-		return "accepted"
-	case CreateRequestBulkRetryRequestQueryStatusRejected:
-		return "rejected"
-	}
-}
-
-func (c CreateRequestBulkRetryRequestQueryStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", c.String())), nil
-}
-
-func (c *CreateRequestBulkRetryRequestQueryStatus) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewCreateRequestBulkRetryRequestQueryStatusFromString(s string) (CreateRequestBulkRetryRequestQueryStatus, error) {
+	switch s {
 	case "accepted":
-		value := CreateRequestBulkRetryRequestQueryStatusAccepted
-		*c = value
+		return CreateRequestBulkRetryRequestQueryStatusAccepted, nil
 	case "rejected":
-		value := CreateRequestBulkRetryRequestQueryStatusRejected
-		*c = value
+		return CreateRequestBulkRetryRequestQueryStatusRejected, nil
 	}
-	return nil
+	var t CreateRequestBulkRetryRequestQueryStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c CreateRequestBulkRetryRequestQueryStatus) Ptr() *CreateRequestBulkRetryRequestQueryStatus {
+	return &c
 }
 
 type CreateTransformationRequestEnvValue struct {
@@ -3659,42 +3437,26 @@ type DestinationAuthMethodApiKeyConfig struct {
 }
 
 // Whether the API key should be sent as a header or a query parameter
-type DestinationAuthMethodApiKeyConfigTo uint
+type DestinationAuthMethodApiKeyConfigTo string
 
 const (
-	DestinationAuthMethodApiKeyConfigToHeader DestinationAuthMethodApiKeyConfigTo = iota + 1
-	DestinationAuthMethodApiKeyConfigToQuery
+	DestinationAuthMethodApiKeyConfigToHeader DestinationAuthMethodApiKeyConfigTo = "header"
+	DestinationAuthMethodApiKeyConfigToQuery  DestinationAuthMethodApiKeyConfigTo = "query"
 )
 
-func (d DestinationAuthMethodApiKeyConfigTo) String() string {
-	switch d {
-	default:
-		return strconv.Itoa(int(d))
-	case DestinationAuthMethodApiKeyConfigToHeader:
-		return "header"
-	case DestinationAuthMethodApiKeyConfigToQuery:
-		return "query"
-	}
-}
-
-func (d DestinationAuthMethodApiKeyConfigTo) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", d.String())), nil
-}
-
-func (d *DestinationAuthMethodApiKeyConfigTo) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewDestinationAuthMethodApiKeyConfigToFromString(s string) (DestinationAuthMethodApiKeyConfigTo, error) {
+	switch s {
 	case "header":
-		value := DestinationAuthMethodApiKeyConfigToHeader
-		*d = value
+		return DestinationAuthMethodApiKeyConfigToHeader, nil
 	case "query":
-		value := DestinationAuthMethodApiKeyConfigToQuery
-		*d = value
+		return DestinationAuthMethodApiKeyConfigToQuery, nil
 	}
-	return nil
+	var t DestinationAuthMethodApiKeyConfigTo
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationAuthMethodApiKeyConfigTo) Ptr() *DestinationAuthMethodApiKeyConfigTo {
+	return &d
 }
 
 // Basic auth config for the destination's auth method
@@ -3830,60 +3592,35 @@ type DestinationAuthMethodSignatureConfig struct {
 }
 
 // HTTP method used on requests sent to the destination, overrides the method used on requests sent to the source.
-type DestinationHttpMethod uint
+type DestinationHttpMethod string
 
 const (
-	DestinationHttpMethodGet DestinationHttpMethod = iota + 1
-	DestinationHttpMethodPost
-	DestinationHttpMethodPut
-	DestinationHttpMethodPatch
-	DestinationHttpMethodDelete
+	DestinationHttpMethodGet    DestinationHttpMethod = "GET"
+	DestinationHttpMethodPost   DestinationHttpMethod = "POST"
+	DestinationHttpMethodPut    DestinationHttpMethod = "PUT"
+	DestinationHttpMethodPatch  DestinationHttpMethod = "PATCH"
+	DestinationHttpMethodDelete DestinationHttpMethod = "DELETE"
 )
 
-func (d DestinationHttpMethod) String() string {
-	switch d {
-	default:
-		return strconv.Itoa(int(d))
-	case DestinationHttpMethodGet:
-		return "GET"
-	case DestinationHttpMethodPost:
-		return "POST"
-	case DestinationHttpMethodPut:
-		return "PUT"
-	case DestinationHttpMethodPatch:
-		return "PATCH"
-	case DestinationHttpMethodDelete:
-		return "DELETE"
-	}
-}
-
-func (d DestinationHttpMethod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", d.String())), nil
-}
-
-func (d *DestinationHttpMethod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewDestinationHttpMethodFromString(s string) (DestinationHttpMethod, error) {
+	switch s {
 	case "GET":
-		value := DestinationHttpMethodGet
-		*d = value
+		return DestinationHttpMethodGet, nil
 	case "POST":
-		value := DestinationHttpMethodPost
-		*d = value
+		return DestinationHttpMethodPost, nil
 	case "PUT":
-		value := DestinationHttpMethodPut
-		*d = value
+		return DestinationHttpMethodPut, nil
 	case "PATCH":
-		value := DestinationHttpMethodPatch
-		*d = value
+		return DestinationHttpMethodPatch, nil
 	case "DELETE":
-		value := DestinationHttpMethodDelete
-		*d = value
+		return DestinationHttpMethodDelete, nil
 	}
-	return nil
+	var t DestinationHttpMethod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationHttpMethod) Ptr() *DestinationHttpMethod {
+	return &d
 }
 
 type DestinationPaginatedResult struct {
@@ -3893,48 +3630,29 @@ type DestinationPaginatedResult struct {
 }
 
 // Period to rate limit attempts
-type DestinationRateLimitPeriod uint
+type DestinationRateLimitPeriod string
 
 const (
-	DestinationRateLimitPeriodSecond DestinationRateLimitPeriod = iota + 1
-	DestinationRateLimitPeriodMinute
-	DestinationRateLimitPeriodHour
+	DestinationRateLimitPeriodSecond DestinationRateLimitPeriod = "second"
+	DestinationRateLimitPeriodMinute DestinationRateLimitPeriod = "minute"
+	DestinationRateLimitPeriodHour   DestinationRateLimitPeriod = "hour"
 )
 
-func (d DestinationRateLimitPeriod) String() string {
-	switch d {
-	default:
-		return strconv.Itoa(int(d))
-	case DestinationRateLimitPeriodSecond:
-		return "second"
-	case DestinationRateLimitPeriodMinute:
-		return "minute"
-	case DestinationRateLimitPeriodHour:
-		return "hour"
-	}
-}
-
-func (d DestinationRateLimitPeriod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", d.String())), nil
-}
-
-func (d *DestinationRateLimitPeriod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewDestinationRateLimitPeriodFromString(s string) (DestinationRateLimitPeriod, error) {
+	switch s {
 	case "second":
-		value := DestinationRateLimitPeriodSecond
-		*d = value
+		return DestinationRateLimitPeriodSecond, nil
 	case "minute":
-		value := DestinationRateLimitPeriodMinute
-		*d = value
+		return DestinationRateLimitPeriodMinute, nil
 	case "hour":
-		value := DestinationRateLimitPeriodHour
-		*d = value
+		return DestinationRateLimitPeriodHour, nil
 	}
-	return nil
+	var t DestinationRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationRateLimitPeriod) Ptr() *DestinationRateLimitPeriod {
+	return &d
 }
 
 type DetachedIntegrationFromSource struct {
@@ -4083,60 +3801,35 @@ type EventAttemptBodyZero struct {
 }
 
 // HTTP method used to deliver the attempt
-type EventAttemptHttpMethod uint
+type EventAttemptHttpMethod string
 
 const (
-	EventAttemptHttpMethodGet EventAttemptHttpMethod = iota + 1
-	EventAttemptHttpMethodPost
-	EventAttemptHttpMethodPut
-	EventAttemptHttpMethodPatch
-	EventAttemptHttpMethodDelete
+	EventAttemptHttpMethodGet    EventAttemptHttpMethod = "GET"
+	EventAttemptHttpMethodPost   EventAttemptHttpMethod = "POST"
+	EventAttemptHttpMethodPut    EventAttemptHttpMethod = "PUT"
+	EventAttemptHttpMethodPatch  EventAttemptHttpMethod = "PATCH"
+	EventAttemptHttpMethodDelete EventAttemptHttpMethod = "DELETE"
 )
 
-func (e EventAttemptHttpMethod) String() string {
-	switch e {
-	default:
-		return strconv.Itoa(int(e))
-	case EventAttemptHttpMethodGet:
-		return "GET"
-	case EventAttemptHttpMethodPost:
-		return "POST"
-	case EventAttemptHttpMethodPut:
-		return "PUT"
-	case EventAttemptHttpMethodPatch:
-		return "PATCH"
-	case EventAttemptHttpMethodDelete:
-		return "DELETE"
-	}
-}
-
-func (e EventAttemptHttpMethod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", e.String())), nil
-}
-
-func (e *EventAttemptHttpMethod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewEventAttemptHttpMethodFromString(s string) (EventAttemptHttpMethod, error) {
+	switch s {
 	case "GET":
-		value := EventAttemptHttpMethodGet
-		*e = value
+		return EventAttemptHttpMethodGet, nil
 	case "POST":
-		value := EventAttemptHttpMethodPost
-		*e = value
+		return EventAttemptHttpMethodPost, nil
 	case "PUT":
-		value := EventAttemptHttpMethodPut
-		*e = value
+		return EventAttemptHttpMethodPut, nil
 	case "PATCH":
-		value := EventAttemptHttpMethodPatch
-		*e = value
+		return EventAttemptHttpMethodPatch, nil
 	case "DELETE":
-		value := EventAttemptHttpMethodDelete
-		*e = value
+		return EventAttemptHttpMethodDelete, nil
 	}
-	return nil
+	var t EventAttemptHttpMethod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventAttemptHttpMethod) Ptr() *EventAttemptHttpMethod {
+	return &e
 }
 
 type EventAttemptPaginatedResult struct {
@@ -4151,60 +3844,35 @@ type EventPaginatedResult struct {
 	Models     []*Event        `json:"models,omitempty"`
 }
 
-type EventStatus uint
+type EventStatus string
 
 const (
-	EventStatusScheduled EventStatus = iota + 1
-	EventStatusQueued
-	EventStatusHold
-	EventStatusSuccessful
-	EventStatusFailed
+	EventStatusScheduled  EventStatus = "SCHEDULED"
+	EventStatusQueued     EventStatus = "QUEUED"
+	EventStatusHold       EventStatus = "HOLD"
+	EventStatusSuccessful EventStatus = "SUCCESSFUL"
+	EventStatusFailed     EventStatus = "FAILED"
 )
 
-func (e EventStatus) String() string {
-	switch e {
-	default:
-		return strconv.Itoa(int(e))
-	case EventStatusScheduled:
-		return "SCHEDULED"
-	case EventStatusQueued:
-		return "QUEUED"
-	case EventStatusHold:
-		return "HOLD"
-	case EventStatusSuccessful:
-		return "SUCCESSFUL"
-	case EventStatusFailed:
-		return "FAILED"
-	}
-}
-
-func (e EventStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", e.String())), nil
-}
-
-func (e *EventStatus) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewEventStatusFromString(s string) (EventStatus, error) {
+	switch s {
 	case "SCHEDULED":
-		value := EventStatusScheduled
-		*e = value
+		return EventStatusScheduled, nil
 	case "QUEUED":
-		value := EventStatusQueued
-		*e = value
+		return EventStatusQueued, nil
 	case "HOLD":
-		value := EventStatusHold
-		*e = value
+		return EventStatusHold, nil
 	case "SUCCESSFUL":
-		value := EventStatusSuccessful
-		*e = value
+		return EventStatusSuccessful, nil
 	case "FAILED":
-		value := EventStatusFailed
-		*e = value
+		return EventStatusFailed, nil
 	}
-	return nil
+	var t EventStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventStatus) Ptr() *EventStatus {
+	return &e
 }
 
 type FilterRule struct {
@@ -4242,54 +3910,32 @@ func (f *FilterRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(marshaler)
 }
 
-type FilteredMeta uint
+type FilteredMeta string
 
 const (
-	FilteredMetaBody FilteredMeta = iota + 1
-	FilteredMetaHeaders
-	FilteredMetaPath
-	FilteredMetaQuery
+	FilteredMetaBody    FilteredMeta = "body"
+	FilteredMetaHeaders FilteredMeta = "headers"
+	FilteredMetaPath    FilteredMeta = "path"
+	FilteredMetaQuery   FilteredMeta = "query"
 )
 
-func (f FilteredMeta) String() string {
-	switch f {
-	default:
-		return strconv.Itoa(int(f))
-	case FilteredMetaBody:
-		return "body"
-	case FilteredMetaHeaders:
-		return "headers"
-	case FilteredMetaPath:
-		return "path"
-	case FilteredMetaQuery:
-		return "query"
-	}
-}
-
-func (f FilteredMeta) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", f.String())), nil
-}
-
-func (f *FilteredMeta) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewFilteredMetaFromString(s string) (FilteredMeta, error) {
+	switch s {
 	case "body":
-		value := FilteredMetaBody
-		*f = value
+		return FilteredMetaBody, nil
 	case "headers":
-		value := FilteredMetaHeaders
-		*f = value
+		return FilteredMetaHeaders, nil
 	case "path":
-		value := FilteredMetaPath
-		*f = value
+		return FilteredMetaPath, nil
 	case "query":
-		value := FilteredMetaQuery
-		*f = value
+		return FilteredMetaQuery, nil
 	}
-	return nil
+	var t FilteredMeta
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (f FilteredMeta) Ptr() *FilteredMeta {
+	return &f
 }
 
 type GenerateEventBulkRetryPlanResponse struct {
@@ -4319,1269 +3965,732 @@ type GenerateRequestBulkRetryPlanResponse struct {
 	Progress *float64 `json:"progress,omitempty"`
 }
 
-type GetAttemptsRequestDir uint
+type GetAttemptsRequestDir string
 
 const (
-	GetAttemptsRequestDirAsc GetAttemptsRequestDir = iota + 1
-	GetAttemptsRequestDirDesc
+	GetAttemptsRequestDirAsc  GetAttemptsRequestDir = "asc"
+	GetAttemptsRequestDirDesc GetAttemptsRequestDir = "desc"
 )
 
-func (g GetAttemptsRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetAttemptsRequestDirAsc:
-		return "asc"
-	case GetAttemptsRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetAttemptsRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetAttemptsRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetAttemptsRequestDirFromString(s string) (GetAttemptsRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetAttemptsRequestDirAsc
-		*g = value
+		return GetAttemptsRequestDirAsc, nil
 	case "desc":
-		value := GetAttemptsRequestDirDesc
-		*g = value
+		return GetAttemptsRequestDirDesc, nil
 	}
-	return nil
+	var t GetAttemptsRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetBookmarksRequestDir uint
+func (g GetAttemptsRequestDir) Ptr() *GetAttemptsRequestDir {
+	return &g
+}
+
+type GetBookmarksRequestDir string
 
 const (
-	GetBookmarksRequestDirAsc GetBookmarksRequestDir = iota + 1
-	GetBookmarksRequestDirDesc
+	GetBookmarksRequestDirAsc  GetBookmarksRequestDir = "asc"
+	GetBookmarksRequestDirDesc GetBookmarksRequestDir = "desc"
 )
 
-func (g GetBookmarksRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetBookmarksRequestDirAsc:
-		return "asc"
-	case GetBookmarksRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetBookmarksRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetBookmarksRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetBookmarksRequestDirFromString(s string) (GetBookmarksRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetBookmarksRequestDirAsc
-		*g = value
+		return GetBookmarksRequestDirAsc, nil
 	case "desc":
-		value := GetBookmarksRequestDirDesc
-		*g = value
+		return GetBookmarksRequestDirDesc, nil
 	}
-	return nil
+	var t GetBookmarksRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetConnectionsRequestDir uint
+func (g GetBookmarksRequestDir) Ptr() *GetBookmarksRequestDir {
+	return &g
+}
+
+type GetConnectionsRequestDir string
 
 const (
-	GetConnectionsRequestDirAsc GetConnectionsRequestDir = iota + 1
-	GetConnectionsRequestDirDesc
+	GetConnectionsRequestDirAsc  GetConnectionsRequestDir = "asc"
+	GetConnectionsRequestDirDesc GetConnectionsRequestDir = "desc"
 )
 
-func (g GetConnectionsRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetConnectionsRequestDirAsc:
-		return "asc"
-	case GetConnectionsRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetConnectionsRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetConnectionsRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetConnectionsRequestDirFromString(s string) (GetConnectionsRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetConnectionsRequestDirAsc
-		*g = value
+		return GetConnectionsRequestDirAsc, nil
 	case "desc":
-		value := GetConnectionsRequestDirDesc
-		*g = value
+		return GetConnectionsRequestDirDesc, nil
 	}
-	return nil
+	var t GetConnectionsRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetConnectionsRequestOrderBy uint
+func (g GetConnectionsRequestDir) Ptr() *GetConnectionsRequestDir {
+	return &g
+}
+
+type GetConnectionsRequestOrderBy string
 
 const (
-	GetConnectionsRequestOrderByCreatedAt GetConnectionsRequestOrderBy = iota + 1
-	GetConnectionsRequestOrderByUpdatedAt
-	GetConnectionsRequestOrderBySourcesUpdatedAt
-	GetConnectionsRequestOrderBySourcesCreatedAt
-	GetConnectionsRequestOrderByDestinationsUpdatedAt
-	GetConnectionsRequestOrderByDestinationsCreatedAt
+	GetConnectionsRequestOrderByCreatedAt             GetConnectionsRequestOrderBy = "created_at"
+	GetConnectionsRequestOrderByUpdatedAt             GetConnectionsRequestOrderBy = "updated_at"
+	GetConnectionsRequestOrderBySourcesUpdatedAt      GetConnectionsRequestOrderBy = "sources.updated_at"
+	GetConnectionsRequestOrderBySourcesCreatedAt      GetConnectionsRequestOrderBy = "sources.created_at"
+	GetConnectionsRequestOrderByDestinationsUpdatedAt GetConnectionsRequestOrderBy = "destinations.updated_at"
+	GetConnectionsRequestOrderByDestinationsCreatedAt GetConnectionsRequestOrderBy = "destinations.created_at"
 )
 
-func (g GetConnectionsRequestOrderBy) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetConnectionsRequestOrderByCreatedAt:
-		return "created_at"
-	case GetConnectionsRequestOrderByUpdatedAt:
-		return "updated_at"
-	case GetConnectionsRequestOrderBySourcesUpdatedAt:
-		return "sources.updated_at"
-	case GetConnectionsRequestOrderBySourcesCreatedAt:
-		return "sources.created_at"
-	case GetConnectionsRequestOrderByDestinationsUpdatedAt:
-		return "destinations.updated_at"
-	case GetConnectionsRequestOrderByDestinationsCreatedAt:
-		return "destinations.created_at"
-	}
-}
-
-func (g GetConnectionsRequestOrderBy) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetConnectionsRequestOrderBy) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetConnectionsRequestOrderByFromString(s string) (GetConnectionsRequestOrderBy, error) {
+	switch s {
 	case "created_at":
-		value := GetConnectionsRequestOrderByCreatedAt
-		*g = value
+		return GetConnectionsRequestOrderByCreatedAt, nil
 	case "updated_at":
-		value := GetConnectionsRequestOrderByUpdatedAt
-		*g = value
+		return GetConnectionsRequestOrderByUpdatedAt, nil
 	case "sources.updated_at":
-		value := GetConnectionsRequestOrderBySourcesUpdatedAt
-		*g = value
+		return GetConnectionsRequestOrderBySourcesUpdatedAt, nil
 	case "sources.created_at":
-		value := GetConnectionsRequestOrderBySourcesCreatedAt
-		*g = value
+		return GetConnectionsRequestOrderBySourcesCreatedAt, nil
 	case "destinations.updated_at":
-		value := GetConnectionsRequestOrderByDestinationsUpdatedAt
-		*g = value
+		return GetConnectionsRequestOrderByDestinationsUpdatedAt, nil
 	case "destinations.created_at":
-		value := GetConnectionsRequestOrderByDestinationsCreatedAt
-		*g = value
+		return GetConnectionsRequestOrderByDestinationsCreatedAt, nil
 	}
-	return nil
+	var t GetConnectionsRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetDestinationsRequestDir uint
+func (g GetConnectionsRequestOrderBy) Ptr() *GetConnectionsRequestOrderBy {
+	return &g
+}
+
+type GetDestinationsRequestDir string
 
 const (
-	GetDestinationsRequestDirAsc GetDestinationsRequestDir = iota + 1
-	GetDestinationsRequestDirDesc
+	GetDestinationsRequestDirAsc  GetDestinationsRequestDir = "asc"
+	GetDestinationsRequestDirDesc GetDestinationsRequestDir = "desc"
 )
 
-func (g GetDestinationsRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetDestinationsRequestDirAsc:
-		return "asc"
-	case GetDestinationsRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetDestinationsRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetDestinationsRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetDestinationsRequestDirFromString(s string) (GetDestinationsRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetDestinationsRequestDirAsc
-		*g = value
+		return GetDestinationsRequestDirAsc, nil
 	case "desc":
-		value := GetDestinationsRequestDirDesc
-		*g = value
+		return GetDestinationsRequestDirDesc, nil
 	}
-	return nil
+	var t GetDestinationsRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetEventBulkRetriesRequestDir uint
+func (g GetDestinationsRequestDir) Ptr() *GetDestinationsRequestDir {
+	return &g
+}
+
+type GetEventBulkRetriesRequestDir string
 
 const (
-	GetEventBulkRetriesRequestDirAsc GetEventBulkRetriesRequestDir = iota + 1
-	GetEventBulkRetriesRequestDirDesc
+	GetEventBulkRetriesRequestDirAsc  GetEventBulkRetriesRequestDir = "asc"
+	GetEventBulkRetriesRequestDirDesc GetEventBulkRetriesRequestDir = "desc"
 )
 
-func (g GetEventBulkRetriesRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetEventBulkRetriesRequestDirAsc:
-		return "asc"
-	case GetEventBulkRetriesRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetEventBulkRetriesRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetEventBulkRetriesRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetEventBulkRetriesRequestDirFromString(s string) (GetEventBulkRetriesRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetEventBulkRetriesRequestDirAsc
-		*g = value
+		return GetEventBulkRetriesRequestDirAsc, nil
 	case "desc":
-		value := GetEventBulkRetriesRequestDirDesc
-		*g = value
+		return GetEventBulkRetriesRequestDirDesc, nil
 	}
-	return nil
+	var t GetEventBulkRetriesRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetEventBulkRetriesRequestDir) Ptr() *GetEventBulkRetriesRequestDir {
+	return &g
 }
 
 // Sort direction
-type GetEventsRequestDir uint
+type GetEventsRequestDir string
 
 const (
-	GetEventsRequestDirAsc GetEventsRequestDir = iota + 1
-	GetEventsRequestDirDesc
+	GetEventsRequestDirAsc  GetEventsRequestDir = "asc"
+	GetEventsRequestDirDesc GetEventsRequestDir = "desc"
 )
 
-func (g GetEventsRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetEventsRequestDirAsc:
-		return "asc"
-	case GetEventsRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetEventsRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetEventsRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetEventsRequestDirFromString(s string) (GetEventsRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetEventsRequestDirAsc
-		*g = value
+		return GetEventsRequestDirAsc, nil
 	case "desc":
-		value := GetEventsRequestDirDesc
-		*g = value
+		return GetEventsRequestDirDesc, nil
 	}
-	return nil
+	var t GetEventsRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetEventsRequestDir) Ptr() *GetEventsRequestDir {
+	return &g
 }
 
 // Sort key
-type GetEventsRequestOrderBy uint
+type GetEventsRequestOrderBy string
 
 const (
-	GetEventsRequestOrderByLastAttemptAt GetEventsRequestOrderBy = iota + 1
-	GetEventsRequestOrderByCreatedAt
+	GetEventsRequestOrderByLastAttemptAt GetEventsRequestOrderBy = "last_attempt_at"
+	GetEventsRequestOrderByCreatedAt     GetEventsRequestOrderBy = "created_at"
 )
 
-func (g GetEventsRequestOrderBy) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetEventsRequestOrderByLastAttemptAt:
-		return "last_attempt_at"
-	case GetEventsRequestOrderByCreatedAt:
-		return "created_at"
-	}
-}
-
-func (g GetEventsRequestOrderBy) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetEventsRequestOrderBy) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetEventsRequestOrderByFromString(s string) (GetEventsRequestOrderBy, error) {
+	switch s {
 	case "last_attempt_at":
-		value := GetEventsRequestOrderByLastAttemptAt
-		*g = value
+		return GetEventsRequestOrderByLastAttemptAt, nil
 	case "created_at":
-		value := GetEventsRequestOrderByCreatedAt
-		*g = value
+		return GetEventsRequestOrderByCreatedAt, nil
 	}
-	return nil
+	var t GetEventsRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetIgnoredEventBulkRetriesRequestDir uint
+func (g GetEventsRequestOrderBy) Ptr() *GetEventsRequestOrderBy {
+	return &g
+}
+
+type GetIgnoredEventBulkRetriesRequestDir string
 
 const (
-	GetIgnoredEventBulkRetriesRequestDirAsc GetIgnoredEventBulkRetriesRequestDir = iota + 1
-	GetIgnoredEventBulkRetriesRequestDirDesc
+	GetIgnoredEventBulkRetriesRequestDirAsc  GetIgnoredEventBulkRetriesRequestDir = "asc"
+	GetIgnoredEventBulkRetriesRequestDirDesc GetIgnoredEventBulkRetriesRequestDir = "desc"
 )
 
-func (g GetIgnoredEventBulkRetriesRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIgnoredEventBulkRetriesRequestDirAsc:
-		return "asc"
-	case GetIgnoredEventBulkRetriesRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetIgnoredEventBulkRetriesRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIgnoredEventBulkRetriesRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIgnoredEventBulkRetriesRequestDirFromString(s string) (GetIgnoredEventBulkRetriesRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetIgnoredEventBulkRetriesRequestDirAsc
-		*g = value
+		return GetIgnoredEventBulkRetriesRequestDirAsc, nil
 	case "desc":
-		value := GetIgnoredEventBulkRetriesRequestDirDesc
-		*g = value
+		return GetIgnoredEventBulkRetriesRequestDirDesc, nil
 	}
-	return nil
+	var t GetIgnoredEventBulkRetriesRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetIssueCountRequestDir uint
+func (g GetIgnoredEventBulkRetriesRequestDir) Ptr() *GetIgnoredEventBulkRetriesRequestDir {
+	return &g
+}
+
+type GetIssueCountRequestDir string
 
 const (
-	GetIssueCountRequestDirAsc GetIssueCountRequestDir = iota + 1
-	GetIssueCountRequestDirDesc
+	GetIssueCountRequestDirAsc  GetIssueCountRequestDir = "asc"
+	GetIssueCountRequestDirDesc GetIssueCountRequestDir = "desc"
 )
 
-func (g GetIssueCountRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssueCountRequestDirAsc:
-		return "asc"
-	case GetIssueCountRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetIssueCountRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssueCountRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssueCountRequestDirFromString(s string) (GetIssueCountRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetIssueCountRequestDirAsc
-		*g = value
+		return GetIssueCountRequestDirAsc, nil
 	case "desc":
-		value := GetIssueCountRequestDirDesc
-		*g = value
+		return GetIssueCountRequestDirDesc, nil
 	}
-	return nil
+	var t GetIssueCountRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetIssueCountRequestOrderBy uint
+func (g GetIssueCountRequestDir) Ptr() *GetIssueCountRequestDir {
+	return &g
+}
+
+type GetIssueCountRequestOrderBy string
 
 const (
-	GetIssueCountRequestOrderByCreatedAt GetIssueCountRequestOrderBy = iota + 1
-	GetIssueCountRequestOrderByFirstSeenAt
-	GetIssueCountRequestOrderByLastSeenAt
-	GetIssueCountRequestOrderByOpenedAt
-	GetIssueCountRequestOrderByStatus
+	GetIssueCountRequestOrderByCreatedAt   GetIssueCountRequestOrderBy = "created_at"
+	GetIssueCountRequestOrderByFirstSeenAt GetIssueCountRequestOrderBy = "first_seen_at"
+	GetIssueCountRequestOrderByLastSeenAt  GetIssueCountRequestOrderBy = "last_seen_at"
+	GetIssueCountRequestOrderByOpenedAt    GetIssueCountRequestOrderBy = "opened_at"
+	GetIssueCountRequestOrderByStatus      GetIssueCountRequestOrderBy = "status"
 )
 
-func (g GetIssueCountRequestOrderBy) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssueCountRequestOrderByCreatedAt:
-		return "created_at"
-	case GetIssueCountRequestOrderByFirstSeenAt:
-		return "first_seen_at"
-	case GetIssueCountRequestOrderByLastSeenAt:
-		return "last_seen_at"
-	case GetIssueCountRequestOrderByOpenedAt:
-		return "opened_at"
-	case GetIssueCountRequestOrderByStatus:
-		return "status"
-	}
-}
-
-func (g GetIssueCountRequestOrderBy) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssueCountRequestOrderBy) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssueCountRequestOrderByFromString(s string) (GetIssueCountRequestOrderBy, error) {
+	switch s {
 	case "created_at":
-		value := GetIssueCountRequestOrderByCreatedAt
-		*g = value
+		return GetIssueCountRequestOrderByCreatedAt, nil
 	case "first_seen_at":
-		value := GetIssueCountRequestOrderByFirstSeenAt
-		*g = value
+		return GetIssueCountRequestOrderByFirstSeenAt, nil
 	case "last_seen_at":
-		value := GetIssueCountRequestOrderByLastSeenAt
-		*g = value
+		return GetIssueCountRequestOrderByLastSeenAt, nil
 	case "opened_at":
-		value := GetIssueCountRequestOrderByOpenedAt
-		*g = value
+		return GetIssueCountRequestOrderByOpenedAt, nil
 	case "status":
-		value := GetIssueCountRequestOrderByStatus
-		*g = value
+		return GetIssueCountRequestOrderByStatus, nil
 	}
-	return nil
+	var t GetIssueCountRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetIssueCountRequestOrderBy) Ptr() *GetIssueCountRequestOrderBy {
+	return &g
 }
 
 // Issue status
-type GetIssueCountRequestStatus uint
+type GetIssueCountRequestStatus string
 
 const (
-	GetIssueCountRequestStatusOpened GetIssueCountRequestStatus = iota + 1
-	GetIssueCountRequestStatusIgnored
-	GetIssueCountRequestStatusAcknowledged
-	GetIssueCountRequestStatusResolved
+	GetIssueCountRequestStatusOpened       GetIssueCountRequestStatus = "OPENED"
+	GetIssueCountRequestStatusIgnored      GetIssueCountRequestStatus = "IGNORED"
+	GetIssueCountRequestStatusAcknowledged GetIssueCountRequestStatus = "ACKNOWLEDGED"
+	GetIssueCountRequestStatusResolved     GetIssueCountRequestStatus = "RESOLVED"
 )
 
-func (g GetIssueCountRequestStatus) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssueCountRequestStatusOpened:
-		return "OPENED"
-	case GetIssueCountRequestStatusIgnored:
-		return "IGNORED"
-	case GetIssueCountRequestStatusAcknowledged:
-		return "ACKNOWLEDGED"
-	case GetIssueCountRequestStatusResolved:
-		return "RESOLVED"
-	}
-}
-
-func (g GetIssueCountRequestStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssueCountRequestStatus) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssueCountRequestStatusFromString(s string) (GetIssueCountRequestStatus, error) {
+	switch s {
 	case "OPENED":
-		value := GetIssueCountRequestStatusOpened
-		*g = value
+		return GetIssueCountRequestStatusOpened, nil
 	case "IGNORED":
-		value := GetIssueCountRequestStatusIgnored
-		*g = value
+		return GetIssueCountRequestStatusIgnored, nil
 	case "ACKNOWLEDGED":
-		value := GetIssueCountRequestStatusAcknowledged
-		*g = value
+		return GetIssueCountRequestStatusAcknowledged, nil
 	case "RESOLVED":
-		value := GetIssueCountRequestStatusResolved
-		*g = value
+		return GetIssueCountRequestStatusResolved, nil
 	}
-	return nil
+	var t GetIssueCountRequestStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetIssueCountRequestStatus) Ptr() *GetIssueCountRequestStatus {
+	return &g
 }
 
 // Issue type
-type GetIssueCountRequestType uint
+type GetIssueCountRequestType string
 
 const (
-	GetIssueCountRequestTypeDelivery GetIssueCountRequestType = iota + 1
-	GetIssueCountRequestTypeTransformation
-	GetIssueCountRequestTypeBackpressure
+	GetIssueCountRequestTypeDelivery       GetIssueCountRequestType = "delivery"
+	GetIssueCountRequestTypeTransformation GetIssueCountRequestType = "transformation"
+	GetIssueCountRequestTypeBackpressure   GetIssueCountRequestType = "backpressure"
 )
 
-func (g GetIssueCountRequestType) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssueCountRequestTypeDelivery:
-		return "delivery"
-	case GetIssueCountRequestTypeTransformation:
-		return "transformation"
-	case GetIssueCountRequestTypeBackpressure:
-		return "backpressure"
-	}
-}
-
-func (g GetIssueCountRequestType) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssueCountRequestType) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssueCountRequestTypeFromString(s string) (GetIssueCountRequestType, error) {
+	switch s {
 	case "delivery":
-		value := GetIssueCountRequestTypeDelivery
-		*g = value
+		return GetIssueCountRequestTypeDelivery, nil
 	case "transformation":
-		value := GetIssueCountRequestTypeTransformation
-		*g = value
+		return GetIssueCountRequestTypeTransformation, nil
 	case "backpressure":
-		value := GetIssueCountRequestTypeBackpressure
-		*g = value
+		return GetIssueCountRequestTypeBackpressure, nil
 	}
-	return nil
+	var t GetIssueCountRequestType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetIssueTriggersRequestDir uint
+func (g GetIssueCountRequestType) Ptr() *GetIssueCountRequestType {
+	return &g
+}
+
+type GetIssueTriggersRequestDir string
 
 const (
-	GetIssueTriggersRequestDirAsc GetIssueTriggersRequestDir = iota + 1
-	GetIssueTriggersRequestDirDesc
+	GetIssueTriggersRequestDirAsc  GetIssueTriggersRequestDir = "asc"
+	GetIssueTriggersRequestDirDesc GetIssueTriggersRequestDir = "desc"
 )
 
-func (g GetIssueTriggersRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssueTriggersRequestDirAsc:
-		return "asc"
-	case GetIssueTriggersRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetIssueTriggersRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssueTriggersRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssueTriggersRequestDirFromString(s string) (GetIssueTriggersRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetIssueTriggersRequestDirAsc
-		*g = value
+		return GetIssueTriggersRequestDirAsc, nil
 	case "desc":
-		value := GetIssueTriggersRequestDirDesc
-		*g = value
+		return GetIssueTriggersRequestDirDesc, nil
 	}
-	return nil
+	var t GetIssueTriggersRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetIssueTriggersRequestOrderBy uint
+func (g GetIssueTriggersRequestDir) Ptr() *GetIssueTriggersRequestDir {
+	return &g
+}
+
+type GetIssueTriggersRequestOrderBy string
 
 const (
-	GetIssueTriggersRequestOrderByCreatedAt GetIssueTriggersRequestOrderBy = iota + 1
-	GetIssueTriggersRequestOrderByType
+	GetIssueTriggersRequestOrderByCreatedAt GetIssueTriggersRequestOrderBy = "created_at"
+	GetIssueTriggersRequestOrderByType      GetIssueTriggersRequestOrderBy = "type"
 )
 
-func (g GetIssueTriggersRequestOrderBy) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssueTriggersRequestOrderByCreatedAt:
-		return "created_at"
-	case GetIssueTriggersRequestOrderByType:
-		return "type"
-	}
-}
-
-func (g GetIssueTriggersRequestOrderBy) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssueTriggersRequestOrderBy) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssueTriggersRequestOrderByFromString(s string) (GetIssueTriggersRequestOrderBy, error) {
+	switch s {
 	case "created_at":
-		value := GetIssueTriggersRequestOrderByCreatedAt
-		*g = value
+		return GetIssueTriggersRequestOrderByCreatedAt, nil
 	case "type":
-		value := GetIssueTriggersRequestOrderByType
-		*g = value
+		return GetIssueTriggersRequestOrderByType, nil
 	}
-	return nil
+	var t GetIssueTriggersRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetIssuesRequestDir uint
+func (g GetIssueTriggersRequestOrderBy) Ptr() *GetIssueTriggersRequestOrderBy {
+	return &g
+}
+
+type GetIssuesRequestDir string
 
 const (
-	GetIssuesRequestDirAsc GetIssuesRequestDir = iota + 1
-	GetIssuesRequestDirDesc
+	GetIssuesRequestDirAsc  GetIssuesRequestDir = "asc"
+	GetIssuesRequestDirDesc GetIssuesRequestDir = "desc"
 )
 
-func (g GetIssuesRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssuesRequestDirAsc:
-		return "asc"
-	case GetIssuesRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetIssuesRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssuesRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssuesRequestDirFromString(s string) (GetIssuesRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetIssuesRequestDirAsc
-		*g = value
+		return GetIssuesRequestDirAsc, nil
 	case "desc":
-		value := GetIssuesRequestDirDesc
-		*g = value
+		return GetIssuesRequestDirDesc, nil
 	}
-	return nil
+	var t GetIssuesRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetIssuesRequestOrderBy uint
+func (g GetIssuesRequestDir) Ptr() *GetIssuesRequestDir {
+	return &g
+}
+
+type GetIssuesRequestOrderBy string
 
 const (
-	GetIssuesRequestOrderByCreatedAt GetIssuesRequestOrderBy = iota + 1
-	GetIssuesRequestOrderByFirstSeenAt
-	GetIssuesRequestOrderByLastSeenAt
-	GetIssuesRequestOrderByOpenedAt
-	GetIssuesRequestOrderByStatus
+	GetIssuesRequestOrderByCreatedAt   GetIssuesRequestOrderBy = "created_at"
+	GetIssuesRequestOrderByFirstSeenAt GetIssuesRequestOrderBy = "first_seen_at"
+	GetIssuesRequestOrderByLastSeenAt  GetIssuesRequestOrderBy = "last_seen_at"
+	GetIssuesRequestOrderByOpenedAt    GetIssuesRequestOrderBy = "opened_at"
+	GetIssuesRequestOrderByStatus      GetIssuesRequestOrderBy = "status"
 )
 
-func (g GetIssuesRequestOrderBy) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssuesRequestOrderByCreatedAt:
-		return "created_at"
-	case GetIssuesRequestOrderByFirstSeenAt:
-		return "first_seen_at"
-	case GetIssuesRequestOrderByLastSeenAt:
-		return "last_seen_at"
-	case GetIssuesRequestOrderByOpenedAt:
-		return "opened_at"
-	case GetIssuesRequestOrderByStatus:
-		return "status"
-	}
-}
-
-func (g GetIssuesRequestOrderBy) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssuesRequestOrderBy) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssuesRequestOrderByFromString(s string) (GetIssuesRequestOrderBy, error) {
+	switch s {
 	case "created_at":
-		value := GetIssuesRequestOrderByCreatedAt
-		*g = value
+		return GetIssuesRequestOrderByCreatedAt, nil
 	case "first_seen_at":
-		value := GetIssuesRequestOrderByFirstSeenAt
-		*g = value
+		return GetIssuesRequestOrderByFirstSeenAt, nil
 	case "last_seen_at":
-		value := GetIssuesRequestOrderByLastSeenAt
-		*g = value
+		return GetIssuesRequestOrderByLastSeenAt, nil
 	case "opened_at":
-		value := GetIssuesRequestOrderByOpenedAt
-		*g = value
+		return GetIssuesRequestOrderByOpenedAt, nil
 	case "status":
-		value := GetIssuesRequestOrderByStatus
-		*g = value
+		return GetIssuesRequestOrderByStatus, nil
 	}
-	return nil
+	var t GetIssuesRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetIssuesRequestOrderBy) Ptr() *GetIssuesRequestOrderBy {
+	return &g
 }
 
 // Issue status
-type GetIssuesRequestStatus uint
+type GetIssuesRequestStatus string
 
 const (
-	GetIssuesRequestStatusOpened GetIssuesRequestStatus = iota + 1
-	GetIssuesRequestStatusIgnored
-	GetIssuesRequestStatusAcknowledged
-	GetIssuesRequestStatusResolved
+	GetIssuesRequestStatusOpened       GetIssuesRequestStatus = "OPENED"
+	GetIssuesRequestStatusIgnored      GetIssuesRequestStatus = "IGNORED"
+	GetIssuesRequestStatusAcknowledged GetIssuesRequestStatus = "ACKNOWLEDGED"
+	GetIssuesRequestStatusResolved     GetIssuesRequestStatus = "RESOLVED"
 )
 
-func (g GetIssuesRequestStatus) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssuesRequestStatusOpened:
-		return "OPENED"
-	case GetIssuesRequestStatusIgnored:
-		return "IGNORED"
-	case GetIssuesRequestStatusAcknowledged:
-		return "ACKNOWLEDGED"
-	case GetIssuesRequestStatusResolved:
-		return "RESOLVED"
-	}
-}
-
-func (g GetIssuesRequestStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssuesRequestStatus) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssuesRequestStatusFromString(s string) (GetIssuesRequestStatus, error) {
+	switch s {
 	case "OPENED":
-		value := GetIssuesRequestStatusOpened
-		*g = value
+		return GetIssuesRequestStatusOpened, nil
 	case "IGNORED":
-		value := GetIssuesRequestStatusIgnored
-		*g = value
+		return GetIssuesRequestStatusIgnored, nil
 	case "ACKNOWLEDGED":
-		value := GetIssuesRequestStatusAcknowledged
-		*g = value
+		return GetIssuesRequestStatusAcknowledged, nil
 	case "RESOLVED":
-		value := GetIssuesRequestStatusResolved
-		*g = value
+		return GetIssuesRequestStatusResolved, nil
 	}
-	return nil
+	var t GetIssuesRequestStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetIssuesRequestStatus) Ptr() *GetIssuesRequestStatus {
+	return &g
 }
 
 // Issue type
-type GetIssuesRequestType uint
+type GetIssuesRequestType string
 
 const (
-	GetIssuesRequestTypeDelivery GetIssuesRequestType = iota + 1
-	GetIssuesRequestTypeTransformation
-	GetIssuesRequestTypeBackpressure
+	GetIssuesRequestTypeDelivery       GetIssuesRequestType = "delivery"
+	GetIssuesRequestTypeTransformation GetIssuesRequestType = "transformation"
+	GetIssuesRequestTypeBackpressure   GetIssuesRequestType = "backpressure"
 )
 
-func (g GetIssuesRequestType) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetIssuesRequestTypeDelivery:
-		return "delivery"
-	case GetIssuesRequestTypeTransformation:
-		return "transformation"
-	case GetIssuesRequestTypeBackpressure:
-		return "backpressure"
-	}
-}
-
-func (g GetIssuesRequestType) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetIssuesRequestType) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetIssuesRequestTypeFromString(s string) (GetIssuesRequestType, error) {
+	switch s {
 	case "delivery":
-		value := GetIssuesRequestTypeDelivery
-		*g = value
+		return GetIssuesRequestTypeDelivery, nil
 	case "transformation":
-		value := GetIssuesRequestTypeTransformation
-		*g = value
+		return GetIssuesRequestTypeTransformation, nil
 	case "backpressure":
-		value := GetIssuesRequestTypeBackpressure
-		*g = value
+		return GetIssuesRequestTypeBackpressure, nil
 	}
-	return nil
+	var t GetIssuesRequestType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetRequestBulkRetriesRequestDir uint
+func (g GetIssuesRequestType) Ptr() *GetIssuesRequestType {
+	return &g
+}
+
+type GetRequestBulkRetriesRequestDir string
 
 const (
-	GetRequestBulkRetriesRequestDirAsc GetRequestBulkRetriesRequestDir = iota + 1
-	GetRequestBulkRetriesRequestDirDesc
+	GetRequestBulkRetriesRequestDirAsc  GetRequestBulkRetriesRequestDir = "asc"
+	GetRequestBulkRetriesRequestDirDesc GetRequestBulkRetriesRequestDir = "desc"
 )
 
-func (g GetRequestBulkRetriesRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetRequestBulkRetriesRequestDirAsc:
-		return "asc"
-	case GetRequestBulkRetriesRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetRequestBulkRetriesRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetRequestBulkRetriesRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetRequestBulkRetriesRequestDirFromString(s string) (GetRequestBulkRetriesRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetRequestBulkRetriesRequestDirAsc
-		*g = value
+		return GetRequestBulkRetriesRequestDirAsc, nil
 	case "desc":
-		value := GetRequestBulkRetriesRequestDirDesc
-		*g = value
+		return GetRequestBulkRetriesRequestDirDesc, nil
 	}
-	return nil
+	var t GetRequestBulkRetriesRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetRequestBulkRetriesRequestDir) Ptr() *GetRequestBulkRetriesRequestDir {
+	return &g
 }
 
 // Sort direction
-type GetRequestEventsRequestDir uint
+type GetRequestEventsRequestDir string
 
 const (
-	GetRequestEventsRequestDirAsc GetRequestEventsRequestDir = iota + 1
-	GetRequestEventsRequestDirDesc
+	GetRequestEventsRequestDirAsc  GetRequestEventsRequestDir = "asc"
+	GetRequestEventsRequestDirDesc GetRequestEventsRequestDir = "desc"
 )
 
-func (g GetRequestEventsRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetRequestEventsRequestDirAsc:
-		return "asc"
-	case GetRequestEventsRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetRequestEventsRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetRequestEventsRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetRequestEventsRequestDirFromString(s string) (GetRequestEventsRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetRequestEventsRequestDirAsc
-		*g = value
+		return GetRequestEventsRequestDirAsc, nil
 	case "desc":
-		value := GetRequestEventsRequestDirDesc
-		*g = value
+		return GetRequestEventsRequestDirDesc, nil
 	}
-	return nil
+	var t GetRequestEventsRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetRequestEventsRequestDir) Ptr() *GetRequestEventsRequestDir {
+	return &g
 }
 
 // Sort key
-type GetRequestEventsRequestOrderBy uint
+type GetRequestEventsRequestOrderBy string
 
 const (
-	GetRequestEventsRequestOrderByLastAttemptAt GetRequestEventsRequestOrderBy = iota + 1
-	GetRequestEventsRequestOrderByCreatedAt
+	GetRequestEventsRequestOrderByLastAttemptAt GetRequestEventsRequestOrderBy = "last_attempt_at"
+	GetRequestEventsRequestOrderByCreatedAt     GetRequestEventsRequestOrderBy = "created_at"
 )
 
-func (g GetRequestEventsRequestOrderBy) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetRequestEventsRequestOrderByLastAttemptAt:
-		return "last_attempt_at"
-	case GetRequestEventsRequestOrderByCreatedAt:
-		return "created_at"
-	}
-}
-
-func (g GetRequestEventsRequestOrderBy) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetRequestEventsRequestOrderBy) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetRequestEventsRequestOrderByFromString(s string) (GetRequestEventsRequestOrderBy, error) {
+	switch s {
 	case "last_attempt_at":
-		value := GetRequestEventsRequestOrderByLastAttemptAt
-		*g = value
+		return GetRequestEventsRequestOrderByLastAttemptAt, nil
 	case "created_at":
-		value := GetRequestEventsRequestOrderByCreatedAt
-		*g = value
+		return GetRequestEventsRequestOrderByCreatedAt, nil
 	}
-	return nil
+	var t GetRequestEventsRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetRequestIgnoredEventsRequestDir uint
+func (g GetRequestEventsRequestOrderBy) Ptr() *GetRequestEventsRequestOrderBy {
+	return &g
+}
+
+type GetRequestIgnoredEventsRequestDir string
 
 const (
-	GetRequestIgnoredEventsRequestDirAsc GetRequestIgnoredEventsRequestDir = iota + 1
-	GetRequestIgnoredEventsRequestDirDesc
+	GetRequestIgnoredEventsRequestDirAsc  GetRequestIgnoredEventsRequestDir = "asc"
+	GetRequestIgnoredEventsRequestDirDesc GetRequestIgnoredEventsRequestDir = "desc"
 )
 
-func (g GetRequestIgnoredEventsRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetRequestIgnoredEventsRequestDirAsc:
-		return "asc"
-	case GetRequestIgnoredEventsRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetRequestIgnoredEventsRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetRequestIgnoredEventsRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetRequestIgnoredEventsRequestDirFromString(s string) (GetRequestIgnoredEventsRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetRequestIgnoredEventsRequestDirAsc
-		*g = value
+		return GetRequestIgnoredEventsRequestDirAsc, nil
 	case "desc":
-		value := GetRequestIgnoredEventsRequestDirDesc
-		*g = value
+		return GetRequestIgnoredEventsRequestDirDesc, nil
 	}
-	return nil
+	var t GetRequestIgnoredEventsRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetRequestIgnoredEventsRequestDir) Ptr() *GetRequestIgnoredEventsRequestDir {
+	return &g
 }
 
 // Sort direction
-type GetRequestsRequestDir uint
+type GetRequestsRequestDir string
 
 const (
-	GetRequestsRequestDirAsc GetRequestsRequestDir = iota + 1
-	GetRequestsRequestDirDesc
+	GetRequestsRequestDirAsc  GetRequestsRequestDir = "asc"
+	GetRequestsRequestDirDesc GetRequestsRequestDir = "desc"
 )
 
-func (g GetRequestsRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetRequestsRequestDirAsc:
-		return "asc"
-	case GetRequestsRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetRequestsRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetRequestsRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetRequestsRequestDirFromString(s string) (GetRequestsRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetRequestsRequestDirAsc
-		*g = value
+		return GetRequestsRequestDirAsc, nil
 	case "desc":
-		value := GetRequestsRequestDirDesc
-		*g = value
+		return GetRequestsRequestDirDesc, nil
 	}
-	return nil
+	var t GetRequestsRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetRequestsRequestDir) Ptr() *GetRequestsRequestDir {
+	return &g
 }
 
 // Sort key
-type GetRequestsRequestOrderBy uint
+type GetRequestsRequestOrderBy string
 
 const (
-	GetRequestsRequestOrderByIngestedAt GetRequestsRequestOrderBy = iota + 1
-	GetRequestsRequestOrderByCreatedAt
+	GetRequestsRequestOrderByIngestedAt GetRequestsRequestOrderBy = "ingested_at"
+	GetRequestsRequestOrderByCreatedAt  GetRequestsRequestOrderBy = "created_at"
 )
 
-func (g GetRequestsRequestOrderBy) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetRequestsRequestOrderByIngestedAt:
-		return "ingested_at"
-	case GetRequestsRequestOrderByCreatedAt:
-		return "created_at"
-	}
-}
-
-func (g GetRequestsRequestOrderBy) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetRequestsRequestOrderBy) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetRequestsRequestOrderByFromString(s string) (GetRequestsRequestOrderBy, error) {
+	switch s {
 	case "ingested_at":
-		value := GetRequestsRequestOrderByIngestedAt
-		*g = value
+		return GetRequestsRequestOrderByIngestedAt, nil
 	case "created_at":
-		value := GetRequestsRequestOrderByCreatedAt
-		*g = value
+		return GetRequestsRequestOrderByCreatedAt, nil
 	}
-	return nil
+	var t GetRequestsRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetRequestsRequestOrderBy) Ptr() *GetRequestsRequestOrderBy {
+	return &g
 }
 
 // Filter by status
-type GetRequestsRequestStatus uint
+type GetRequestsRequestStatus string
 
 const (
-	GetRequestsRequestStatusAccepted GetRequestsRequestStatus = iota + 1
-	GetRequestsRequestStatusRejected
+	GetRequestsRequestStatusAccepted GetRequestsRequestStatus = "accepted"
+	GetRequestsRequestStatusRejected GetRequestsRequestStatus = "rejected"
 )
 
-func (g GetRequestsRequestStatus) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetRequestsRequestStatusAccepted:
-		return "accepted"
-	case GetRequestsRequestStatusRejected:
-		return "rejected"
-	}
-}
-
-func (g GetRequestsRequestStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetRequestsRequestStatus) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetRequestsRequestStatusFromString(s string) (GetRequestsRequestStatus, error) {
+	switch s {
 	case "accepted":
-		value := GetRequestsRequestStatusAccepted
-		*g = value
+		return GetRequestsRequestStatusAccepted, nil
 	case "rejected":
-		value := GetRequestsRequestStatusRejected
-		*g = value
+		return GetRequestsRequestStatusRejected, nil
 	}
-	return nil
+	var t GetRequestsRequestStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetSourcesRequestDir uint
+func (g GetRequestsRequestStatus) Ptr() *GetRequestsRequestStatus {
+	return &g
+}
+
+type GetSourcesRequestDir string
 
 const (
-	GetSourcesRequestDirAsc GetSourcesRequestDir = iota + 1
-	GetSourcesRequestDirDesc
+	GetSourcesRequestDirAsc  GetSourcesRequestDir = "asc"
+	GetSourcesRequestDirDesc GetSourcesRequestDir = "desc"
 )
 
-func (g GetSourcesRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetSourcesRequestDirAsc:
-		return "asc"
-	case GetSourcesRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetSourcesRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetSourcesRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetSourcesRequestDirFromString(s string) (GetSourcesRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetSourcesRequestDirAsc
-		*g = value
+		return GetSourcesRequestDirAsc, nil
 	case "desc":
-		value := GetSourcesRequestDirDesc
-		*g = value
+		return GetSourcesRequestDirDesc, nil
 	}
-	return nil
+	var t GetSourcesRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetTransformationExecutionsRequestDir uint
+func (g GetSourcesRequestDir) Ptr() *GetSourcesRequestDir {
+	return &g
+}
+
+type GetTransformationExecutionsRequestDir string
 
 const (
-	GetTransformationExecutionsRequestDirAsc GetTransformationExecutionsRequestDir = iota + 1
-	GetTransformationExecutionsRequestDirDesc
+	GetTransformationExecutionsRequestDirAsc  GetTransformationExecutionsRequestDir = "asc"
+	GetTransformationExecutionsRequestDirDesc GetTransformationExecutionsRequestDir = "desc"
 )
 
-func (g GetTransformationExecutionsRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetTransformationExecutionsRequestDirAsc:
-		return "asc"
-	case GetTransformationExecutionsRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetTransformationExecutionsRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetTransformationExecutionsRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetTransformationExecutionsRequestDirFromString(s string) (GetTransformationExecutionsRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetTransformationExecutionsRequestDirAsc
-		*g = value
+		return GetTransformationExecutionsRequestDirAsc, nil
 	case "desc":
-		value := GetTransformationExecutionsRequestDirDesc
-		*g = value
+		return GetTransformationExecutionsRequestDirDesc, nil
 	}
-	return nil
+	var t GetTransformationExecutionsRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetTransformationExecutionsRequestLogLevel uint
+func (g GetTransformationExecutionsRequestDir) Ptr() *GetTransformationExecutionsRequestDir {
+	return &g
+}
+
+type GetTransformationExecutionsRequestLogLevel string
 
 const (
-	GetTransformationExecutionsRequestLogLevelDebug GetTransformationExecutionsRequestLogLevel = iota + 1
-	GetTransformationExecutionsRequestLogLevelInfo
-	GetTransformationExecutionsRequestLogLevelWarn
-	GetTransformationExecutionsRequestLogLevelError
-	GetTransformationExecutionsRequestLogLevelFatal
+	GetTransformationExecutionsRequestLogLevelDebug GetTransformationExecutionsRequestLogLevel = "debug"
+	GetTransformationExecutionsRequestLogLevelInfo  GetTransformationExecutionsRequestLogLevel = "info"
+	GetTransformationExecutionsRequestLogLevelWarn  GetTransformationExecutionsRequestLogLevel = "warn"
+	GetTransformationExecutionsRequestLogLevelError GetTransformationExecutionsRequestLogLevel = "error"
+	GetTransformationExecutionsRequestLogLevelFatal GetTransformationExecutionsRequestLogLevel = "fatal"
 )
 
-func (g GetTransformationExecutionsRequestLogLevel) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetTransformationExecutionsRequestLogLevelDebug:
-		return "debug"
-	case GetTransformationExecutionsRequestLogLevelInfo:
-		return "info"
-	case GetTransformationExecutionsRequestLogLevelWarn:
-		return "warn"
-	case GetTransformationExecutionsRequestLogLevelError:
-		return "error"
-	case GetTransformationExecutionsRequestLogLevelFatal:
-		return "fatal"
-	}
-}
-
-func (g GetTransformationExecutionsRequestLogLevel) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetTransformationExecutionsRequestLogLevel) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetTransformationExecutionsRequestLogLevelFromString(s string) (GetTransformationExecutionsRequestLogLevel, error) {
+	switch s {
 	case "debug":
-		value := GetTransformationExecutionsRequestLogLevelDebug
-		*g = value
+		return GetTransformationExecutionsRequestLogLevelDebug, nil
 	case "info":
-		value := GetTransformationExecutionsRequestLogLevelInfo
-		*g = value
+		return GetTransformationExecutionsRequestLogLevelInfo, nil
 	case "warn":
-		value := GetTransformationExecutionsRequestLogLevelWarn
-		*g = value
+		return GetTransformationExecutionsRequestLogLevelWarn, nil
 	case "error":
-		value := GetTransformationExecutionsRequestLogLevelError
-		*g = value
+		return GetTransformationExecutionsRequestLogLevelError, nil
 	case "fatal":
-		value := GetTransformationExecutionsRequestLogLevelFatal
-		*g = value
+		return GetTransformationExecutionsRequestLogLevelFatal, nil
 	}
-	return nil
+	var t GetTransformationExecutionsRequestLogLevel
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type GetTransformationsRequestDir uint
+func (g GetTransformationExecutionsRequestLogLevel) Ptr() *GetTransformationExecutionsRequestLogLevel {
+	return &g
+}
+
+type GetTransformationsRequestDir string
 
 const (
-	GetTransformationsRequestDirAsc GetTransformationsRequestDir = iota + 1
-	GetTransformationsRequestDirDesc
+	GetTransformationsRequestDirAsc  GetTransformationsRequestDir = "asc"
+	GetTransformationsRequestDirDesc GetTransformationsRequestDir = "desc"
 )
 
-func (g GetTransformationsRequestDir) String() string {
-	switch g {
-	default:
-		return strconv.Itoa(int(g))
-	case GetTransformationsRequestDirAsc:
-		return "asc"
-	case GetTransformationsRequestDirDesc:
-		return "desc"
-	}
-}
-
-func (g GetTransformationsRequestDir) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", g.String())), nil
-}
-
-func (g *GetTransformationsRequestDir) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewGetTransformationsRequestDirFromString(s string) (GetTransformationsRequestDir, error) {
+	switch s {
 	case "asc":
-		value := GetTransformationsRequestDirAsc
-		*g = value
+		return GetTransformationsRequestDirAsc, nil
 	case "desc":
-		value := GetTransformationsRequestDirDesc
-		*g = value
+		return GetTransformationsRequestDirDesc, nil
 	}
-	return nil
+	var t GetTransformationsRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (g GetTransformationsRequestDir) Ptr() *GetTransformationsRequestDir {
+	return &g
 }
 
 type GitHub struct {
@@ -5698,54 +4807,32 @@ func (h *Hmac) MarshalJSON() ([]byte, error) {
 	return json.Marshal(marshaler)
 }
 
-type HmacAlgorithms uint
+type HmacAlgorithms string
 
 const (
-	HmacAlgorithmsMd5 HmacAlgorithms = iota + 1
-	HmacAlgorithmsSha1
-	HmacAlgorithmsSha256
-	HmacAlgorithmsSha512
+	HmacAlgorithmsMd5    HmacAlgorithms = "md5"
+	HmacAlgorithmsSha1   HmacAlgorithms = "sha1"
+	HmacAlgorithmsSha256 HmacAlgorithms = "sha256"
+	HmacAlgorithmsSha512 HmacAlgorithms = "sha512"
 )
 
-func (h HmacAlgorithms) String() string {
-	switch h {
-	default:
-		return strconv.Itoa(int(h))
-	case HmacAlgorithmsMd5:
-		return "md5"
-	case HmacAlgorithmsSha1:
-		return "sha1"
-	case HmacAlgorithmsSha256:
-		return "sha256"
-	case HmacAlgorithmsSha512:
-		return "sha512"
-	}
-}
-
-func (h HmacAlgorithms) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", h.String())), nil
-}
-
-func (h *HmacAlgorithms) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewHmacAlgorithmsFromString(s string) (HmacAlgorithms, error) {
+	switch s {
 	case "md5":
-		value := HmacAlgorithmsMd5
-		*h = value
+		return HmacAlgorithmsMd5, nil
 	case "sha1":
-		value := HmacAlgorithmsSha1
-		*h = value
+		return HmacAlgorithmsSha1, nil
 	case "sha256":
-		value := HmacAlgorithmsSha256
-		*h = value
+		return HmacAlgorithmsSha256, nil
 	case "sha512":
-		value := HmacAlgorithmsSha512
-		*h = value
+		return HmacAlgorithmsSha512, nil
 	}
-	return nil
+	var t HmacAlgorithms
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (h HmacAlgorithms) Ptr() *HmacAlgorithms {
+	return &h
 }
 
 // The verification configs for HMAC. Only included if the ?include=verification.configs query param is present
@@ -5756,42 +4843,26 @@ type HmacConfigs struct {
 	Encoding         HmacConfigsEncoding `json:"encoding,omitempty"`
 }
 
-type HmacConfigsEncoding uint
+type HmacConfigsEncoding string
 
 const (
-	HmacConfigsEncodingBase64 HmacConfigsEncoding = iota + 1
-	HmacConfigsEncodingHex
+	HmacConfigsEncodingBase64 HmacConfigsEncoding = "base64"
+	HmacConfigsEncodingHex    HmacConfigsEncoding = "hex"
 )
 
-func (h HmacConfigsEncoding) String() string {
-	switch h {
-	default:
-		return strconv.Itoa(int(h))
-	case HmacConfigsEncodingBase64:
-		return "base64"
-	case HmacConfigsEncodingHex:
-		return "hex"
-	}
-}
-
-func (h HmacConfigsEncoding) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", h.String())), nil
-}
-
-func (h *HmacConfigsEncoding) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewHmacConfigsEncodingFromString(s string) (HmacConfigsEncoding, error) {
+	switch s {
 	case "base64":
-		value := HmacConfigsEncodingBase64
-		*h = value
+		return HmacConfigsEncodingBase64, nil
 	case "hex":
-		value := HmacConfigsEncodingHex
-		*h = value
+		return HmacConfigsEncodingHex, nil
 	}
-	return nil
+	var t HmacConfigsEncoding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (h HmacConfigsEncoding) Ptr() *HmacConfigsEncoding {
+	return &h
 }
 
 type HmacIntegrationConfigs struct {
@@ -5801,42 +4872,26 @@ type HmacIntegrationConfigs struct {
 	Encoding         HmacIntegrationConfigsEncoding `json:"encoding,omitempty"`
 }
 
-type HmacIntegrationConfigsEncoding uint
+type HmacIntegrationConfigsEncoding string
 
 const (
-	HmacIntegrationConfigsEncodingBase64 HmacIntegrationConfigsEncoding = iota + 1
-	HmacIntegrationConfigsEncodingHex
+	HmacIntegrationConfigsEncodingBase64 HmacIntegrationConfigsEncoding = "base64"
+	HmacIntegrationConfigsEncodingHex    HmacIntegrationConfigsEncoding = "hex"
 )
 
-func (h HmacIntegrationConfigsEncoding) String() string {
-	switch h {
-	default:
-		return strconv.Itoa(int(h))
-	case HmacIntegrationConfigsEncodingBase64:
-		return "base64"
-	case HmacIntegrationConfigsEncodingHex:
-		return "hex"
-	}
-}
-
-func (h HmacIntegrationConfigsEncoding) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", h.String())), nil
-}
-
-func (h *HmacIntegrationConfigsEncoding) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewHmacIntegrationConfigsEncodingFromString(s string) (HmacIntegrationConfigsEncoding, error) {
+	switch s {
 	case "base64":
-		value := HmacIntegrationConfigsEncodingBase64
-		*h = value
+		return HmacIntegrationConfigsEncodingBase64, nil
 	case "hex":
-		value := HmacIntegrationConfigsEncodingHex
-		*h = value
+		return HmacIntegrationConfigsEncodingHex, nil
 	}
-	return nil
+	var t HmacIntegrationConfigsEncoding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (h HmacIntegrationConfigsEncoding) Ptr() *HmacIntegrationConfigsEncoding {
+	return &h
 }
 
 // Hookdeck Signature
@@ -5883,54 +4938,32 @@ type IgnoredEvent struct {
 	CreatedAt time.Time         `json:"created_at"`
 }
 
-type IgnoredEventCause uint
+type IgnoredEventCause string
 
 const (
-	IgnoredEventCauseArchived IgnoredEventCause = iota + 1
-	IgnoredEventCauseFiltered
-	IgnoredEventCauseTransformationFailed
-	IgnoredEventCauseCliDisconnected
+	IgnoredEventCauseArchived             IgnoredEventCause = "ARCHIVED"
+	IgnoredEventCauseFiltered             IgnoredEventCause = "FILTERED"
+	IgnoredEventCauseTransformationFailed IgnoredEventCause = "TRANSFORMATION_FAILED"
+	IgnoredEventCauseCliDisconnected      IgnoredEventCause = "CLI_DISCONNECTED"
 )
 
-func (i IgnoredEventCause) String() string {
-	switch i {
-	default:
-		return strconv.Itoa(int(i))
-	case IgnoredEventCauseArchived:
-		return "ARCHIVED"
-	case IgnoredEventCauseFiltered:
-		return "FILTERED"
-	case IgnoredEventCauseTransformationFailed:
-		return "TRANSFORMATION_FAILED"
-	case IgnoredEventCauseCliDisconnected:
-		return "CLI_DISCONNECTED"
-	}
-}
-
-func (i IgnoredEventCause) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", i.String())), nil
-}
-
-func (i *IgnoredEventCause) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewIgnoredEventCauseFromString(s string) (IgnoredEventCause, error) {
+	switch s {
 	case "ARCHIVED":
-		value := IgnoredEventCauseArchived
-		*i = value
+		return IgnoredEventCauseArchived, nil
 	case "FILTERED":
-		value := IgnoredEventCauseFiltered
-		*i = value
+		return IgnoredEventCauseFiltered, nil
 	case "TRANSFORMATION_FAILED":
-		value := IgnoredEventCauseTransformationFailed
-		*i = value
+		return IgnoredEventCauseTransformationFailed, nil
 	case "CLI_DISCONNECTED":
-		value := IgnoredEventCauseCliDisconnected
-		*i = value
+		return IgnoredEventCauseCliDisconnected, nil
 	}
-	return nil
+	var t IgnoredEventCause
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IgnoredEventCause) Ptr() *IgnoredEventCause {
+	return &i
 }
 
 type IgnoredEventMeta struct {
@@ -6157,48 +5190,29 @@ func (i *IntegrationConfigs) Accept(visitor IntegrationConfigsVisitor) error {
 type IntegrationConfigsSix struct {
 }
 
-type IntegrationFeature uint
+type IntegrationFeature string
 
 const (
-	IntegrationFeatureVerification IntegrationFeature = iota + 1
-	IntegrationFeatureHandshake
-	IntegrationFeaturePolling
+	IntegrationFeatureVerification IntegrationFeature = "VERIFICATION"
+	IntegrationFeatureHandshake    IntegrationFeature = "HANDSHAKE"
+	IntegrationFeaturePolling      IntegrationFeature = "POLLING"
 )
 
-func (i IntegrationFeature) String() string {
-	switch i {
-	default:
-		return strconv.Itoa(int(i))
-	case IntegrationFeatureVerification:
-		return "VERIFICATION"
-	case IntegrationFeatureHandshake:
-		return "HANDSHAKE"
-	case IntegrationFeaturePolling:
-		return "POLLING"
-	}
-}
-
-func (i IntegrationFeature) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", i.String())), nil
-}
-
-func (i *IntegrationFeature) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewIntegrationFeatureFromString(s string) (IntegrationFeature, error) {
+	switch s {
 	case "VERIFICATION":
-		value := IntegrationFeatureVerification
-		*i = value
+		return IntegrationFeatureVerification, nil
 	case "HANDSHAKE":
-		value := IntegrationFeatureHandshake
-		*i = value
+		return IntegrationFeatureHandshake, nil
 	case "POLLING":
-		value := IntegrationFeaturePolling
-		*i = value
+		return IntegrationFeaturePolling, nil
 	}
-	return nil
+	var t IntegrationFeature
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IntegrationFeature) Ptr() *IntegrationFeature {
+	return &i
 }
 
 type IntegrationPaginatedResult struct {
@@ -6207,192 +5221,101 @@ type IntegrationPaginatedResult struct {
 	Models     []*Integration  `json:"models,omitempty"`
 }
 
-type IntegrationProvider uint
+type IntegrationProvider string
 
 const (
-	IntegrationProviderHmac IntegrationProvider = iota + 1
-	IntegrationProviderBasicAuth
-	IntegrationProviderApiKey
-	IntegrationProviderTwitter
-	IntegrationProviderStripe
-	IntegrationProviderRecharge
-	IntegrationProviderGithub
-	IntegrationProviderShopify
-	IntegrationProviderPostmark
-	IntegrationProviderTypeform
-	IntegrationProviderXero
-	IntegrationProviderSvix
-	IntegrationProviderZoom
-	IntegrationProviderAkeneo
-	IntegrationProviderAdyen
-	IntegrationProviderGitlab
-	IntegrationProviderPropertyFinder
-	IntegrationProviderWoocommerce
-	IntegrationProviderOura
-	IntegrationProviderCommercelayer
-	IntegrationProviderMailgun
-	IntegrationProviderPipedrive
-	IntegrationProviderSendgrid
-	IntegrationProviderWorkos
-	IntegrationProviderSynctera
-	IntegrationProviderAwsSns
-	IntegrationProviderThreeDEye
+	IntegrationProviderHmac           IntegrationProvider = "hmac"
+	IntegrationProviderBasicAuth      IntegrationProvider = "basic_auth"
+	IntegrationProviderApiKey         IntegrationProvider = "api_key"
+	IntegrationProviderTwitter        IntegrationProvider = "twitter"
+	IntegrationProviderStripe         IntegrationProvider = "stripe"
+	IntegrationProviderRecharge       IntegrationProvider = "recharge"
+	IntegrationProviderGithub         IntegrationProvider = "github"
+	IntegrationProviderShopify        IntegrationProvider = "shopify"
+	IntegrationProviderPostmark       IntegrationProvider = "postmark"
+	IntegrationProviderTypeform       IntegrationProvider = "typeform"
+	IntegrationProviderXero           IntegrationProvider = "xero"
+	IntegrationProviderSvix           IntegrationProvider = "svix"
+	IntegrationProviderZoom           IntegrationProvider = "zoom"
+	IntegrationProviderAkeneo         IntegrationProvider = "akeneo"
+	IntegrationProviderAdyen          IntegrationProvider = "adyen"
+	IntegrationProviderGitlab         IntegrationProvider = "gitlab"
+	IntegrationProviderPropertyFinder IntegrationProvider = "property-finder"
+	IntegrationProviderWoocommerce    IntegrationProvider = "woocommerce"
+	IntegrationProviderOura           IntegrationProvider = "oura"
+	IntegrationProviderCommercelayer  IntegrationProvider = "commercelayer"
+	IntegrationProviderMailgun        IntegrationProvider = "mailgun"
+	IntegrationProviderPipedrive      IntegrationProvider = "pipedrive"
+	IntegrationProviderSendgrid       IntegrationProvider = "sendgrid"
+	IntegrationProviderWorkos         IntegrationProvider = "workos"
+	IntegrationProviderSynctera       IntegrationProvider = "synctera"
+	IntegrationProviderAwsSns         IntegrationProvider = "aws_sns"
+	IntegrationProviderThreeDEye      IntegrationProvider = "three_d_eye"
 )
 
-func (i IntegrationProvider) String() string {
-	switch i {
-	default:
-		return strconv.Itoa(int(i))
-	case IntegrationProviderHmac:
-		return "hmac"
-	case IntegrationProviderBasicAuth:
-		return "basic_auth"
-	case IntegrationProviderApiKey:
-		return "api_key"
-	case IntegrationProviderTwitter:
-		return "twitter"
-	case IntegrationProviderStripe:
-		return "stripe"
-	case IntegrationProviderRecharge:
-		return "recharge"
-	case IntegrationProviderGithub:
-		return "github"
-	case IntegrationProviderShopify:
-		return "shopify"
-	case IntegrationProviderPostmark:
-		return "postmark"
-	case IntegrationProviderTypeform:
-		return "typeform"
-	case IntegrationProviderXero:
-		return "xero"
-	case IntegrationProviderSvix:
-		return "svix"
-	case IntegrationProviderZoom:
-		return "zoom"
-	case IntegrationProviderAkeneo:
-		return "akeneo"
-	case IntegrationProviderAdyen:
-		return "adyen"
-	case IntegrationProviderGitlab:
-		return "gitlab"
-	case IntegrationProviderPropertyFinder:
-		return "property-finder"
-	case IntegrationProviderWoocommerce:
-		return "woocommerce"
-	case IntegrationProviderOura:
-		return "oura"
-	case IntegrationProviderCommercelayer:
-		return "commercelayer"
-	case IntegrationProviderMailgun:
-		return "mailgun"
-	case IntegrationProviderPipedrive:
-		return "pipedrive"
-	case IntegrationProviderSendgrid:
-		return "sendgrid"
-	case IntegrationProviderWorkos:
-		return "workos"
-	case IntegrationProviderSynctera:
-		return "synctera"
-	case IntegrationProviderAwsSns:
-		return "aws_sns"
-	case IntegrationProviderThreeDEye:
-		return "three_d_eye"
-	}
-}
-
-func (i IntegrationProvider) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", i.String())), nil
-}
-
-func (i *IntegrationProvider) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
+	switch s {
 	case "hmac":
-		value := IntegrationProviderHmac
-		*i = value
+		return IntegrationProviderHmac, nil
 	case "basic_auth":
-		value := IntegrationProviderBasicAuth
-		*i = value
+		return IntegrationProviderBasicAuth, nil
 	case "api_key":
-		value := IntegrationProviderApiKey
-		*i = value
+		return IntegrationProviderApiKey, nil
 	case "twitter":
-		value := IntegrationProviderTwitter
-		*i = value
+		return IntegrationProviderTwitter, nil
 	case "stripe":
-		value := IntegrationProviderStripe
-		*i = value
+		return IntegrationProviderStripe, nil
 	case "recharge":
-		value := IntegrationProviderRecharge
-		*i = value
+		return IntegrationProviderRecharge, nil
 	case "github":
-		value := IntegrationProviderGithub
-		*i = value
+		return IntegrationProviderGithub, nil
 	case "shopify":
-		value := IntegrationProviderShopify
-		*i = value
+		return IntegrationProviderShopify, nil
 	case "postmark":
-		value := IntegrationProviderPostmark
-		*i = value
+		return IntegrationProviderPostmark, nil
 	case "typeform":
-		value := IntegrationProviderTypeform
-		*i = value
+		return IntegrationProviderTypeform, nil
 	case "xero":
-		value := IntegrationProviderXero
-		*i = value
+		return IntegrationProviderXero, nil
 	case "svix":
-		value := IntegrationProviderSvix
-		*i = value
+		return IntegrationProviderSvix, nil
 	case "zoom":
-		value := IntegrationProviderZoom
-		*i = value
+		return IntegrationProviderZoom, nil
 	case "akeneo":
-		value := IntegrationProviderAkeneo
-		*i = value
+		return IntegrationProviderAkeneo, nil
 	case "adyen":
-		value := IntegrationProviderAdyen
-		*i = value
+		return IntegrationProviderAdyen, nil
 	case "gitlab":
-		value := IntegrationProviderGitlab
-		*i = value
+		return IntegrationProviderGitlab, nil
 	case "property-finder":
-		value := IntegrationProviderPropertyFinder
-		*i = value
+		return IntegrationProviderPropertyFinder, nil
 	case "woocommerce":
-		value := IntegrationProviderWoocommerce
-		*i = value
+		return IntegrationProviderWoocommerce, nil
 	case "oura":
-		value := IntegrationProviderOura
-		*i = value
+		return IntegrationProviderOura, nil
 	case "commercelayer":
-		value := IntegrationProviderCommercelayer
-		*i = value
+		return IntegrationProviderCommercelayer, nil
 	case "mailgun":
-		value := IntegrationProviderMailgun
-		*i = value
+		return IntegrationProviderMailgun, nil
 	case "pipedrive":
-		value := IntegrationProviderPipedrive
-		*i = value
+		return IntegrationProviderPipedrive, nil
 	case "sendgrid":
-		value := IntegrationProviderSendgrid
-		*i = value
+		return IntegrationProviderSendgrid, nil
 	case "workos":
-		value := IntegrationProviderWorkos
-		*i = value
+		return IntegrationProviderWorkos, nil
 	case "synctera":
-		value := IntegrationProviderSynctera
-		*i = value
+		return IntegrationProviderSynctera, nil
 	case "aws_sns":
-		value := IntegrationProviderAwsSns
-		*i = value
+		return IntegrationProviderAwsSns, nil
 	case "three_d_eye":
-		value := IntegrationProviderThreeDEye
-		*i = value
+		return IntegrationProviderThreeDEye, nil
 	}
-	return nil
+	var t IntegrationProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IntegrationProvider) Ptr() *IntegrationProvider {
+	return &i
 }
 
 // Issue
@@ -6459,54 +5382,32 @@ type IssueCount struct {
 }
 
 // Issue status
-type IssueStatus uint
+type IssueStatus string
 
 const (
-	IssueStatusOpened IssueStatus = iota + 1
-	IssueStatusIgnored
-	IssueStatusAcknowledged
-	IssueStatusResolved
+	IssueStatusOpened       IssueStatus = "OPENED"
+	IssueStatusIgnored      IssueStatus = "IGNORED"
+	IssueStatusAcknowledged IssueStatus = "ACKNOWLEDGED"
+	IssueStatusResolved     IssueStatus = "RESOLVED"
 )
 
-func (i IssueStatus) String() string {
-	switch i {
-	default:
-		return strconv.Itoa(int(i))
-	case IssueStatusOpened:
-		return "OPENED"
-	case IssueStatusIgnored:
-		return "IGNORED"
-	case IssueStatusAcknowledged:
-		return "ACKNOWLEDGED"
-	case IssueStatusResolved:
-		return "RESOLVED"
-	}
-}
-
-func (i IssueStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", i.String())), nil
-}
-
-func (i *IssueStatus) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewIssueStatusFromString(s string) (IssueStatus, error) {
+	switch s {
 	case "OPENED":
-		value := IssueStatusOpened
-		*i = value
+		return IssueStatusOpened, nil
 	case "IGNORED":
-		value := IssueStatusIgnored
-		*i = value
+		return IssueStatusIgnored, nil
 	case "ACKNOWLEDGED":
-		value := IssueStatusAcknowledged
-		*i = value
+		return IssueStatusAcknowledged, nil
 	case "RESOLVED":
-		value := IssueStatusResolved
-		*i = value
+		return IssueStatusResolved, nil
 	}
-	return nil
+	var t IssueStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueStatus) Ptr() *IssueStatus {
+	return &i
 }
 
 type IssueTrigger struct {
@@ -6764,42 +5665,26 @@ type IssueTriggerSlackChannel struct {
 }
 
 // The strategy uses to open the issue
-type IssueTriggerStrategy uint
+type IssueTriggerStrategy string
 
 const (
-	IssueTriggerStrategyFirstAttempt IssueTriggerStrategy = iota + 1
-	IssueTriggerStrategyFinalAttempt
+	IssueTriggerStrategyFirstAttempt IssueTriggerStrategy = "first_attempt"
+	IssueTriggerStrategyFinalAttempt IssueTriggerStrategy = "final_attempt"
 )
 
-func (i IssueTriggerStrategy) String() string {
-	switch i {
-	default:
-		return strconv.Itoa(int(i))
-	case IssueTriggerStrategyFirstAttempt:
-		return "first_attempt"
-	case IssueTriggerStrategyFinalAttempt:
-		return "final_attempt"
-	}
-}
-
-func (i IssueTriggerStrategy) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", i.String())), nil
-}
-
-func (i *IssueTriggerStrategy) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewIssueTriggerStrategyFromString(s string) (IssueTriggerStrategy, error) {
+	switch s {
 	case "first_attempt":
-		value := IssueTriggerStrategyFirstAttempt
-		*i = value
+		return IssueTriggerStrategyFirstAttempt, nil
 	case "final_attempt":
-		value := IssueTriggerStrategyFinalAttempt
-		*i = value
+		return IssueTriggerStrategyFinalAttempt, nil
 	}
-	return nil
+	var t IssueTriggerStrategy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueTriggerStrategy) Ptr() *IssueTriggerStrategy {
+	return &i
 }
 
 // Configurations for a 'Transformation' issue trigger
@@ -6868,48 +5753,29 @@ func (i *IssueTriggerTransformationConfigsTransformations) Accept(visitor IssueT
 }
 
 // Issue type
-type IssueType uint
+type IssueType string
 
 const (
-	IssueTypeDelivery IssueType = iota + 1
-	IssueTypeTransformation
-	IssueTypeBackpressure
+	IssueTypeDelivery       IssueType = "delivery"
+	IssueTypeTransformation IssueType = "transformation"
+	IssueTypeBackpressure   IssueType = "backpressure"
 )
 
-func (i IssueType) String() string {
-	switch i {
-	default:
-		return strconv.Itoa(int(i))
-	case IssueTypeDelivery:
-		return "delivery"
-	case IssueTypeTransformation:
-		return "transformation"
-	case IssueTypeBackpressure:
-		return "backpressure"
-	}
-}
-
-func (i IssueType) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", i.String())), nil
-}
-
-func (i *IssueType) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewIssueTypeFromString(s string) (IssueType, error) {
+	switch s {
 	case "delivery":
-		value := IssueTypeDelivery
-		*i = value
+		return IssueTypeDelivery, nil
 	case "transformation":
-		value := IssueTypeTransformation
-		*i = value
+		return IssueTypeTransformation, nil
 	case "backpressure":
-		value := IssueTypeBackpressure
-		*i = value
+		return IssueTypeBackpressure, nil
 	}
-	return nil
+	var t IssueType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueType) Ptr() *IssueType {
+	return &i
 }
 
 type IssueWithData struct {
@@ -7060,54 +5926,32 @@ type MailgunConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-type OrderByDirection uint
+type OrderByDirection string
 
 const (
-	OrderByDirectionasc OrderByDirection = iota + 1
-	OrderByDirectiondesc
-	OrderByDirectionASC
-	OrderByDirectionDESC
+	OrderByDirectionasc  OrderByDirection = "asc"
+	OrderByDirectiondesc OrderByDirection = "desc"
+	OrderByDirectionASC  OrderByDirection = "ASC"
+	OrderByDirectionDESC OrderByDirection = "DESC"
 )
 
-func (o OrderByDirection) String() string {
-	switch o {
-	default:
-		return strconv.Itoa(int(o))
-	case OrderByDirectionasc:
-		return "asc"
-	case OrderByDirectiondesc:
-		return "desc"
-	case OrderByDirectionASC:
-		return "ASC"
-	case OrderByDirectionDESC:
-		return "DESC"
-	}
-}
-
-func (o OrderByDirection) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", o.String())), nil
-}
-
-func (o *OrderByDirection) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewOrderByDirectionFromString(s string) (OrderByDirection, error) {
+	switch s {
 	case "asc":
-		value := OrderByDirectionasc
-		*o = value
+		return OrderByDirectionasc, nil
 	case "desc":
-		value := OrderByDirectiondesc
-		*o = value
+		return OrderByDirectiondesc, nil
 	case "ASC":
-		value := OrderByDirectionASC
-		*o = value
+		return OrderByDirectionASC, nil
 	case "DESC":
-		value := OrderByDirectionDESC
-		*o = value
+		return OrderByDirectionDESC, nil
 	}
-	return nil
+	var t OrderByDirection
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (o OrderByDirection) Ptr() *OrderByDirection {
+	return &o
 }
 
 type Oura struct {
@@ -7303,42 +6147,26 @@ type RechargeConfigs struct {
 	Encoding         RechargeConfigsEncoding `json:"encoding,omitempty"`
 }
 
-type RechargeConfigsEncoding uint
+type RechargeConfigsEncoding string
 
 const (
-	RechargeConfigsEncodingBase64 RechargeConfigsEncoding = iota + 1
-	RechargeConfigsEncodingHex
+	RechargeConfigsEncodingBase64 RechargeConfigsEncoding = "base64"
+	RechargeConfigsEncodingHex    RechargeConfigsEncoding = "hex"
 )
 
-func (r RechargeConfigsEncoding) String() string {
-	switch r {
-	default:
-		return strconv.Itoa(int(r))
-	case RechargeConfigsEncodingBase64:
-		return "base64"
-	case RechargeConfigsEncodingHex:
-		return "hex"
-	}
-}
-
-func (r RechargeConfigsEncoding) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", r.String())), nil
-}
-
-func (r *RechargeConfigsEncoding) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewRechargeConfigsEncodingFromString(s string) (RechargeConfigsEncoding, error) {
+	switch s {
 	case "base64":
-		value := RechargeConfigsEncodingBase64
-		*r = value
+		return RechargeConfigsEncodingBase64, nil
 	case "hex":
-		value := RechargeConfigsEncodingHex
-		*r = value
+		return RechargeConfigsEncodingHex, nil
 	}
-	return nil
+	var t RechargeConfigsEncoding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RechargeConfigsEncoding) Ptr() *RechargeConfigsEncoding {
+	return &r
 }
 
 type Request struct {
@@ -7370,42 +6198,26 @@ type Request struct {
 }
 
 // The priority attributed to the request when received
-type RequestIngestPriority uint
+type RequestIngestPriority string
 
 const (
-	RequestIngestPriorityNormal RequestIngestPriority = iota + 1
-	RequestIngestPriorityLow
+	RequestIngestPriorityNormal RequestIngestPriority = "NORMAL"
+	RequestIngestPriorityLow    RequestIngestPriority = "LOW"
 )
 
-func (r RequestIngestPriority) String() string {
-	switch r {
-	default:
-		return strconv.Itoa(int(r))
-	case RequestIngestPriorityNormal:
-		return "NORMAL"
-	case RequestIngestPriorityLow:
-		return "LOW"
-	}
-}
-
-func (r RequestIngestPriority) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", r.String())), nil
-}
-
-func (r *RequestIngestPriority) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewRequestIngestPriorityFromString(s string) (RequestIngestPriority, error) {
+	switch s {
 	case "NORMAL":
-		value := RequestIngestPriorityNormal
-		*r = value
+		return RequestIngestPriorityNormal, nil
 	case "LOW":
-		value := RequestIngestPriorityLow
-		*r = value
+		return RequestIngestPriorityLow, nil
 	}
-	return nil
+	var t RequestIngestPriority
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestIngestPriority) Ptr() *RequestIngestPriority {
+	return &r
 }
 
 type RequestPaginatedResult struct {
@@ -7414,84 +6226,47 @@ type RequestPaginatedResult struct {
 	Models     []*Request      `json:"models,omitempty"`
 }
 
-type RequestRejectionCause uint
+type RequestRejectionCause string
 
 const (
-	RequestRejectionCauseSourceArchived RequestRejectionCause = iota + 1
-	RequestRejectionCauseNoWebhook
-	RequestRejectionCauseVerificationFailed
-	RequestRejectionCauseUnsupportedHttpMethod
-	RequestRejectionCauseUnsupportedContentType
-	RequestRejectionCauseUnparsableJson
-	RequestRejectionCausePayloadTooLarge
-	RequestRejectionCauseIngestionFatal
-	RequestRejectionCauseUnknown
+	RequestRejectionCauseSourceArchived         RequestRejectionCause = "SOURCE_ARCHIVED"
+	RequestRejectionCauseNoWebhook              RequestRejectionCause = "NO_WEBHOOK"
+	RequestRejectionCauseVerificationFailed     RequestRejectionCause = "VERIFICATION_FAILED"
+	RequestRejectionCauseUnsupportedHttpMethod  RequestRejectionCause = "UNSUPPORTED_HTTP_METHOD"
+	RequestRejectionCauseUnsupportedContentType RequestRejectionCause = "UNSUPPORTED_CONTENT_TYPE"
+	RequestRejectionCauseUnparsableJson         RequestRejectionCause = "UNPARSABLE_JSON"
+	RequestRejectionCausePayloadTooLarge        RequestRejectionCause = "PAYLOAD_TOO_LARGE"
+	RequestRejectionCauseIngestionFatal         RequestRejectionCause = "INGESTION_FATAL"
+	RequestRejectionCauseUnknown                RequestRejectionCause = "UNKNOWN"
 )
 
-func (r RequestRejectionCause) String() string {
-	switch r {
-	default:
-		return strconv.Itoa(int(r))
-	case RequestRejectionCauseSourceArchived:
-		return "SOURCE_ARCHIVED"
-	case RequestRejectionCauseNoWebhook:
-		return "NO_WEBHOOK"
-	case RequestRejectionCauseVerificationFailed:
-		return "VERIFICATION_FAILED"
-	case RequestRejectionCauseUnsupportedHttpMethod:
-		return "UNSUPPORTED_HTTP_METHOD"
-	case RequestRejectionCauseUnsupportedContentType:
-		return "UNSUPPORTED_CONTENT_TYPE"
-	case RequestRejectionCauseUnparsableJson:
-		return "UNPARSABLE_JSON"
-	case RequestRejectionCausePayloadTooLarge:
-		return "PAYLOAD_TOO_LARGE"
-	case RequestRejectionCauseIngestionFatal:
-		return "INGESTION_FATAL"
-	case RequestRejectionCauseUnknown:
-		return "UNKNOWN"
-	}
-}
-
-func (r RequestRejectionCause) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", r.String())), nil
-}
-
-func (r *RequestRejectionCause) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewRequestRejectionCauseFromString(s string) (RequestRejectionCause, error) {
+	switch s {
 	case "SOURCE_ARCHIVED":
-		value := RequestRejectionCauseSourceArchived
-		*r = value
+		return RequestRejectionCauseSourceArchived, nil
 	case "NO_WEBHOOK":
-		value := RequestRejectionCauseNoWebhook
-		*r = value
+		return RequestRejectionCauseNoWebhook, nil
 	case "VERIFICATION_FAILED":
-		value := RequestRejectionCauseVerificationFailed
-		*r = value
+		return RequestRejectionCauseVerificationFailed, nil
 	case "UNSUPPORTED_HTTP_METHOD":
-		value := RequestRejectionCauseUnsupportedHttpMethod
-		*r = value
+		return RequestRejectionCauseUnsupportedHttpMethod, nil
 	case "UNSUPPORTED_CONTENT_TYPE":
-		value := RequestRejectionCauseUnsupportedContentType
-		*r = value
+		return RequestRejectionCauseUnsupportedContentType, nil
 	case "UNPARSABLE_JSON":
-		value := RequestRejectionCauseUnparsableJson
-		*r = value
+		return RequestRejectionCauseUnparsableJson, nil
 	case "PAYLOAD_TOO_LARGE":
-		value := RequestRejectionCausePayloadTooLarge
-		*r = value
+		return RequestRejectionCausePayloadTooLarge, nil
 	case "INGESTION_FATAL":
-		value := RequestRejectionCauseIngestionFatal
-		*r = value
+		return RequestRejectionCauseIngestionFatal, nil
 	case "UNKNOWN":
-		value := RequestRejectionCauseUnknown
-		*r = value
+		return RequestRejectionCauseUnknown, nil
 	}
-	return nil
+	var t RequestRejectionCause
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestRejectionCause) Ptr() *RequestRejectionCause {
+	return &r
 }
 
 type RetriedEvent struct {
@@ -7541,42 +6316,26 @@ func (r *RetryRule) MarshalJSON() ([]byte, error) {
 }
 
 // Algorithm to use when calculating delay between retries
-type RetryStrategy uint
+type RetryStrategy string
 
 const (
-	RetryStrategyLinear RetryStrategy = iota + 1
-	RetryStrategyExponential
+	RetryStrategyLinear      RetryStrategy = "linear"
+	RetryStrategyExponential RetryStrategy = "exponential"
 )
 
-func (r RetryStrategy) String() string {
-	switch r {
-	default:
-		return strconv.Itoa(int(r))
-	case RetryStrategyLinear:
-		return "linear"
-	case RetryStrategyExponential:
-		return "exponential"
-	}
-}
-
-func (r RetryStrategy) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", r.String())), nil
-}
-
-func (r *RetryStrategy) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewRetryStrategyFromString(s string) (RetryStrategy, error) {
+	switch s {
 	case "linear":
-		value := RetryStrategyLinear
-		*r = value
+		return RetryStrategyLinear, nil
 	case "exponential":
-		value := RetryStrategyExponential
-		*r = value
+		return RetryStrategyExponential, nil
 	}
-	return nil
+	var t RetryStrategy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RetryStrategy) Ptr() *RetryStrategy {
+	return &r
 }
 
 type Rule struct {
@@ -7869,42 +6628,26 @@ type ShopifyConfigs struct {
 	Shop             *string                        `json:"shop,omitempty"`
 }
 
-type ShopifyConfigsRateLimitPeriod uint
+type ShopifyConfigsRateLimitPeriod string
 
 const (
-	ShopifyConfigsRateLimitPeriodMinute ShopifyConfigsRateLimitPeriod = iota + 1
-	ShopifyConfigsRateLimitPeriodSecond
+	ShopifyConfigsRateLimitPeriodMinute ShopifyConfigsRateLimitPeriod = "minute"
+	ShopifyConfigsRateLimitPeriodSecond ShopifyConfigsRateLimitPeriod = "second"
 )
 
-func (s ShopifyConfigsRateLimitPeriod) String() string {
+func NewShopifyConfigsRateLimitPeriodFromString(s string) (ShopifyConfigsRateLimitPeriod, error) {
 	switch s {
-	default:
-		return strconv.Itoa(int(s))
-	case ShopifyConfigsRateLimitPeriodMinute:
-		return "minute"
-	case ShopifyConfigsRateLimitPeriodSecond:
-		return "second"
-	}
-}
-
-func (s ShopifyConfigsRateLimitPeriod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", s.String())), nil
-}
-
-func (s *ShopifyConfigsRateLimitPeriod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
 	case "minute":
-		value := ShopifyConfigsRateLimitPeriodMinute
-		*s = value
+		return ShopifyConfigsRateLimitPeriodMinute, nil
 	case "second":
-		value := ShopifyConfigsRateLimitPeriodSecond
-		*s = value
+		return ShopifyConfigsRateLimitPeriodSecond, nil
 	}
-	return nil
+	var t ShopifyConfigsRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s ShopifyConfigsRateLimitPeriod) Ptr() *ShopifyConfigsRateLimitPeriod {
+	return &s
 }
 
 type ShopifyIntegrationConfigs struct {
@@ -7916,42 +6659,26 @@ type ShopifyIntegrationConfigs struct {
 	Shop             *string                                   `json:"shop,omitempty"`
 }
 
-type ShopifyIntegrationConfigsRateLimitPeriod uint
+type ShopifyIntegrationConfigsRateLimitPeriod string
 
 const (
-	ShopifyIntegrationConfigsRateLimitPeriodMinute ShopifyIntegrationConfigsRateLimitPeriod = iota + 1
-	ShopifyIntegrationConfigsRateLimitPeriodSecond
+	ShopifyIntegrationConfigsRateLimitPeriodMinute ShopifyIntegrationConfigsRateLimitPeriod = "minute"
+	ShopifyIntegrationConfigsRateLimitPeriodSecond ShopifyIntegrationConfigsRateLimitPeriod = "second"
 )
 
-func (s ShopifyIntegrationConfigsRateLimitPeriod) String() string {
+func NewShopifyIntegrationConfigsRateLimitPeriodFromString(s string) (ShopifyIntegrationConfigsRateLimitPeriod, error) {
 	switch s {
-	default:
-		return strconv.Itoa(int(s))
-	case ShopifyIntegrationConfigsRateLimitPeriodMinute:
-		return "minute"
-	case ShopifyIntegrationConfigsRateLimitPeriodSecond:
-		return "second"
-	}
-}
-
-func (s ShopifyIntegrationConfigsRateLimitPeriod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", s.String())), nil
-}
-
-func (s *ShopifyIntegrationConfigsRateLimitPeriod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
 	case "minute":
-		value := ShopifyIntegrationConfigsRateLimitPeriodMinute
-		*s = value
+		return ShopifyIntegrationConfigsRateLimitPeriodMinute, nil
 	case "second":
-		value := ShopifyIntegrationConfigsRateLimitPeriodSecond
-		*s = value
+		return ShopifyIntegrationConfigsRateLimitPeriodSecond, nil
 	}
-	return nil
+	var t ShopifyIntegrationConfigsRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s ShopifyIntegrationConfigsRateLimitPeriod) Ptr() *ShopifyIntegrationConfigsRateLimitPeriod {
+	return &s
 }
 
 // Request data
@@ -8192,60 +6919,35 @@ type Source struct {
 // List of allowed HTTP methods. Defaults to PUT, POST, PATCH, DELETE.
 type SourceAllowedHttpMethod = []SourceAllowedHttpMethodItem
 
-type SourceAllowedHttpMethodItem uint
+type SourceAllowedHttpMethodItem string
 
 const (
-	SourceAllowedHttpMethodItemGet SourceAllowedHttpMethodItem = iota + 1
-	SourceAllowedHttpMethodItemPost
-	SourceAllowedHttpMethodItemPut
-	SourceAllowedHttpMethodItemPatch
-	SourceAllowedHttpMethodItemDelete
+	SourceAllowedHttpMethodItemGet    SourceAllowedHttpMethodItem = "GET"
+	SourceAllowedHttpMethodItemPost   SourceAllowedHttpMethodItem = "POST"
+	SourceAllowedHttpMethodItemPut    SourceAllowedHttpMethodItem = "PUT"
+	SourceAllowedHttpMethodItemPatch  SourceAllowedHttpMethodItem = "PATCH"
+	SourceAllowedHttpMethodItemDelete SourceAllowedHttpMethodItem = "DELETE"
 )
 
-func (s SourceAllowedHttpMethodItem) String() string {
+func NewSourceAllowedHttpMethodItemFromString(s string) (SourceAllowedHttpMethodItem, error) {
 	switch s {
-	default:
-		return strconv.Itoa(int(s))
-	case SourceAllowedHttpMethodItemGet:
-		return "GET"
-	case SourceAllowedHttpMethodItemPost:
-		return "POST"
-	case SourceAllowedHttpMethodItemPut:
-		return "PUT"
-	case SourceAllowedHttpMethodItemPatch:
-		return "PATCH"
-	case SourceAllowedHttpMethodItemDelete:
-		return "DELETE"
-	}
-}
-
-func (s SourceAllowedHttpMethodItem) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", s.String())), nil
-}
-
-func (s *SourceAllowedHttpMethodItem) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
 	case "GET":
-		value := SourceAllowedHttpMethodItemGet
-		*s = value
+		return SourceAllowedHttpMethodItemGet, nil
 	case "POST":
-		value := SourceAllowedHttpMethodItemPost
-		*s = value
+		return SourceAllowedHttpMethodItemPost, nil
 	case "PUT":
-		value := SourceAllowedHttpMethodItemPut
-		*s = value
+		return SourceAllowedHttpMethodItemPut, nil
 	case "PATCH":
-		value := SourceAllowedHttpMethodItemPatch
-		*s = value
+		return SourceAllowedHttpMethodItemPatch, nil
 	case "DELETE":
-		value := SourceAllowedHttpMethodItemDelete
-		*s = value
+		return SourceAllowedHttpMethodItemDelete, nil
 	}
-	return nil
+	var t SourceAllowedHttpMethodItem
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SourceAllowedHttpMethodItem) Ptr() *SourceAllowedHttpMethodItem {
+	return &s
 }
 
 // Custom response object
@@ -8256,48 +6958,29 @@ type SourceCustomResponse struct {
 }
 
 // Content type of the custom response
-type SourceCustomResponseContentType uint
+type SourceCustomResponseContentType string
 
 const (
-	SourceCustomResponseContentTypeJson SourceCustomResponseContentType = iota + 1
-	SourceCustomResponseContentTypeText
-	SourceCustomResponseContentTypeXml
+	SourceCustomResponseContentTypeJson SourceCustomResponseContentType = "json"
+	SourceCustomResponseContentTypeText SourceCustomResponseContentType = "text"
+	SourceCustomResponseContentTypeXml  SourceCustomResponseContentType = "xml"
 )
 
-func (s SourceCustomResponseContentType) String() string {
+func NewSourceCustomResponseContentTypeFromString(s string) (SourceCustomResponseContentType, error) {
 	switch s {
-	default:
-		return strconv.Itoa(int(s))
-	case SourceCustomResponseContentTypeJson:
-		return "json"
-	case SourceCustomResponseContentTypeText:
-		return "text"
-	case SourceCustomResponseContentTypeXml:
-		return "xml"
-	}
-}
-
-func (s SourceCustomResponseContentType) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", s.String())), nil
-}
-
-func (s *SourceCustomResponseContentType) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
 	case "json":
-		value := SourceCustomResponseContentTypeJson
-		*s = value
+		return SourceCustomResponseContentTypeJson, nil
 	case "text":
-		value := SourceCustomResponseContentTypeText
-		*s = value
+		return SourceCustomResponseContentTypeText, nil
 	case "xml":
-		value := SourceCustomResponseContentTypeXml
-		*s = value
+		return SourceCustomResponseContentTypeXml, nil
 	}
-	return nil
+	var t SourceCustomResponseContentType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SourceCustomResponseContentType) Ptr() *SourceCustomResponseContentType {
+	return &s
 }
 
 type SourcePaginatedResult struct {
@@ -8544,54 +7227,32 @@ type ToggleWebhookNotifications struct {
 }
 
 // Supported topics
-type TopicsValue uint
+type TopicsValue string
 
 const (
-	TopicsValueIssueOpened TopicsValue = iota + 1
-	TopicsValueIssueUpdated
-	TopicsValueDeprecatedAttemptFailed
-	TopicsValueEventSuccessful
+	TopicsValueIssueOpened             TopicsValue = "issue.opened"
+	TopicsValueIssueUpdated            TopicsValue = "issue.updated"
+	TopicsValueDeprecatedAttemptFailed TopicsValue = "deprecated.attempt-failed"
+	TopicsValueEventSuccessful         TopicsValue = "event.successful"
 )
 
-func (t TopicsValue) String() string {
-	switch t {
-	default:
-		return strconv.Itoa(int(t))
-	case TopicsValueIssueOpened:
-		return "issue.opened"
-	case TopicsValueIssueUpdated:
-		return "issue.updated"
-	case TopicsValueDeprecatedAttemptFailed:
-		return "deprecated.attempt-failed"
-	case TopicsValueEventSuccessful:
-		return "event.successful"
-	}
-}
-
-func (t TopicsValue) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", t.String())), nil
-}
-
-func (t *TopicsValue) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewTopicsValueFromString(s string) (TopicsValue, error) {
+	switch s {
 	case "issue.opened":
-		value := TopicsValueIssueOpened
-		*t = value
+		return TopicsValueIssueOpened, nil
 	case "issue.updated":
-		value := TopicsValueIssueUpdated
-		*t = value
+		return TopicsValueIssueUpdated, nil
 	case "deprecated.attempt-failed":
-		value := TopicsValueDeprecatedAttemptFailed
-		*t = value
+		return TopicsValueDeprecatedAttemptFailed, nil
 	case "event.successful":
-		value := TopicsValueEventSuccessful
-		*t = value
+		return TopicsValueEventSuccessful, nil
 	}
-	return nil
+	var t TopicsValue
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TopicsValue) Ptr() *TopicsValue {
+	return &t
 }
 
 type TransformFull struct {
@@ -8765,60 +7426,35 @@ type TransformationExecution struct {
 }
 
 // The minimum log level to open the issue on
-type TransformationExecutionLogLevel uint
+type TransformationExecutionLogLevel string
 
 const (
-	TransformationExecutionLogLevelDebug TransformationExecutionLogLevel = iota + 1
-	TransformationExecutionLogLevelInfo
-	TransformationExecutionLogLevelWarn
-	TransformationExecutionLogLevelError
-	TransformationExecutionLogLevelFatal
+	TransformationExecutionLogLevelDebug TransformationExecutionLogLevel = "debug"
+	TransformationExecutionLogLevelInfo  TransformationExecutionLogLevel = "info"
+	TransformationExecutionLogLevelWarn  TransformationExecutionLogLevel = "warn"
+	TransformationExecutionLogLevelError TransformationExecutionLogLevel = "error"
+	TransformationExecutionLogLevelFatal TransformationExecutionLogLevel = "fatal"
 )
 
-func (t TransformationExecutionLogLevel) String() string {
-	switch t {
-	default:
-		return strconv.Itoa(int(t))
-	case TransformationExecutionLogLevelDebug:
-		return "debug"
-	case TransformationExecutionLogLevelInfo:
-		return "info"
-	case TransformationExecutionLogLevelWarn:
-		return "warn"
-	case TransformationExecutionLogLevelError:
-		return "error"
-	case TransformationExecutionLogLevelFatal:
-		return "fatal"
-	}
-}
-
-func (t TransformationExecutionLogLevel) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", t.String())), nil
-}
-
-func (t *TransformationExecutionLogLevel) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewTransformationExecutionLogLevelFromString(s string) (TransformationExecutionLogLevel, error) {
+	switch s {
 	case "debug":
-		value := TransformationExecutionLogLevelDebug
-		*t = value
+		return TransformationExecutionLogLevelDebug, nil
 	case "info":
-		value := TransformationExecutionLogLevelInfo
-		*t = value
+		return TransformationExecutionLogLevelInfo, nil
 	case "warn":
-		value := TransformationExecutionLogLevelWarn
-		*t = value
+		return TransformationExecutionLogLevelWarn, nil
 	case "error":
-		value := TransformationExecutionLogLevelError
-		*t = value
+		return TransformationExecutionLogLevelError, nil
 	case "fatal":
-		value := TransformationExecutionLogLevelFatal
-		*t = value
+		return TransformationExecutionLogLevelFatal, nil
 	}
-	return nil
+	var t TransformationExecutionLogLevel
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TransformationExecutionLogLevel) Ptr() *TransformationExecutionLogLevel {
+	return &t
 }
 
 type TransformationExecutionPaginatedResult struct {
@@ -9222,42 +7858,26 @@ type TransformationPaginatedResult struct {
 }
 
 // Bookmark target
-type TriggerBookmarkRequestTarget uint
+type TriggerBookmarkRequestTarget string
 
 const (
-	TriggerBookmarkRequestTargetHttp TriggerBookmarkRequestTarget = iota + 1
-	TriggerBookmarkRequestTargetCli
+	TriggerBookmarkRequestTargetHttp TriggerBookmarkRequestTarget = "http"
+	TriggerBookmarkRequestTargetCli  TriggerBookmarkRequestTarget = "cli"
 )
 
-func (t TriggerBookmarkRequestTarget) String() string {
-	switch t {
-	default:
-		return strconv.Itoa(int(t))
-	case TriggerBookmarkRequestTargetHttp:
-		return "http"
-	case TriggerBookmarkRequestTargetCli:
-		return "cli"
-	}
-}
-
-func (t TriggerBookmarkRequestTarget) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", t.String())), nil
-}
-
-func (t *TriggerBookmarkRequestTarget) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewTriggerBookmarkRequestTargetFromString(s string) (TriggerBookmarkRequestTarget, error) {
+	switch s {
 	case "http":
-		value := TriggerBookmarkRequestTargetHttp
-		*t = value
+		return TriggerBookmarkRequestTargetHttp, nil
 	case "cli":
-		value := TriggerBookmarkRequestTargetCli
-		*t = value
+		return TriggerBookmarkRequestTargetCli, nil
 	}
-	return nil
+	var t TriggerBookmarkRequestTarget
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TriggerBookmarkRequestTarget) Ptr() *TriggerBookmarkRequestTarget {
+	return &t
 }
 
 type Twitter struct {
@@ -9335,48 +7955,29 @@ type TypeformConfigs struct {
 }
 
 // Period to rate limit attempts
-type UpdateDestinationRequestRateLimitPeriod uint
+type UpdateDestinationRequestRateLimitPeriod string
 
 const (
-	UpdateDestinationRequestRateLimitPeriodSecond UpdateDestinationRequestRateLimitPeriod = iota + 1
-	UpdateDestinationRequestRateLimitPeriodMinute
-	UpdateDestinationRequestRateLimitPeriodHour
+	UpdateDestinationRequestRateLimitPeriodSecond UpdateDestinationRequestRateLimitPeriod = "second"
+	UpdateDestinationRequestRateLimitPeriodMinute UpdateDestinationRequestRateLimitPeriod = "minute"
+	UpdateDestinationRequestRateLimitPeriodHour   UpdateDestinationRequestRateLimitPeriod = "hour"
 )
 
-func (u UpdateDestinationRequestRateLimitPeriod) String() string {
-	switch u {
-	default:
-		return strconv.Itoa(int(u))
-	case UpdateDestinationRequestRateLimitPeriodSecond:
-		return "second"
-	case UpdateDestinationRequestRateLimitPeriodMinute:
-		return "minute"
-	case UpdateDestinationRequestRateLimitPeriodHour:
-		return "hour"
-	}
-}
-
-func (u UpdateDestinationRequestRateLimitPeriod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", u.String())), nil
-}
-
-func (u *UpdateDestinationRequestRateLimitPeriod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewUpdateDestinationRequestRateLimitPeriodFromString(s string) (UpdateDestinationRequestRateLimitPeriod, error) {
+	switch s {
 	case "second":
-		value := UpdateDestinationRequestRateLimitPeriodSecond
-		*u = value
+		return UpdateDestinationRequestRateLimitPeriodSecond, nil
 	case "minute":
-		value := UpdateDestinationRequestRateLimitPeriodMinute
-		*u = value
+		return UpdateDestinationRequestRateLimitPeriodMinute, nil
 	case "hour":
-		value := UpdateDestinationRequestRateLimitPeriodHour
-		*u = value
+		return UpdateDestinationRequestRateLimitPeriodHour, nil
 	}
-	return nil
+	var t UpdateDestinationRequestRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UpdateDestinationRequestRateLimitPeriod) Ptr() *UpdateDestinationRequestRateLimitPeriod {
+	return &u
 }
 
 // Decrypted Key/Value object of the associated configuration for that provider
@@ -9521,54 +8122,32 @@ type UpdateIntegrationRequestConfigsSix struct {
 }
 
 // New status
-type UpdateIssueRequestStatus uint
+type UpdateIssueRequestStatus string
 
 const (
-	UpdateIssueRequestStatusOpened UpdateIssueRequestStatus = iota + 1
-	UpdateIssueRequestStatusIgnored
-	UpdateIssueRequestStatusAcknowledged
-	UpdateIssueRequestStatusResolved
+	UpdateIssueRequestStatusOpened       UpdateIssueRequestStatus = "OPENED"
+	UpdateIssueRequestStatusIgnored      UpdateIssueRequestStatus = "IGNORED"
+	UpdateIssueRequestStatusAcknowledged UpdateIssueRequestStatus = "ACKNOWLEDGED"
+	UpdateIssueRequestStatusResolved     UpdateIssueRequestStatus = "RESOLVED"
 )
 
-func (u UpdateIssueRequestStatus) String() string {
-	switch u {
-	default:
-		return strconv.Itoa(int(u))
-	case UpdateIssueRequestStatusOpened:
-		return "OPENED"
-	case UpdateIssueRequestStatusIgnored:
-		return "IGNORED"
-	case UpdateIssueRequestStatusAcknowledged:
-		return "ACKNOWLEDGED"
-	case UpdateIssueRequestStatusResolved:
-		return "RESOLVED"
-	}
-}
-
-func (u UpdateIssueRequestStatus) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", u.String())), nil
-}
-
-func (u *UpdateIssueRequestStatus) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewUpdateIssueRequestStatusFromString(s string) (UpdateIssueRequestStatus, error) {
+	switch s {
 	case "OPENED":
-		value := UpdateIssueRequestStatusOpened
-		*u = value
+		return UpdateIssueRequestStatusOpened, nil
 	case "IGNORED":
-		value := UpdateIssueRequestStatusIgnored
-		*u = value
+		return UpdateIssueRequestStatusIgnored, nil
 	case "ACKNOWLEDGED":
-		value := UpdateIssueRequestStatusAcknowledged
-		*u = value
+		return UpdateIssueRequestStatusAcknowledged, nil
 	case "RESOLVED":
-		value := UpdateIssueRequestStatusResolved
-		*u = value
+		return UpdateIssueRequestStatusResolved, nil
 	}
-	return nil
+	var t UpdateIssueRequestStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UpdateIssueRequestStatus) Ptr() *UpdateIssueRequestStatus {
+	return &u
 }
 
 // Configuration object for the specific issue type selected
@@ -9722,48 +8301,29 @@ type UpsertConnectionRequestDestination struct {
 }
 
 // Period to rate limit attempts
-type UpsertConnectionRequestDestinationRateLimitPeriod uint
+type UpsertConnectionRequestDestinationRateLimitPeriod string
 
 const (
-	UpsertConnectionRequestDestinationRateLimitPeriodSecond UpsertConnectionRequestDestinationRateLimitPeriod = iota + 1
-	UpsertConnectionRequestDestinationRateLimitPeriodMinute
-	UpsertConnectionRequestDestinationRateLimitPeriodHour
+	UpsertConnectionRequestDestinationRateLimitPeriodSecond UpsertConnectionRequestDestinationRateLimitPeriod = "second"
+	UpsertConnectionRequestDestinationRateLimitPeriodMinute UpsertConnectionRequestDestinationRateLimitPeriod = "minute"
+	UpsertConnectionRequestDestinationRateLimitPeriodHour   UpsertConnectionRequestDestinationRateLimitPeriod = "hour"
 )
 
-func (u UpsertConnectionRequestDestinationRateLimitPeriod) String() string {
-	switch u {
-	default:
-		return strconv.Itoa(int(u))
-	case UpsertConnectionRequestDestinationRateLimitPeriodSecond:
-		return "second"
-	case UpsertConnectionRequestDestinationRateLimitPeriodMinute:
-		return "minute"
-	case UpsertConnectionRequestDestinationRateLimitPeriodHour:
-		return "hour"
-	}
-}
-
-func (u UpsertConnectionRequestDestinationRateLimitPeriod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", u.String())), nil
-}
-
-func (u *UpsertConnectionRequestDestinationRateLimitPeriod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewUpsertConnectionRequestDestinationRateLimitPeriodFromString(s string) (UpsertConnectionRequestDestinationRateLimitPeriod, error) {
+	switch s {
 	case "second":
-		value := UpsertConnectionRequestDestinationRateLimitPeriodSecond
-		*u = value
+		return UpsertConnectionRequestDestinationRateLimitPeriodSecond, nil
 	case "minute":
-		value := UpsertConnectionRequestDestinationRateLimitPeriodMinute
-		*u = value
+		return UpsertConnectionRequestDestinationRateLimitPeriodMinute, nil
 	case "hour":
-		value := UpsertConnectionRequestDestinationRateLimitPeriodHour
-		*u = value
+		return UpsertConnectionRequestDestinationRateLimitPeriodHour, nil
 	}
-	return nil
+	var t UpsertConnectionRequestDestinationRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UpsertConnectionRequestDestinationRateLimitPeriod) Ptr() *UpsertConnectionRequestDestinationRateLimitPeriod {
+	return &u
 }
 
 // Source input object
@@ -9778,48 +8338,29 @@ type UpsertConnectionRequestSource struct {
 }
 
 // Period to rate limit attempts
-type UpsertDestinationRequestRateLimitPeriod uint
+type UpsertDestinationRequestRateLimitPeriod string
 
 const (
-	UpsertDestinationRequestRateLimitPeriodSecond UpsertDestinationRequestRateLimitPeriod = iota + 1
-	UpsertDestinationRequestRateLimitPeriodMinute
-	UpsertDestinationRequestRateLimitPeriodHour
+	UpsertDestinationRequestRateLimitPeriodSecond UpsertDestinationRequestRateLimitPeriod = "second"
+	UpsertDestinationRequestRateLimitPeriodMinute UpsertDestinationRequestRateLimitPeriod = "minute"
+	UpsertDestinationRequestRateLimitPeriodHour   UpsertDestinationRequestRateLimitPeriod = "hour"
 )
 
-func (u UpsertDestinationRequestRateLimitPeriod) String() string {
-	switch u {
-	default:
-		return strconv.Itoa(int(u))
-	case UpsertDestinationRequestRateLimitPeriodSecond:
-		return "second"
-	case UpsertDestinationRequestRateLimitPeriodMinute:
-		return "minute"
-	case UpsertDestinationRequestRateLimitPeriodHour:
-		return "hour"
-	}
-}
-
-func (u UpsertDestinationRequestRateLimitPeriod) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", u.String())), nil
-}
-
-func (u *UpsertDestinationRequestRateLimitPeriod) UnmarshalJSON(data []byte) error {
-	var raw string
-	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	switch raw {
+func NewUpsertDestinationRequestRateLimitPeriodFromString(s string) (UpsertDestinationRequestRateLimitPeriod, error) {
+	switch s {
 	case "second":
-		value := UpsertDestinationRequestRateLimitPeriodSecond
-		*u = value
+		return UpsertDestinationRequestRateLimitPeriodSecond, nil
 	case "minute":
-		value := UpsertDestinationRequestRateLimitPeriodMinute
-		*u = value
+		return UpsertDestinationRequestRateLimitPeriodMinute, nil
 	case "hour":
-		value := UpsertDestinationRequestRateLimitPeriodHour
-		*u = value
+		return UpsertDestinationRequestRateLimitPeriodHour, nil
 	}
-	return nil
+	var t UpsertDestinationRequestRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (u UpsertDestinationRequestRateLimitPeriod) Ptr() *UpsertDestinationRequestRateLimitPeriod {
+	return &u
 }
 
 // Configuration object for the specific issue type selected
