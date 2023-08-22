@@ -16,8 +16,8 @@ func TestClient(t *testing.T) {
 		context.TODO(),
 		"<SOURCE_ID>",
 		&hookdeckgosdk.UpdateSourceRequest{
-			Name:           hookdeckgosdk.O("name"),
-			CustomResponse: hookdeckgosdk.Null[*hookdeckgosdk.SourceCustomResponse](),
+			Name:           hookdeckgosdk.Optional("name"),
+			CustomResponse: hookdeckgosdk.Null[hookdeckgosdk.SourceCustomResponse](),
 		},
 	)
 	require.NoError(t, err)

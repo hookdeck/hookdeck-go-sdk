@@ -40,8 +40,8 @@ type UpdateSourceRequest struct {
 	// Description for the source
 	Description        *core.Optional[string]                  `json:"description,omitempty"`
 	AllowedHttpMethods *core.Optional[SourceAllowedHttpMethod] `json:"allowed_http_methods,omitempty"`
-	CustomResponse     *core.Optional[*SourceCustomResponse]   `json:"custom_response,omitempty"`
-	Verification       *core.Optional[*VerificationConfig]     `json:"verification,omitempty"`
+	CustomResponse     *core.Optional[SourceCustomResponse]    `json:"custom_response,omitempty"`
+	Verification       *core.Optional[VerificationConfig]      `json:"verification,omitempty"`
 }
 
 type UpsertSourceRequest struct {

@@ -32,5 +32,5 @@ func (o *Optional[T]) MarshalJSON() ([]byte, error) {
 	if o.Null {
 		return []byte("null"), nil
 	}
-	return json.Marshal(o.Value)
+	return json.Marshal(&o.Value)
 }

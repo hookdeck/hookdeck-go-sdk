@@ -2,8 +2,8 @@ package api
 
 import core "github.com/hookdeck/hookdeck-go-sdk/core"
 
-// O initializes an optional field.
-func O[T any](value T) *core.Optional[T] {
+// Optional initializes an optional field.
+func Optional[T any](value T) *core.Optional[T] {
 	return &core.Optional[T]{
 		Value: value,
 	}
