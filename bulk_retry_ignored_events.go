@@ -3,12 +3,13 @@
 package api
 
 import (
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
 )
 
 type CreateIgnoredEventBulkRetryRequest struct {
 	// Filter by the bulk retry ignored event query object
-	Query *CreateIgnoredEventBulkRetryRequestQuery `json:"query,omitempty"`
+	Query *core.Optional[CreateIgnoredEventBulkRetryRequestQuery] `json:"query,omitempty"`
 }
 
 type GetIgnoredEventBulkRetriesRequest struct {

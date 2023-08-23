@@ -10,31 +10,25 @@ import (
 	http "net/http"
 )
 
-type Client interface {
-	ListCustomDomains(ctx context.Context, teamId string) (hookdeckgosdk.ListCustomDomainSchema, error)
-	AddCustomDomain(ctx context.Context, teamId string, request *hookdeckgosdk.AddCustomHostname) (*hookdeckgosdk.AddCustomHostname, error)
-	DeleteCustomDomain(ctx context.Context, teamId string, domainId string) (*hookdeckgosdk.DeleteCustomDomainSchema, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) ListCustomDomains(ctx context.Context, teamId string) (hookdeckgosdk.ListCustomDomainSchema, error) {
+func (c *Client) ListCustomDomains(ctx context.Context, teamId string) (hookdeckgosdk.ListCustomDomainSchema, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -58,7 +52,7 @@ func (c *client) ListCustomDomains(ctx context.Context, teamId string) (hookdeck
 	return response, nil
 }
 
-func (c *client) AddCustomDomain(ctx context.Context, teamId string, request *hookdeckgosdk.AddCustomHostname) (*hookdeckgosdk.AddCustomHostname, error) {
+func (c *Client) AddCustomDomain(ctx context.Context, teamId string, request *hookdeckgosdk.AddCustomHostname) (*hookdeckgosdk.AddCustomHostname, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -82,7 +76,7 @@ func (c *client) AddCustomDomain(ctx context.Context, teamId string, request *ho
 	return response, nil
 }
 
-func (c *client) DeleteCustomDomain(ctx context.Context, teamId string, domainId string) (*hookdeckgosdk.DeleteCustomDomainSchema, error) {
+func (c *Client) DeleteCustomDomain(ctx context.Context, teamId string, domainId string) (*hookdeckgosdk.DeleteCustomDomainSchema, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL

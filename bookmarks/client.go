@@ -16,34 +16,25 @@ import (
 	time "time"
 )
 
-type Client interface {
-	GetBookmarks(ctx context.Context, request *hookdeckgosdk.GetBookmarksRequest) (*hookdeckgosdk.BookmarkPaginatedResult, error)
-	CreateBookmark(ctx context.Context, request *hookdeckgosdk.CreateBookmarkRequest) (*hookdeckgosdk.Bookmark, error)
-	GetBookmark(ctx context.Context, id string) (*hookdeckgosdk.Bookmark, error)
-	UpdateBookmark(ctx context.Context, id string, request *hookdeckgosdk.UpdateBookmarkRequest) (*hookdeckgosdk.Bookmark, error)
-	DeleteBookmark(ctx context.Context, id string) (*hookdeckgosdk.DeletedBookmarkResponse, error)
-	TriggerBookmark(ctx context.Context, id string, request *hookdeckgosdk.TriggerBookmarkRequest) (hookdeckgosdk.EventArray, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) GetBookmarks(ctx context.Context, request *hookdeckgosdk.GetBookmarksRequest) (*hookdeckgosdk.BookmarkPaginatedResult, error) {
+func (c *Client) GetBookmarks(ctx context.Context, request *hookdeckgosdk.GetBookmarksRequest) (*hookdeckgosdk.BookmarkPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -100,14 +91,14 @@ func (c *client) GetBookmarks(ctx context.Context, request *hookdeckgosdk.GetBoo
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -131,7 +122,7 @@ func (c *client) GetBookmarks(ctx context.Context, request *hookdeckgosdk.GetBoo
 	return response, nil
 }
 
-func (c *client) CreateBookmark(ctx context.Context, request *hookdeckgosdk.CreateBookmarkRequest) (*hookdeckgosdk.Bookmark, error) {
+func (c *Client) CreateBookmark(ctx context.Context, request *hookdeckgosdk.CreateBookmarkRequest) (*hookdeckgosdk.Bookmark, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -150,14 +141,14 @@ func (c *client) CreateBookmark(ctx context.Context, request *hookdeckgosdk.Crea
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -181,7 +172,7 @@ func (c *client) CreateBookmark(ctx context.Context, request *hookdeckgosdk.Crea
 	return response, nil
 }
 
-func (c *client) GetBookmark(ctx context.Context, id string) (*hookdeckgosdk.Bookmark, error) {
+func (c *Client) GetBookmark(ctx context.Context, id string) (*hookdeckgosdk.Bookmark, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -200,7 +191,7 @@ func (c *client) GetBookmark(ctx context.Context, id string) (*hookdeckgosdk.Boo
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -224,7 +215,7 @@ func (c *client) GetBookmark(ctx context.Context, id string) (*hookdeckgosdk.Boo
 	return response, nil
 }
 
-func (c *client) UpdateBookmark(ctx context.Context, id string, request *hookdeckgosdk.UpdateBookmarkRequest) (*hookdeckgosdk.Bookmark, error) {
+func (c *Client) UpdateBookmark(ctx context.Context, id string, request *hookdeckgosdk.UpdateBookmarkRequest) (*hookdeckgosdk.Bookmark, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -243,21 +234,21 @@ func (c *client) UpdateBookmark(ctx context.Context, id string, request *hookdec
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 404:
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -281,7 +272,7 @@ func (c *client) UpdateBookmark(ctx context.Context, id string, request *hookdec
 	return response, nil
 }
 
-func (c *client) DeleteBookmark(ctx context.Context, id string) (*hookdeckgosdk.DeletedBookmarkResponse, error) {
+func (c *Client) DeleteBookmark(ctx context.Context, id string) (*hookdeckgosdk.DeletedBookmarkResponse, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -300,7 +291,7 @@ func (c *client) DeleteBookmark(ctx context.Context, id string) (*hookdeckgosdk.
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -324,7 +315,7 @@ func (c *client) DeleteBookmark(ctx context.Context, id string) (*hookdeckgosdk.
 	return response, nil
 }
 
-func (c *client) TriggerBookmark(ctx context.Context, id string, request *hookdeckgosdk.TriggerBookmarkRequest) (hookdeckgosdk.EventArray, error) {
+func (c *Client) TriggerBookmark(ctx context.Context, id string, request *hookdeckgosdk.TriggerBookmarkRequest) (hookdeckgosdk.EventArray, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -343,21 +334,21 @@ func (c *client) TriggerBookmark(ctx context.Context, id string, request *hookde
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 404:
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}

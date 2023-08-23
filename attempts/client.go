@@ -15,30 +15,25 @@ import (
 	url "net/url"
 )
 
-type Client interface {
-	GetAttempts(ctx context.Context, request *hookdeckgosdk.GetAttemptsRequest) (*hookdeckgosdk.EventAttemptPaginatedResult, error)
-	GetAttempt(ctx context.Context, id string) (*hookdeckgosdk.EventAttempt, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) GetAttempts(ctx context.Context, request *hookdeckgosdk.GetAttemptsRequest) (*hookdeckgosdk.EventAttemptPaginatedResult, error) {
+func (c *Client) GetAttempts(ctx context.Context, request *hookdeckgosdk.GetAttemptsRequest) (*hookdeckgosdk.EventAttemptPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -80,14 +75,14 @@ func (c *client) GetAttempts(ctx context.Context, request *hookdeckgosdk.GetAtte
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -111,7 +106,7 @@ func (c *client) GetAttempts(ctx context.Context, request *hookdeckgosdk.GetAtte
 	return response, nil
 }
 
-func (c *client) GetAttempt(ctx context.Context, id string) (*hookdeckgosdk.EventAttempt, error) {
+func (c *Client) GetAttempt(ctx context.Context, id string) (*hookdeckgosdk.EventAttempt, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -130,7 +125,7 @@ func (c *client) GetAttempt(ctx context.Context, id string) (*hookdeckgosdk.Even
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}

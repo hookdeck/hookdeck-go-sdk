@@ -16,38 +16,25 @@ import (
 	time "time"
 )
 
-type Client interface {
-	GetConnections(ctx context.Context, request *hookdeckgosdk.GetConnectionsRequest) (*hookdeckgosdk.ConnectionPaginatedResult, error)
-	CreateConnection(ctx context.Context, request *hookdeckgosdk.CreateConnectionRequest) (*hookdeckgosdk.Connection, error)
-	UpsertConnection(ctx context.Context, request *hookdeckgosdk.UpsertConnectionRequest) (*hookdeckgosdk.Connection, error)
-	GetConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error)
-	UpdateConnection(ctx context.Context, id string, request *hookdeckgosdk.UpdateConnectionRequest) (*hookdeckgosdk.Connection, error)
-	DeleteConnection(ctx context.Context, id string) (*hookdeckgosdk.DeleteConnectionResponse, error)
-	ArchiveConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error)
-	UnarchiveConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error)
-	PauseConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error)
-	UnpauseConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) GetConnections(ctx context.Context, request *hookdeckgosdk.GetConnectionsRequest) (*hookdeckgosdk.ConnectionPaginatedResult, error) {
+func (c *Client) GetConnections(ctx context.Context, request *hookdeckgosdk.GetConnectionsRequest) (*hookdeckgosdk.ConnectionPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -110,14 +97,14 @@ func (c *client) GetConnections(ctx context.Context, request *hookdeckgosdk.GetC
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -141,7 +128,7 @@ func (c *client) GetConnections(ctx context.Context, request *hookdeckgosdk.GetC
 	return response, nil
 }
 
-func (c *client) CreateConnection(ctx context.Context, request *hookdeckgosdk.CreateConnectionRequest) (*hookdeckgosdk.Connection, error) {
+func (c *Client) CreateConnection(ctx context.Context, request *hookdeckgosdk.CreateConnectionRequest) (*hookdeckgosdk.Connection, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -160,14 +147,14 @@ func (c *client) CreateConnection(ctx context.Context, request *hookdeckgosdk.Cr
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -191,7 +178,7 @@ func (c *client) CreateConnection(ctx context.Context, request *hookdeckgosdk.Cr
 	return response, nil
 }
 
-func (c *client) UpsertConnection(ctx context.Context, request *hookdeckgosdk.UpsertConnectionRequest) (*hookdeckgosdk.Connection, error) {
+func (c *Client) UpsertConnection(ctx context.Context, request *hookdeckgosdk.UpsertConnectionRequest) (*hookdeckgosdk.Connection, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -210,14 +197,14 @@ func (c *client) UpsertConnection(ctx context.Context, request *hookdeckgosdk.Up
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -241,7 +228,7 @@ func (c *client) UpsertConnection(ctx context.Context, request *hookdeckgosdk.Up
 	return response, nil
 }
 
-func (c *client) GetConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
+func (c *Client) GetConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -260,7 +247,7 @@ func (c *client) GetConnection(ctx context.Context, id string) (*hookdeckgosdk.C
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -284,7 +271,7 @@ func (c *client) GetConnection(ctx context.Context, id string) (*hookdeckgosdk.C
 	return response, nil
 }
 
-func (c *client) UpdateConnection(ctx context.Context, id string, request *hookdeckgosdk.UpdateConnectionRequest) (*hookdeckgosdk.Connection, error) {
+func (c *Client) UpdateConnection(ctx context.Context, id string, request *hookdeckgosdk.UpdateConnectionRequest) (*hookdeckgosdk.Connection, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -303,21 +290,21 @@ func (c *client) UpdateConnection(ctx context.Context, id string, request *hookd
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 404:
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -341,7 +328,7 @@ func (c *client) UpdateConnection(ctx context.Context, id string, request *hookd
 	return response, nil
 }
 
-func (c *client) DeleteConnection(ctx context.Context, id string) (*hookdeckgosdk.DeleteConnectionResponse, error) {
+func (c *Client) DeleteConnection(ctx context.Context, id string) (*hookdeckgosdk.DeleteConnectionResponse, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -360,7 +347,7 @@ func (c *client) DeleteConnection(ctx context.Context, id string) (*hookdeckgosd
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -384,7 +371,7 @@ func (c *client) DeleteConnection(ctx context.Context, id string) (*hookdeckgosd
 	return response, nil
 }
 
-func (c *client) ArchiveConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
+func (c *Client) ArchiveConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -403,7 +390,7 @@ func (c *client) ArchiveConnection(ctx context.Context, id string) (*hookdeckgos
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -427,7 +414,7 @@ func (c *client) ArchiveConnection(ctx context.Context, id string) (*hookdeckgos
 	return response, nil
 }
 
-func (c *client) UnarchiveConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
+func (c *Client) UnarchiveConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -446,7 +433,7 @@ func (c *client) UnarchiveConnection(ctx context.Context, id string) (*hookdeckg
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -470,7 +457,7 @@ func (c *client) UnarchiveConnection(ctx context.Context, id string) (*hookdeckg
 	return response, nil
 }
 
-func (c *client) PauseConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
+func (c *Client) PauseConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -489,7 +476,7 @@ func (c *client) PauseConnection(ctx context.Context, id string) (*hookdeckgosdk
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -513,7 +500,7 @@ func (c *client) PauseConnection(ctx context.Context, id string) (*hookdeckgosdk
 	return response, nil
 }
 
-func (c *client) UnpauseConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
+func (c *Client) UnpauseConnection(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -532,7 +519,7 @@ func (c *client) UnpauseConnection(ctx context.Context, id string) (*hookdeckgos
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}

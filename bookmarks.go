@@ -3,6 +3,7 @@
 package api
 
 import (
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
 )
 
@@ -14,7 +15,7 @@ type CreateBookmarkRequest struct {
 	// Descriptive name of the bookmark <span style="white-space: nowrap">`<= 255 characters`</span>
 	Label string `json:"label"`
 	// A unique, human-friendly name for the bookmark <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name *string `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty"`
 }
 
 type GetBookmarksRequest struct {
@@ -33,16 +34,16 @@ type GetBookmarksRequest struct {
 
 type TriggerBookmarkRequest struct {
 	// Bookmark target
-	Target *TriggerBookmarkRequestTarget `json:"target,omitempty"`
+	Target *core.Optional[TriggerBookmarkRequestTarget] `json:"target,omitempty"`
 }
 
 type UpdateBookmarkRequest struct {
 	// ID of the event data to bookmark <span style="white-space: nowrap">`<= 255 characters`</span>
-	EventDataId *string `json:"event_data_id,omitempty"`
+	EventDataId *core.Optional[string] `json:"event_data_id,omitempty"`
 	// ID of the associated connection <span style="white-space: nowrap">`<= 255 characters`</span>
-	WebhookId *string `json:"webhook_id,omitempty"`
+	WebhookId *core.Optional[string] `json:"webhook_id,omitempty"`
 	// Descriptive name of the bookmark <span style="white-space: nowrap">`<= 255 characters`</span>
-	Label *string `json:"label,omitempty"`
+	Label *core.Optional[string] `json:"label,omitempty"`
 	// A unique, human-friendly name for the bookmark <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name *string `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty"`
 }

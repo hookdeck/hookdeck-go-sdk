@@ -26,6 +26,10 @@ func (b *BadRequestError) MarshalJSON() ([]byte, error) {
 	return json.Marshal(b.Body)
 }
 
+func (b *BadRequestError) Unwrap() error {
+	return b.APIError
+}
+
 type NotFoundError struct {
 	*core.APIError
 	Body *ApiErrorResponse
@@ -45,6 +49,10 @@ func (n *NotFoundError) MarshalJSON() ([]byte, error) {
 	return json.Marshal(n.Body)
 }
 
+func (n *NotFoundError) Unwrap() error {
+	return n.APIError
+}
+
 type UnprocessableEntityError struct {
 	*core.APIError
 	Body *ApiErrorResponse
@@ -62,4 +70,8 @@ func (u *UnprocessableEntityError) UnmarshalJSON(data []byte) error {
 
 func (u *UnprocessableEntityError) MarshalJSON() ([]byte, error) {
 	return json.Marshal(u.Body)
+}
+
+func (u *UnprocessableEntityError) Unwrap() error {
+	return u.APIError
 }

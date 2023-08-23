@@ -3,6 +3,7 @@
 package api
 
 import (
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
 )
 
@@ -39,23 +40,23 @@ type GetTransformationsRequest struct {
 
 type TestTransformationRequest struct {
 	// Key-value environment variables to be passed to the transformation
-	Env *TestTransformationRequestEnv `json:"env,omitempty"`
+	Env *core.Optional[TestTransformationRequestEnv] `json:"env,omitempty"`
 	// ID of the connection to use for the execution `context`
-	WebhookId *string `json:"webhook_id,omitempty"`
+	WebhookId *core.Optional[string] `json:"webhook_id,omitempty"`
 	// JavaScript code to be executed
-	Code *string `json:"code,omitempty"`
+	Code *core.Optional[string] `json:"code,omitempty"`
 	// Transformation ID
-	TransformationId *string `json:"transformation_id,omitempty"`
+	TransformationId *core.Optional[string] `json:"transformation_id,omitempty"`
 	// Request input to use for the transformation execution
-	Request *TestTransformationRequestRequest `json:"request,omitempty"`
-	EventId *string                           `json:"event_id,omitempty"`
+	Request *core.Optional[TestTransformationRequestRequest] `json:"request,omitempty"`
+	EventId *core.Optional[string]                           `json:"event_id,omitempty"`
 }
 
 type UpdateTransformationRequest struct {
 	// A unique, human-friendly name for the transformation <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name *string `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty"`
 	// JavaScript code to be executed
-	Code *string `json:"code,omitempty"`
+	Code *core.Optional[string] `json:"code,omitempty"`
 	// Key-value environment variables to be passed to the transformation
 	Env map[string]*UpdateTransformationRequestEnvValue `json:"env,omitempty"`
 }

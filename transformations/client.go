@@ -16,36 +16,25 @@ import (
 	time "time"
 )
 
-type Client interface {
-	GetTransformations(ctx context.Context, request *hookdeckgosdk.GetTransformationsRequest) (*hookdeckgosdk.TransformationPaginatedResult, error)
-	CreateTransformation(ctx context.Context, request *hookdeckgosdk.CreateTransformationRequest) (*hookdeckgosdk.Transformation, error)
-	UpsertTransformation(ctx context.Context, request *hookdeckgosdk.UpsertTransformationRequest) (*hookdeckgosdk.Transformation, error)
-	GetTransformation(ctx context.Context, id string) (*hookdeckgosdk.Transformation, error)
-	UpdateTransformation(ctx context.Context, id string, request *hookdeckgosdk.UpdateTransformationRequest) (*hookdeckgosdk.Transformation, error)
-	TestTransformation(ctx context.Context, request *hookdeckgosdk.TestTransformationRequest) (*hookdeckgosdk.TransformationExecutorOutput, error)
-	GetTransformationExecutions(ctx context.Context, id string, request *hookdeckgosdk.GetTransformationExecutionsRequest) (*hookdeckgosdk.TransformationExecutionPaginatedResult, error)
-	GetTransformationExecution(ctx context.Context, id string, executionId string) (*hookdeckgosdk.TransformationExecution, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) GetTransformations(ctx context.Context, request *hookdeckgosdk.GetTransformationsRequest) (*hookdeckgosdk.TransformationPaginatedResult, error) {
+func (c *Client) GetTransformations(ctx context.Context, request *hookdeckgosdk.GetTransformationsRequest) (*hookdeckgosdk.TransformationPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -90,14 +79,14 @@ func (c *client) GetTransformations(ctx context.Context, request *hookdeckgosdk.
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -121,7 +110,7 @@ func (c *client) GetTransformations(ctx context.Context, request *hookdeckgosdk.
 	return response, nil
 }
 
-func (c *client) CreateTransformation(ctx context.Context, request *hookdeckgosdk.CreateTransformationRequest) (*hookdeckgosdk.Transformation, error) {
+func (c *Client) CreateTransformation(ctx context.Context, request *hookdeckgosdk.CreateTransformationRequest) (*hookdeckgosdk.Transformation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -140,14 +129,14 @@ func (c *client) CreateTransformation(ctx context.Context, request *hookdeckgosd
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -171,7 +160,7 @@ func (c *client) CreateTransformation(ctx context.Context, request *hookdeckgosd
 	return response, nil
 }
 
-func (c *client) UpsertTransformation(ctx context.Context, request *hookdeckgosdk.UpsertTransformationRequest) (*hookdeckgosdk.Transformation, error) {
+func (c *Client) UpsertTransformation(ctx context.Context, request *hookdeckgosdk.UpsertTransformationRequest) (*hookdeckgosdk.Transformation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -190,14 +179,14 @@ func (c *client) UpsertTransformation(ctx context.Context, request *hookdeckgosd
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -221,7 +210,7 @@ func (c *client) UpsertTransformation(ctx context.Context, request *hookdeckgosd
 	return response, nil
 }
 
-func (c *client) GetTransformation(ctx context.Context, id string) (*hookdeckgosdk.Transformation, error) {
+func (c *Client) GetTransformation(ctx context.Context, id string) (*hookdeckgosdk.Transformation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -240,7 +229,7 @@ func (c *client) GetTransformation(ctx context.Context, id string) (*hookdeckgos
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -264,7 +253,7 @@ func (c *client) GetTransformation(ctx context.Context, id string) (*hookdeckgos
 	return response, nil
 }
 
-func (c *client) UpdateTransformation(ctx context.Context, id string, request *hookdeckgosdk.UpdateTransformationRequest) (*hookdeckgosdk.Transformation, error) {
+func (c *Client) UpdateTransformation(ctx context.Context, id string, request *hookdeckgosdk.UpdateTransformationRequest) (*hookdeckgosdk.Transformation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -283,21 +272,21 @@ func (c *client) UpdateTransformation(ctx context.Context, id string, request *h
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 404:
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -321,7 +310,7 @@ func (c *client) UpdateTransformation(ctx context.Context, id string, request *h
 	return response, nil
 }
 
-func (c *client) TestTransformation(ctx context.Context, request *hookdeckgosdk.TestTransformationRequest) (*hookdeckgosdk.TransformationExecutorOutput, error) {
+func (c *Client) TestTransformation(ctx context.Context, request *hookdeckgosdk.TestTransformationRequest) (*hookdeckgosdk.TransformationExecutorOutput, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -340,14 +329,14 @@ func (c *client) TestTransformation(ctx context.Context, request *hookdeckgosdk.
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -371,7 +360,7 @@ func (c *client) TestTransformation(ctx context.Context, request *hookdeckgosdk.
 	return response, nil
 }
 
-func (c *client) GetTransformationExecutions(ctx context.Context, id string, request *hookdeckgosdk.GetTransformationExecutionsRequest) (*hookdeckgosdk.TransformationExecutionPaginatedResult, error) {
+func (c *Client) GetTransformationExecutions(ctx context.Context, id string, request *hookdeckgosdk.GetTransformationExecutionsRequest) (*hookdeckgosdk.TransformationExecutionPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -422,14 +411,14 @@ func (c *client) GetTransformationExecutions(ctx context.Context, id string, req
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -453,7 +442,7 @@ func (c *client) GetTransformationExecutions(ctx context.Context, id string, req
 	return response, nil
 }
 
-func (c *client) GetTransformationExecution(ctx context.Context, id string, executionId string) (*hookdeckgosdk.TransformationExecution, error) {
+func (c *Client) GetTransformationExecution(ctx context.Context, id string, executionId string) (*hookdeckgosdk.TransformationExecution, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -472,7 +461,7 @@ func (c *client) GetTransformationExecution(ctx context.Context, id string, exec
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}

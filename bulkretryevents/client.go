@@ -16,33 +16,25 @@ import (
 	time "time"
 )
 
-type Client interface {
-	GetEventBulkRetries(ctx context.Context, request *hookdeckgosdk.GetEventBulkRetriesRequest) (*hookdeckgosdk.BatchOperationPaginatedResult, error)
-	CreateEventBulkRetry(ctx context.Context, request *hookdeckgosdk.CreateEventBulkRetryRequest) (*hookdeckgosdk.BatchOperation, error)
-	GenerateEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk.GenerateEventBulkRetryPlanResponse, error)
-	GetEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error)
-	CancelEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) GetEventBulkRetries(ctx context.Context, request *hookdeckgosdk.GetEventBulkRetriesRequest) (*hookdeckgosdk.BatchOperationPaginatedResult, error) {
+func (c *Client) GetEventBulkRetries(ctx context.Context, request *hookdeckgosdk.GetEventBulkRetriesRequest) (*hookdeckgosdk.BatchOperationPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -99,14 +91,14 @@ func (c *client) GetEventBulkRetries(ctx context.Context, request *hookdeckgosdk
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -130,7 +122,7 @@ func (c *client) GetEventBulkRetries(ctx context.Context, request *hookdeckgosdk
 	return response, nil
 }
 
-func (c *client) CreateEventBulkRetry(ctx context.Context, request *hookdeckgosdk.CreateEventBulkRetryRequest) (*hookdeckgosdk.BatchOperation, error) {
+func (c *Client) CreateEventBulkRetry(ctx context.Context, request *hookdeckgosdk.CreateEventBulkRetryRequest) (*hookdeckgosdk.BatchOperation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -149,14 +141,14 @@ func (c *client) CreateEventBulkRetry(ctx context.Context, request *hookdeckgosd
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -180,7 +172,7 @@ func (c *client) CreateEventBulkRetry(ctx context.Context, request *hookdeckgosd
 	return response, nil
 }
 
-func (c *client) GenerateEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk.GenerateEventBulkRetryPlanResponse, error) {
+func (c *Client) GenerateEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk.GenerateEventBulkRetryPlanResponse, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -199,14 +191,14 @@ func (c *client) GenerateEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -230,7 +222,7 @@ func (c *client) GenerateEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk
 	return response, nil
 }
 
-func (c *client) GetEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
+func (c *Client) GetEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -249,7 +241,7 @@ func (c *client) GetEventBulkRetry(ctx context.Context, id string) (*hookdeckgos
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -273,7 +265,7 @@ func (c *client) GetEventBulkRetry(ctx context.Context, id string) (*hookdeckgos
 	return response, nil
 }
 
-func (c *client) CancelEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
+func (c *Client) CancelEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -292,7 +284,7 @@ func (c *client) CancelEventBulkRetry(ctx context.Context, id string) (*hookdeck
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}

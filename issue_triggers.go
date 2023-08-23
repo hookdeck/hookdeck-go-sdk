@@ -3,16 +3,17 @@
 package api
 
 import (
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
 )
 
 type CreateIssueTriggerRequest struct {
 	Type IssueType `json:"type,omitempty"`
 	// Configuration object for the specific issue type selected
-	Configs  *CreateIssueTriggerRequestConfigs `json:"configs,omitempty"`
-	Channels *IssueTriggerChannels             `json:"channels,omitempty"`
+	Configs  *core.Optional[CreateIssueTriggerRequestConfigs] `json:"configs,omitempty"`
+	Channels *core.Optional[IssueTriggerChannels]             `json:"channels,omitempty"`
 	// Optional unique name to use as reference when using the API
-	Name *string `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty"`
 }
 
 type GetIssueTriggersRequest struct {
@@ -28,19 +29,19 @@ type GetIssueTriggersRequest struct {
 
 type UpdateIssueTriggerRequest struct {
 	// Configuration object for the specific issue type selected
-	Configs  *UpdateIssueTriggerRequestConfigs `json:"configs,omitempty"`
-	Channels *IssueTriggerChannels             `json:"channels,omitempty"`
+	Configs  *core.Optional[UpdateIssueTriggerRequestConfigs] `json:"configs,omitempty"`
+	Channels *core.Optional[IssueTriggerChannels]             `json:"channels,omitempty"`
 	// Date when the issue trigger was disabled
-	DisabledAt *time.Time `json:"disabled_at,omitempty"`
+	DisabledAt *core.Optional[time.Time] `json:"disabled_at,omitempty"`
 	// Optional unique name to use as reference when using the API
-	Name *string `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty"`
 }
 
 type UpsertIssueTriggerRequest struct {
 	Type IssueType `json:"type,omitempty"`
 	// Configuration object for the specific issue type selected
-	Configs  *UpsertIssueTriggerRequestConfigs `json:"configs,omitempty"`
-	Channels *IssueTriggerChannels             `json:"channels,omitempty"`
+	Configs  *core.Optional[UpsertIssueTriggerRequestConfigs] `json:"configs,omitempty"`
+	Channels *core.Optional[IssueTriggerChannels]             `json:"channels,omitempty"`
 	// Required unique name to use as reference when using the API <span style="white-space: nowrap">`<= 255 characters`</span>
 	Name string `json:"name"`
 }

@@ -2,12 +2,16 @@
 
 package api
 
+import (
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
+)
+
 type CreateIntegrationRequest struct {
 	// Label of the integration
-	Label *string `json:"label,omitempty"`
+	Label *core.Optional[string] `json:"label,omitempty"`
 	// Decrypted Key/Value object of the associated configuration for that provider
-	Configs  *CreateIntegrationRequestConfigs `json:"configs,omitempty"`
-	Provider *IntegrationProvider             `json:"provider,omitempty"`
+	Configs  *core.Optional[CreateIntegrationRequestConfigs] `json:"configs,omitempty"`
+	Provider *core.Optional[IntegrationProvider]             `json:"provider,omitempty"`
 	// List of features to enable (see features list above)
 	Features []IntegrationFeature `json:"features,omitempty"`
 }
@@ -19,10 +23,10 @@ type GetIntegrationsRequest struct {
 
 type UpdateIntegrationRequest struct {
 	// Label of the integration
-	Label *string `json:"label,omitempty"`
+	Label *core.Optional[string] `json:"label,omitempty"`
 	// Decrypted Key/Value object of the associated configuration for that provider
-	Configs  *UpdateIntegrationRequestConfigs `json:"configs,omitempty"`
-	Provider *IntegrationProvider             `json:"provider,omitempty"`
+	Configs  *core.Optional[UpdateIntegrationRequestConfigs] `json:"configs,omitempty"`
+	Provider *core.Optional[IntegrationProvider]             `json:"provider,omitempty"`
 	// List of features to enable (see features list above)
 	Features []IntegrationFeature `json:"features,omitempty"`
 }

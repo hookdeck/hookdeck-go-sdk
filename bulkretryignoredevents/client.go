@@ -16,33 +16,25 @@ import (
 	time "time"
 )
 
-type Client interface {
-	GetIgnoredEventBulkRetries(ctx context.Context, request *hookdeckgosdk.GetIgnoredEventBulkRetriesRequest) (*hookdeckgosdk.BatchOperationPaginatedResult, error)
-	CreateIgnoredEventBulkRetry(ctx context.Context, request *hookdeckgosdk.CreateIgnoredEventBulkRetryRequest) (*hookdeckgosdk.BatchOperation, error)
-	GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk.GenerateIgnoredEventBulkRetryPlanResponse, error)
-	GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error)
-	CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) GetIgnoredEventBulkRetries(ctx context.Context, request *hookdeckgosdk.GetIgnoredEventBulkRetriesRequest) (*hookdeckgosdk.BatchOperationPaginatedResult, error) {
+func (c *Client) GetIgnoredEventBulkRetries(ctx context.Context, request *hookdeckgosdk.GetIgnoredEventBulkRetriesRequest) (*hookdeckgosdk.BatchOperationPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -99,14 +91,14 @@ func (c *client) GetIgnoredEventBulkRetries(ctx context.Context, request *hookde
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -130,7 +122,7 @@ func (c *client) GetIgnoredEventBulkRetries(ctx context.Context, request *hookde
 	return response, nil
 }
 
-func (c *client) CreateIgnoredEventBulkRetry(ctx context.Context, request *hookdeckgosdk.CreateIgnoredEventBulkRetryRequest) (*hookdeckgosdk.BatchOperation, error) {
+func (c *Client) CreateIgnoredEventBulkRetry(ctx context.Context, request *hookdeckgosdk.CreateIgnoredEventBulkRetryRequest) (*hookdeckgosdk.BatchOperation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -149,14 +141,14 @@ func (c *client) CreateIgnoredEventBulkRetry(ctx context.Context, request *hookd
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -180,7 +172,7 @@ func (c *client) CreateIgnoredEventBulkRetry(ctx context.Context, request *hookd
 	return response, nil
 }
 
-func (c *client) GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk.GenerateIgnoredEventBulkRetryPlanResponse, error) {
+func (c *Client) GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookdeckgosdk.GenerateIgnoredEventBulkRetryPlanResponse, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -199,14 +191,14 @@ func (c *client) GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookde
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -230,7 +222,7 @@ func (c *client) GenerateIgnoredEventBulkRetryPlan(ctx context.Context) (*hookde
 	return response, nil
 }
 
-func (c *client) GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
+func (c *Client) GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -249,7 +241,7 @@ func (c *client) GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hook
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -273,7 +265,7 @@ func (c *client) GetIgnoredEventBulkRetry(ctx context.Context, id string) (*hook
 	return response, nil
 }
 
-func (c *client) CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
+func (c *Client) CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -292,7 +284,7 @@ func (c *client) CancelIgnoredEventBulkRetry(ctx context.Context, id string) (*h
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}

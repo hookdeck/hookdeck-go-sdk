@@ -16,36 +16,25 @@ import (
 	time "time"
 )
 
-type Client interface {
-	GetIssueTriggers(ctx context.Context, request *hookdeckgosdk.GetIssueTriggersRequest) (*hookdeckgosdk.IssueTriggerPaginatedResult, error)
-	CreateIssueTrigger(ctx context.Context, request *hookdeckgosdk.CreateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error)
-	UpsertIssueTrigger(ctx context.Context, request *hookdeckgosdk.UpsertIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error)
-	GetIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error)
-	UpdateIssueTrigger(ctx context.Context, id string, request *hookdeckgosdk.UpdateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error)
-	DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.DeletedIssueTriggerResponse, error)
-	DisableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error)
-	EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) GetIssueTriggers(ctx context.Context, request *hookdeckgosdk.GetIssueTriggersRequest) (*hookdeckgosdk.IssueTriggerPaginatedResult, error) {
+func (c *Client) GetIssueTriggers(ctx context.Context, request *hookdeckgosdk.GetIssueTriggersRequest) (*hookdeckgosdk.IssueTriggerPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -93,14 +82,14 @@ func (c *client) GetIssueTriggers(ctx context.Context, request *hookdeckgosdk.Ge
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -124,7 +113,7 @@ func (c *client) GetIssueTriggers(ctx context.Context, request *hookdeckgosdk.Ge
 	return response, nil
 }
 
-func (c *client) CreateIssueTrigger(ctx context.Context, request *hookdeckgosdk.CreateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error) {
+func (c *Client) CreateIssueTrigger(ctx context.Context, request *hookdeckgosdk.CreateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -143,14 +132,14 @@ func (c *client) CreateIssueTrigger(ctx context.Context, request *hookdeckgosdk.
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -174,7 +163,7 @@ func (c *client) CreateIssueTrigger(ctx context.Context, request *hookdeckgosdk.
 	return response, nil
 }
 
-func (c *client) UpsertIssueTrigger(ctx context.Context, request *hookdeckgosdk.UpsertIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error) {
+func (c *Client) UpsertIssueTrigger(ctx context.Context, request *hookdeckgosdk.UpsertIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -193,14 +182,14 @@ func (c *client) UpsertIssueTrigger(ctx context.Context, request *hookdeckgosdk.
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -224,7 +213,7 @@ func (c *client) UpsertIssueTrigger(ctx context.Context, request *hookdeckgosdk.
 	return response, nil
 }
 
-func (c *client) GetIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
+func (c *Client) GetIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -243,7 +232,7 @@ func (c *client) GetIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -267,7 +256,7 @@ func (c *client) GetIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk
 	return response, nil
 }
 
-func (c *client) UpdateIssueTrigger(ctx context.Context, id string, request *hookdeckgosdk.UpdateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error) {
+func (c *Client) UpdateIssueTrigger(ctx context.Context, id string, request *hookdeckgosdk.UpdateIssueTriggerRequest) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -286,14 +275,14 @@ func (c *client) UpdateIssueTrigger(ctx context.Context, id string, request *hoo
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -317,7 +306,7 @@ func (c *client) UpdateIssueTrigger(ctx context.Context, id string, request *hoo
 	return response, nil
 }
 
-func (c *client) DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.DeletedIssueTriggerResponse, error) {
+func (c *Client) DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.DeletedIssueTriggerResponse, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -336,7 +325,7 @@ func (c *client) DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgo
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -360,7 +349,7 @@ func (c *client) DeleteIssueTrigger(ctx context.Context, id string) (*hookdeckgo
 	return response, nil
 }
 
-func (c *client) DisableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
+func (c *Client) DisableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -379,7 +368,7 @@ func (c *client) DisableIssueTrigger(ctx context.Context, id string) (*hookdeckg
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -403,7 +392,7 @@ func (c *client) DisableIssueTrigger(ctx context.Context, id string) (*hookdeckg
 	return response, nil
 }
 
-func (c *client) EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
+func (c *Client) EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -422,7 +411,7 @@ func (c *client) EnableIssueTrigger(ctx context.Context, id string) (*hookdeckgo
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}

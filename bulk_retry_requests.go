@@ -3,12 +3,13 @@
 package api
 
 import (
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
 )
 
 type CreateRequestBulkRetryRequest struct {
 	// Filter properties for the events to be included in the bulk retry, use query parameters of [Requests](#requests)
-	Query *CreateRequestBulkRetryRequestQuery `json:"query,omitempty"`
+	Query *core.Optional[CreateRequestBulkRetryRequestQuery] `json:"query,omitempty"`
 }
 
 type GetRequestBulkRetriesRequest struct {

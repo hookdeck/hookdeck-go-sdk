@@ -16,33 +16,25 @@ import (
 	time "time"
 )
 
-type Client interface {
-	GetEvents(ctx context.Context, request *hookdeckgosdk.GetEventsRequest) (*hookdeckgosdk.EventPaginatedResult, error)
-	GetEvent(ctx context.Context, id string) (*hookdeckgosdk.Event, error)
-	GetRequestRawBody(ctx context.Context, id string) (*hookdeckgosdk.RawBody, error)
-	RetryEvent(ctx context.Context, id string) (*hookdeckgosdk.RetriedEvent, error)
-	MuteEvent(ctx context.Context, id string) (*hookdeckgosdk.Event, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) GetEvents(ctx context.Context, request *hookdeckgosdk.GetEventsRequest) (*hookdeckgosdk.EventPaginatedResult, error) {
+func (c *Client) GetEvents(ctx context.Context, request *hookdeckgosdk.GetEventsRequest) (*hookdeckgosdk.EventPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -147,14 +139,14 @@ func (c *client) GetEvents(ctx context.Context, request *hookdeckgosdk.GetEvents
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -178,7 +170,7 @@ func (c *client) GetEvents(ctx context.Context, request *hookdeckgosdk.GetEvents
 	return response, nil
 }
 
-func (c *client) GetEvent(ctx context.Context, id string) (*hookdeckgosdk.Event, error) {
+func (c *Client) GetEvent(ctx context.Context, id string) (*hookdeckgosdk.Event, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -197,7 +189,7 @@ func (c *client) GetEvent(ctx context.Context, id string) (*hookdeckgosdk.Event,
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -221,7 +213,7 @@ func (c *client) GetEvent(ctx context.Context, id string) (*hookdeckgosdk.Event,
 	return response, nil
 }
 
-func (c *client) GetRequestRawBody(ctx context.Context, id string) (*hookdeckgosdk.RawBody, error) {
+func (c *Client) GetRequestRawBody(ctx context.Context, id string) (*hookdeckgosdk.RawBody, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -240,7 +232,7 @@ func (c *client) GetRequestRawBody(ctx context.Context, id string) (*hookdeckgos
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -264,7 +256,7 @@ func (c *client) GetRequestRawBody(ctx context.Context, id string) (*hookdeckgos
 	return response, nil
 }
 
-func (c *client) RetryEvent(ctx context.Context, id string) (*hookdeckgosdk.RetriedEvent, error) {
+func (c *Client) RetryEvent(ctx context.Context, id string) (*hookdeckgosdk.RetriedEvent, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -283,7 +275,7 @@ func (c *client) RetryEvent(ctx context.Context, id string) (*hookdeckgosdk.Retr
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -307,7 +299,7 @@ func (c *client) RetryEvent(ctx context.Context, id string) (*hookdeckgosdk.Retr
 	return response, nil
 }
 
-func (c *client) MuteEvent(ctx context.Context, id string) (*hookdeckgosdk.Event, error) {
+func (c *Client) MuteEvent(ctx context.Context, id string) (*hookdeckgosdk.Event, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -326,7 +318,7 @@ func (c *client) MuteEvent(ctx context.Context, id string) (*hookdeckgosdk.Event
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}

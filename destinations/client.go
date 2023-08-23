@@ -16,36 +16,25 @@ import (
 	time "time"
 )
 
-type Client interface {
-	GetDestinations(ctx context.Context, request *hookdeckgosdk.GetDestinationsRequest) (*hookdeckgosdk.DestinationPaginatedResult, error)
-	CreateDestination(ctx context.Context, request *hookdeckgosdk.CreateDestinationRequest) (*hookdeckgosdk.Destination, error)
-	UpsertDestination(ctx context.Context, request *hookdeckgosdk.UpsertDestinationRequest) (*hookdeckgosdk.Destination, error)
-	GetDestination(ctx context.Context, id string) (*hookdeckgosdk.Destination, error)
-	UpdateDestination(ctx context.Context, id string, request *hookdeckgosdk.UpdateDestinationRequest) (*hookdeckgosdk.Destination, error)
-	DeleteDestination(ctx context.Context, id string) (*hookdeckgosdk.DeleteDestinationResponse, error)
-	ArchiveDestination(ctx context.Context, id string) (*hookdeckgosdk.Destination, error)
-	UnarchiveDestination(ctx context.Context, id string) (*hookdeckgosdk.Destination, error)
+type Client struct {
+	baseURL    string
+	httpClient core.HTTPClient
+	header     http.Header
 }
 
-func NewClient(opts ...core.ClientOption) Client {
+func NewClient(opts ...core.ClientOption) *Client {
 	options := core.NewClientOptions()
 	for _, opt := range opts {
 		opt(options)
 	}
-	return &client{
+	return &Client{
 		baseURL:    options.BaseURL,
 		httpClient: options.HTTPClient,
 		header:     options.ToHeader(),
 	}
 }
 
-type client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
-}
-
-func (c *client) GetDestinations(ctx context.Context, request *hookdeckgosdk.GetDestinationsRequest) (*hookdeckgosdk.DestinationPaginatedResult, error) {
+func (c *Client) GetDestinations(ctx context.Context, request *hookdeckgosdk.GetDestinationsRequest) (*hookdeckgosdk.DestinationPaginatedResult, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -102,14 +91,14 @@ func (c *client) GetDestinations(ctx context.Context, request *hookdeckgosdk.Get
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -133,7 +122,7 @@ func (c *client) GetDestinations(ctx context.Context, request *hookdeckgosdk.Get
 	return response, nil
 }
 
-func (c *client) CreateDestination(ctx context.Context, request *hookdeckgosdk.CreateDestinationRequest) (*hookdeckgosdk.Destination, error) {
+func (c *Client) CreateDestination(ctx context.Context, request *hookdeckgosdk.CreateDestinationRequest) (*hookdeckgosdk.Destination, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -152,14 +141,14 @@ func (c *client) CreateDestination(ctx context.Context, request *hookdeckgosdk.C
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -183,7 +172,7 @@ func (c *client) CreateDestination(ctx context.Context, request *hookdeckgosdk.C
 	return response, nil
 }
 
-func (c *client) UpsertDestination(ctx context.Context, request *hookdeckgosdk.UpsertDestinationRequest) (*hookdeckgosdk.Destination, error) {
+func (c *Client) UpsertDestination(ctx context.Context, request *hookdeckgosdk.UpsertDestinationRequest) (*hookdeckgosdk.Destination, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -202,14 +191,14 @@ func (c *client) UpsertDestination(ctx context.Context, request *hookdeckgosdk.U
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -233,7 +222,7 @@ func (c *client) UpsertDestination(ctx context.Context, request *hookdeckgosdk.U
 	return response, nil
 }
 
-func (c *client) GetDestination(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
+func (c *Client) GetDestination(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -252,7 +241,7 @@ func (c *client) GetDestination(ctx context.Context, id string) (*hookdeckgosdk.
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -276,7 +265,7 @@ func (c *client) GetDestination(ctx context.Context, id string) (*hookdeckgosdk.
 	return response, nil
 }
 
-func (c *client) UpdateDestination(ctx context.Context, id string, request *hookdeckgosdk.UpdateDestinationRequest) (*hookdeckgosdk.Destination, error) {
+func (c *Client) UpdateDestination(ctx context.Context, id string, request *hookdeckgosdk.UpdateDestinationRequest) (*hookdeckgosdk.Destination, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -295,21 +284,21 @@ func (c *client) UpdateDestination(ctx context.Context, id string, request *hook
 			value := new(hookdeckgosdk.BadRequestError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 404:
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		case 422:
 			value := new(hookdeckgosdk.UnprocessableEntityError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -333,7 +322,7 @@ func (c *client) UpdateDestination(ctx context.Context, id string, request *hook
 	return response, nil
 }
 
-func (c *client) DeleteDestination(ctx context.Context, id string) (*hookdeckgosdk.DeleteDestinationResponse, error) {
+func (c *Client) DeleteDestination(ctx context.Context, id string) (*hookdeckgosdk.DeleteDestinationResponse, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -352,7 +341,7 @@ func (c *client) DeleteDestination(ctx context.Context, id string) (*hookdeckgos
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -376,7 +365,7 @@ func (c *client) DeleteDestination(ctx context.Context, id string) (*hookdeckgos
 	return response, nil
 }
 
-func (c *client) ArchiveDestination(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
+func (c *Client) ArchiveDestination(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -395,7 +384,7 @@ func (c *client) ArchiveDestination(ctx context.Context, id string) (*hookdeckgo
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
@@ -419,7 +408,7 @@ func (c *client) ArchiveDestination(ctx context.Context, id string) (*hookdeckgo
 	return response, nil
 }
 
-func (c *client) UnarchiveDestination(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
+func (c *Client) UnarchiveDestination(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
 	baseURL := "https://api.hookdeck.com/2023-07-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
@@ -438,7 +427,7 @@ func (c *client) UnarchiveDestination(ctx context.Context, id string) (*hookdeck
 			value := new(hookdeckgosdk.NotFoundError)
 			value.APIError = apiError
 			if err := decoder.Decode(value); err != nil {
-				return err
+				return apiError
 			}
 			return value
 		}
