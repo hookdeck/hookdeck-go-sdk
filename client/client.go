@@ -3,22 +3,22 @@
 package client
 
 import (
-	attempts "github.com/hookdeck/hookdeck-go-sdk/attempts"
-	bookmarks "github.com/hookdeck/hookdeck-go-sdk/bookmarks"
-	bulkretryevents "github.com/hookdeck/hookdeck-go-sdk/bulkretryevents"
-	bulkretryignoredevents "github.com/hookdeck/hookdeck-go-sdk/bulkretryignoredevents"
-	bulkretryrequests "github.com/hookdeck/hookdeck-go-sdk/bulkretryrequests"
-	connections "github.com/hookdeck/hookdeck-go-sdk/connections"
+	attempt "github.com/hookdeck/hookdeck-go-sdk/attempt"
+	bookmark "github.com/hookdeck/hookdeck-go-sdk/bookmark"
+	connection "github.com/hookdeck/hookdeck-go-sdk/connection"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
-	destinations "github.com/hookdeck/hookdeck-go-sdk/destinations"
-	events "github.com/hookdeck/hookdeck-go-sdk/events"
-	integrations "github.com/hookdeck/hookdeck-go-sdk/integrations"
-	issues "github.com/hookdeck/hookdeck-go-sdk/issues"
-	issuetriggers "github.com/hookdeck/hookdeck-go-sdk/issuetriggers"
-	notifications "github.com/hookdeck/hookdeck-go-sdk/notifications"
-	requests "github.com/hookdeck/hookdeck-go-sdk/requests"
-	sources "github.com/hookdeck/hookdeck-go-sdk/sources"
-	transformations "github.com/hookdeck/hookdeck-go-sdk/transformations"
+	customdomain "github.com/hookdeck/hookdeck-go-sdk/customdomain"
+	destination "github.com/hookdeck/hookdeck-go-sdk/destination"
+	event "github.com/hookdeck/hookdeck-go-sdk/event"
+	eventbulkretry "github.com/hookdeck/hookdeck-go-sdk/eventbulkretry"
+	ignoredeventbulkretry "github.com/hookdeck/hookdeck-go-sdk/ignoredeventbulkretry"
+	issue "github.com/hookdeck/hookdeck-go-sdk/issue"
+	issuetrigger "github.com/hookdeck/hookdeck-go-sdk/issuetrigger"
+	notification "github.com/hookdeck/hookdeck-go-sdk/notification"
+	request "github.com/hookdeck/hookdeck-go-sdk/request"
+	requestbulkretry "github.com/hookdeck/hookdeck-go-sdk/requestbulkretry"
+	source "github.com/hookdeck/hookdeck-go-sdk/source"
+	transformation "github.com/hookdeck/hookdeck-go-sdk/transformation"
 	http "net/http"
 )
 
@@ -27,21 +27,21 @@ type Client struct {
 	httpClient core.HTTPClient
 	header     http.Header
 
-	IssueTriggers          *issuetriggers.Client
-	Attempts               *attempts.Client
-	Bookmarks              *bookmarks.Client
-	Destinations           *destinations.Client
-	BulkRetryEvents        *bulkretryevents.Client
-	Events                 *events.Client
-	BulkRetryIgnoredEvents *bulkretryignoredevents.Client
-	Integrations           *integrations.Client
-	Issues                 *issues.Client
-	Requests               *requests.Client
-	BulkRetryRequests      *bulkretryrequests.Client
-	Sources                *sources.Client
-	Notifications          *notifications.Client
-	Transformations        *transformations.Client
-	Connections            *connections.Client
+	IssueTrigger          *issuetrigger.Client
+	Attempt               *attempt.Client
+	Bookmark              *bookmark.Client
+	Destination           *destination.Client
+	EventBulkRetry        *eventbulkretry.Client
+	Event                 *event.Client
+	IgnoredEventBulkRetry *ignoredeventbulkretry.Client
+	Issue                 *issue.Client
+	Request               *request.Client
+	RequestBulkRetry      *requestbulkretry.Client
+	Source                *source.Client
+	Notification          *notification.Client
+	CustomDomain          *customdomain.Client
+	Transformation        *transformation.Client
+	Connection            *connection.Client
 }
 
 func NewClient(opts ...core.ClientOption) *Client {
@@ -50,23 +50,23 @@ func NewClient(opts ...core.ClientOption) *Client {
 		opt(options)
 	}
 	return &Client{
-		baseURL:                options.BaseURL,
-		httpClient:             options.HTTPClient,
-		header:                 options.ToHeader(),
-		IssueTriggers:          issuetriggers.NewClient(opts...),
-		Attempts:               attempts.NewClient(opts...),
-		Bookmarks:              bookmarks.NewClient(opts...),
-		Destinations:           destinations.NewClient(opts...),
-		BulkRetryEvents:        bulkretryevents.NewClient(opts...),
-		Events:                 events.NewClient(opts...),
-		BulkRetryIgnoredEvents: bulkretryignoredevents.NewClient(opts...),
-		Integrations:           integrations.NewClient(opts...),
-		Issues:                 issues.NewClient(opts...),
-		Requests:               requests.NewClient(opts...),
-		BulkRetryRequests:      bulkretryrequests.NewClient(opts...),
-		Sources:                sources.NewClient(opts...),
-		Notifications:          notifications.NewClient(opts...),
-		Transformations:        transformations.NewClient(opts...),
-		Connections:            connections.NewClient(opts...),
+		baseURL:               options.BaseURL,
+		httpClient:            options.HTTPClient,
+		header:                options.ToHeader(),
+		IssueTrigger:          issuetrigger.NewClient(opts...),
+		Attempt:               attempt.NewClient(opts...),
+		Bookmark:              bookmark.NewClient(opts...),
+		Destination:           destination.NewClient(opts...),
+		EventBulkRetry:        eventbulkretry.NewClient(opts...),
+		Event:                 event.NewClient(opts...),
+		IgnoredEventBulkRetry: ignoredeventbulkretry.NewClient(opts...),
+		Issue:                 issue.NewClient(opts...),
+		Request:               request.NewClient(opts...),
+		RequestBulkRetry:      requestbulkretry.NewClient(opts...),
+		Source:                source.NewClient(opts...),
+		Notification:          notification.NewClient(opts...),
+		CustomDomain:          customdomain.NewClient(opts...),
+		Transformation:        transformation.NewClient(opts...),
+		Connection:            connection.NewClient(opts...),
 	}
 }

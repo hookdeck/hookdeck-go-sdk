@@ -13,80 +13,6 @@ type AddCustomHostname struct {
 	Hostname string `json:"hostname"`
 }
 
-type Adyen struct {
-	Configs *AdyenConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (a *Adyen) Type() string {
-	return a.type_
-}
-
-func (a *Adyen) UnmarshalJSON(data []byte) error {
-	type unmarshaler Adyen
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = Adyen(value)
-	a.type_ = "adyen"
-	return nil
-}
-
-func (a *Adyen) MarshalJSON() ([]byte, error) {
-	type embed Adyen
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*a),
-		Type:  "adyen",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Adyen. Only included if the ?include=verification.configs query param is present
-type AdyenConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
-type Akeneo struct {
-	Configs *AkeneoConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (a *Akeneo) Type() string {
-	return a.type_
-}
-
-func (a *Akeneo) UnmarshalJSON(data []byte) error {
-	type unmarshaler Akeneo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = Akeneo(value)
-	a.type_ = "akeneo"
-	return nil
-}
-
-func (a *Akeneo) MarshalJSON() ([]byte, error) {
-	type embed Akeneo
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*a),
-		Type:  "akeneo",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Akeneo. Only included if the ?include=verification.configs query param is present
-type AkeneoConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
 // Error response model
 type ApiErrorResponse struct {
 	// Error code
@@ -99,44 +25,6 @@ type ApiErrorResponse struct {
 }
 
 type ApiErrorResponseData struct {
-}
-
-type ApiKey struct {
-	Configs *ApiKeyConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (a *ApiKey) Type() string {
-	return a.type_
-}
-
-func (a *ApiKey) UnmarshalJSON(data []byte) error {
-	type unmarshaler ApiKey
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = ApiKey(value)
-	a.type_ = "api_key"
-	return nil
-}
-
-func (a *ApiKey) MarshalJSON() ([]byte, error) {
-	type embed ApiKey
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*a),
-		Type:  "api_key",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for API Key. Only included if the ?include=verification.configs query param is present
-type ApiKeyConfigs struct {
-	HeaderKey string `json:"header_key"`
-	ApiKey    string `json:"api_key"`
 }
 
 type ApiKeyIntegrationConfigs struct {
@@ -222,6 +110,28 @@ func NewAttemptErrorCodesFromString(s string) (AttemptErrorCodes, error) {
 }
 
 func (a AttemptErrorCodes) Ptr() *AttemptErrorCodes {
+	return &a
+}
+
+type AttemptListRequestDir string
+
+const (
+	AttemptListRequestDirAsc  AttemptListRequestDir = "asc"
+	AttemptListRequestDirDesc AttemptListRequestDir = "desc"
+)
+
+func NewAttemptListRequestDirFromString(s string) (AttemptListRequestDir, error) {
+	switch s {
+	case "asc":
+		return AttemptListRequestDirAsc, nil
+	case "desc":
+		return AttemptListRequestDirDesc, nil
+	}
+	var t AttemptListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AttemptListRequestDir) Ptr() *AttemptListRequestDir {
 	return &a
 }
 
@@ -317,78 +227,169 @@ func (a AttemptTrigger) Ptr() *AttemptTrigger {
 	return &a
 }
 
-type AwsSns struct {
-	Configs *AwsSnsConfigs `json:"configs,omitempty"`
-	type_   string
+// API Key
+type AuthApiKey struct {
+	Config *DestinationAuthMethodApiKeyConfig `json:"config,omitempty"`
+	type_  string
 }
 
-func (a *AwsSns) Type() string {
+func (a *AuthApiKey) Type() string {
 	return a.type_
 }
 
-func (a *AwsSns) UnmarshalJSON(data []byte) error {
-	type unmarshaler AwsSns
+func (a *AuthApiKey) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthApiKey
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*a = AwsSns(value)
-	a.type_ = "aws_sns"
+	*a = AuthApiKey(value)
+	a.type_ = "API_KEY"
 	return nil
 }
 
-func (a *AwsSns) MarshalJSON() ([]byte, error) {
-	type embed AwsSns
+func (a *AuthApiKey) MarshalJSON() ([]byte, error) {
+	type embed AuthApiKey
 	var marshaler = struct {
 		embed
 		Type string `json:"type"`
 	}{
 		embed: embed(*a),
-		Type:  "aws_sns",
+		Type:  "API_KEY",
 	}
 	return json.Marshal(marshaler)
 }
 
-// The verification configs for AWS SNS. Only included if the ?include=verification.configs query param is present
-type AwsSnsConfigs struct {
+// Basic Auth
+type AuthBasicAuth struct {
+	Config *DestinationAuthMethodBasicAuthConfig `json:"config,omitempty"`
+	type_  string
 }
 
-type BasicAuth struct {
-	Configs *BasicAuthConfigs `json:"configs,omitempty"`
-	type_   string
+func (a *AuthBasicAuth) Type() string {
+	return a.type_
 }
 
-func (b *BasicAuth) Type() string {
-	return b.type_
-}
-
-func (b *BasicAuth) UnmarshalJSON(data []byte) error {
-	type unmarshaler BasicAuth
+func (a *AuthBasicAuth) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthBasicAuth
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*b = BasicAuth(value)
-	b.type_ = "basic_auth"
+	*a = AuthBasicAuth(value)
+	a.type_ = "BASIC_AUTH"
 	return nil
 }
 
-func (b *BasicAuth) MarshalJSON() ([]byte, error) {
-	type embed BasicAuth
+func (a *AuthBasicAuth) MarshalJSON() ([]byte, error) {
+	type embed AuthBasicAuth
 	var marshaler = struct {
 		embed
 		Type string `json:"type"`
 	}{
-		embed: embed(*b),
-		Type:  "basic_auth",
+		embed: embed(*a),
+		Type:  "BASIC_AUTH",
 	}
 	return json.Marshal(marshaler)
 }
 
-// The verification configs for Basic Auth. Only included if the ?include=verification.configs query param is present
-type BasicAuthConfigs struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
+// Bearer Token
+type AuthBearerToken struct {
+	Config *DestinationAuthMethodBearerTokenConfig `json:"config,omitempty"`
+	type_  string
+}
+
+func (a *AuthBearerToken) Type() string {
+	return a.type_
+}
+
+func (a *AuthBearerToken) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthBearerToken
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthBearerToken(value)
+	a.type_ = "BEARER_TOKEN"
+	return nil
+}
+
+func (a *AuthBearerToken) MarshalJSON() ([]byte, error) {
+	type embed AuthBearerToken
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*a),
+		Type:  "BEARER_TOKEN",
+	}
+	return json.Marshal(marshaler)
+}
+
+// Custom Signature
+type AuthCustomSignature struct {
+	Config *DestinationAuthMethodCustomSignatureConfig `json:"config,omitempty"`
+	type_  string
+}
+
+func (a *AuthCustomSignature) Type() string {
+	return a.type_
+}
+
+func (a *AuthCustomSignature) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthCustomSignature
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthCustomSignature(value)
+	a.type_ = "CUSTOM_SIGNATURE"
+	return nil
+}
+
+func (a *AuthCustomSignature) MarshalJSON() ([]byte, error) {
+	type embed AuthCustomSignature
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*a),
+		Type:  "CUSTOM_SIGNATURE",
+	}
+	return json.Marshal(marshaler)
+}
+
+// Hookdeck Signature
+type AuthHookdeckSignature struct {
+	Config *DestinationAuthMethodSignatureConfig `json:"config,omitempty"`
+	type_  string
+}
+
+func (a *AuthHookdeckSignature) Type() string {
+	return a.type_
+}
+
+func (a *AuthHookdeckSignature) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthHookdeckSignature
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthHookdeckSignature(value)
+	a.type_ = "HOOKDECK_SIGNATURE"
+	return nil
+}
+
+func (a *AuthHookdeckSignature) MarshalJSON() ([]byte, error) {
+	type embed AuthHookdeckSignature
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*a),
+		Type:  "HOOKDECK_SIGNATURE",
+	}
+	return json.Marshal(marshaler)
 }
 
 type BasicAuthIntegrationConfigs struct {
@@ -492,39 +493,6 @@ func (b *BatchOperationQuery) Accept(visitor BatchOperationQueryVisitor) error {
 	}
 }
 
-// Bearer Token
-type BearerToken struct {
-	Config *DestinationAuthMethodBearerTokenConfig `json:"config,omitempty"`
-	type_  string
-}
-
-func (b *BearerToken) Type() string {
-	return b.type_
-}
-
-func (b *BearerToken) UnmarshalJSON(data []byte) error {
-	type unmarshaler BearerToken
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*b = BearerToken(value)
-	b.type_ = "BEARER_TOKEN"
-	return nil
-}
-
-func (b *BearerToken) MarshalJSON() ([]byte, error) {
-	type embed BearerToken
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*b),
-		Type:  "BEARER_TOKEN",
-	}
-	return json.Marshal(marshaler)
-}
-
 type Bookmark struct {
 	// ID of the bookmark
 	Id string `json:"id"`
@@ -547,47 +515,55 @@ type Bookmark struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type BookmarkListRequestDir string
+
+const (
+	BookmarkListRequestDirAsc  BookmarkListRequestDir = "asc"
+	BookmarkListRequestDirDesc BookmarkListRequestDir = "desc"
+)
+
+func NewBookmarkListRequestDirFromString(s string) (BookmarkListRequestDir, error) {
+	switch s {
+	case "asc":
+		return BookmarkListRequestDirAsc, nil
+	case "desc":
+		return BookmarkListRequestDirDesc, nil
+	}
+	var t BookmarkListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (b BookmarkListRequestDir) Ptr() *BookmarkListRequestDir {
+	return &b
+}
+
 type BookmarkPaginatedResult struct {
 	Pagination *SeekPagination `json:"pagination,omitempty"`
 	Count      *int            `json:"count,omitempty"`
 	Models     []*Bookmark     `json:"models,omitempty"`
 }
 
-type Commercelayer struct {
-	Configs *CommercelayerConfigs `json:"configs,omitempty"`
-	type_   string
-}
+// Bookmark target
+type BookmarkTriggerRequestTarget string
 
-func (c *Commercelayer) Type() string {
-	return c.type_
-}
+const (
+	BookmarkTriggerRequestTargetHttp BookmarkTriggerRequestTarget = "http"
+	BookmarkTriggerRequestTargetCli  BookmarkTriggerRequestTarget = "cli"
+)
 
-func (c *Commercelayer) UnmarshalJSON(data []byte) error {
-	type unmarshaler Commercelayer
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
+func NewBookmarkTriggerRequestTargetFromString(s string) (BookmarkTriggerRequestTarget, error) {
+	switch s {
+	case "http":
+		return BookmarkTriggerRequestTargetHttp, nil
+	case "cli":
+		return BookmarkTriggerRequestTargetCli, nil
 	}
-	*c = Commercelayer(value)
-	c.type_ = "commercelayer"
-	return nil
+	var t BookmarkTriggerRequestTarget
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (c *Commercelayer) MarshalJSON() ([]byte, error) {
-	type embed Commercelayer
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*c),
-		Type:  "commercelayer",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Commercelayer. Only included if the ?include=verification.configs query param is present
-type CommercelayerConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+func (b BookmarkTriggerRequestTarget) Ptr() *BookmarkTriggerRequestTarget {
+	return &b
 }
 
 type Connection struct {
@@ -615,103 +591,183 @@ type Connection struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-// JSON using our filter syntax to filter on request headers
-type ConnectionFilterProperty struct {
-	typeName                      string
-	StringOptional                *string
-	Double                        float64
-	Boolean                       bool
-	ConnectionFilterPropertyThree *ConnectionFilterPropertyThree
+// Destination input object
+type ConnectionCreateRequestDestination struct {
+	// Name for the destination <span style="white-space: nowrap">`<= 155 characters`</span>
+	Name string `json:"name"`
+	// Description for the destination
+	Description *string `json:"description,omitempty"`
+	// Endpoint of the destination
+	Url *string `json:"url,omitempty"`
+	// Path for the CLI destination
+	CliPath *string `json:"cli_path,omitempty"`
+	// Period to rate limit attempts
+	RateLimitPeriod *ConnectionCreateRequestDestinationRateLimitPeriod `json:"rate_limit_period,omitempty"`
+	// Limit event attempts to receive per period
+	RateLimit              *int                         `json:"rate_limit,omitempty"`
+	HttpMethod             *DestinationHttpMethod       `json:"http_method,omitempty"`
+	AuthMethod             *DestinationAuthMethodConfig `json:"auth_method,omitempty"`
+	PathForwardingDisabled *bool                        `json:"path_forwarding_disabled,omitempty"`
 }
 
-func NewConnectionFilterPropertyFromStringOptional(value *string) *ConnectionFilterProperty {
-	return &ConnectionFilterProperty{typeName: "stringOptional", StringOptional: value}
-}
+// Period to rate limit attempts
+type ConnectionCreateRequestDestinationRateLimitPeriod string
 
-func NewConnectionFilterPropertyFromDouble(value float64) *ConnectionFilterProperty {
-	return &ConnectionFilterProperty{typeName: "double", Double: value}
-}
+const (
+	ConnectionCreateRequestDestinationRateLimitPeriodSecond ConnectionCreateRequestDestinationRateLimitPeriod = "second"
+	ConnectionCreateRequestDestinationRateLimitPeriodMinute ConnectionCreateRequestDestinationRateLimitPeriod = "minute"
+	ConnectionCreateRequestDestinationRateLimitPeriodHour   ConnectionCreateRequestDestinationRateLimitPeriod = "hour"
+)
 
-func NewConnectionFilterPropertyFromBoolean(value bool) *ConnectionFilterProperty {
-	return &ConnectionFilterProperty{typeName: "boolean", Boolean: value}
-}
-
-func NewConnectionFilterPropertyFromConnectionFilterPropertyThree(value *ConnectionFilterPropertyThree) *ConnectionFilterProperty {
-	return &ConnectionFilterProperty{typeName: "connectionFilterPropertyThree", ConnectionFilterPropertyThree: value}
-}
-
-func (c *ConnectionFilterProperty) UnmarshalJSON(data []byte) error {
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		c.typeName = "stringOptional"
-		c.StringOptional = valueStringOptional
-		return nil
+func NewConnectionCreateRequestDestinationRateLimitPeriodFromString(s string) (ConnectionCreateRequestDestinationRateLimitPeriod, error) {
+	switch s {
+	case "second":
+		return ConnectionCreateRequestDestinationRateLimitPeriodSecond, nil
+	case "minute":
+		return ConnectionCreateRequestDestinationRateLimitPeriodMinute, nil
+	case "hour":
+		return ConnectionCreateRequestDestinationRateLimitPeriodHour, nil
 	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		c.typeName = "double"
-		c.Double = valueDouble
-		return nil
-	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		c.typeName = "boolean"
-		c.Boolean = valueBoolean
-		return nil
-	}
-	valueConnectionFilterPropertyThree := new(ConnectionFilterPropertyThree)
-	if err := json.Unmarshal(data, &valueConnectionFilterPropertyThree); err == nil {
-		c.typeName = "connectionFilterPropertyThree"
-		c.ConnectionFilterPropertyThree = valueConnectionFilterPropertyThree
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
+	var t ConnectionCreateRequestDestinationRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (c ConnectionFilterProperty) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "stringOptional":
-		return json.Marshal(c.StringOptional)
-	case "double":
-		return json.Marshal(c.Double)
-	case "boolean":
-		return json.Marshal(c.Boolean)
-	case "connectionFilterPropertyThree":
-		return json.Marshal(c.ConnectionFilterPropertyThree)
+func (c ConnectionCreateRequestDestinationRateLimitPeriod) Ptr() *ConnectionCreateRequestDestinationRateLimitPeriod {
+	return &c
+}
+
+// Source input object
+type ConnectionCreateRequestSource struct {
+	// A unique name for the source <span style="white-space: nowrap">`<= 155 characters`</span>
+	Name string `json:"name"`
+	// Description for the source
+	Description        *string                  `json:"description,omitempty"`
+	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty"`
+	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty"`
+	Verification       *VerificationConfig      `json:"verification,omitempty"`
+}
+
+type ConnectionDeleteResponse struct {
+	// ID of the connection
+	Id string `json:"id"`
+}
+
+type ConnectionListRequestDir string
+
+const (
+	ConnectionListRequestDirAsc  ConnectionListRequestDir = "asc"
+	ConnectionListRequestDirDesc ConnectionListRequestDir = "desc"
+)
+
+func NewConnectionListRequestDirFromString(s string) (ConnectionListRequestDir, error) {
+	switch s {
+	case "asc":
+		return ConnectionListRequestDirAsc, nil
+	case "desc":
+		return ConnectionListRequestDirDesc, nil
 	}
+	var t ConnectionListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type ConnectionFilterPropertyVisitor interface {
-	VisitStringOptional(*string) error
-	VisitDouble(float64) error
-	VisitBoolean(bool) error
-	VisitConnectionFilterPropertyThree(*ConnectionFilterPropertyThree) error
+func (c ConnectionListRequestDir) Ptr() *ConnectionListRequestDir {
+	return &c
 }
 
-func (c *ConnectionFilterProperty) Accept(visitor ConnectionFilterPropertyVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "stringOptional":
-		return visitor.VisitStringOptional(c.StringOptional)
-	case "double":
-		return visitor.VisitDouble(c.Double)
-	case "boolean":
-		return visitor.VisitBoolean(c.Boolean)
-	case "connectionFilterPropertyThree":
-		return visitor.VisitConnectionFilterPropertyThree(c.ConnectionFilterPropertyThree)
+type ConnectionListRequestOrderBy string
+
+const (
+	ConnectionListRequestOrderByCreatedAt             ConnectionListRequestOrderBy = "created_at"
+	ConnectionListRequestOrderByUpdatedAt             ConnectionListRequestOrderBy = "updated_at"
+	ConnectionListRequestOrderBySourcesUpdatedAt      ConnectionListRequestOrderBy = "sources.updated_at"
+	ConnectionListRequestOrderBySourcesCreatedAt      ConnectionListRequestOrderBy = "sources.created_at"
+	ConnectionListRequestOrderByDestinationsUpdatedAt ConnectionListRequestOrderBy = "destinations.updated_at"
+	ConnectionListRequestOrderByDestinationsCreatedAt ConnectionListRequestOrderBy = "destinations.created_at"
+)
+
+func NewConnectionListRequestOrderByFromString(s string) (ConnectionListRequestOrderBy, error) {
+	switch s {
+	case "created_at":
+		return ConnectionListRequestOrderByCreatedAt, nil
+	case "updated_at":
+		return ConnectionListRequestOrderByUpdatedAt, nil
+	case "sources.updated_at":
+		return ConnectionListRequestOrderBySourcesUpdatedAt, nil
+	case "sources.created_at":
+		return ConnectionListRequestOrderBySourcesCreatedAt, nil
+	case "destinations.updated_at":
+		return ConnectionListRequestOrderByDestinationsUpdatedAt, nil
+	case "destinations.created_at":
+		return ConnectionListRequestOrderByDestinationsCreatedAt, nil
 	}
+	var t ConnectionListRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type ConnectionFilterPropertyThree struct {
+func (c ConnectionListRequestOrderBy) Ptr() *ConnectionListRequestOrderBy {
+	return &c
 }
 
 type ConnectionPaginatedResult struct {
 	Pagination *SeekPagination `json:"pagination,omitempty"`
 	Count      *int            `json:"count,omitempty"`
 	Models     []*Connection   `json:"models,omitempty"`
+}
+
+// Destination input object
+type ConnectionUpsertRequestDestination struct {
+	// Name for the destination <span style="white-space: nowrap">`<= 155 characters`</span>
+	Name string `json:"name"`
+	// Description for the destination
+	Description *string `json:"description,omitempty"`
+	// Endpoint of the destination
+	Url *string `json:"url,omitempty"`
+	// Path for the CLI destination
+	CliPath *string `json:"cli_path,omitempty"`
+	// Period to rate limit attempts
+	RateLimitPeriod *ConnectionUpsertRequestDestinationRateLimitPeriod `json:"rate_limit_period,omitempty"`
+	// Limit event attempts to receive per period
+	RateLimit              *int                         `json:"rate_limit,omitempty"`
+	HttpMethod             *DestinationHttpMethod       `json:"http_method,omitempty"`
+	AuthMethod             *DestinationAuthMethodConfig `json:"auth_method,omitempty"`
+	PathForwardingDisabled *bool                        `json:"path_forwarding_disabled,omitempty"`
+}
+
+// Period to rate limit attempts
+type ConnectionUpsertRequestDestinationRateLimitPeriod string
+
+const (
+	ConnectionUpsertRequestDestinationRateLimitPeriodSecond ConnectionUpsertRequestDestinationRateLimitPeriod = "second"
+	ConnectionUpsertRequestDestinationRateLimitPeriodMinute ConnectionUpsertRequestDestinationRateLimitPeriod = "minute"
+	ConnectionUpsertRequestDestinationRateLimitPeriodHour   ConnectionUpsertRequestDestinationRateLimitPeriod = "hour"
+)
+
+func NewConnectionUpsertRequestDestinationRateLimitPeriodFromString(s string) (ConnectionUpsertRequestDestinationRateLimitPeriod, error) {
+	switch s {
+	case "second":
+		return ConnectionUpsertRequestDestinationRateLimitPeriodSecond, nil
+	case "minute":
+		return ConnectionUpsertRequestDestinationRateLimitPeriodMinute, nil
+	case "hour":
+		return ConnectionUpsertRequestDestinationRateLimitPeriodHour, nil
+	}
+	var t ConnectionUpsertRequestDestinationRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectionUpsertRequestDestinationRateLimitPeriod) Ptr() *ConnectionUpsertRequestDestinationRateLimitPeriod {
+	return &c
+}
+
+// Source input object
+type ConnectionUpsertRequestSource struct {
+	// A unique name for the source <span style="white-space: nowrap">`<= 155 characters`</span>
+	Name string `json:"name"`
+	// Description for the source
+	Description        *string                  `json:"description,omitempty"`
+	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty"`
+	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty"`
+	Verification       *VerificationConfig      `json:"verification,omitempty"`
 }
 
 type ConsoleLine struct {
@@ -750,2458 +806,6 @@ func (c ConsoleLineType) Ptr() *ConsoleLineType {
 	return &c
 }
 
-// Destination input object
-type CreateConnectionRequestDestination struct {
-	// Name for the destination <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name string `json:"name"`
-	// Description for the destination
-	Description *string `json:"description,omitempty"`
-	// Endpoint of the destination
-	Url *string `json:"url,omitempty"`
-	// Path for the CLI destination
-	CliPath *string `json:"cli_path,omitempty"`
-	// Period to rate limit attempts
-	RateLimitPeriod *CreateConnectionRequestDestinationRateLimitPeriod `json:"rate_limit_period,omitempty"`
-	// Limit event attempts to receive per period
-	RateLimit              *int                         `json:"rate_limit,omitempty"`
-	HttpMethod             *DestinationHttpMethod       `json:"http_method,omitempty"`
-	AuthMethod             *DestinationAuthMethodConfig `json:"auth_method,omitempty"`
-	PathForwardingDisabled *bool                        `json:"path_forwarding_disabled,omitempty"`
-}
-
-// Period to rate limit attempts
-type CreateConnectionRequestDestinationRateLimitPeriod string
-
-const (
-	CreateConnectionRequestDestinationRateLimitPeriodSecond CreateConnectionRequestDestinationRateLimitPeriod = "second"
-	CreateConnectionRequestDestinationRateLimitPeriodMinute CreateConnectionRequestDestinationRateLimitPeriod = "minute"
-	CreateConnectionRequestDestinationRateLimitPeriodHour   CreateConnectionRequestDestinationRateLimitPeriod = "hour"
-)
-
-func NewCreateConnectionRequestDestinationRateLimitPeriodFromString(s string) (CreateConnectionRequestDestinationRateLimitPeriod, error) {
-	switch s {
-	case "second":
-		return CreateConnectionRequestDestinationRateLimitPeriodSecond, nil
-	case "minute":
-		return CreateConnectionRequestDestinationRateLimitPeriodMinute, nil
-	case "hour":
-		return CreateConnectionRequestDestinationRateLimitPeriodHour, nil
-	}
-	var t CreateConnectionRequestDestinationRateLimitPeriod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c CreateConnectionRequestDestinationRateLimitPeriod) Ptr() *CreateConnectionRequestDestinationRateLimitPeriod {
-	return &c
-}
-
-// Source input object
-type CreateConnectionRequestSource struct {
-	// A unique name for the source <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name string `json:"name"`
-	// Description for the source
-	Description        *string                  `json:"description,omitempty"`
-	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty"`
-	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty"`
-	Verification       *VerificationConfig      `json:"verification,omitempty"`
-}
-
-// Period to rate limit attempts
-type CreateDestinationRequestRateLimitPeriod string
-
-const (
-	CreateDestinationRequestRateLimitPeriodSecond CreateDestinationRequestRateLimitPeriod = "second"
-	CreateDestinationRequestRateLimitPeriodMinute CreateDestinationRequestRateLimitPeriod = "minute"
-	CreateDestinationRequestRateLimitPeriodHour   CreateDestinationRequestRateLimitPeriod = "hour"
-)
-
-func NewCreateDestinationRequestRateLimitPeriodFromString(s string) (CreateDestinationRequestRateLimitPeriod, error) {
-	switch s {
-	case "second":
-		return CreateDestinationRequestRateLimitPeriodSecond, nil
-	case "minute":
-		return CreateDestinationRequestRateLimitPeriodMinute, nil
-	case "hour":
-		return CreateDestinationRequestRateLimitPeriodHour, nil
-	}
-	var t CreateDestinationRequestRateLimitPeriod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c CreateDestinationRequestRateLimitPeriod) Ptr() *CreateDestinationRequestRateLimitPeriod {
-	return &c
-}
-
-// Filter properties for the events to be included in the bulk retry
-type CreateEventBulkRetryRequestQuery struct {
-	// Filter by event IDs
-	Id *CreateEventBulkRetryRequestQueryId `json:"id,omitempty"`
-	// Lifecyle status of the event
-	Status *CreateEventBulkRetryRequestQueryStatus `json:"status,omitempty"`
-	// Filter by webhook connection IDs
-	WebhookId *CreateEventBulkRetryRequestQueryWebhookId `json:"webhook_id,omitempty"`
-	// Filter by destination IDs
-	DestinationId *CreateEventBulkRetryRequestQueryDestinationId `json:"destination_id,omitempty"`
-	// Filter by source IDs
-	SourceId *CreateEventBulkRetryRequestQuerySourceId `json:"source_id,omitempty"`
-	// Filter by number of attempts
-	Attempts *CreateEventBulkRetryRequestQueryAttempts `json:"attempts,omitempty"`
-	// Filter by HTTP response status code
-	ResponseStatus *CreateEventBulkRetryRequestQueryResponseStatus `json:"response_status,omitempty"`
-	// Filter by `successful_at` date using a date operator
-	SuccessfulAt *CreateEventBulkRetryRequestQuerySuccessfulAt `json:"successful_at,omitempty"`
-	// Filter by `created_at` date using a date operator
-	CreatedAt *CreateEventBulkRetryRequestQueryCreatedAt `json:"created_at,omitempty"`
-	// Filter by error code code
-	ErrorCode *CreateEventBulkRetryRequestQueryErrorCode `json:"error_code,omitempty"`
-	// Filter by CLI IDs. `?[any]=true` operator for any CLI.
-	CliId *CreateEventBulkRetryRequestQueryCliId `json:"cli_id,omitempty"`
-	// Filter by `last_attempt_at` date using a date operator
-	LastAttemptAt *CreateEventBulkRetryRequestQueryLastAttemptAt `json:"last_attempt_at,omitempty"`
-	// URL Encoded string of the value to match partially to the body, headers, parsed_query or path
-	SearchTerm *string `json:"search_term,omitempty"`
-	// URL Encoded string of the JSON to match to the data headers
-	Headers *CreateEventBulkRetryRequestQueryHeaders `json:"headers,omitempty"`
-	// URL Encoded string of the JSON to match to the data body
-	Body *CreateEventBulkRetryRequestQueryBody `json:"body,omitempty"`
-	// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
-	ParsedQuery *CreateEventBulkRetryRequestQueryParsedQuery `json:"parsed_query,omitempty"`
-	// URL Encoded string of the value to match partially to the path
-	Path        *string                                      `json:"path,omitempty"`
-	CliUserId   *CreateEventBulkRetryRequestQueryCliUserId   `json:"cli_user_id,omitempty"`
-	IssueId     *CreateEventBulkRetryRequestQueryIssueId     `json:"issue_id,omitempty"`
-	EventDataId *CreateEventBulkRetryRequestQueryEventDataId `json:"event_data_id,omitempty"`
-	BulkRetryId *CreateEventBulkRetryRequestQueryBulkRetryId `json:"bulk_retry_id,omitempty"`
-}
-
-// Filter by number of attempts
-type CreateEventBulkRetryRequestQueryAttempts struct {
-	typeName                                    string
-	Integer                                     int
-	CreateEventBulkRetryRequestQueryAttemptsAny *CreateEventBulkRetryRequestQueryAttemptsAny
-}
-
-func NewCreateEventBulkRetryRequestQueryAttemptsFromInteger(value int) *CreateEventBulkRetryRequestQueryAttempts {
-	return &CreateEventBulkRetryRequestQueryAttempts{typeName: "integer", Integer: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryAttemptsFromCreateEventBulkRetryRequestQueryAttemptsAny(value *CreateEventBulkRetryRequestQueryAttemptsAny) *CreateEventBulkRetryRequestQueryAttempts {
-	return &CreateEventBulkRetryRequestQueryAttempts{typeName: "createEventBulkRetryRequestQueryAttemptsAny", CreateEventBulkRetryRequestQueryAttemptsAny: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryAttempts) UnmarshalJSON(data []byte) error {
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		c.typeName = "integer"
-		c.Integer = valueInteger
-		return nil
-	}
-	valueCreateEventBulkRetryRequestQueryAttemptsAny := new(CreateEventBulkRetryRequestQueryAttemptsAny)
-	if err := json.Unmarshal(data, &valueCreateEventBulkRetryRequestQueryAttemptsAny); err == nil {
-		c.typeName = "createEventBulkRetryRequestQueryAttemptsAny"
-		c.CreateEventBulkRetryRequestQueryAttemptsAny = valueCreateEventBulkRetryRequestQueryAttemptsAny
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryAttempts) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "integer":
-		return json.Marshal(c.Integer)
-	case "createEventBulkRetryRequestQueryAttemptsAny":
-		return json.Marshal(c.CreateEventBulkRetryRequestQueryAttemptsAny)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryAttemptsVisitor interface {
-	VisitInteger(int) error
-	VisitCreateEventBulkRetryRequestQueryAttemptsAny(*CreateEventBulkRetryRequestQueryAttemptsAny) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryAttempts) Accept(visitor CreateEventBulkRetryRequestQueryAttemptsVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "integer":
-		return visitor.VisitInteger(c.Integer)
-	case "createEventBulkRetryRequestQueryAttemptsAny":
-		return visitor.VisitCreateEventBulkRetryRequestQueryAttemptsAny(c.CreateEventBulkRetryRequestQueryAttemptsAny)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryAttemptsAny struct {
-	Gt       *int  `json:"gt,omitempty"`
-	Gte      *int  `json:"gte,omitempty"`
-	Le       *int  `json:"le,omitempty"`
-	Lte      *int  `json:"lte,omitempty"`
-	Any      *bool `json:"any,omitempty"`
-	Contains *int  `json:"contains,omitempty"`
-}
-
-// URL Encoded string of the JSON to match to the data body
-type CreateEventBulkRetryRequestQueryBody struct {
-	typeName                                string
-	String                                  string
-	CreateEventBulkRetryRequestQueryBodyOne *CreateEventBulkRetryRequestQueryBodyOne
-}
-
-func NewCreateEventBulkRetryRequestQueryBodyFromString(value string) *CreateEventBulkRetryRequestQueryBody {
-	return &CreateEventBulkRetryRequestQueryBody{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryBodyFromCreateEventBulkRetryRequestQueryBodyOne(value *CreateEventBulkRetryRequestQueryBodyOne) *CreateEventBulkRetryRequestQueryBody {
-	return &CreateEventBulkRetryRequestQueryBody{typeName: "createEventBulkRetryRequestQueryBodyOne", CreateEventBulkRetryRequestQueryBodyOne: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryBody) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	valueCreateEventBulkRetryRequestQueryBodyOne := new(CreateEventBulkRetryRequestQueryBodyOne)
-	if err := json.Unmarshal(data, &valueCreateEventBulkRetryRequestQueryBodyOne); err == nil {
-		c.typeName = "createEventBulkRetryRequestQueryBodyOne"
-		c.CreateEventBulkRetryRequestQueryBodyOne = valueCreateEventBulkRetryRequestQueryBodyOne
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryBody) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "createEventBulkRetryRequestQueryBodyOne":
-		return json.Marshal(c.CreateEventBulkRetryRequestQueryBodyOne)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryBodyVisitor interface {
-	VisitString(string) error
-	VisitCreateEventBulkRetryRequestQueryBodyOne(*CreateEventBulkRetryRequestQueryBodyOne) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryBody) Accept(visitor CreateEventBulkRetryRequestQueryBodyVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "createEventBulkRetryRequestQueryBodyOne":
-		return visitor.VisitCreateEventBulkRetryRequestQueryBodyOne(c.CreateEventBulkRetryRequestQueryBodyOne)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryBodyOne struct {
-}
-
-type CreateEventBulkRetryRequestQueryBulkRetryId struct {
-	typeName string
-	// <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateEventBulkRetryRequestQueryBulkRetryIdFromString(value string) *CreateEventBulkRetryRequestQueryBulkRetryId {
-	return &CreateEventBulkRetryRequestQueryBulkRetryId{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryBulkRetryIdFromStringList(value []string) *CreateEventBulkRetryRequestQueryBulkRetryId {
-	return &CreateEventBulkRetryRequestQueryBulkRetryId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryBulkRetryId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryBulkRetryId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryBulkRetryIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryBulkRetryId) Accept(visitor CreateEventBulkRetryRequestQueryBulkRetryIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Filter by CLI IDs. `?[any]=true` operator for any CLI.
-type CreateEventBulkRetryRequestQueryCliId struct {
-	typeName                                 string
-	String                                   string
-	CreateEventBulkRetryRequestQueryCliIdAny *CreateEventBulkRetryRequestQueryCliIdAny
-	StringList                               []string
-}
-
-func NewCreateEventBulkRetryRequestQueryCliIdFromString(value string) *CreateEventBulkRetryRequestQueryCliId {
-	return &CreateEventBulkRetryRequestQueryCliId{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryCliIdFromCreateEventBulkRetryRequestQueryCliIdAny(value *CreateEventBulkRetryRequestQueryCliIdAny) *CreateEventBulkRetryRequestQueryCliId {
-	return &CreateEventBulkRetryRequestQueryCliId{typeName: "createEventBulkRetryRequestQueryCliIdAny", CreateEventBulkRetryRequestQueryCliIdAny: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryCliIdFromStringList(value []string) *CreateEventBulkRetryRequestQueryCliId {
-	return &CreateEventBulkRetryRequestQueryCliId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryCliId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	valueCreateEventBulkRetryRequestQueryCliIdAny := new(CreateEventBulkRetryRequestQueryCliIdAny)
-	if err := json.Unmarshal(data, &valueCreateEventBulkRetryRequestQueryCliIdAny); err == nil {
-		c.typeName = "createEventBulkRetryRequestQueryCliIdAny"
-		c.CreateEventBulkRetryRequestQueryCliIdAny = valueCreateEventBulkRetryRequestQueryCliIdAny
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryCliId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "createEventBulkRetryRequestQueryCliIdAny":
-		return json.Marshal(c.CreateEventBulkRetryRequestQueryCliIdAny)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryCliIdVisitor interface {
-	VisitString(string) error
-	VisitCreateEventBulkRetryRequestQueryCliIdAny(*CreateEventBulkRetryRequestQueryCliIdAny) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryCliId) Accept(visitor CreateEventBulkRetryRequestQueryCliIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "createEventBulkRetryRequestQueryCliIdAny":
-		return visitor.VisitCreateEventBulkRetryRequestQueryCliIdAny(c.CreateEventBulkRetryRequestQueryCliIdAny)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryCliIdAny struct {
-	Any *bool `json:"any,omitempty"`
-}
-
-type CreateEventBulkRetryRequestQueryCliUserId struct {
-	typeName   string
-	String     string
-	StringList []string
-}
-
-func NewCreateEventBulkRetryRequestQueryCliUserIdFromString(value string) *CreateEventBulkRetryRequestQueryCliUserId {
-	return &CreateEventBulkRetryRequestQueryCliUserId{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryCliUserIdFromStringList(value []string) *CreateEventBulkRetryRequestQueryCliUserId {
-	return &CreateEventBulkRetryRequestQueryCliUserId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryCliUserId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryCliUserId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryCliUserIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryCliUserId) Accept(visitor CreateEventBulkRetryRequestQueryCliUserIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Filter by `created_at` date using a date operator
-type CreateEventBulkRetryRequestQueryCreatedAt struct {
-	typeName                                     string
-	DateTime                                     time.Time
-	CreateEventBulkRetryRequestQueryCreatedAtAny *CreateEventBulkRetryRequestQueryCreatedAtAny
-}
-
-func NewCreateEventBulkRetryRequestQueryCreatedAtFromDateTime(value time.Time) *CreateEventBulkRetryRequestQueryCreatedAt {
-	return &CreateEventBulkRetryRequestQueryCreatedAt{typeName: "dateTime", DateTime: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryCreatedAtFromCreateEventBulkRetryRequestQueryCreatedAtAny(value *CreateEventBulkRetryRequestQueryCreatedAtAny) *CreateEventBulkRetryRequestQueryCreatedAt {
-	return &CreateEventBulkRetryRequestQueryCreatedAt{typeName: "createEventBulkRetryRequestQueryCreatedAtAny", CreateEventBulkRetryRequestQueryCreatedAtAny: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryCreatedAt) UnmarshalJSON(data []byte) error {
-	var valueDateTime time.Time
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		c.typeName = "dateTime"
-		c.DateTime = valueDateTime
-		return nil
-	}
-	valueCreateEventBulkRetryRequestQueryCreatedAtAny := new(CreateEventBulkRetryRequestQueryCreatedAtAny)
-	if err := json.Unmarshal(data, &valueCreateEventBulkRetryRequestQueryCreatedAtAny); err == nil {
-		c.typeName = "createEventBulkRetryRequestQueryCreatedAtAny"
-		c.CreateEventBulkRetryRequestQueryCreatedAtAny = valueCreateEventBulkRetryRequestQueryCreatedAtAny
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryCreatedAt) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "dateTime":
-		return json.Marshal(c.DateTime)
-	case "createEventBulkRetryRequestQueryCreatedAtAny":
-		return json.Marshal(c.CreateEventBulkRetryRequestQueryCreatedAtAny)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryCreatedAtVisitor interface {
-	VisitDateTime(time.Time) error
-	VisitCreateEventBulkRetryRequestQueryCreatedAtAny(*CreateEventBulkRetryRequestQueryCreatedAtAny) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryCreatedAt) Accept(visitor CreateEventBulkRetryRequestQueryCreatedAtVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "dateTime":
-		return visitor.VisitDateTime(c.DateTime)
-	case "createEventBulkRetryRequestQueryCreatedAtAny":
-		return visitor.VisitCreateEventBulkRetryRequestQueryCreatedAtAny(c.CreateEventBulkRetryRequestQueryCreatedAtAny)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryCreatedAtAny struct {
-	Gt  *time.Time `json:"gt,omitempty"`
-	Gte *time.Time `json:"gte,omitempty"`
-	Le  *time.Time `json:"le,omitempty"`
-	Lte *time.Time `json:"lte,omitempty"`
-	Any *bool      `json:"any,omitempty"`
-}
-
-// Filter by destination IDs
-type CreateEventBulkRetryRequestQueryDestinationId struct {
-	typeName string
-	// Destination ID <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateEventBulkRetryRequestQueryDestinationIdFromString(value string) *CreateEventBulkRetryRequestQueryDestinationId {
-	return &CreateEventBulkRetryRequestQueryDestinationId{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryDestinationIdFromStringList(value []string) *CreateEventBulkRetryRequestQueryDestinationId {
-	return &CreateEventBulkRetryRequestQueryDestinationId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryDestinationId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryDestinationId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryDestinationIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryDestinationId) Accept(visitor CreateEventBulkRetryRequestQueryDestinationIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Filter by error code code
-type CreateEventBulkRetryRequestQueryErrorCode struct {
-	typeName              string
-	AttemptErrorCodes     AttemptErrorCodes
-	AttemptErrorCodesList []AttemptErrorCodes
-}
-
-func NewCreateEventBulkRetryRequestQueryErrorCodeFromAttemptErrorCodes(value AttemptErrorCodes) *CreateEventBulkRetryRequestQueryErrorCode {
-	return &CreateEventBulkRetryRequestQueryErrorCode{typeName: "attemptErrorCodes", AttemptErrorCodes: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryErrorCodeFromAttemptErrorCodesList(value []AttemptErrorCodes) *CreateEventBulkRetryRequestQueryErrorCode {
-	return &CreateEventBulkRetryRequestQueryErrorCode{typeName: "attemptErrorCodesList", AttemptErrorCodesList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryErrorCode) UnmarshalJSON(data []byte) error {
-	var valueAttemptErrorCodes AttemptErrorCodes
-	if err := json.Unmarshal(data, &valueAttemptErrorCodes); err == nil {
-		c.typeName = "attemptErrorCodes"
-		c.AttemptErrorCodes = valueAttemptErrorCodes
-		return nil
-	}
-	var valueAttemptErrorCodesList []AttemptErrorCodes
-	if err := json.Unmarshal(data, &valueAttemptErrorCodesList); err == nil {
-		c.typeName = "attemptErrorCodesList"
-		c.AttemptErrorCodesList = valueAttemptErrorCodesList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryErrorCode) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "attemptErrorCodes":
-		return json.Marshal(c.AttemptErrorCodes)
-	case "attemptErrorCodesList":
-		return json.Marshal(c.AttemptErrorCodesList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryErrorCodeVisitor interface {
-	VisitAttemptErrorCodes(AttemptErrorCodes) error
-	VisitAttemptErrorCodesList([]AttemptErrorCodes) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryErrorCode) Accept(visitor CreateEventBulkRetryRequestQueryErrorCodeVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "attemptErrorCodes":
-		return visitor.VisitAttemptErrorCodes(c.AttemptErrorCodes)
-	case "attemptErrorCodesList":
-		return visitor.VisitAttemptErrorCodesList(c.AttemptErrorCodesList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryEventDataId struct {
-	typeName string
-	// <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateEventBulkRetryRequestQueryEventDataIdFromString(value string) *CreateEventBulkRetryRequestQueryEventDataId {
-	return &CreateEventBulkRetryRequestQueryEventDataId{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryEventDataIdFromStringList(value []string) *CreateEventBulkRetryRequestQueryEventDataId {
-	return &CreateEventBulkRetryRequestQueryEventDataId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryEventDataId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryEventDataId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryEventDataIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryEventDataId) Accept(visitor CreateEventBulkRetryRequestQueryEventDataIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// URL Encoded string of the JSON to match to the data headers
-type CreateEventBulkRetryRequestQueryHeaders struct {
-	typeName                                   string
-	String                                     string
-	CreateEventBulkRetryRequestQueryHeadersOne *CreateEventBulkRetryRequestQueryHeadersOne
-}
-
-func NewCreateEventBulkRetryRequestQueryHeadersFromString(value string) *CreateEventBulkRetryRequestQueryHeaders {
-	return &CreateEventBulkRetryRequestQueryHeaders{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryHeadersFromCreateEventBulkRetryRequestQueryHeadersOne(value *CreateEventBulkRetryRequestQueryHeadersOne) *CreateEventBulkRetryRequestQueryHeaders {
-	return &CreateEventBulkRetryRequestQueryHeaders{typeName: "createEventBulkRetryRequestQueryHeadersOne", CreateEventBulkRetryRequestQueryHeadersOne: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryHeaders) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	valueCreateEventBulkRetryRequestQueryHeadersOne := new(CreateEventBulkRetryRequestQueryHeadersOne)
-	if err := json.Unmarshal(data, &valueCreateEventBulkRetryRequestQueryHeadersOne); err == nil {
-		c.typeName = "createEventBulkRetryRequestQueryHeadersOne"
-		c.CreateEventBulkRetryRequestQueryHeadersOne = valueCreateEventBulkRetryRequestQueryHeadersOne
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryHeaders) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "createEventBulkRetryRequestQueryHeadersOne":
-		return json.Marshal(c.CreateEventBulkRetryRequestQueryHeadersOne)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryHeadersVisitor interface {
-	VisitString(string) error
-	VisitCreateEventBulkRetryRequestQueryHeadersOne(*CreateEventBulkRetryRequestQueryHeadersOne) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryHeaders) Accept(visitor CreateEventBulkRetryRequestQueryHeadersVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "createEventBulkRetryRequestQueryHeadersOne":
-		return visitor.VisitCreateEventBulkRetryRequestQueryHeadersOne(c.CreateEventBulkRetryRequestQueryHeadersOne)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryHeadersOne struct {
-}
-
-// Filter by event IDs
-type CreateEventBulkRetryRequestQueryId struct {
-	typeName string
-	// Event ID <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateEventBulkRetryRequestQueryIdFromString(value string) *CreateEventBulkRetryRequestQueryId {
-	return &CreateEventBulkRetryRequestQueryId{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryIdFromStringList(value []string) *CreateEventBulkRetryRequestQueryId {
-	return &CreateEventBulkRetryRequestQueryId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryId) Accept(visitor CreateEventBulkRetryRequestQueryIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryIssueId struct {
-	typeName string
-	// <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateEventBulkRetryRequestQueryIssueIdFromString(value string) *CreateEventBulkRetryRequestQueryIssueId {
-	return &CreateEventBulkRetryRequestQueryIssueId{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryIssueIdFromStringList(value []string) *CreateEventBulkRetryRequestQueryIssueId {
-	return &CreateEventBulkRetryRequestQueryIssueId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryIssueId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryIssueId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryIssueIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryIssueId) Accept(visitor CreateEventBulkRetryRequestQueryIssueIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Filter by `last_attempt_at` date using a date operator
-type CreateEventBulkRetryRequestQueryLastAttemptAt struct {
-	typeName                                         string
-	DateTime                                         time.Time
-	CreateEventBulkRetryRequestQueryLastAttemptAtAny *CreateEventBulkRetryRequestQueryLastAttemptAtAny
-}
-
-func NewCreateEventBulkRetryRequestQueryLastAttemptAtFromDateTime(value time.Time) *CreateEventBulkRetryRequestQueryLastAttemptAt {
-	return &CreateEventBulkRetryRequestQueryLastAttemptAt{typeName: "dateTime", DateTime: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryLastAttemptAtFromCreateEventBulkRetryRequestQueryLastAttemptAtAny(value *CreateEventBulkRetryRequestQueryLastAttemptAtAny) *CreateEventBulkRetryRequestQueryLastAttemptAt {
-	return &CreateEventBulkRetryRequestQueryLastAttemptAt{typeName: "createEventBulkRetryRequestQueryLastAttemptAtAny", CreateEventBulkRetryRequestQueryLastAttemptAtAny: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryLastAttemptAt) UnmarshalJSON(data []byte) error {
-	var valueDateTime time.Time
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		c.typeName = "dateTime"
-		c.DateTime = valueDateTime
-		return nil
-	}
-	valueCreateEventBulkRetryRequestQueryLastAttemptAtAny := new(CreateEventBulkRetryRequestQueryLastAttemptAtAny)
-	if err := json.Unmarshal(data, &valueCreateEventBulkRetryRequestQueryLastAttemptAtAny); err == nil {
-		c.typeName = "createEventBulkRetryRequestQueryLastAttemptAtAny"
-		c.CreateEventBulkRetryRequestQueryLastAttemptAtAny = valueCreateEventBulkRetryRequestQueryLastAttemptAtAny
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryLastAttemptAt) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "dateTime":
-		return json.Marshal(c.DateTime)
-	case "createEventBulkRetryRequestQueryLastAttemptAtAny":
-		return json.Marshal(c.CreateEventBulkRetryRequestQueryLastAttemptAtAny)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryLastAttemptAtVisitor interface {
-	VisitDateTime(time.Time) error
-	VisitCreateEventBulkRetryRequestQueryLastAttemptAtAny(*CreateEventBulkRetryRequestQueryLastAttemptAtAny) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryLastAttemptAt) Accept(visitor CreateEventBulkRetryRequestQueryLastAttemptAtVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "dateTime":
-		return visitor.VisitDateTime(c.DateTime)
-	case "createEventBulkRetryRequestQueryLastAttemptAtAny":
-		return visitor.VisitCreateEventBulkRetryRequestQueryLastAttemptAtAny(c.CreateEventBulkRetryRequestQueryLastAttemptAtAny)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryLastAttemptAtAny struct {
-	Gt  *time.Time `json:"gt,omitempty"`
-	Gte *time.Time `json:"gte,omitempty"`
-	Le  *time.Time `json:"le,omitempty"`
-	Lte *time.Time `json:"lte,omitempty"`
-	Any *bool      `json:"any,omitempty"`
-}
-
-// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
-type CreateEventBulkRetryRequestQueryParsedQuery struct {
-	typeName                                       string
-	String                                         string
-	CreateEventBulkRetryRequestQueryParsedQueryOne *CreateEventBulkRetryRequestQueryParsedQueryOne
-}
-
-func NewCreateEventBulkRetryRequestQueryParsedQueryFromString(value string) *CreateEventBulkRetryRequestQueryParsedQuery {
-	return &CreateEventBulkRetryRequestQueryParsedQuery{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryParsedQueryFromCreateEventBulkRetryRequestQueryParsedQueryOne(value *CreateEventBulkRetryRequestQueryParsedQueryOne) *CreateEventBulkRetryRequestQueryParsedQuery {
-	return &CreateEventBulkRetryRequestQueryParsedQuery{typeName: "createEventBulkRetryRequestQueryParsedQueryOne", CreateEventBulkRetryRequestQueryParsedQueryOne: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryParsedQuery) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	valueCreateEventBulkRetryRequestQueryParsedQueryOne := new(CreateEventBulkRetryRequestQueryParsedQueryOne)
-	if err := json.Unmarshal(data, &valueCreateEventBulkRetryRequestQueryParsedQueryOne); err == nil {
-		c.typeName = "createEventBulkRetryRequestQueryParsedQueryOne"
-		c.CreateEventBulkRetryRequestQueryParsedQueryOne = valueCreateEventBulkRetryRequestQueryParsedQueryOne
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryParsedQuery) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "createEventBulkRetryRequestQueryParsedQueryOne":
-		return json.Marshal(c.CreateEventBulkRetryRequestQueryParsedQueryOne)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryParsedQueryVisitor interface {
-	VisitString(string) error
-	VisitCreateEventBulkRetryRequestQueryParsedQueryOne(*CreateEventBulkRetryRequestQueryParsedQueryOne) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryParsedQuery) Accept(visitor CreateEventBulkRetryRequestQueryParsedQueryVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "createEventBulkRetryRequestQueryParsedQueryOne":
-		return visitor.VisitCreateEventBulkRetryRequestQueryParsedQueryOne(c.CreateEventBulkRetryRequestQueryParsedQueryOne)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryParsedQueryOne struct {
-}
-
-// Filter by HTTP response status code
-type CreateEventBulkRetryRequestQueryResponseStatus struct {
-	typeName                                          string
-	Integer                                           int
-	CreateEventBulkRetryRequestQueryResponseStatusAny *CreateEventBulkRetryRequestQueryResponseStatusAny
-	IntegerList                                       []int
-}
-
-func NewCreateEventBulkRetryRequestQueryResponseStatusFromInteger(value int) *CreateEventBulkRetryRequestQueryResponseStatus {
-	return &CreateEventBulkRetryRequestQueryResponseStatus{typeName: "integer", Integer: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryResponseStatusFromCreateEventBulkRetryRequestQueryResponseStatusAny(value *CreateEventBulkRetryRequestQueryResponseStatusAny) *CreateEventBulkRetryRequestQueryResponseStatus {
-	return &CreateEventBulkRetryRequestQueryResponseStatus{typeName: "createEventBulkRetryRequestQueryResponseStatusAny", CreateEventBulkRetryRequestQueryResponseStatusAny: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryResponseStatusFromIntegerList(value []int) *CreateEventBulkRetryRequestQueryResponseStatus {
-	return &CreateEventBulkRetryRequestQueryResponseStatus{typeName: "integerList", IntegerList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryResponseStatus) UnmarshalJSON(data []byte) error {
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		c.typeName = "integer"
-		c.Integer = valueInteger
-		return nil
-	}
-	valueCreateEventBulkRetryRequestQueryResponseStatusAny := new(CreateEventBulkRetryRequestQueryResponseStatusAny)
-	if err := json.Unmarshal(data, &valueCreateEventBulkRetryRequestQueryResponseStatusAny); err == nil {
-		c.typeName = "createEventBulkRetryRequestQueryResponseStatusAny"
-		c.CreateEventBulkRetryRequestQueryResponseStatusAny = valueCreateEventBulkRetryRequestQueryResponseStatusAny
-		return nil
-	}
-	var valueIntegerList []int
-	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
-		c.typeName = "integerList"
-		c.IntegerList = valueIntegerList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryResponseStatus) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "integer":
-		return json.Marshal(c.Integer)
-	case "createEventBulkRetryRequestQueryResponseStatusAny":
-		return json.Marshal(c.CreateEventBulkRetryRequestQueryResponseStatusAny)
-	case "integerList":
-		return json.Marshal(c.IntegerList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryResponseStatusVisitor interface {
-	VisitInteger(int) error
-	VisitCreateEventBulkRetryRequestQueryResponseStatusAny(*CreateEventBulkRetryRequestQueryResponseStatusAny) error
-	VisitIntegerList([]int) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryResponseStatus) Accept(visitor CreateEventBulkRetryRequestQueryResponseStatusVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "integer":
-		return visitor.VisitInteger(c.Integer)
-	case "createEventBulkRetryRequestQueryResponseStatusAny":
-		return visitor.VisitCreateEventBulkRetryRequestQueryResponseStatusAny(c.CreateEventBulkRetryRequestQueryResponseStatusAny)
-	case "integerList":
-		return visitor.VisitIntegerList(c.IntegerList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryResponseStatusAny struct {
-	Gt       *int  `json:"gt,omitempty"`
-	Gte      *int  `json:"gte,omitempty"`
-	Le       *int  `json:"le,omitempty"`
-	Lte      *int  `json:"lte,omitempty"`
-	Any      *bool `json:"any,omitempty"`
-	Contains *int  `json:"contains,omitempty"`
-}
-
-// Filter by source IDs
-type CreateEventBulkRetryRequestQuerySourceId struct {
-	typeName string
-	// Source ID <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateEventBulkRetryRequestQuerySourceIdFromString(value string) *CreateEventBulkRetryRequestQuerySourceId {
-	return &CreateEventBulkRetryRequestQuerySourceId{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQuerySourceIdFromStringList(value []string) *CreateEventBulkRetryRequestQuerySourceId {
-	return &CreateEventBulkRetryRequestQuerySourceId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQuerySourceId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQuerySourceId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQuerySourceIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateEventBulkRetryRequestQuerySourceId) Accept(visitor CreateEventBulkRetryRequestQuerySourceIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Lifecyle status of the event
-type CreateEventBulkRetryRequestQueryStatus struct {
-	typeName        string
-	EventStatus     EventStatus
-	EventStatusList []EventStatus
-}
-
-func NewCreateEventBulkRetryRequestQueryStatusFromEventStatus(value EventStatus) *CreateEventBulkRetryRequestQueryStatus {
-	return &CreateEventBulkRetryRequestQueryStatus{typeName: "eventStatus", EventStatus: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryStatusFromEventStatusList(value []EventStatus) *CreateEventBulkRetryRequestQueryStatus {
-	return &CreateEventBulkRetryRequestQueryStatus{typeName: "eventStatusList", EventStatusList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryStatus) UnmarshalJSON(data []byte) error {
-	var valueEventStatus EventStatus
-	if err := json.Unmarshal(data, &valueEventStatus); err == nil {
-		c.typeName = "eventStatus"
-		c.EventStatus = valueEventStatus
-		return nil
-	}
-	var valueEventStatusList []EventStatus
-	if err := json.Unmarshal(data, &valueEventStatusList); err == nil {
-		c.typeName = "eventStatusList"
-		c.EventStatusList = valueEventStatusList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryStatus) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "eventStatus":
-		return json.Marshal(c.EventStatus)
-	case "eventStatusList":
-		return json.Marshal(c.EventStatusList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryStatusVisitor interface {
-	VisitEventStatus(EventStatus) error
-	VisitEventStatusList([]EventStatus) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryStatus) Accept(visitor CreateEventBulkRetryRequestQueryStatusVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "eventStatus":
-		return visitor.VisitEventStatus(c.EventStatus)
-	case "eventStatusList":
-		return visitor.VisitEventStatusList(c.EventStatusList)
-	}
-}
-
-// Filter by `successful_at` date using a date operator
-type CreateEventBulkRetryRequestQuerySuccessfulAt struct {
-	typeName                                        string
-	DateTime                                        time.Time
-	CreateEventBulkRetryRequestQuerySuccessfulAtAny *CreateEventBulkRetryRequestQuerySuccessfulAtAny
-}
-
-func NewCreateEventBulkRetryRequestQuerySuccessfulAtFromDateTime(value time.Time) *CreateEventBulkRetryRequestQuerySuccessfulAt {
-	return &CreateEventBulkRetryRequestQuerySuccessfulAt{typeName: "dateTime", DateTime: value}
-}
-
-func NewCreateEventBulkRetryRequestQuerySuccessfulAtFromCreateEventBulkRetryRequestQuerySuccessfulAtAny(value *CreateEventBulkRetryRequestQuerySuccessfulAtAny) *CreateEventBulkRetryRequestQuerySuccessfulAt {
-	return &CreateEventBulkRetryRequestQuerySuccessfulAt{typeName: "createEventBulkRetryRequestQuerySuccessfulAtAny", CreateEventBulkRetryRequestQuerySuccessfulAtAny: value}
-}
-
-func (c *CreateEventBulkRetryRequestQuerySuccessfulAt) UnmarshalJSON(data []byte) error {
-	var valueDateTime time.Time
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		c.typeName = "dateTime"
-		c.DateTime = valueDateTime
-		return nil
-	}
-	valueCreateEventBulkRetryRequestQuerySuccessfulAtAny := new(CreateEventBulkRetryRequestQuerySuccessfulAtAny)
-	if err := json.Unmarshal(data, &valueCreateEventBulkRetryRequestQuerySuccessfulAtAny); err == nil {
-		c.typeName = "createEventBulkRetryRequestQuerySuccessfulAtAny"
-		c.CreateEventBulkRetryRequestQuerySuccessfulAtAny = valueCreateEventBulkRetryRequestQuerySuccessfulAtAny
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQuerySuccessfulAt) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "dateTime":
-		return json.Marshal(c.DateTime)
-	case "createEventBulkRetryRequestQuerySuccessfulAtAny":
-		return json.Marshal(c.CreateEventBulkRetryRequestQuerySuccessfulAtAny)
-	}
-}
-
-type CreateEventBulkRetryRequestQuerySuccessfulAtVisitor interface {
-	VisitDateTime(time.Time) error
-	VisitCreateEventBulkRetryRequestQuerySuccessfulAtAny(*CreateEventBulkRetryRequestQuerySuccessfulAtAny) error
-}
-
-func (c *CreateEventBulkRetryRequestQuerySuccessfulAt) Accept(visitor CreateEventBulkRetryRequestQuerySuccessfulAtVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "dateTime":
-		return visitor.VisitDateTime(c.DateTime)
-	case "createEventBulkRetryRequestQuerySuccessfulAtAny":
-		return visitor.VisitCreateEventBulkRetryRequestQuerySuccessfulAtAny(c.CreateEventBulkRetryRequestQuerySuccessfulAtAny)
-	}
-}
-
-type CreateEventBulkRetryRequestQuerySuccessfulAtAny struct {
-	Gt  *time.Time `json:"gt,omitempty"`
-	Gte *time.Time `json:"gte,omitempty"`
-	Le  *time.Time `json:"le,omitempty"`
-	Lte *time.Time `json:"lte,omitempty"`
-	Any *bool      `json:"any,omitempty"`
-}
-
-// Filter by webhook connection IDs
-type CreateEventBulkRetryRequestQueryWebhookId struct {
-	typeName string
-	// Webhook ID <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateEventBulkRetryRequestQueryWebhookIdFromString(value string) *CreateEventBulkRetryRequestQueryWebhookId {
-	return &CreateEventBulkRetryRequestQueryWebhookId{typeName: "string", String: value}
-}
-
-func NewCreateEventBulkRetryRequestQueryWebhookIdFromStringList(value []string) *CreateEventBulkRetryRequestQueryWebhookId {
-	return &CreateEventBulkRetryRequestQueryWebhookId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateEventBulkRetryRequestQueryWebhookId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateEventBulkRetryRequestQueryWebhookId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateEventBulkRetryRequestQueryWebhookIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateEventBulkRetryRequestQueryWebhookId) Accept(visitor CreateEventBulkRetryRequestQueryWebhookIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Filter by the bulk retry ignored event query object
-type CreateIgnoredEventBulkRetryRequestQuery struct {
-	// The cause of the ignored event
-	Cause *CreateIgnoredEventBulkRetryRequestQueryCause `json:"cause,omitempty"`
-	// Connection ID of the ignored event
-	WebhookId *CreateIgnoredEventBulkRetryRequestQueryWebhookId `json:"webhook_id,omitempty"`
-	// The associated transformation ID (only applicable to the cause `TRANSFORMATION_FAILED`) <span style="white-space: nowrap">`<= 255 characters`</span>
-	TransformationId *string `json:"transformation_id,omitempty"`
-}
-
-// The cause of the ignored event
-type CreateIgnoredEventBulkRetryRequestQueryCause struct {
-	typeName string
-	// <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateIgnoredEventBulkRetryRequestQueryCauseFromString(value string) *CreateIgnoredEventBulkRetryRequestQueryCause {
-	return &CreateIgnoredEventBulkRetryRequestQueryCause{typeName: "string", String: value}
-}
-
-func NewCreateIgnoredEventBulkRetryRequestQueryCauseFromStringList(value []string) *CreateIgnoredEventBulkRetryRequestQueryCause {
-	return &CreateIgnoredEventBulkRetryRequestQueryCause{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateIgnoredEventBulkRetryRequestQueryCause) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateIgnoredEventBulkRetryRequestQueryCause) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateIgnoredEventBulkRetryRequestQueryCauseVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateIgnoredEventBulkRetryRequestQueryCause) Accept(visitor CreateIgnoredEventBulkRetryRequestQueryCauseVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Connection ID of the ignored event
-type CreateIgnoredEventBulkRetryRequestQueryWebhookId struct {
-	typeName string
-	// <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateIgnoredEventBulkRetryRequestQueryWebhookIdFromString(value string) *CreateIgnoredEventBulkRetryRequestQueryWebhookId {
-	return &CreateIgnoredEventBulkRetryRequestQueryWebhookId{typeName: "string", String: value}
-}
-
-func NewCreateIgnoredEventBulkRetryRequestQueryWebhookIdFromStringList(value []string) *CreateIgnoredEventBulkRetryRequestQueryWebhookId {
-	return &CreateIgnoredEventBulkRetryRequestQueryWebhookId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateIgnoredEventBulkRetryRequestQueryWebhookId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateIgnoredEventBulkRetryRequestQueryWebhookId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateIgnoredEventBulkRetryRequestQueryWebhookIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateIgnoredEventBulkRetryRequestQueryWebhookId) Accept(visitor CreateIgnoredEventBulkRetryRequestQueryWebhookIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Decrypted Key/Value object of the associated configuration for that provider
-type CreateIntegrationRequestConfigs struct {
-	typeName                           string
-	HmacIntegrationConfigs             *HmacIntegrationConfigs
-	ApiKeyIntegrationConfigs           *ApiKeyIntegrationConfigs
-	HandledApiKeyIntegrationConfigs    *HandledApiKeyIntegrationConfigs
-	HandledHmacConfigs                 *HandledHmacConfigs
-	BasicAuthIntegrationConfigs        *BasicAuthIntegrationConfigs
-	ShopifyIntegrationConfigs          *ShopifyIntegrationConfigs
-	CreateIntegrationRequestConfigsSix *CreateIntegrationRequestConfigsSix
-}
-
-func NewCreateIntegrationRequestConfigsFromHmacIntegrationConfigs(value *HmacIntegrationConfigs) *CreateIntegrationRequestConfigs {
-	return &CreateIntegrationRequestConfigs{typeName: "hmacIntegrationConfigs", HmacIntegrationConfigs: value}
-}
-
-func NewCreateIntegrationRequestConfigsFromApiKeyIntegrationConfigs(value *ApiKeyIntegrationConfigs) *CreateIntegrationRequestConfigs {
-	return &CreateIntegrationRequestConfigs{typeName: "apiKeyIntegrationConfigs", ApiKeyIntegrationConfigs: value}
-}
-
-func NewCreateIntegrationRequestConfigsFromHandledApiKeyIntegrationConfigs(value *HandledApiKeyIntegrationConfigs) *CreateIntegrationRequestConfigs {
-	return &CreateIntegrationRequestConfigs{typeName: "handledApiKeyIntegrationConfigs", HandledApiKeyIntegrationConfigs: value}
-}
-
-func NewCreateIntegrationRequestConfigsFromHandledHmacConfigs(value *HandledHmacConfigs) *CreateIntegrationRequestConfigs {
-	return &CreateIntegrationRequestConfigs{typeName: "handledHmacConfigs", HandledHmacConfigs: value}
-}
-
-func NewCreateIntegrationRequestConfigsFromBasicAuthIntegrationConfigs(value *BasicAuthIntegrationConfigs) *CreateIntegrationRequestConfigs {
-	return &CreateIntegrationRequestConfigs{typeName: "basicAuthIntegrationConfigs", BasicAuthIntegrationConfigs: value}
-}
-
-func NewCreateIntegrationRequestConfigsFromShopifyIntegrationConfigs(value *ShopifyIntegrationConfigs) *CreateIntegrationRequestConfigs {
-	return &CreateIntegrationRequestConfigs{typeName: "shopifyIntegrationConfigs", ShopifyIntegrationConfigs: value}
-}
-
-func NewCreateIntegrationRequestConfigsFromCreateIntegrationRequestConfigsSix(value *CreateIntegrationRequestConfigsSix) *CreateIntegrationRequestConfigs {
-	return &CreateIntegrationRequestConfigs{typeName: "createIntegrationRequestConfigsSix", CreateIntegrationRequestConfigsSix: value}
-}
-
-func (c *CreateIntegrationRequestConfigs) UnmarshalJSON(data []byte) error {
-	valueHmacIntegrationConfigs := new(HmacIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueHmacIntegrationConfigs); err == nil {
-		c.typeName = "hmacIntegrationConfigs"
-		c.HmacIntegrationConfigs = valueHmacIntegrationConfigs
-		return nil
-	}
-	valueApiKeyIntegrationConfigs := new(ApiKeyIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueApiKeyIntegrationConfigs); err == nil {
-		c.typeName = "apiKeyIntegrationConfigs"
-		c.ApiKeyIntegrationConfigs = valueApiKeyIntegrationConfigs
-		return nil
-	}
-	valueHandledApiKeyIntegrationConfigs := new(HandledApiKeyIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueHandledApiKeyIntegrationConfigs); err == nil {
-		c.typeName = "handledApiKeyIntegrationConfigs"
-		c.HandledApiKeyIntegrationConfigs = valueHandledApiKeyIntegrationConfigs
-		return nil
-	}
-	valueHandledHmacConfigs := new(HandledHmacConfigs)
-	if err := json.Unmarshal(data, &valueHandledHmacConfigs); err == nil {
-		c.typeName = "handledHmacConfigs"
-		c.HandledHmacConfigs = valueHandledHmacConfigs
-		return nil
-	}
-	valueBasicAuthIntegrationConfigs := new(BasicAuthIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueBasicAuthIntegrationConfigs); err == nil {
-		c.typeName = "basicAuthIntegrationConfigs"
-		c.BasicAuthIntegrationConfigs = valueBasicAuthIntegrationConfigs
-		return nil
-	}
-	valueShopifyIntegrationConfigs := new(ShopifyIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueShopifyIntegrationConfigs); err == nil {
-		c.typeName = "shopifyIntegrationConfigs"
-		c.ShopifyIntegrationConfigs = valueShopifyIntegrationConfigs
-		return nil
-	}
-	valueCreateIntegrationRequestConfigsSix := new(CreateIntegrationRequestConfigsSix)
-	if err := json.Unmarshal(data, &valueCreateIntegrationRequestConfigsSix); err == nil {
-		c.typeName = "createIntegrationRequestConfigsSix"
-		c.CreateIntegrationRequestConfigsSix = valueCreateIntegrationRequestConfigsSix
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateIntegrationRequestConfigs) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "hmacIntegrationConfigs":
-		return json.Marshal(c.HmacIntegrationConfigs)
-	case "apiKeyIntegrationConfigs":
-		return json.Marshal(c.ApiKeyIntegrationConfigs)
-	case "handledApiKeyIntegrationConfigs":
-		return json.Marshal(c.HandledApiKeyIntegrationConfigs)
-	case "handledHmacConfigs":
-		return json.Marshal(c.HandledHmacConfigs)
-	case "basicAuthIntegrationConfigs":
-		return json.Marshal(c.BasicAuthIntegrationConfigs)
-	case "shopifyIntegrationConfigs":
-		return json.Marshal(c.ShopifyIntegrationConfigs)
-	case "createIntegrationRequestConfigsSix":
-		return json.Marshal(c.CreateIntegrationRequestConfigsSix)
-	}
-}
-
-type CreateIntegrationRequestConfigsVisitor interface {
-	VisitHmacIntegrationConfigs(*HmacIntegrationConfigs) error
-	VisitApiKeyIntegrationConfigs(*ApiKeyIntegrationConfigs) error
-	VisitHandledApiKeyIntegrationConfigs(*HandledApiKeyIntegrationConfigs) error
-	VisitHandledHmacConfigs(*HandledHmacConfigs) error
-	VisitBasicAuthIntegrationConfigs(*BasicAuthIntegrationConfigs) error
-	VisitShopifyIntegrationConfigs(*ShopifyIntegrationConfigs) error
-	VisitCreateIntegrationRequestConfigsSix(*CreateIntegrationRequestConfigsSix) error
-}
-
-func (c *CreateIntegrationRequestConfigs) Accept(visitor CreateIntegrationRequestConfigsVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "hmacIntegrationConfigs":
-		return visitor.VisitHmacIntegrationConfigs(c.HmacIntegrationConfigs)
-	case "apiKeyIntegrationConfigs":
-		return visitor.VisitApiKeyIntegrationConfigs(c.ApiKeyIntegrationConfigs)
-	case "handledApiKeyIntegrationConfigs":
-		return visitor.VisitHandledApiKeyIntegrationConfigs(c.HandledApiKeyIntegrationConfigs)
-	case "handledHmacConfigs":
-		return visitor.VisitHandledHmacConfigs(c.HandledHmacConfigs)
-	case "basicAuthIntegrationConfigs":
-		return visitor.VisitBasicAuthIntegrationConfigs(c.BasicAuthIntegrationConfigs)
-	case "shopifyIntegrationConfigs":
-		return visitor.VisitShopifyIntegrationConfigs(c.ShopifyIntegrationConfigs)
-	case "createIntegrationRequestConfigsSix":
-		return visitor.VisitCreateIntegrationRequestConfigsSix(c.CreateIntegrationRequestConfigsSix)
-	}
-}
-
-type CreateIntegrationRequestConfigsSix struct {
-}
-
-// Configuration object for the specific issue type selected
-type CreateIssueTriggerRequestConfigs struct {
-	typeName                          string
-	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
-	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
-	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
-}
-
-func NewCreateIssueTriggerRequestConfigsFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *CreateIssueTriggerRequestConfigs {
-	return &CreateIssueTriggerRequestConfigs{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
-}
-
-func NewCreateIssueTriggerRequestConfigsFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *CreateIssueTriggerRequestConfigs {
-	return &CreateIssueTriggerRequestConfigs{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
-}
-
-func NewCreateIssueTriggerRequestConfigsFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *CreateIssueTriggerRequestConfigs {
-	return &CreateIssueTriggerRequestConfigs{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
-}
-
-func (c *CreateIssueTriggerRequestConfigs) UnmarshalJSON(data []byte) error {
-	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
-	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
-		c.typeName = "issueTriggerDeliveryConfigs"
-		c.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
-		return nil
-	}
-	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
-	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
-		c.typeName = "issueTriggerTransformationConfigs"
-		c.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
-		return nil
-	}
-	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
-	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
-		c.typeName = "issueTriggerBackpressureConfigs"
-		c.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateIssueTriggerRequestConfigs) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "issueTriggerDeliveryConfigs":
-		return json.Marshal(c.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
-		return json.Marshal(c.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
-		return json.Marshal(c.IssueTriggerBackpressureConfigs)
-	}
-}
-
-type CreateIssueTriggerRequestConfigsVisitor interface {
-	VisitIssueTriggerDeliveryConfigs(*IssueTriggerDeliveryConfigs) error
-	VisitIssueTriggerTransformationConfigs(*IssueTriggerTransformationConfigs) error
-	VisitIssueTriggerBackpressureConfigs(*IssueTriggerBackpressureConfigs) error
-}
-
-func (c *CreateIssueTriggerRequestConfigs) Accept(visitor CreateIssueTriggerRequestConfigsVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "issueTriggerDeliveryConfigs":
-		return visitor.VisitIssueTriggerDeliveryConfigs(c.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
-		return visitor.VisitIssueTriggerTransformationConfigs(c.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
-		return visitor.VisitIssueTriggerBackpressureConfigs(c.IssueTriggerBackpressureConfigs)
-	}
-}
-
-// Filter properties for the events to be included in the bulk retry, use query parameters of [Requests](#requests)
-type CreateRequestBulkRetryRequestQuery struct {
-	// Filter by requests IDs
-	Id *CreateRequestBulkRetryRequestQueryId `json:"id,omitempty"`
-	// Filter by status
-	Status *CreateRequestBulkRetryRequestQueryStatus `json:"status,omitempty"`
-	// Filter by rejection cause
-	RejectionCause *CreateRequestBulkRetryRequestQueryRejectionCause `json:"rejection_cause,omitempty"`
-	// Filter by source IDs
-	SourceId *CreateRequestBulkRetryRequestQuerySourceId `json:"source_id,omitempty"`
-	// Filter by verification status
-	Verified *bool `json:"verified,omitempty"`
-	// URL Encoded string of the value to match partially to the body, headers, parsed_query or path
-	SearchTerm *string `json:"search_term,omitempty"`
-	// URL Encoded string of the JSON to match to the data headers
-	Headers *CreateRequestBulkRetryRequestQueryHeaders `json:"headers,omitempty"`
-	// URL Encoded string of the JSON to match to the data body
-	Body *CreateRequestBulkRetryRequestQueryBody `json:"body,omitempty"`
-	// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
-	ParsedQuery *CreateRequestBulkRetryRequestQueryParsedQuery `json:"parsed_query,omitempty"`
-	// URL Encoded string of the value to match partially to the path
-	Path *string `json:"path,omitempty"`
-	// Filter by count of ignored events
-	IgnoredCount *CreateRequestBulkRetryRequestQueryIgnoredCount `json:"ignored_count,omitempty"`
-	// Filter by count of events
-	EventsCount *CreateRequestBulkRetryRequestQueryEventsCount `json:"events_count,omitempty"`
-	// Filter by event ingested date
-	IngestedAt  *CreateRequestBulkRetryRequestQueryIngestedAt  `json:"ingested_at,omitempty"`
-	BulkRetryId *CreateRequestBulkRetryRequestQueryBulkRetryId `json:"bulk_retry_id,omitempty"`
-}
-
-// URL Encoded string of the JSON to match to the data body
-type CreateRequestBulkRetryRequestQueryBody struct {
-	typeName                                  string
-	String                                    string
-	CreateRequestBulkRetryRequestQueryBodyOne *CreateRequestBulkRetryRequestQueryBodyOne
-}
-
-func NewCreateRequestBulkRetryRequestQueryBodyFromString(value string) *CreateRequestBulkRetryRequestQueryBody {
-	return &CreateRequestBulkRetryRequestQueryBody{typeName: "string", String: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryBodyFromCreateRequestBulkRetryRequestQueryBodyOne(value *CreateRequestBulkRetryRequestQueryBodyOne) *CreateRequestBulkRetryRequestQueryBody {
-	return &CreateRequestBulkRetryRequestQueryBody{typeName: "createRequestBulkRetryRequestQueryBodyOne", CreateRequestBulkRetryRequestQueryBodyOne: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQueryBody) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	valueCreateRequestBulkRetryRequestQueryBodyOne := new(CreateRequestBulkRetryRequestQueryBodyOne)
-	if err := json.Unmarshal(data, &valueCreateRequestBulkRetryRequestQueryBodyOne); err == nil {
-		c.typeName = "createRequestBulkRetryRequestQueryBodyOne"
-		c.CreateRequestBulkRetryRequestQueryBodyOne = valueCreateRequestBulkRetryRequestQueryBodyOne
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQueryBody) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "createRequestBulkRetryRequestQueryBodyOne":
-		return json.Marshal(c.CreateRequestBulkRetryRequestQueryBodyOne)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryBodyVisitor interface {
-	VisitString(string) error
-	VisitCreateRequestBulkRetryRequestQueryBodyOne(*CreateRequestBulkRetryRequestQueryBodyOne) error
-}
-
-func (c *CreateRequestBulkRetryRequestQueryBody) Accept(visitor CreateRequestBulkRetryRequestQueryBodyVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "createRequestBulkRetryRequestQueryBodyOne":
-		return visitor.VisitCreateRequestBulkRetryRequestQueryBodyOne(c.CreateRequestBulkRetryRequestQueryBodyOne)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryBodyOne struct {
-}
-
-type CreateRequestBulkRetryRequestQueryBulkRetryId struct {
-	typeName string
-	// <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateRequestBulkRetryRequestQueryBulkRetryIdFromString(value string) *CreateRequestBulkRetryRequestQueryBulkRetryId {
-	return &CreateRequestBulkRetryRequestQueryBulkRetryId{typeName: "string", String: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryBulkRetryIdFromStringList(value []string) *CreateRequestBulkRetryRequestQueryBulkRetryId {
-	return &CreateRequestBulkRetryRequestQueryBulkRetryId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQueryBulkRetryId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQueryBulkRetryId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryBulkRetryIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateRequestBulkRetryRequestQueryBulkRetryId) Accept(visitor CreateRequestBulkRetryRequestQueryBulkRetryIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Filter by count of events
-type CreateRequestBulkRetryRequestQueryEventsCount struct {
-	typeName                                         string
-	Integer                                          int
-	CreateRequestBulkRetryRequestQueryEventsCountAny *CreateRequestBulkRetryRequestQueryEventsCountAny
-	IntegerList                                      []int
-}
-
-func NewCreateRequestBulkRetryRequestQueryEventsCountFromInteger(value int) *CreateRequestBulkRetryRequestQueryEventsCount {
-	return &CreateRequestBulkRetryRequestQueryEventsCount{typeName: "integer", Integer: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryEventsCountFromCreateRequestBulkRetryRequestQueryEventsCountAny(value *CreateRequestBulkRetryRequestQueryEventsCountAny) *CreateRequestBulkRetryRequestQueryEventsCount {
-	return &CreateRequestBulkRetryRequestQueryEventsCount{typeName: "createRequestBulkRetryRequestQueryEventsCountAny", CreateRequestBulkRetryRequestQueryEventsCountAny: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryEventsCountFromIntegerList(value []int) *CreateRequestBulkRetryRequestQueryEventsCount {
-	return &CreateRequestBulkRetryRequestQueryEventsCount{typeName: "integerList", IntegerList: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQueryEventsCount) UnmarshalJSON(data []byte) error {
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		c.typeName = "integer"
-		c.Integer = valueInteger
-		return nil
-	}
-	valueCreateRequestBulkRetryRequestQueryEventsCountAny := new(CreateRequestBulkRetryRequestQueryEventsCountAny)
-	if err := json.Unmarshal(data, &valueCreateRequestBulkRetryRequestQueryEventsCountAny); err == nil {
-		c.typeName = "createRequestBulkRetryRequestQueryEventsCountAny"
-		c.CreateRequestBulkRetryRequestQueryEventsCountAny = valueCreateRequestBulkRetryRequestQueryEventsCountAny
-		return nil
-	}
-	var valueIntegerList []int
-	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
-		c.typeName = "integerList"
-		c.IntegerList = valueIntegerList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQueryEventsCount) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "integer":
-		return json.Marshal(c.Integer)
-	case "createRequestBulkRetryRequestQueryEventsCountAny":
-		return json.Marshal(c.CreateRequestBulkRetryRequestQueryEventsCountAny)
-	case "integerList":
-		return json.Marshal(c.IntegerList)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryEventsCountVisitor interface {
-	VisitInteger(int) error
-	VisitCreateRequestBulkRetryRequestQueryEventsCountAny(*CreateRequestBulkRetryRequestQueryEventsCountAny) error
-	VisitIntegerList([]int) error
-}
-
-func (c *CreateRequestBulkRetryRequestQueryEventsCount) Accept(visitor CreateRequestBulkRetryRequestQueryEventsCountVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "integer":
-		return visitor.VisitInteger(c.Integer)
-	case "createRequestBulkRetryRequestQueryEventsCountAny":
-		return visitor.VisitCreateRequestBulkRetryRequestQueryEventsCountAny(c.CreateRequestBulkRetryRequestQueryEventsCountAny)
-	case "integerList":
-		return visitor.VisitIntegerList(c.IntegerList)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryEventsCountAny struct {
-	Gt       *int  `json:"gt,omitempty"`
-	Gte      *int  `json:"gte,omitempty"`
-	Le       *int  `json:"le,omitempty"`
-	Lte      *int  `json:"lte,omitempty"`
-	Any      *bool `json:"any,omitempty"`
-	Contains *int  `json:"contains,omitempty"`
-}
-
-// URL Encoded string of the JSON to match to the data headers
-type CreateRequestBulkRetryRequestQueryHeaders struct {
-	typeName                                     string
-	String                                       string
-	CreateRequestBulkRetryRequestQueryHeadersOne *CreateRequestBulkRetryRequestQueryHeadersOne
-}
-
-func NewCreateRequestBulkRetryRequestQueryHeadersFromString(value string) *CreateRequestBulkRetryRequestQueryHeaders {
-	return &CreateRequestBulkRetryRequestQueryHeaders{typeName: "string", String: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryHeadersFromCreateRequestBulkRetryRequestQueryHeadersOne(value *CreateRequestBulkRetryRequestQueryHeadersOne) *CreateRequestBulkRetryRequestQueryHeaders {
-	return &CreateRequestBulkRetryRequestQueryHeaders{typeName: "createRequestBulkRetryRequestQueryHeadersOne", CreateRequestBulkRetryRequestQueryHeadersOne: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQueryHeaders) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	valueCreateRequestBulkRetryRequestQueryHeadersOne := new(CreateRequestBulkRetryRequestQueryHeadersOne)
-	if err := json.Unmarshal(data, &valueCreateRequestBulkRetryRequestQueryHeadersOne); err == nil {
-		c.typeName = "createRequestBulkRetryRequestQueryHeadersOne"
-		c.CreateRequestBulkRetryRequestQueryHeadersOne = valueCreateRequestBulkRetryRequestQueryHeadersOne
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQueryHeaders) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "createRequestBulkRetryRequestQueryHeadersOne":
-		return json.Marshal(c.CreateRequestBulkRetryRequestQueryHeadersOne)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryHeadersVisitor interface {
-	VisitString(string) error
-	VisitCreateRequestBulkRetryRequestQueryHeadersOne(*CreateRequestBulkRetryRequestQueryHeadersOne) error
-}
-
-func (c *CreateRequestBulkRetryRequestQueryHeaders) Accept(visitor CreateRequestBulkRetryRequestQueryHeadersVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "createRequestBulkRetryRequestQueryHeadersOne":
-		return visitor.VisitCreateRequestBulkRetryRequestQueryHeadersOne(c.CreateRequestBulkRetryRequestQueryHeadersOne)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryHeadersOne struct {
-}
-
-// Filter by requests IDs
-type CreateRequestBulkRetryRequestQueryId struct {
-	typeName string
-	// Request ID <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateRequestBulkRetryRequestQueryIdFromString(value string) *CreateRequestBulkRetryRequestQueryId {
-	return &CreateRequestBulkRetryRequestQueryId{typeName: "string", String: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryIdFromStringList(value []string) *CreateRequestBulkRetryRequestQueryId {
-	return &CreateRequestBulkRetryRequestQueryId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQueryId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQueryId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateRequestBulkRetryRequestQueryId) Accept(visitor CreateRequestBulkRetryRequestQueryIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Filter by count of ignored events
-type CreateRequestBulkRetryRequestQueryIgnoredCount struct {
-	typeName                                          string
-	Integer                                           int
-	CreateRequestBulkRetryRequestQueryIgnoredCountAny *CreateRequestBulkRetryRequestQueryIgnoredCountAny
-	IntegerList                                       []int
-}
-
-func NewCreateRequestBulkRetryRequestQueryIgnoredCountFromInteger(value int) *CreateRequestBulkRetryRequestQueryIgnoredCount {
-	return &CreateRequestBulkRetryRequestQueryIgnoredCount{typeName: "integer", Integer: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryIgnoredCountFromCreateRequestBulkRetryRequestQueryIgnoredCountAny(value *CreateRequestBulkRetryRequestQueryIgnoredCountAny) *CreateRequestBulkRetryRequestQueryIgnoredCount {
-	return &CreateRequestBulkRetryRequestQueryIgnoredCount{typeName: "createRequestBulkRetryRequestQueryIgnoredCountAny", CreateRequestBulkRetryRequestQueryIgnoredCountAny: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryIgnoredCountFromIntegerList(value []int) *CreateRequestBulkRetryRequestQueryIgnoredCount {
-	return &CreateRequestBulkRetryRequestQueryIgnoredCount{typeName: "integerList", IntegerList: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQueryIgnoredCount) UnmarshalJSON(data []byte) error {
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		c.typeName = "integer"
-		c.Integer = valueInteger
-		return nil
-	}
-	valueCreateRequestBulkRetryRequestQueryIgnoredCountAny := new(CreateRequestBulkRetryRequestQueryIgnoredCountAny)
-	if err := json.Unmarshal(data, &valueCreateRequestBulkRetryRequestQueryIgnoredCountAny); err == nil {
-		c.typeName = "createRequestBulkRetryRequestQueryIgnoredCountAny"
-		c.CreateRequestBulkRetryRequestQueryIgnoredCountAny = valueCreateRequestBulkRetryRequestQueryIgnoredCountAny
-		return nil
-	}
-	var valueIntegerList []int
-	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
-		c.typeName = "integerList"
-		c.IntegerList = valueIntegerList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQueryIgnoredCount) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "integer":
-		return json.Marshal(c.Integer)
-	case "createRequestBulkRetryRequestQueryIgnoredCountAny":
-		return json.Marshal(c.CreateRequestBulkRetryRequestQueryIgnoredCountAny)
-	case "integerList":
-		return json.Marshal(c.IntegerList)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryIgnoredCountVisitor interface {
-	VisitInteger(int) error
-	VisitCreateRequestBulkRetryRequestQueryIgnoredCountAny(*CreateRequestBulkRetryRequestQueryIgnoredCountAny) error
-	VisitIntegerList([]int) error
-}
-
-func (c *CreateRequestBulkRetryRequestQueryIgnoredCount) Accept(visitor CreateRequestBulkRetryRequestQueryIgnoredCountVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "integer":
-		return visitor.VisitInteger(c.Integer)
-	case "createRequestBulkRetryRequestQueryIgnoredCountAny":
-		return visitor.VisitCreateRequestBulkRetryRequestQueryIgnoredCountAny(c.CreateRequestBulkRetryRequestQueryIgnoredCountAny)
-	case "integerList":
-		return visitor.VisitIntegerList(c.IntegerList)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryIgnoredCountAny struct {
-	Gt       *int  `json:"gt,omitempty"`
-	Gte      *int  `json:"gte,omitempty"`
-	Le       *int  `json:"le,omitempty"`
-	Lte      *int  `json:"lte,omitempty"`
-	Any      *bool `json:"any,omitempty"`
-	Contains *int  `json:"contains,omitempty"`
-}
-
-// Filter by event ingested date
-type CreateRequestBulkRetryRequestQueryIngestedAt struct {
-	typeName                                        string
-	DateTime                                        time.Time
-	CreateRequestBulkRetryRequestQueryIngestedAtAny *CreateRequestBulkRetryRequestQueryIngestedAtAny
-}
-
-func NewCreateRequestBulkRetryRequestQueryIngestedAtFromDateTime(value time.Time) *CreateRequestBulkRetryRequestQueryIngestedAt {
-	return &CreateRequestBulkRetryRequestQueryIngestedAt{typeName: "dateTime", DateTime: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryIngestedAtFromCreateRequestBulkRetryRequestQueryIngestedAtAny(value *CreateRequestBulkRetryRequestQueryIngestedAtAny) *CreateRequestBulkRetryRequestQueryIngestedAt {
-	return &CreateRequestBulkRetryRequestQueryIngestedAt{typeName: "createRequestBulkRetryRequestQueryIngestedAtAny", CreateRequestBulkRetryRequestQueryIngestedAtAny: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQueryIngestedAt) UnmarshalJSON(data []byte) error {
-	var valueDateTime time.Time
-	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		c.typeName = "dateTime"
-		c.DateTime = valueDateTime
-		return nil
-	}
-	valueCreateRequestBulkRetryRequestQueryIngestedAtAny := new(CreateRequestBulkRetryRequestQueryIngestedAtAny)
-	if err := json.Unmarshal(data, &valueCreateRequestBulkRetryRequestQueryIngestedAtAny); err == nil {
-		c.typeName = "createRequestBulkRetryRequestQueryIngestedAtAny"
-		c.CreateRequestBulkRetryRequestQueryIngestedAtAny = valueCreateRequestBulkRetryRequestQueryIngestedAtAny
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQueryIngestedAt) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "dateTime":
-		return json.Marshal(c.DateTime)
-	case "createRequestBulkRetryRequestQueryIngestedAtAny":
-		return json.Marshal(c.CreateRequestBulkRetryRequestQueryIngestedAtAny)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryIngestedAtVisitor interface {
-	VisitDateTime(time.Time) error
-	VisitCreateRequestBulkRetryRequestQueryIngestedAtAny(*CreateRequestBulkRetryRequestQueryIngestedAtAny) error
-}
-
-func (c *CreateRequestBulkRetryRequestQueryIngestedAt) Accept(visitor CreateRequestBulkRetryRequestQueryIngestedAtVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "dateTime":
-		return visitor.VisitDateTime(c.DateTime)
-	case "createRequestBulkRetryRequestQueryIngestedAtAny":
-		return visitor.VisitCreateRequestBulkRetryRequestQueryIngestedAtAny(c.CreateRequestBulkRetryRequestQueryIngestedAtAny)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryIngestedAtAny struct {
-	Gt  *time.Time `json:"gt,omitempty"`
-	Gte *time.Time `json:"gte,omitempty"`
-	Le  *time.Time `json:"le,omitempty"`
-	Lte *time.Time `json:"lte,omitempty"`
-	Any *bool      `json:"any,omitempty"`
-}
-
-// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
-type CreateRequestBulkRetryRequestQueryParsedQuery struct {
-	typeName                                         string
-	String                                           string
-	CreateRequestBulkRetryRequestQueryParsedQueryOne *CreateRequestBulkRetryRequestQueryParsedQueryOne
-}
-
-func NewCreateRequestBulkRetryRequestQueryParsedQueryFromString(value string) *CreateRequestBulkRetryRequestQueryParsedQuery {
-	return &CreateRequestBulkRetryRequestQueryParsedQuery{typeName: "string", String: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryParsedQueryFromCreateRequestBulkRetryRequestQueryParsedQueryOne(value *CreateRequestBulkRetryRequestQueryParsedQueryOne) *CreateRequestBulkRetryRequestQueryParsedQuery {
-	return &CreateRequestBulkRetryRequestQueryParsedQuery{typeName: "createRequestBulkRetryRequestQueryParsedQueryOne", CreateRequestBulkRetryRequestQueryParsedQueryOne: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQueryParsedQuery) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	valueCreateRequestBulkRetryRequestQueryParsedQueryOne := new(CreateRequestBulkRetryRequestQueryParsedQueryOne)
-	if err := json.Unmarshal(data, &valueCreateRequestBulkRetryRequestQueryParsedQueryOne); err == nil {
-		c.typeName = "createRequestBulkRetryRequestQueryParsedQueryOne"
-		c.CreateRequestBulkRetryRequestQueryParsedQueryOne = valueCreateRequestBulkRetryRequestQueryParsedQueryOne
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQueryParsedQuery) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "createRequestBulkRetryRequestQueryParsedQueryOne":
-		return json.Marshal(c.CreateRequestBulkRetryRequestQueryParsedQueryOne)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryParsedQueryVisitor interface {
-	VisitString(string) error
-	VisitCreateRequestBulkRetryRequestQueryParsedQueryOne(*CreateRequestBulkRetryRequestQueryParsedQueryOne) error
-}
-
-func (c *CreateRequestBulkRetryRequestQueryParsedQuery) Accept(visitor CreateRequestBulkRetryRequestQueryParsedQueryVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "createRequestBulkRetryRequestQueryParsedQueryOne":
-		return visitor.VisitCreateRequestBulkRetryRequestQueryParsedQueryOne(c.CreateRequestBulkRetryRequestQueryParsedQueryOne)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryParsedQueryOne struct {
-}
-
-// Filter by rejection cause
-type CreateRequestBulkRetryRequestQueryRejectionCause struct {
-	typeName                  string
-	RequestRejectionCause     RequestRejectionCause
-	RequestRejectionCauseList []RequestRejectionCause
-}
-
-func NewCreateRequestBulkRetryRequestQueryRejectionCauseFromRequestRejectionCause(value RequestRejectionCause) *CreateRequestBulkRetryRequestQueryRejectionCause {
-	return &CreateRequestBulkRetryRequestQueryRejectionCause{typeName: "requestRejectionCause", RequestRejectionCause: value}
-}
-
-func NewCreateRequestBulkRetryRequestQueryRejectionCauseFromRequestRejectionCauseList(value []RequestRejectionCause) *CreateRequestBulkRetryRequestQueryRejectionCause {
-	return &CreateRequestBulkRetryRequestQueryRejectionCause{typeName: "requestRejectionCauseList", RequestRejectionCauseList: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQueryRejectionCause) UnmarshalJSON(data []byte) error {
-	var valueRequestRejectionCause RequestRejectionCause
-	if err := json.Unmarshal(data, &valueRequestRejectionCause); err == nil {
-		c.typeName = "requestRejectionCause"
-		c.RequestRejectionCause = valueRequestRejectionCause
-		return nil
-	}
-	var valueRequestRejectionCauseList []RequestRejectionCause
-	if err := json.Unmarshal(data, &valueRequestRejectionCauseList); err == nil {
-		c.typeName = "requestRejectionCauseList"
-		c.RequestRejectionCauseList = valueRequestRejectionCauseList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQueryRejectionCause) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "requestRejectionCause":
-		return json.Marshal(c.RequestRejectionCause)
-	case "requestRejectionCauseList":
-		return json.Marshal(c.RequestRejectionCauseList)
-	}
-}
-
-type CreateRequestBulkRetryRequestQueryRejectionCauseVisitor interface {
-	VisitRequestRejectionCause(RequestRejectionCause) error
-	VisitRequestRejectionCauseList([]RequestRejectionCause) error
-}
-
-func (c *CreateRequestBulkRetryRequestQueryRejectionCause) Accept(visitor CreateRequestBulkRetryRequestQueryRejectionCauseVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "requestRejectionCause":
-		return visitor.VisitRequestRejectionCause(c.RequestRejectionCause)
-	case "requestRejectionCauseList":
-		return visitor.VisitRequestRejectionCauseList(c.RequestRejectionCauseList)
-	}
-}
-
-// Filter by source IDs
-type CreateRequestBulkRetryRequestQuerySourceId struct {
-	typeName string
-	// Source ID <span style="white-space: nowrap">`<= 255 characters`</span>
-	String     string
-	StringList []string
-}
-
-func NewCreateRequestBulkRetryRequestQuerySourceIdFromString(value string) *CreateRequestBulkRetryRequestQuerySourceId {
-	return &CreateRequestBulkRetryRequestQuerySourceId{typeName: "string", String: value}
-}
-
-func NewCreateRequestBulkRetryRequestQuerySourceIdFromStringList(value []string) *CreateRequestBulkRetryRequestQuerySourceId {
-	return &CreateRequestBulkRetryRequestQuerySourceId{typeName: "stringList", StringList: value}
-}
-
-func (c *CreateRequestBulkRetryRequestQuerySourceId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		c.typeName = "stringList"
-		c.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateRequestBulkRetryRequestQuerySourceId) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "stringList":
-		return json.Marshal(c.StringList)
-	}
-}
-
-type CreateRequestBulkRetryRequestQuerySourceIdVisitor interface {
-	VisitString(string) error
-	VisitStringList([]string) error
-}
-
-func (c *CreateRequestBulkRetryRequestQuerySourceId) Accept(visitor CreateRequestBulkRetryRequestQuerySourceIdVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "stringList":
-		return visitor.VisitStringList(c.StringList)
-	}
-}
-
-// Filter by status
-type CreateRequestBulkRetryRequestQueryStatus string
-
-const (
-	CreateRequestBulkRetryRequestQueryStatusAccepted CreateRequestBulkRetryRequestQueryStatus = "accepted"
-	CreateRequestBulkRetryRequestQueryStatusRejected CreateRequestBulkRetryRequestQueryStatus = "rejected"
-)
-
-func NewCreateRequestBulkRetryRequestQueryStatusFromString(s string) (CreateRequestBulkRetryRequestQueryStatus, error) {
-	switch s {
-	case "accepted":
-		return CreateRequestBulkRetryRequestQueryStatusAccepted, nil
-	case "rejected":
-		return CreateRequestBulkRetryRequestQueryStatusRejected, nil
-	}
-	var t CreateRequestBulkRetryRequestQueryStatus
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c CreateRequestBulkRetryRequestQueryStatus) Ptr() *CreateRequestBulkRetryRequestQueryStatus {
-	return &c
-}
-
-type CreateTransformationRequestEnvValue struct {
-	typeName string
-	String   string
-	Double   float64
-}
-
-func NewCreateTransformationRequestEnvValueFromString(value string) *CreateTransformationRequestEnvValue {
-	return &CreateTransformationRequestEnvValue{typeName: "string", String: value}
-}
-
-func NewCreateTransformationRequestEnvValueFromDouble(value float64) *CreateTransformationRequestEnvValue {
-	return &CreateTransformationRequestEnvValue{typeName: "double", Double: value}
-}
-
-func (c *CreateTransformationRequestEnvValue) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		c.typeName = "string"
-		c.String = valueString
-		return nil
-	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		c.typeName = "double"
-		c.Double = valueDouble
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CreateTransformationRequestEnvValue) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return json.Marshal(c.String)
-	case "double":
-		return json.Marshal(c.Double)
-	}
-}
-
-type CreateTransformationRequestEnvValueVisitor interface {
-	VisitString(string) error
-	VisitDouble(float64) error
-}
-
-func (c *CreateTransformationRequestEnvValue) Accept(visitor CreateTransformationRequestEnvValueVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "string":
-		return visitor.VisitString(c.String)
-	case "double":
-		return visitor.VisitDouble(c.Double)
-	}
-}
-
-// Custom Signature
-type CustomSignature struct {
-	Config *DestinationAuthMethodCustomSignatureConfig `json:"config,omitempty"`
-	type_  string
-}
-
-func (c *CustomSignature) Type() string {
-	return c.type_
-}
-
-func (c *CustomSignature) UnmarshalJSON(data []byte) error {
-	type unmarshaler CustomSignature
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CustomSignature(value)
-	c.type_ = "CUSTOM_SIGNATURE"
-	return nil
-}
-
-func (c *CustomSignature) MarshalJSON() ([]byte, error) {
-	type embed CustomSignature
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*c),
-		Type:  "CUSTOM_SIGNATURE",
-	}
-	return json.Marshal(marshaler)
-}
-
 type DelayRule struct {
 	// Delay to introduce in MS
 	Delay int `json:"delay"`
@@ -3235,23 +839,8 @@ func (d *DelayRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(marshaler)
 }
 
-type DeleteConnectionResponse struct {
-	// ID of the connection
-	Id string `json:"id"`
-}
-
 type DeleteCustomDomainSchema struct {
 	// The custom hostname ID
-	Id string `json:"id"`
-}
-
-type DeleteDestinationResponse struct {
-	// ID of the destination
-	Id string `json:"id"`
-}
-
-type DeleteSourceResponse struct {
-	// ID of the source
 	Id string `json:"id"`
 }
 
@@ -3475,63 +1064,63 @@ type DestinationAuthMethodBearerTokenConfig struct {
 
 // Config for the destination's auth method
 type DestinationAuthMethodConfig struct {
-	typeName          string
-	HookdeckSignature *HookdeckSignature
-	BasicAuth         *BasicAuth
-	ApiKey            *ApiKey
-	BearerToken       *BearerToken
-	CustomSignature   *CustomSignature
+	typeName              string
+	AuthHookdeckSignature *AuthHookdeckSignature
+	AuthBasicAuth         *AuthBasicAuth
+	AuthApiKey            *AuthApiKey
+	AuthBearerToken       *AuthBearerToken
+	AuthCustomSignature   *AuthCustomSignature
 }
 
-func NewDestinationAuthMethodConfigFromHookdeckSignature(value *HookdeckSignature) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "hookdeckSignature", HookdeckSignature: value}
+func NewDestinationAuthMethodConfigFromAuthHookdeckSignature(value *AuthHookdeckSignature) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{typeName: "authHookdeckSignature", AuthHookdeckSignature: value}
 }
 
-func NewDestinationAuthMethodConfigFromBasicAuth(value *BasicAuth) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "basicAuth", BasicAuth: value}
+func NewDestinationAuthMethodConfigFromAuthBasicAuth(value *AuthBasicAuth) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{typeName: "authBasicAuth", AuthBasicAuth: value}
 }
 
-func NewDestinationAuthMethodConfigFromApiKey(value *ApiKey) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "apiKey", ApiKey: value}
+func NewDestinationAuthMethodConfigFromAuthApiKey(value *AuthApiKey) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{typeName: "authApiKey", AuthApiKey: value}
 }
 
-func NewDestinationAuthMethodConfigFromBearerToken(value *BearerToken) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "bearerToken", BearerToken: value}
+func NewDestinationAuthMethodConfigFromAuthBearerToken(value *AuthBearerToken) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{typeName: "authBearerToken", AuthBearerToken: value}
 }
 
-func NewDestinationAuthMethodConfigFromCustomSignature(value *CustomSignature) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "customSignature", CustomSignature: value}
+func NewDestinationAuthMethodConfigFromAuthCustomSignature(value *AuthCustomSignature) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{typeName: "authCustomSignature", AuthCustomSignature: value}
 }
 
 func (d *DestinationAuthMethodConfig) UnmarshalJSON(data []byte) error {
-	valueHookdeckSignature := new(HookdeckSignature)
-	if err := json.Unmarshal(data, &valueHookdeckSignature); err == nil {
-		d.typeName = "hookdeckSignature"
-		d.HookdeckSignature = valueHookdeckSignature
+	valueAuthHookdeckSignature := new(AuthHookdeckSignature)
+	if err := json.Unmarshal(data, &valueAuthHookdeckSignature); err == nil {
+		d.typeName = "authHookdeckSignature"
+		d.AuthHookdeckSignature = valueAuthHookdeckSignature
 		return nil
 	}
-	valueBasicAuth := new(BasicAuth)
-	if err := json.Unmarshal(data, &valueBasicAuth); err == nil {
-		d.typeName = "basicAuth"
-		d.BasicAuth = valueBasicAuth
+	valueAuthBasicAuth := new(AuthBasicAuth)
+	if err := json.Unmarshal(data, &valueAuthBasicAuth); err == nil {
+		d.typeName = "authBasicAuth"
+		d.AuthBasicAuth = valueAuthBasicAuth
 		return nil
 	}
-	valueApiKey := new(ApiKey)
-	if err := json.Unmarshal(data, &valueApiKey); err == nil {
-		d.typeName = "apiKey"
-		d.ApiKey = valueApiKey
+	valueAuthApiKey := new(AuthApiKey)
+	if err := json.Unmarshal(data, &valueAuthApiKey); err == nil {
+		d.typeName = "authApiKey"
+		d.AuthApiKey = valueAuthApiKey
 		return nil
 	}
-	valueBearerToken := new(BearerToken)
-	if err := json.Unmarshal(data, &valueBearerToken); err == nil {
-		d.typeName = "bearerToken"
-		d.BearerToken = valueBearerToken
+	valueAuthBearerToken := new(AuthBearerToken)
+	if err := json.Unmarshal(data, &valueAuthBearerToken); err == nil {
+		d.typeName = "authBearerToken"
+		d.AuthBearerToken = valueAuthBearerToken
 		return nil
 	}
-	valueCustomSignature := new(CustomSignature)
-	if err := json.Unmarshal(data, &valueCustomSignature); err == nil {
-		d.typeName = "customSignature"
-		d.CustomSignature = valueCustomSignature
+	valueAuthCustomSignature := new(AuthCustomSignature)
+	if err := json.Unmarshal(data, &valueAuthCustomSignature); err == nil {
+		d.typeName = "authCustomSignature"
+		d.AuthCustomSignature = valueAuthCustomSignature
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
@@ -3541,41 +1130,41 @@ func (d DestinationAuthMethodConfig) MarshalJSON() ([]byte, error) {
 	switch d.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "hookdeckSignature":
-		return json.Marshal(d.HookdeckSignature)
-	case "basicAuth":
-		return json.Marshal(d.BasicAuth)
-	case "apiKey":
-		return json.Marshal(d.ApiKey)
-	case "bearerToken":
-		return json.Marshal(d.BearerToken)
-	case "customSignature":
-		return json.Marshal(d.CustomSignature)
+	case "authHookdeckSignature":
+		return json.Marshal(d.AuthHookdeckSignature)
+	case "authBasicAuth":
+		return json.Marshal(d.AuthBasicAuth)
+	case "authApiKey":
+		return json.Marshal(d.AuthApiKey)
+	case "authBearerToken":
+		return json.Marshal(d.AuthBearerToken)
+	case "authCustomSignature":
+		return json.Marshal(d.AuthCustomSignature)
 	}
 }
 
 type DestinationAuthMethodConfigVisitor interface {
-	VisitHookdeckSignature(*HookdeckSignature) error
-	VisitBasicAuth(*BasicAuth) error
-	VisitApiKey(*ApiKey) error
-	VisitBearerToken(*BearerToken) error
-	VisitCustomSignature(*CustomSignature) error
+	VisitAuthHookdeckSignature(*AuthHookdeckSignature) error
+	VisitAuthBasicAuth(*AuthBasicAuth) error
+	VisitAuthApiKey(*AuthApiKey) error
+	VisitAuthBearerToken(*AuthBearerToken) error
+	VisitAuthCustomSignature(*AuthCustomSignature) error
 }
 
 func (d *DestinationAuthMethodConfig) Accept(visitor DestinationAuthMethodConfigVisitor) error {
 	switch d.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "hookdeckSignature":
-		return visitor.VisitHookdeckSignature(d.HookdeckSignature)
-	case "basicAuth":
-		return visitor.VisitBasicAuth(d.BasicAuth)
-	case "apiKey":
-		return visitor.VisitApiKey(d.ApiKey)
-	case "bearerToken":
-		return visitor.VisitBearerToken(d.BearerToken)
-	case "customSignature":
-		return visitor.VisitCustomSignature(d.CustomSignature)
+	case "authHookdeckSignature":
+		return visitor.VisitAuthHookdeckSignature(d.AuthHookdeckSignature)
+	case "authBasicAuth":
+		return visitor.VisitAuthBasicAuth(d.AuthBasicAuth)
+	case "authApiKey":
+		return visitor.VisitAuthApiKey(d.AuthApiKey)
+	case "authBearerToken":
+		return visitor.VisitAuthBearerToken(d.AuthBearerToken)
+	case "authCustomSignature":
+		return visitor.VisitAuthCustomSignature(d.AuthCustomSignature)
 	}
 }
 
@@ -3589,6 +1178,37 @@ type DestinationAuthMethodCustomSignatureConfig struct {
 
 // Empty config for the destination's auth method
 type DestinationAuthMethodSignatureConfig struct {
+}
+
+// Period to rate limit attempts
+type DestinationCreateRequestRateLimitPeriod string
+
+const (
+	DestinationCreateRequestRateLimitPeriodSecond DestinationCreateRequestRateLimitPeriod = "second"
+	DestinationCreateRequestRateLimitPeriodMinute DestinationCreateRequestRateLimitPeriod = "minute"
+	DestinationCreateRequestRateLimitPeriodHour   DestinationCreateRequestRateLimitPeriod = "hour"
+)
+
+func NewDestinationCreateRequestRateLimitPeriodFromString(s string) (DestinationCreateRequestRateLimitPeriod, error) {
+	switch s {
+	case "second":
+		return DestinationCreateRequestRateLimitPeriodSecond, nil
+	case "minute":
+		return DestinationCreateRequestRateLimitPeriodMinute, nil
+	case "hour":
+		return DestinationCreateRequestRateLimitPeriodHour, nil
+	}
+	var t DestinationCreateRequestRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationCreateRequestRateLimitPeriod) Ptr() *DestinationCreateRequestRateLimitPeriod {
+	return &d
+}
+
+type DestinationDeleteResponse struct {
+	// ID of the destination
+	Id string `json:"id"`
 }
 
 // HTTP method used on requests sent to the destination, overrides the method used on requests sent to the source.
@@ -3623,6 +1243,28 @@ func (d DestinationHttpMethod) Ptr() *DestinationHttpMethod {
 	return &d
 }
 
+type DestinationListRequestDir string
+
+const (
+	DestinationListRequestDirAsc  DestinationListRequestDir = "asc"
+	DestinationListRequestDirDesc DestinationListRequestDir = "desc"
+)
+
+func NewDestinationListRequestDirFromString(s string) (DestinationListRequestDir, error) {
+	switch s {
+	case "asc":
+		return DestinationListRequestDirAsc, nil
+	case "desc":
+		return DestinationListRequestDirDesc, nil
+	}
+	var t DestinationListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationListRequestDir) Ptr() *DestinationListRequestDir {
+	return &d
+}
+
 type DestinationPaginatedResult struct {
 	Pagination *SeekPagination `json:"pagination,omitempty"`
 	Count      *int            `json:"count,omitempty"`
@@ -3652,6 +1294,58 @@ func NewDestinationRateLimitPeriodFromString(s string) (DestinationRateLimitPeri
 }
 
 func (d DestinationRateLimitPeriod) Ptr() *DestinationRateLimitPeriod {
+	return &d
+}
+
+// Period to rate limit attempts
+type DestinationUpdateRequestRateLimitPeriod string
+
+const (
+	DestinationUpdateRequestRateLimitPeriodSecond DestinationUpdateRequestRateLimitPeriod = "second"
+	DestinationUpdateRequestRateLimitPeriodMinute DestinationUpdateRequestRateLimitPeriod = "minute"
+	DestinationUpdateRequestRateLimitPeriodHour   DestinationUpdateRequestRateLimitPeriod = "hour"
+)
+
+func NewDestinationUpdateRequestRateLimitPeriodFromString(s string) (DestinationUpdateRequestRateLimitPeriod, error) {
+	switch s {
+	case "second":
+		return DestinationUpdateRequestRateLimitPeriodSecond, nil
+	case "minute":
+		return DestinationUpdateRequestRateLimitPeriodMinute, nil
+	case "hour":
+		return DestinationUpdateRequestRateLimitPeriodHour, nil
+	}
+	var t DestinationUpdateRequestRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationUpdateRequestRateLimitPeriod) Ptr() *DestinationUpdateRequestRateLimitPeriod {
+	return &d
+}
+
+// Period to rate limit attempts
+type DestinationUpsertRequestRateLimitPeriod string
+
+const (
+	DestinationUpsertRequestRateLimitPeriodSecond DestinationUpsertRequestRateLimitPeriod = "second"
+	DestinationUpsertRequestRateLimitPeriodMinute DestinationUpsertRequestRateLimitPeriod = "minute"
+	DestinationUpsertRequestRateLimitPeriodHour   DestinationUpsertRequestRateLimitPeriod = "hour"
+)
+
+func NewDestinationUpsertRequestRateLimitPeriodFromString(s string) (DestinationUpsertRequestRateLimitPeriod, error) {
+	switch s {
+	case "second":
+		return DestinationUpsertRequestRateLimitPeriodSecond, nil
+	case "minute":
+		return DestinationUpsertRequestRateLimitPeriodMinute, nil
+	case "hour":
+		return DestinationUpsertRequestRateLimitPeriodHour, nil
+	}
+	var t DestinationUpsertRequestRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationUpsertRequestRateLimitPeriod) Ptr() *DestinationUpsertRequestRateLimitPeriod {
 	return &d
 }
 
@@ -3838,6 +1532,1317 @@ type EventAttemptPaginatedResult struct {
 	Models     []*EventAttempt `json:"models,omitempty"`
 }
 
+// Filter properties for the events to be included in the bulk retry
+type EventBulkRetryCreateRequestQuery struct {
+	// Filter by event IDs
+	Id *EventBulkRetryCreateRequestQueryId `json:"id,omitempty"`
+	// Lifecyle status of the event
+	Status *EventBulkRetryCreateRequestQueryStatus `json:"status,omitempty"`
+	// Filter by webhook connection IDs
+	WebhookId *EventBulkRetryCreateRequestQueryWebhookId `json:"webhook_id,omitempty"`
+	// Filter by destination IDs
+	DestinationId *EventBulkRetryCreateRequestQueryDestinationId `json:"destination_id,omitempty"`
+	// Filter by source IDs
+	SourceId *EventBulkRetryCreateRequestQuerySourceId `json:"source_id,omitempty"`
+	// Filter by number of attempts
+	Attempts *EventBulkRetryCreateRequestQueryAttempts `json:"attempts,omitempty"`
+	// Filter by HTTP response status code
+	ResponseStatus *EventBulkRetryCreateRequestQueryResponseStatus `json:"response_status,omitempty"`
+	// Filter by `successful_at` date using a date operator
+	SuccessfulAt *EventBulkRetryCreateRequestQuerySuccessfulAt `json:"successful_at,omitempty"`
+	// Filter by `created_at` date using a date operator
+	CreatedAt *EventBulkRetryCreateRequestQueryCreatedAt `json:"created_at,omitempty"`
+	// Filter by error code code
+	ErrorCode *EventBulkRetryCreateRequestQueryErrorCode `json:"error_code,omitempty"`
+	// Filter by CLI IDs. `?[any]=true` operator for any CLI.
+	CliId *EventBulkRetryCreateRequestQueryCliId `json:"cli_id,omitempty"`
+	// Filter by `last_attempt_at` date using a date operator
+	LastAttemptAt *EventBulkRetryCreateRequestQueryLastAttemptAt `json:"last_attempt_at,omitempty"`
+	// URL Encoded string of the value to match partially to the body, headers, parsed_query or path
+	SearchTerm *string `json:"search_term,omitempty"`
+	// URL Encoded string of the JSON to match to the data headers
+	Headers *EventBulkRetryCreateRequestQueryHeaders `json:"headers,omitempty"`
+	// URL Encoded string of the JSON to match to the data body
+	Body *EventBulkRetryCreateRequestQueryBody `json:"body,omitempty"`
+	// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
+	ParsedQuery *EventBulkRetryCreateRequestQueryParsedQuery `json:"parsed_query,omitempty"`
+	// URL Encoded string of the value to match partially to the path
+	Path        *string                                      `json:"path,omitempty"`
+	CliUserId   *EventBulkRetryCreateRequestQueryCliUserId   `json:"cli_user_id,omitempty"`
+	IssueId     *EventBulkRetryCreateRequestQueryIssueId     `json:"issue_id,omitempty"`
+	EventDataId *EventBulkRetryCreateRequestQueryEventDataId `json:"event_data_id,omitempty"`
+	BulkRetryId *EventBulkRetryCreateRequestQueryBulkRetryId `json:"bulk_retry_id,omitempty"`
+}
+
+// Filter by number of attempts
+type EventBulkRetryCreateRequestQueryAttempts struct {
+	typeName                                    string
+	Integer                                     int
+	EventBulkRetryCreateRequestQueryAttemptsAny *EventBulkRetryCreateRequestQueryAttemptsAny
+}
+
+func NewEventBulkRetryCreateRequestQueryAttemptsFromInteger(value int) *EventBulkRetryCreateRequestQueryAttempts {
+	return &EventBulkRetryCreateRequestQueryAttempts{typeName: "integer", Integer: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryAttemptsFromEventBulkRetryCreateRequestQueryAttemptsAny(value *EventBulkRetryCreateRequestQueryAttemptsAny) *EventBulkRetryCreateRequestQueryAttempts {
+	return &EventBulkRetryCreateRequestQueryAttempts{typeName: "eventBulkRetryCreateRequestQueryAttemptsAny", EventBulkRetryCreateRequestQueryAttemptsAny: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryAttempts) UnmarshalJSON(data []byte) error {
+	var valueInteger int
+	if err := json.Unmarshal(data, &valueInteger); err == nil {
+		e.typeName = "integer"
+		e.Integer = valueInteger
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryAttemptsAny := new(EventBulkRetryCreateRequestQueryAttemptsAny)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryAttemptsAny); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryAttemptsAny"
+		e.EventBulkRetryCreateRequestQueryAttemptsAny = valueEventBulkRetryCreateRequestQueryAttemptsAny
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryAttempts) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "integer":
+		return json.Marshal(e.Integer)
+	case "eventBulkRetryCreateRequestQueryAttemptsAny":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryAttemptsAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryAttemptsVisitor interface {
+	VisitInteger(int) error
+	VisitEventBulkRetryCreateRequestQueryAttemptsAny(*EventBulkRetryCreateRequestQueryAttemptsAny) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryAttempts) Accept(visitor EventBulkRetryCreateRequestQueryAttemptsVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "integer":
+		return visitor.VisitInteger(e.Integer)
+	case "eventBulkRetryCreateRequestQueryAttemptsAny":
+		return visitor.VisitEventBulkRetryCreateRequestQueryAttemptsAny(e.EventBulkRetryCreateRequestQueryAttemptsAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryAttemptsAny struct {
+	Gt       *int  `json:"gt,omitempty"`
+	Gte      *int  `json:"gte,omitempty"`
+	Le       *int  `json:"le,omitempty"`
+	Lte      *int  `json:"lte,omitempty"`
+	Any      *bool `json:"any,omitempty"`
+	Contains *int  `json:"contains,omitempty"`
+}
+
+// URL Encoded string of the JSON to match to the data body
+type EventBulkRetryCreateRequestQueryBody struct {
+	typeName                                string
+	String                                  string
+	EventBulkRetryCreateRequestQueryBodyOne *EventBulkRetryCreateRequestQueryBodyOne
+}
+
+func NewEventBulkRetryCreateRequestQueryBodyFromString(value string) *EventBulkRetryCreateRequestQueryBody {
+	return &EventBulkRetryCreateRequestQueryBody{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryBodyFromEventBulkRetryCreateRequestQueryBodyOne(value *EventBulkRetryCreateRequestQueryBodyOne) *EventBulkRetryCreateRequestQueryBody {
+	return &EventBulkRetryCreateRequestQueryBody{typeName: "eventBulkRetryCreateRequestQueryBodyOne", EventBulkRetryCreateRequestQueryBodyOne: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryBody) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryBodyOne := new(EventBulkRetryCreateRequestQueryBodyOne)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryBodyOne); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryBodyOne"
+		e.EventBulkRetryCreateRequestQueryBodyOne = valueEventBulkRetryCreateRequestQueryBodyOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryBody) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "eventBulkRetryCreateRequestQueryBodyOne":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryBodyOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryBodyVisitor interface {
+	VisitString(string) error
+	VisitEventBulkRetryCreateRequestQueryBodyOne(*EventBulkRetryCreateRequestQueryBodyOne) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryBody) Accept(visitor EventBulkRetryCreateRequestQueryBodyVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "eventBulkRetryCreateRequestQueryBodyOne":
+		return visitor.VisitEventBulkRetryCreateRequestQueryBodyOne(e.EventBulkRetryCreateRequestQueryBodyOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryBodyOne struct {
+}
+
+type EventBulkRetryCreateRequestQueryBulkRetryId struct {
+	typeName string
+	// <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryBulkRetryIdFromString(value string) *EventBulkRetryCreateRequestQueryBulkRetryId {
+	return &EventBulkRetryCreateRequestQueryBulkRetryId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryBulkRetryIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryBulkRetryId {
+	return &EventBulkRetryCreateRequestQueryBulkRetryId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryBulkRetryId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryBulkRetryId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryBulkRetryIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryBulkRetryId) Accept(visitor EventBulkRetryCreateRequestQueryBulkRetryIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Filter by CLI IDs. `?[any]=true` operator for any CLI.
+type EventBulkRetryCreateRequestQueryCliId struct {
+	typeName                                 string
+	String                                   string
+	EventBulkRetryCreateRequestQueryCliIdAny *EventBulkRetryCreateRequestQueryCliIdAny
+	StringList                               []string
+}
+
+func NewEventBulkRetryCreateRequestQueryCliIdFromString(value string) *EventBulkRetryCreateRequestQueryCliId {
+	return &EventBulkRetryCreateRequestQueryCliId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryCliIdFromEventBulkRetryCreateRequestQueryCliIdAny(value *EventBulkRetryCreateRequestQueryCliIdAny) *EventBulkRetryCreateRequestQueryCliId {
+	return &EventBulkRetryCreateRequestQueryCliId{typeName: "eventBulkRetryCreateRequestQueryCliIdAny", EventBulkRetryCreateRequestQueryCliIdAny: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryCliIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryCliId {
+	return &EventBulkRetryCreateRequestQueryCliId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryCliIdAny := new(EventBulkRetryCreateRequestQueryCliIdAny)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryCliIdAny); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryCliIdAny"
+		e.EventBulkRetryCreateRequestQueryCliIdAny = valueEventBulkRetryCreateRequestQueryCliIdAny
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryCliId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "eventBulkRetryCreateRequestQueryCliIdAny":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryCliIdAny)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCliIdVisitor interface {
+	VisitString(string) error
+	VisitEventBulkRetryCreateRequestQueryCliIdAny(*EventBulkRetryCreateRequestQueryCliIdAny) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliId) Accept(visitor EventBulkRetryCreateRequestQueryCliIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "eventBulkRetryCreateRequestQueryCliIdAny":
+		return visitor.VisitEventBulkRetryCreateRequestQueryCliIdAny(e.EventBulkRetryCreateRequestQueryCliIdAny)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCliIdAny struct {
+	Any *bool `json:"any,omitempty"`
+}
+
+type EventBulkRetryCreateRequestQueryCliUserId struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryCliUserIdFromString(value string) *EventBulkRetryCreateRequestQueryCliUserId {
+	return &EventBulkRetryCreateRequestQueryCliUserId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryCliUserIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryCliUserId {
+	return &EventBulkRetryCreateRequestQueryCliUserId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliUserId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryCliUserId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCliUserIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliUserId) Accept(visitor EventBulkRetryCreateRequestQueryCliUserIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Filter by `created_at` date using a date operator
+type EventBulkRetryCreateRequestQueryCreatedAt struct {
+	typeName                                     string
+	DateTime                                     time.Time
+	EventBulkRetryCreateRequestQueryCreatedAtAny *EventBulkRetryCreateRequestQueryCreatedAtAny
+}
+
+func NewEventBulkRetryCreateRequestQueryCreatedAtFromDateTime(value time.Time) *EventBulkRetryCreateRequestQueryCreatedAt {
+	return &EventBulkRetryCreateRequestQueryCreatedAt{typeName: "dateTime", DateTime: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryCreatedAtFromEventBulkRetryCreateRequestQueryCreatedAtAny(value *EventBulkRetryCreateRequestQueryCreatedAtAny) *EventBulkRetryCreateRequestQueryCreatedAt {
+	return &EventBulkRetryCreateRequestQueryCreatedAt{typeName: "eventBulkRetryCreateRequestQueryCreatedAtAny", EventBulkRetryCreateRequestQueryCreatedAtAny: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryCreatedAt) UnmarshalJSON(data []byte) error {
+	var valueDateTime time.Time
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		e.typeName = "dateTime"
+		e.DateTime = valueDateTime
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryCreatedAtAny := new(EventBulkRetryCreateRequestQueryCreatedAtAny)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryCreatedAtAny); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryCreatedAtAny"
+		e.EventBulkRetryCreateRequestQueryCreatedAtAny = valueEventBulkRetryCreateRequestQueryCreatedAtAny
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryCreatedAt) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return json.Marshal(e.DateTime)
+	case "eventBulkRetryCreateRequestQueryCreatedAtAny":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryCreatedAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCreatedAtVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitEventBulkRetryCreateRequestQueryCreatedAtAny(*EventBulkRetryCreateRequestQueryCreatedAtAny) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryCreatedAt) Accept(visitor EventBulkRetryCreateRequestQueryCreatedAtVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return visitor.VisitDateTime(e.DateTime)
+	case "eventBulkRetryCreateRequestQueryCreatedAtAny":
+		return visitor.VisitEventBulkRetryCreateRequestQueryCreatedAtAny(e.EventBulkRetryCreateRequestQueryCreatedAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCreatedAtAny struct {
+	Gt  *time.Time `json:"gt,omitempty"`
+	Gte *time.Time `json:"gte,omitempty"`
+	Le  *time.Time `json:"le,omitempty"`
+	Lte *time.Time `json:"lte,omitempty"`
+	Any *bool      `json:"any,omitempty"`
+}
+
+// Filter by destination IDs
+type EventBulkRetryCreateRequestQueryDestinationId struct {
+	typeName string
+	// Destination ID <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryDestinationIdFromString(value string) *EventBulkRetryCreateRequestQueryDestinationId {
+	return &EventBulkRetryCreateRequestQueryDestinationId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryDestinationIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryDestinationId {
+	return &EventBulkRetryCreateRequestQueryDestinationId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryDestinationId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryDestinationId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryDestinationIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryDestinationId) Accept(visitor EventBulkRetryCreateRequestQueryDestinationIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Filter by error code code
+type EventBulkRetryCreateRequestQueryErrorCode struct {
+	typeName              string
+	AttemptErrorCodes     AttemptErrorCodes
+	AttemptErrorCodesList []AttemptErrorCodes
+}
+
+func NewEventBulkRetryCreateRequestQueryErrorCodeFromAttemptErrorCodes(value AttemptErrorCodes) *EventBulkRetryCreateRequestQueryErrorCode {
+	return &EventBulkRetryCreateRequestQueryErrorCode{typeName: "attemptErrorCodes", AttemptErrorCodes: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryErrorCodeFromAttemptErrorCodesList(value []AttemptErrorCodes) *EventBulkRetryCreateRequestQueryErrorCode {
+	return &EventBulkRetryCreateRequestQueryErrorCode{typeName: "attemptErrorCodesList", AttemptErrorCodesList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryErrorCode) UnmarshalJSON(data []byte) error {
+	var valueAttemptErrorCodes AttemptErrorCodes
+	if err := json.Unmarshal(data, &valueAttemptErrorCodes); err == nil {
+		e.typeName = "attemptErrorCodes"
+		e.AttemptErrorCodes = valueAttemptErrorCodes
+		return nil
+	}
+	var valueAttemptErrorCodesList []AttemptErrorCodes
+	if err := json.Unmarshal(data, &valueAttemptErrorCodesList); err == nil {
+		e.typeName = "attemptErrorCodesList"
+		e.AttemptErrorCodesList = valueAttemptErrorCodesList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryErrorCode) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "attemptErrorCodes":
+		return json.Marshal(e.AttemptErrorCodes)
+	case "attemptErrorCodesList":
+		return json.Marshal(e.AttemptErrorCodesList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryErrorCodeVisitor interface {
+	VisitAttemptErrorCodes(AttemptErrorCodes) error
+	VisitAttemptErrorCodesList([]AttemptErrorCodes) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryErrorCode) Accept(visitor EventBulkRetryCreateRequestQueryErrorCodeVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "attemptErrorCodes":
+		return visitor.VisitAttemptErrorCodes(e.AttemptErrorCodes)
+	case "attemptErrorCodesList":
+		return visitor.VisitAttemptErrorCodesList(e.AttemptErrorCodesList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryEventDataId struct {
+	typeName string
+	// <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryEventDataIdFromString(value string) *EventBulkRetryCreateRequestQueryEventDataId {
+	return &EventBulkRetryCreateRequestQueryEventDataId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryEventDataIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryEventDataId {
+	return &EventBulkRetryCreateRequestQueryEventDataId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryEventDataId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryEventDataId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryEventDataIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryEventDataId) Accept(visitor EventBulkRetryCreateRequestQueryEventDataIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// URL Encoded string of the JSON to match to the data headers
+type EventBulkRetryCreateRequestQueryHeaders struct {
+	typeName                                   string
+	String                                     string
+	EventBulkRetryCreateRequestQueryHeadersOne *EventBulkRetryCreateRequestQueryHeadersOne
+}
+
+func NewEventBulkRetryCreateRequestQueryHeadersFromString(value string) *EventBulkRetryCreateRequestQueryHeaders {
+	return &EventBulkRetryCreateRequestQueryHeaders{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryHeadersFromEventBulkRetryCreateRequestQueryHeadersOne(value *EventBulkRetryCreateRequestQueryHeadersOne) *EventBulkRetryCreateRequestQueryHeaders {
+	return &EventBulkRetryCreateRequestQueryHeaders{typeName: "eventBulkRetryCreateRequestQueryHeadersOne", EventBulkRetryCreateRequestQueryHeadersOne: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryHeaders) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryHeadersOne := new(EventBulkRetryCreateRequestQueryHeadersOne)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryHeadersOne); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryHeadersOne"
+		e.EventBulkRetryCreateRequestQueryHeadersOne = valueEventBulkRetryCreateRequestQueryHeadersOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryHeaders) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "eventBulkRetryCreateRequestQueryHeadersOne":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryHeadersOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryHeadersVisitor interface {
+	VisitString(string) error
+	VisitEventBulkRetryCreateRequestQueryHeadersOne(*EventBulkRetryCreateRequestQueryHeadersOne) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryHeaders) Accept(visitor EventBulkRetryCreateRequestQueryHeadersVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "eventBulkRetryCreateRequestQueryHeadersOne":
+		return visitor.VisitEventBulkRetryCreateRequestQueryHeadersOne(e.EventBulkRetryCreateRequestQueryHeadersOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryHeadersOne struct {
+}
+
+// Filter by event IDs
+type EventBulkRetryCreateRequestQueryId struct {
+	typeName string
+	// Event ID <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryIdFromString(value string) *EventBulkRetryCreateRequestQueryId {
+	return &EventBulkRetryCreateRequestQueryId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryId {
+	return &EventBulkRetryCreateRequestQueryId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryId) Accept(visitor EventBulkRetryCreateRequestQueryIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryIssueId struct {
+	typeName string
+	// <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryIssueIdFromString(value string) *EventBulkRetryCreateRequestQueryIssueId {
+	return &EventBulkRetryCreateRequestQueryIssueId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryIssueIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryIssueId {
+	return &EventBulkRetryCreateRequestQueryIssueId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryIssueId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryIssueId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryIssueIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryIssueId) Accept(visitor EventBulkRetryCreateRequestQueryIssueIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Filter by `last_attempt_at` date using a date operator
+type EventBulkRetryCreateRequestQueryLastAttemptAt struct {
+	typeName                                         string
+	DateTime                                         time.Time
+	EventBulkRetryCreateRequestQueryLastAttemptAtAny *EventBulkRetryCreateRequestQueryLastAttemptAtAny
+}
+
+func NewEventBulkRetryCreateRequestQueryLastAttemptAtFromDateTime(value time.Time) *EventBulkRetryCreateRequestQueryLastAttemptAt {
+	return &EventBulkRetryCreateRequestQueryLastAttemptAt{typeName: "dateTime", DateTime: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryLastAttemptAtFromEventBulkRetryCreateRequestQueryLastAttemptAtAny(value *EventBulkRetryCreateRequestQueryLastAttemptAtAny) *EventBulkRetryCreateRequestQueryLastAttemptAt {
+	return &EventBulkRetryCreateRequestQueryLastAttemptAt{typeName: "eventBulkRetryCreateRequestQueryLastAttemptAtAny", EventBulkRetryCreateRequestQueryLastAttemptAtAny: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryLastAttemptAt) UnmarshalJSON(data []byte) error {
+	var valueDateTime time.Time
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		e.typeName = "dateTime"
+		e.DateTime = valueDateTime
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryLastAttemptAtAny := new(EventBulkRetryCreateRequestQueryLastAttemptAtAny)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryLastAttemptAtAny); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryLastAttemptAtAny"
+		e.EventBulkRetryCreateRequestQueryLastAttemptAtAny = valueEventBulkRetryCreateRequestQueryLastAttemptAtAny
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryLastAttemptAt) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return json.Marshal(e.DateTime)
+	case "eventBulkRetryCreateRequestQueryLastAttemptAtAny":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryLastAttemptAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryLastAttemptAtVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitEventBulkRetryCreateRequestQueryLastAttemptAtAny(*EventBulkRetryCreateRequestQueryLastAttemptAtAny) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryLastAttemptAt) Accept(visitor EventBulkRetryCreateRequestQueryLastAttemptAtVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return visitor.VisitDateTime(e.DateTime)
+	case "eventBulkRetryCreateRequestQueryLastAttemptAtAny":
+		return visitor.VisitEventBulkRetryCreateRequestQueryLastAttemptAtAny(e.EventBulkRetryCreateRequestQueryLastAttemptAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryLastAttemptAtAny struct {
+	Gt  *time.Time `json:"gt,omitempty"`
+	Gte *time.Time `json:"gte,omitempty"`
+	Le  *time.Time `json:"le,omitempty"`
+	Lte *time.Time `json:"lte,omitempty"`
+	Any *bool      `json:"any,omitempty"`
+}
+
+// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
+type EventBulkRetryCreateRequestQueryParsedQuery struct {
+	typeName                                       string
+	String                                         string
+	EventBulkRetryCreateRequestQueryParsedQueryOne *EventBulkRetryCreateRequestQueryParsedQueryOne
+}
+
+func NewEventBulkRetryCreateRequestQueryParsedQueryFromString(value string) *EventBulkRetryCreateRequestQueryParsedQuery {
+	return &EventBulkRetryCreateRequestQueryParsedQuery{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryParsedQueryFromEventBulkRetryCreateRequestQueryParsedQueryOne(value *EventBulkRetryCreateRequestQueryParsedQueryOne) *EventBulkRetryCreateRequestQueryParsedQuery {
+	return &EventBulkRetryCreateRequestQueryParsedQuery{typeName: "eventBulkRetryCreateRequestQueryParsedQueryOne", EventBulkRetryCreateRequestQueryParsedQueryOne: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryParsedQuery) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryParsedQueryOne := new(EventBulkRetryCreateRequestQueryParsedQueryOne)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryParsedQueryOne); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryParsedQueryOne"
+		e.EventBulkRetryCreateRequestQueryParsedQueryOne = valueEventBulkRetryCreateRequestQueryParsedQueryOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryParsedQuery) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "eventBulkRetryCreateRequestQueryParsedQueryOne":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryParsedQueryOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryParsedQueryVisitor interface {
+	VisitString(string) error
+	VisitEventBulkRetryCreateRequestQueryParsedQueryOne(*EventBulkRetryCreateRequestQueryParsedQueryOne) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryParsedQuery) Accept(visitor EventBulkRetryCreateRequestQueryParsedQueryVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "eventBulkRetryCreateRequestQueryParsedQueryOne":
+		return visitor.VisitEventBulkRetryCreateRequestQueryParsedQueryOne(e.EventBulkRetryCreateRequestQueryParsedQueryOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryParsedQueryOne struct {
+}
+
+// Filter by HTTP response status code
+type EventBulkRetryCreateRequestQueryResponseStatus struct {
+	typeName                                          string
+	Integer                                           int
+	EventBulkRetryCreateRequestQueryResponseStatusAny *EventBulkRetryCreateRequestQueryResponseStatusAny
+	IntegerList                                       []int
+}
+
+func NewEventBulkRetryCreateRequestQueryResponseStatusFromInteger(value int) *EventBulkRetryCreateRequestQueryResponseStatus {
+	return &EventBulkRetryCreateRequestQueryResponseStatus{typeName: "integer", Integer: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryResponseStatusFromEventBulkRetryCreateRequestQueryResponseStatusAny(value *EventBulkRetryCreateRequestQueryResponseStatusAny) *EventBulkRetryCreateRequestQueryResponseStatus {
+	return &EventBulkRetryCreateRequestQueryResponseStatus{typeName: "eventBulkRetryCreateRequestQueryResponseStatusAny", EventBulkRetryCreateRequestQueryResponseStatusAny: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryResponseStatusFromIntegerList(value []int) *EventBulkRetryCreateRequestQueryResponseStatus {
+	return &EventBulkRetryCreateRequestQueryResponseStatus{typeName: "integerList", IntegerList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryResponseStatus) UnmarshalJSON(data []byte) error {
+	var valueInteger int
+	if err := json.Unmarshal(data, &valueInteger); err == nil {
+		e.typeName = "integer"
+		e.Integer = valueInteger
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryResponseStatusAny := new(EventBulkRetryCreateRequestQueryResponseStatusAny)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryResponseStatusAny); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryResponseStatusAny"
+		e.EventBulkRetryCreateRequestQueryResponseStatusAny = valueEventBulkRetryCreateRequestQueryResponseStatusAny
+		return nil
+	}
+	var valueIntegerList []int
+	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
+		e.typeName = "integerList"
+		e.IntegerList = valueIntegerList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryResponseStatus) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "integer":
+		return json.Marshal(e.Integer)
+	case "eventBulkRetryCreateRequestQueryResponseStatusAny":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryResponseStatusAny)
+	case "integerList":
+		return json.Marshal(e.IntegerList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryResponseStatusVisitor interface {
+	VisitInteger(int) error
+	VisitEventBulkRetryCreateRequestQueryResponseStatusAny(*EventBulkRetryCreateRequestQueryResponseStatusAny) error
+	VisitIntegerList([]int) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryResponseStatus) Accept(visitor EventBulkRetryCreateRequestQueryResponseStatusVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "integer":
+		return visitor.VisitInteger(e.Integer)
+	case "eventBulkRetryCreateRequestQueryResponseStatusAny":
+		return visitor.VisitEventBulkRetryCreateRequestQueryResponseStatusAny(e.EventBulkRetryCreateRequestQueryResponseStatusAny)
+	case "integerList":
+		return visitor.VisitIntegerList(e.IntegerList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryResponseStatusAny struct {
+	Gt       *int  `json:"gt,omitempty"`
+	Gte      *int  `json:"gte,omitempty"`
+	Le       *int  `json:"le,omitempty"`
+	Lte      *int  `json:"lte,omitempty"`
+	Any      *bool `json:"any,omitempty"`
+	Contains *int  `json:"contains,omitempty"`
+}
+
+// Filter by source IDs
+type EventBulkRetryCreateRequestQuerySourceId struct {
+	typeName string
+	// Source ID <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQuerySourceIdFromString(value string) *EventBulkRetryCreateRequestQuerySourceId {
+	return &EventBulkRetryCreateRequestQuerySourceId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQuerySourceIdFromStringList(value []string) *EventBulkRetryCreateRequestQuerySourceId {
+	return &EventBulkRetryCreateRequestQuerySourceId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQuerySourceId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQuerySourceId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQuerySourceIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQuerySourceId) Accept(visitor EventBulkRetryCreateRequestQuerySourceIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Lifecyle status of the event
+type EventBulkRetryCreateRequestQueryStatus struct {
+	typeName        string
+	EventStatus     EventStatus
+	EventStatusList []EventStatus
+}
+
+func NewEventBulkRetryCreateRequestQueryStatusFromEventStatus(value EventStatus) *EventBulkRetryCreateRequestQueryStatus {
+	return &EventBulkRetryCreateRequestQueryStatus{typeName: "eventStatus", EventStatus: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryStatusFromEventStatusList(value []EventStatus) *EventBulkRetryCreateRequestQueryStatus {
+	return &EventBulkRetryCreateRequestQueryStatus{typeName: "eventStatusList", EventStatusList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryStatus) UnmarshalJSON(data []byte) error {
+	var valueEventStatus EventStatus
+	if err := json.Unmarshal(data, &valueEventStatus); err == nil {
+		e.typeName = "eventStatus"
+		e.EventStatus = valueEventStatus
+		return nil
+	}
+	var valueEventStatusList []EventStatus
+	if err := json.Unmarshal(data, &valueEventStatusList); err == nil {
+		e.typeName = "eventStatusList"
+		e.EventStatusList = valueEventStatusList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryStatus) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "eventStatus":
+		return json.Marshal(e.EventStatus)
+	case "eventStatusList":
+		return json.Marshal(e.EventStatusList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryStatusVisitor interface {
+	VisitEventStatus(EventStatus) error
+	VisitEventStatusList([]EventStatus) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryStatus) Accept(visitor EventBulkRetryCreateRequestQueryStatusVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "eventStatus":
+		return visitor.VisitEventStatus(e.EventStatus)
+	case "eventStatusList":
+		return visitor.VisitEventStatusList(e.EventStatusList)
+	}
+}
+
+// Filter by `successful_at` date using a date operator
+type EventBulkRetryCreateRequestQuerySuccessfulAt struct {
+	typeName                                        string
+	DateTime                                        time.Time
+	EventBulkRetryCreateRequestQuerySuccessfulAtAny *EventBulkRetryCreateRequestQuerySuccessfulAtAny
+}
+
+func NewEventBulkRetryCreateRequestQuerySuccessfulAtFromDateTime(value time.Time) *EventBulkRetryCreateRequestQuerySuccessfulAt {
+	return &EventBulkRetryCreateRequestQuerySuccessfulAt{typeName: "dateTime", DateTime: value}
+}
+
+func NewEventBulkRetryCreateRequestQuerySuccessfulAtFromEventBulkRetryCreateRequestQuerySuccessfulAtAny(value *EventBulkRetryCreateRequestQuerySuccessfulAtAny) *EventBulkRetryCreateRequestQuerySuccessfulAt {
+	return &EventBulkRetryCreateRequestQuerySuccessfulAt{typeName: "eventBulkRetryCreateRequestQuerySuccessfulAtAny", EventBulkRetryCreateRequestQuerySuccessfulAtAny: value}
+}
+
+func (e *EventBulkRetryCreateRequestQuerySuccessfulAt) UnmarshalJSON(data []byte) error {
+	var valueDateTime time.Time
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		e.typeName = "dateTime"
+		e.DateTime = valueDateTime
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQuerySuccessfulAtAny := new(EventBulkRetryCreateRequestQuerySuccessfulAtAny)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQuerySuccessfulAtAny); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQuerySuccessfulAtAny"
+		e.EventBulkRetryCreateRequestQuerySuccessfulAtAny = valueEventBulkRetryCreateRequestQuerySuccessfulAtAny
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQuerySuccessfulAt) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return json.Marshal(e.DateTime)
+	case "eventBulkRetryCreateRequestQuerySuccessfulAtAny":
+		return json.Marshal(e.EventBulkRetryCreateRequestQuerySuccessfulAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQuerySuccessfulAtVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitEventBulkRetryCreateRequestQuerySuccessfulAtAny(*EventBulkRetryCreateRequestQuerySuccessfulAtAny) error
+}
+
+func (e *EventBulkRetryCreateRequestQuerySuccessfulAt) Accept(visitor EventBulkRetryCreateRequestQuerySuccessfulAtVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return visitor.VisitDateTime(e.DateTime)
+	case "eventBulkRetryCreateRequestQuerySuccessfulAtAny":
+		return visitor.VisitEventBulkRetryCreateRequestQuerySuccessfulAtAny(e.EventBulkRetryCreateRequestQuerySuccessfulAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQuerySuccessfulAtAny struct {
+	Gt  *time.Time `json:"gt,omitempty"`
+	Gte *time.Time `json:"gte,omitempty"`
+	Le  *time.Time `json:"le,omitempty"`
+	Lte *time.Time `json:"lte,omitempty"`
+	Any *bool      `json:"any,omitempty"`
+}
+
+// Filter by webhook connection IDs
+type EventBulkRetryCreateRequestQueryWebhookId struct {
+	typeName string
+	// Webhook ID <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryWebhookIdFromString(value string) *EventBulkRetryCreateRequestQueryWebhookId {
+	return &EventBulkRetryCreateRequestQueryWebhookId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryWebhookIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryWebhookId {
+	return &EventBulkRetryCreateRequestQueryWebhookId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryWebhookId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryWebhookId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryWebhookIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryWebhookId) Accept(visitor EventBulkRetryCreateRequestQueryWebhookIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+type EventBulkRetryListRequestDir string
+
+const (
+	EventBulkRetryListRequestDirAsc  EventBulkRetryListRequestDir = "asc"
+	EventBulkRetryListRequestDirDesc EventBulkRetryListRequestDir = "desc"
+)
+
+func NewEventBulkRetryListRequestDirFromString(s string) (EventBulkRetryListRequestDir, error) {
+	switch s {
+	case "asc":
+		return EventBulkRetryListRequestDirAsc, nil
+	case "desc":
+		return EventBulkRetryListRequestDirDesc, nil
+	}
+	var t EventBulkRetryListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventBulkRetryListRequestDir) Ptr() *EventBulkRetryListRequestDir {
+	return &e
+}
+
+type EventBulkRetryPlanResponse struct {
+	// Number of batches required to complete the bulk retry
+	EstimatedBatch *int `json:"estimated_batch,omitempty"`
+	// Number of estimated events to be retried
+	EstimatedCount *int `json:"estimated_count,omitempty"`
+	// Progression of the batch operations, values 0 - 1
+	Progress *float64 `json:"progress,omitempty"`
+}
+
+// Sort direction
+type EventListRequestDir string
+
+const (
+	EventListRequestDirAsc  EventListRequestDir = "asc"
+	EventListRequestDirDesc EventListRequestDir = "desc"
+)
+
+func NewEventListRequestDirFromString(s string) (EventListRequestDir, error) {
+	switch s {
+	case "asc":
+		return EventListRequestDirAsc, nil
+	case "desc":
+		return EventListRequestDirDesc, nil
+	}
+	var t EventListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventListRequestDir) Ptr() *EventListRequestDir {
+	return &e
+}
+
+// Sort key
+type EventListRequestOrderBy string
+
+const (
+	EventListRequestOrderByLastAttemptAt EventListRequestOrderBy = "last_attempt_at"
+	EventListRequestOrderByCreatedAt     EventListRequestOrderBy = "created_at"
+)
+
+func NewEventListRequestOrderByFromString(s string) (EventListRequestOrderBy, error) {
+	switch s {
+	case "last_attempt_at":
+		return EventListRequestOrderByLastAttemptAt, nil
+	case "created_at":
+		return EventListRequestOrderByCreatedAt, nil
+	}
+	var t EventListRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventListRequestOrderBy) Ptr() *EventListRequestOrderBy {
+	return &e
+}
+
 type EventPaginatedResult struct {
 	Pagination *SeekPagination `json:"pagination,omitempty"`
 	Count      *int            `json:"count,omitempty"`
@@ -3876,10 +2881,10 @@ func (e EventStatus) Ptr() *EventStatus {
 }
 
 type FilterRule struct {
-	Headers *ConnectionFilterProperty `json:"headers,omitempty"`
-	Body    *ConnectionFilterProperty `json:"body,omitempty"`
-	Query   *ConnectionFilterProperty `json:"query,omitempty"`
-	Path    *ConnectionFilterProperty `json:"path,omitempty"`
+	Headers *FilterRuleProperty `json:"headers,omitempty"`
+	Body    *FilterRuleProperty `json:"body,omitempty"`
+	Query   *FilterRuleProperty `json:"query,omitempty"`
+	Path    *FilterRuleProperty `json:"path,omitempty"`
 	type_   string
 }
 
@@ -3910,6 +2915,96 @@ func (f *FilterRule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(marshaler)
 }
 
+// JSON using our filter syntax to filter on request headers
+type FilterRuleProperty struct {
+	typeName                 string
+	StringOptional           *string
+	DoubleOptional           *float64
+	BooleanOptional          *bool
+	StringUnknownMapOptional map[string]any
+}
+
+func NewFilterRulePropertyFromStringOptional(value *string) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "stringOptional", StringOptional: value}
+}
+
+func NewFilterRulePropertyFromDoubleOptional(value *float64) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "doubleOptional", DoubleOptional: value}
+}
+
+func NewFilterRulePropertyFromBooleanOptional(value *bool) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "booleanOptional", BooleanOptional: value}
+}
+
+func NewFilterRulePropertyFromStringUnknownMapOptional(value map[string]any) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "stringUnknownMapOptional", StringUnknownMapOptional: value}
+}
+
+func (f *FilterRuleProperty) UnmarshalJSON(data []byte) error {
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		f.typeName = "stringOptional"
+		f.StringOptional = valueStringOptional
+		return nil
+	}
+	var valueDoubleOptional *float64
+	if err := json.Unmarshal(data, &valueDoubleOptional); err == nil {
+		f.typeName = "doubleOptional"
+		f.DoubleOptional = valueDoubleOptional
+		return nil
+	}
+	var valueBooleanOptional *bool
+	if err := json.Unmarshal(data, &valueBooleanOptional); err == nil {
+		f.typeName = "booleanOptional"
+		f.BooleanOptional = valueBooleanOptional
+		return nil
+	}
+	var valueStringUnknownMapOptional map[string]any
+	if err := json.Unmarshal(data, &valueStringUnknownMapOptional); err == nil {
+		f.typeName = "stringUnknownMapOptional"
+		f.StringUnknownMapOptional = valueStringUnknownMapOptional
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
+}
+
+func (f FilterRuleProperty) MarshalJSON() ([]byte, error) {
+	switch f.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
+	case "stringOptional":
+		return json.Marshal(f.StringOptional)
+	case "doubleOptional":
+		return json.Marshal(f.DoubleOptional)
+	case "booleanOptional":
+		return json.Marshal(f.BooleanOptional)
+	case "stringUnknownMapOptional":
+		return json.Marshal(f.StringUnknownMapOptional)
+	}
+}
+
+type FilterRulePropertyVisitor interface {
+	VisitStringOptional(*string) error
+	VisitDoubleOptional(*float64) error
+	VisitBooleanOptional(*bool) error
+	VisitStringUnknownMapOptional(map[string]any) error
+}
+
+func (f *FilterRuleProperty) Accept(visitor FilterRulePropertyVisitor) error {
+	switch f.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
+	case "stringOptional":
+		return visitor.VisitStringOptional(f.StringOptional)
+	case "doubleOptional":
+		return visitor.VisitDoubleOptional(f.DoubleOptional)
+	case "booleanOptional":
+		return visitor.VisitBooleanOptional(f.BooleanOptional)
+	case "stringUnknownMapOptional":
+		return visitor.VisitStringUnknownMapOptional(f.StringUnknownMapOptional)
+	}
+}
+
 type FilteredMeta string
 
 const (
@@ -3938,873 +3033,12 @@ func (f FilteredMeta) Ptr() *FilteredMeta {
 	return &f
 }
 
-type GenerateEventBulkRetryPlanResponse struct {
-	// Number of batches required to complete the bulk retry
-	EstimatedBatch *int `json:"estimated_batch,omitempty"`
-	// Number of estimated events to be retried
-	EstimatedCount *int `json:"estimated_count,omitempty"`
-	// Progression of the batch operations, values 0 - 1
-	Progress *float64 `json:"progress,omitempty"`
-}
-
-type GenerateIgnoredEventBulkRetryPlanResponse struct {
-	// Number of batches required to complete the bulk retry
-	EstimatedBatch *int `json:"estimated_batch,omitempty"`
-	// Number of estimated events to be retried
-	EstimatedCount *int `json:"estimated_count,omitempty"`
-	// Progression of the batch operations, values 0 - 1
-	Progress *float64 `json:"progress,omitempty"`
-}
-
-type GenerateRequestBulkRetryPlanResponse struct {
-	// Number of batches required to complete the bulk retry
-	EstimatedBatch *int `json:"estimated_batch,omitempty"`
-	// Number of estimated events to be retried
-	EstimatedCount *int `json:"estimated_count,omitempty"`
-	// Progression of the batch operations, values 0 - 1
-	Progress *float64 `json:"progress,omitempty"`
-}
-
-type GetAttemptsRequestDir string
-
-const (
-	GetAttemptsRequestDirAsc  GetAttemptsRequestDir = "asc"
-	GetAttemptsRequestDirDesc GetAttemptsRequestDir = "desc"
-)
-
-func NewGetAttemptsRequestDirFromString(s string) (GetAttemptsRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetAttemptsRequestDirAsc, nil
-	case "desc":
-		return GetAttemptsRequestDirDesc, nil
-	}
-	var t GetAttemptsRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetAttemptsRequestDir) Ptr() *GetAttemptsRequestDir {
-	return &g
-}
-
-type GetBookmarksRequestDir string
-
-const (
-	GetBookmarksRequestDirAsc  GetBookmarksRequestDir = "asc"
-	GetBookmarksRequestDirDesc GetBookmarksRequestDir = "desc"
-)
-
-func NewGetBookmarksRequestDirFromString(s string) (GetBookmarksRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetBookmarksRequestDirAsc, nil
-	case "desc":
-		return GetBookmarksRequestDirDesc, nil
-	}
-	var t GetBookmarksRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetBookmarksRequestDir) Ptr() *GetBookmarksRequestDir {
-	return &g
-}
-
-type GetConnectionsRequestDir string
-
-const (
-	GetConnectionsRequestDirAsc  GetConnectionsRequestDir = "asc"
-	GetConnectionsRequestDirDesc GetConnectionsRequestDir = "desc"
-)
-
-func NewGetConnectionsRequestDirFromString(s string) (GetConnectionsRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetConnectionsRequestDirAsc, nil
-	case "desc":
-		return GetConnectionsRequestDirDesc, nil
-	}
-	var t GetConnectionsRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetConnectionsRequestDir) Ptr() *GetConnectionsRequestDir {
-	return &g
-}
-
-type GetConnectionsRequestOrderBy string
-
-const (
-	GetConnectionsRequestOrderByCreatedAt             GetConnectionsRequestOrderBy = "created_at"
-	GetConnectionsRequestOrderByUpdatedAt             GetConnectionsRequestOrderBy = "updated_at"
-	GetConnectionsRequestOrderBySourcesUpdatedAt      GetConnectionsRequestOrderBy = "sources.updated_at"
-	GetConnectionsRequestOrderBySourcesCreatedAt      GetConnectionsRequestOrderBy = "sources.created_at"
-	GetConnectionsRequestOrderByDestinationsUpdatedAt GetConnectionsRequestOrderBy = "destinations.updated_at"
-	GetConnectionsRequestOrderByDestinationsCreatedAt GetConnectionsRequestOrderBy = "destinations.created_at"
-)
-
-func NewGetConnectionsRequestOrderByFromString(s string) (GetConnectionsRequestOrderBy, error) {
-	switch s {
-	case "created_at":
-		return GetConnectionsRequestOrderByCreatedAt, nil
-	case "updated_at":
-		return GetConnectionsRequestOrderByUpdatedAt, nil
-	case "sources.updated_at":
-		return GetConnectionsRequestOrderBySourcesUpdatedAt, nil
-	case "sources.created_at":
-		return GetConnectionsRequestOrderBySourcesCreatedAt, nil
-	case "destinations.updated_at":
-		return GetConnectionsRequestOrderByDestinationsUpdatedAt, nil
-	case "destinations.created_at":
-		return GetConnectionsRequestOrderByDestinationsCreatedAt, nil
-	}
-	var t GetConnectionsRequestOrderBy
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetConnectionsRequestOrderBy) Ptr() *GetConnectionsRequestOrderBy {
-	return &g
-}
-
-type GetDestinationsRequestDir string
-
-const (
-	GetDestinationsRequestDirAsc  GetDestinationsRequestDir = "asc"
-	GetDestinationsRequestDirDesc GetDestinationsRequestDir = "desc"
-)
-
-func NewGetDestinationsRequestDirFromString(s string) (GetDestinationsRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetDestinationsRequestDirAsc, nil
-	case "desc":
-		return GetDestinationsRequestDirDesc, nil
-	}
-	var t GetDestinationsRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetDestinationsRequestDir) Ptr() *GetDestinationsRequestDir {
-	return &g
-}
-
-type GetEventBulkRetriesRequestDir string
-
-const (
-	GetEventBulkRetriesRequestDirAsc  GetEventBulkRetriesRequestDir = "asc"
-	GetEventBulkRetriesRequestDirDesc GetEventBulkRetriesRequestDir = "desc"
-)
-
-func NewGetEventBulkRetriesRequestDirFromString(s string) (GetEventBulkRetriesRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetEventBulkRetriesRequestDirAsc, nil
-	case "desc":
-		return GetEventBulkRetriesRequestDirDesc, nil
-	}
-	var t GetEventBulkRetriesRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetEventBulkRetriesRequestDir) Ptr() *GetEventBulkRetriesRequestDir {
-	return &g
-}
-
-// Sort direction
-type GetEventsRequestDir string
-
-const (
-	GetEventsRequestDirAsc  GetEventsRequestDir = "asc"
-	GetEventsRequestDirDesc GetEventsRequestDir = "desc"
-)
-
-func NewGetEventsRequestDirFromString(s string) (GetEventsRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetEventsRequestDirAsc, nil
-	case "desc":
-		return GetEventsRequestDirDesc, nil
-	}
-	var t GetEventsRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetEventsRequestDir) Ptr() *GetEventsRequestDir {
-	return &g
-}
-
-// Sort key
-type GetEventsRequestOrderBy string
-
-const (
-	GetEventsRequestOrderByLastAttemptAt GetEventsRequestOrderBy = "last_attempt_at"
-	GetEventsRequestOrderByCreatedAt     GetEventsRequestOrderBy = "created_at"
-)
-
-func NewGetEventsRequestOrderByFromString(s string) (GetEventsRequestOrderBy, error) {
-	switch s {
-	case "last_attempt_at":
-		return GetEventsRequestOrderByLastAttemptAt, nil
-	case "created_at":
-		return GetEventsRequestOrderByCreatedAt, nil
-	}
-	var t GetEventsRequestOrderBy
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetEventsRequestOrderBy) Ptr() *GetEventsRequestOrderBy {
-	return &g
-}
-
-type GetIgnoredEventBulkRetriesRequestDir string
-
-const (
-	GetIgnoredEventBulkRetriesRequestDirAsc  GetIgnoredEventBulkRetriesRequestDir = "asc"
-	GetIgnoredEventBulkRetriesRequestDirDesc GetIgnoredEventBulkRetriesRequestDir = "desc"
-)
-
-func NewGetIgnoredEventBulkRetriesRequestDirFromString(s string) (GetIgnoredEventBulkRetriesRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetIgnoredEventBulkRetriesRequestDirAsc, nil
-	case "desc":
-		return GetIgnoredEventBulkRetriesRequestDirDesc, nil
-	}
-	var t GetIgnoredEventBulkRetriesRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIgnoredEventBulkRetriesRequestDir) Ptr() *GetIgnoredEventBulkRetriesRequestDir {
-	return &g
-}
-
-type GetIssueCountRequestDir string
-
-const (
-	GetIssueCountRequestDirAsc  GetIssueCountRequestDir = "asc"
-	GetIssueCountRequestDirDesc GetIssueCountRequestDir = "desc"
-)
-
-func NewGetIssueCountRequestDirFromString(s string) (GetIssueCountRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetIssueCountRequestDirAsc, nil
-	case "desc":
-		return GetIssueCountRequestDirDesc, nil
-	}
-	var t GetIssueCountRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssueCountRequestDir) Ptr() *GetIssueCountRequestDir {
-	return &g
-}
-
-type GetIssueCountRequestOrderBy string
-
-const (
-	GetIssueCountRequestOrderByCreatedAt   GetIssueCountRequestOrderBy = "created_at"
-	GetIssueCountRequestOrderByFirstSeenAt GetIssueCountRequestOrderBy = "first_seen_at"
-	GetIssueCountRequestOrderByLastSeenAt  GetIssueCountRequestOrderBy = "last_seen_at"
-	GetIssueCountRequestOrderByOpenedAt    GetIssueCountRequestOrderBy = "opened_at"
-	GetIssueCountRequestOrderByStatus      GetIssueCountRequestOrderBy = "status"
-)
-
-func NewGetIssueCountRequestOrderByFromString(s string) (GetIssueCountRequestOrderBy, error) {
-	switch s {
-	case "created_at":
-		return GetIssueCountRequestOrderByCreatedAt, nil
-	case "first_seen_at":
-		return GetIssueCountRequestOrderByFirstSeenAt, nil
-	case "last_seen_at":
-		return GetIssueCountRequestOrderByLastSeenAt, nil
-	case "opened_at":
-		return GetIssueCountRequestOrderByOpenedAt, nil
-	case "status":
-		return GetIssueCountRequestOrderByStatus, nil
-	}
-	var t GetIssueCountRequestOrderBy
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssueCountRequestOrderBy) Ptr() *GetIssueCountRequestOrderBy {
-	return &g
-}
-
-// Issue status
-type GetIssueCountRequestStatus string
-
-const (
-	GetIssueCountRequestStatusOpened       GetIssueCountRequestStatus = "OPENED"
-	GetIssueCountRequestStatusIgnored      GetIssueCountRequestStatus = "IGNORED"
-	GetIssueCountRequestStatusAcknowledged GetIssueCountRequestStatus = "ACKNOWLEDGED"
-	GetIssueCountRequestStatusResolved     GetIssueCountRequestStatus = "RESOLVED"
-)
-
-func NewGetIssueCountRequestStatusFromString(s string) (GetIssueCountRequestStatus, error) {
-	switch s {
-	case "OPENED":
-		return GetIssueCountRequestStatusOpened, nil
-	case "IGNORED":
-		return GetIssueCountRequestStatusIgnored, nil
-	case "ACKNOWLEDGED":
-		return GetIssueCountRequestStatusAcknowledged, nil
-	case "RESOLVED":
-		return GetIssueCountRequestStatusResolved, nil
-	}
-	var t GetIssueCountRequestStatus
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssueCountRequestStatus) Ptr() *GetIssueCountRequestStatus {
-	return &g
-}
-
-// Issue type
-type GetIssueCountRequestType string
-
-const (
-	GetIssueCountRequestTypeDelivery       GetIssueCountRequestType = "delivery"
-	GetIssueCountRequestTypeTransformation GetIssueCountRequestType = "transformation"
-	GetIssueCountRequestTypeBackpressure   GetIssueCountRequestType = "backpressure"
-)
-
-func NewGetIssueCountRequestTypeFromString(s string) (GetIssueCountRequestType, error) {
-	switch s {
-	case "delivery":
-		return GetIssueCountRequestTypeDelivery, nil
-	case "transformation":
-		return GetIssueCountRequestTypeTransformation, nil
-	case "backpressure":
-		return GetIssueCountRequestTypeBackpressure, nil
-	}
-	var t GetIssueCountRequestType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssueCountRequestType) Ptr() *GetIssueCountRequestType {
-	return &g
-}
-
-type GetIssueTriggersRequestDir string
-
-const (
-	GetIssueTriggersRequestDirAsc  GetIssueTriggersRequestDir = "asc"
-	GetIssueTriggersRequestDirDesc GetIssueTriggersRequestDir = "desc"
-)
-
-func NewGetIssueTriggersRequestDirFromString(s string) (GetIssueTriggersRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetIssueTriggersRequestDirAsc, nil
-	case "desc":
-		return GetIssueTriggersRequestDirDesc, nil
-	}
-	var t GetIssueTriggersRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssueTriggersRequestDir) Ptr() *GetIssueTriggersRequestDir {
-	return &g
-}
-
-type GetIssueTriggersRequestOrderBy string
-
-const (
-	GetIssueTriggersRequestOrderByCreatedAt GetIssueTriggersRequestOrderBy = "created_at"
-	GetIssueTriggersRequestOrderByType      GetIssueTriggersRequestOrderBy = "type"
-)
-
-func NewGetIssueTriggersRequestOrderByFromString(s string) (GetIssueTriggersRequestOrderBy, error) {
-	switch s {
-	case "created_at":
-		return GetIssueTriggersRequestOrderByCreatedAt, nil
-	case "type":
-		return GetIssueTriggersRequestOrderByType, nil
-	}
-	var t GetIssueTriggersRequestOrderBy
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssueTriggersRequestOrderBy) Ptr() *GetIssueTriggersRequestOrderBy {
-	return &g
-}
-
-type GetIssuesRequestDir string
-
-const (
-	GetIssuesRequestDirAsc  GetIssuesRequestDir = "asc"
-	GetIssuesRequestDirDesc GetIssuesRequestDir = "desc"
-)
-
-func NewGetIssuesRequestDirFromString(s string) (GetIssuesRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetIssuesRequestDirAsc, nil
-	case "desc":
-		return GetIssuesRequestDirDesc, nil
-	}
-	var t GetIssuesRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssuesRequestDir) Ptr() *GetIssuesRequestDir {
-	return &g
-}
-
-type GetIssuesRequestOrderBy string
-
-const (
-	GetIssuesRequestOrderByCreatedAt   GetIssuesRequestOrderBy = "created_at"
-	GetIssuesRequestOrderByFirstSeenAt GetIssuesRequestOrderBy = "first_seen_at"
-	GetIssuesRequestOrderByLastSeenAt  GetIssuesRequestOrderBy = "last_seen_at"
-	GetIssuesRequestOrderByOpenedAt    GetIssuesRequestOrderBy = "opened_at"
-	GetIssuesRequestOrderByStatus      GetIssuesRequestOrderBy = "status"
-)
-
-func NewGetIssuesRequestOrderByFromString(s string) (GetIssuesRequestOrderBy, error) {
-	switch s {
-	case "created_at":
-		return GetIssuesRequestOrderByCreatedAt, nil
-	case "first_seen_at":
-		return GetIssuesRequestOrderByFirstSeenAt, nil
-	case "last_seen_at":
-		return GetIssuesRequestOrderByLastSeenAt, nil
-	case "opened_at":
-		return GetIssuesRequestOrderByOpenedAt, nil
-	case "status":
-		return GetIssuesRequestOrderByStatus, nil
-	}
-	var t GetIssuesRequestOrderBy
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssuesRequestOrderBy) Ptr() *GetIssuesRequestOrderBy {
-	return &g
-}
-
-// Issue status
-type GetIssuesRequestStatus string
-
-const (
-	GetIssuesRequestStatusOpened       GetIssuesRequestStatus = "OPENED"
-	GetIssuesRequestStatusIgnored      GetIssuesRequestStatus = "IGNORED"
-	GetIssuesRequestStatusAcknowledged GetIssuesRequestStatus = "ACKNOWLEDGED"
-	GetIssuesRequestStatusResolved     GetIssuesRequestStatus = "RESOLVED"
-)
-
-func NewGetIssuesRequestStatusFromString(s string) (GetIssuesRequestStatus, error) {
-	switch s {
-	case "OPENED":
-		return GetIssuesRequestStatusOpened, nil
-	case "IGNORED":
-		return GetIssuesRequestStatusIgnored, nil
-	case "ACKNOWLEDGED":
-		return GetIssuesRequestStatusAcknowledged, nil
-	case "RESOLVED":
-		return GetIssuesRequestStatusResolved, nil
-	}
-	var t GetIssuesRequestStatus
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssuesRequestStatus) Ptr() *GetIssuesRequestStatus {
-	return &g
-}
-
-// Issue type
-type GetIssuesRequestType string
-
-const (
-	GetIssuesRequestTypeDelivery       GetIssuesRequestType = "delivery"
-	GetIssuesRequestTypeTransformation GetIssuesRequestType = "transformation"
-	GetIssuesRequestTypeBackpressure   GetIssuesRequestType = "backpressure"
-)
-
-func NewGetIssuesRequestTypeFromString(s string) (GetIssuesRequestType, error) {
-	switch s {
-	case "delivery":
-		return GetIssuesRequestTypeDelivery, nil
-	case "transformation":
-		return GetIssuesRequestTypeTransformation, nil
-	case "backpressure":
-		return GetIssuesRequestTypeBackpressure, nil
-	}
-	var t GetIssuesRequestType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetIssuesRequestType) Ptr() *GetIssuesRequestType {
-	return &g
-}
-
-type GetRequestBulkRetriesRequestDir string
-
-const (
-	GetRequestBulkRetriesRequestDirAsc  GetRequestBulkRetriesRequestDir = "asc"
-	GetRequestBulkRetriesRequestDirDesc GetRequestBulkRetriesRequestDir = "desc"
-)
-
-func NewGetRequestBulkRetriesRequestDirFromString(s string) (GetRequestBulkRetriesRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetRequestBulkRetriesRequestDirAsc, nil
-	case "desc":
-		return GetRequestBulkRetriesRequestDirDesc, nil
-	}
-	var t GetRequestBulkRetriesRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetRequestBulkRetriesRequestDir) Ptr() *GetRequestBulkRetriesRequestDir {
-	return &g
-}
-
-// Sort direction
-type GetRequestEventsRequestDir string
-
-const (
-	GetRequestEventsRequestDirAsc  GetRequestEventsRequestDir = "asc"
-	GetRequestEventsRequestDirDesc GetRequestEventsRequestDir = "desc"
-)
-
-func NewGetRequestEventsRequestDirFromString(s string) (GetRequestEventsRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetRequestEventsRequestDirAsc, nil
-	case "desc":
-		return GetRequestEventsRequestDirDesc, nil
-	}
-	var t GetRequestEventsRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetRequestEventsRequestDir) Ptr() *GetRequestEventsRequestDir {
-	return &g
-}
-
-// Sort key
-type GetRequestEventsRequestOrderBy string
-
-const (
-	GetRequestEventsRequestOrderByLastAttemptAt GetRequestEventsRequestOrderBy = "last_attempt_at"
-	GetRequestEventsRequestOrderByCreatedAt     GetRequestEventsRequestOrderBy = "created_at"
-)
-
-func NewGetRequestEventsRequestOrderByFromString(s string) (GetRequestEventsRequestOrderBy, error) {
-	switch s {
-	case "last_attempt_at":
-		return GetRequestEventsRequestOrderByLastAttemptAt, nil
-	case "created_at":
-		return GetRequestEventsRequestOrderByCreatedAt, nil
-	}
-	var t GetRequestEventsRequestOrderBy
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetRequestEventsRequestOrderBy) Ptr() *GetRequestEventsRequestOrderBy {
-	return &g
-}
-
-type GetRequestIgnoredEventsRequestDir string
-
-const (
-	GetRequestIgnoredEventsRequestDirAsc  GetRequestIgnoredEventsRequestDir = "asc"
-	GetRequestIgnoredEventsRequestDirDesc GetRequestIgnoredEventsRequestDir = "desc"
-)
-
-func NewGetRequestIgnoredEventsRequestDirFromString(s string) (GetRequestIgnoredEventsRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetRequestIgnoredEventsRequestDirAsc, nil
-	case "desc":
-		return GetRequestIgnoredEventsRequestDirDesc, nil
-	}
-	var t GetRequestIgnoredEventsRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetRequestIgnoredEventsRequestDir) Ptr() *GetRequestIgnoredEventsRequestDir {
-	return &g
-}
-
-// Sort direction
-type GetRequestsRequestDir string
-
-const (
-	GetRequestsRequestDirAsc  GetRequestsRequestDir = "asc"
-	GetRequestsRequestDirDesc GetRequestsRequestDir = "desc"
-)
-
-func NewGetRequestsRequestDirFromString(s string) (GetRequestsRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetRequestsRequestDirAsc, nil
-	case "desc":
-		return GetRequestsRequestDirDesc, nil
-	}
-	var t GetRequestsRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetRequestsRequestDir) Ptr() *GetRequestsRequestDir {
-	return &g
-}
-
-// Sort key
-type GetRequestsRequestOrderBy string
-
-const (
-	GetRequestsRequestOrderByIngestedAt GetRequestsRequestOrderBy = "ingested_at"
-	GetRequestsRequestOrderByCreatedAt  GetRequestsRequestOrderBy = "created_at"
-)
-
-func NewGetRequestsRequestOrderByFromString(s string) (GetRequestsRequestOrderBy, error) {
-	switch s {
-	case "ingested_at":
-		return GetRequestsRequestOrderByIngestedAt, nil
-	case "created_at":
-		return GetRequestsRequestOrderByCreatedAt, nil
-	}
-	var t GetRequestsRequestOrderBy
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetRequestsRequestOrderBy) Ptr() *GetRequestsRequestOrderBy {
-	return &g
-}
-
-// Filter by status
-type GetRequestsRequestStatus string
-
-const (
-	GetRequestsRequestStatusAccepted GetRequestsRequestStatus = "accepted"
-	GetRequestsRequestStatusRejected GetRequestsRequestStatus = "rejected"
-)
-
-func NewGetRequestsRequestStatusFromString(s string) (GetRequestsRequestStatus, error) {
-	switch s {
-	case "accepted":
-		return GetRequestsRequestStatusAccepted, nil
-	case "rejected":
-		return GetRequestsRequestStatusRejected, nil
-	}
-	var t GetRequestsRequestStatus
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetRequestsRequestStatus) Ptr() *GetRequestsRequestStatus {
-	return &g
-}
-
-type GetSourcesRequestDir string
-
-const (
-	GetSourcesRequestDirAsc  GetSourcesRequestDir = "asc"
-	GetSourcesRequestDirDesc GetSourcesRequestDir = "desc"
-)
-
-func NewGetSourcesRequestDirFromString(s string) (GetSourcesRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetSourcesRequestDirAsc, nil
-	case "desc":
-		return GetSourcesRequestDirDesc, nil
-	}
-	var t GetSourcesRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetSourcesRequestDir) Ptr() *GetSourcesRequestDir {
-	return &g
-}
-
-type GetTransformationExecutionsRequestDir string
-
-const (
-	GetTransformationExecutionsRequestDirAsc  GetTransformationExecutionsRequestDir = "asc"
-	GetTransformationExecutionsRequestDirDesc GetTransformationExecutionsRequestDir = "desc"
-)
-
-func NewGetTransformationExecutionsRequestDirFromString(s string) (GetTransformationExecutionsRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetTransformationExecutionsRequestDirAsc, nil
-	case "desc":
-		return GetTransformationExecutionsRequestDirDesc, nil
-	}
-	var t GetTransformationExecutionsRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetTransformationExecutionsRequestDir) Ptr() *GetTransformationExecutionsRequestDir {
-	return &g
-}
-
-type GetTransformationExecutionsRequestLogLevel string
-
-const (
-	GetTransformationExecutionsRequestLogLevelDebug GetTransformationExecutionsRequestLogLevel = "debug"
-	GetTransformationExecutionsRequestLogLevelInfo  GetTransformationExecutionsRequestLogLevel = "info"
-	GetTransformationExecutionsRequestLogLevelWarn  GetTransformationExecutionsRequestLogLevel = "warn"
-	GetTransformationExecutionsRequestLogLevelError GetTransformationExecutionsRequestLogLevel = "error"
-	GetTransformationExecutionsRequestLogLevelFatal GetTransformationExecutionsRequestLogLevel = "fatal"
-)
-
-func NewGetTransformationExecutionsRequestLogLevelFromString(s string) (GetTransformationExecutionsRequestLogLevel, error) {
-	switch s {
-	case "debug":
-		return GetTransformationExecutionsRequestLogLevelDebug, nil
-	case "info":
-		return GetTransformationExecutionsRequestLogLevelInfo, nil
-	case "warn":
-		return GetTransformationExecutionsRequestLogLevelWarn, nil
-	case "error":
-		return GetTransformationExecutionsRequestLogLevelError, nil
-	case "fatal":
-		return GetTransformationExecutionsRequestLogLevelFatal, nil
-	}
-	var t GetTransformationExecutionsRequestLogLevel
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetTransformationExecutionsRequestLogLevel) Ptr() *GetTransformationExecutionsRequestLogLevel {
-	return &g
-}
-
-type GetTransformationsRequestDir string
-
-const (
-	GetTransformationsRequestDirAsc  GetTransformationsRequestDir = "asc"
-	GetTransformationsRequestDirDesc GetTransformationsRequestDir = "desc"
-)
-
-func NewGetTransformationsRequestDirFromString(s string) (GetTransformationsRequestDir, error) {
-	switch s {
-	case "asc":
-		return GetTransformationsRequestDirAsc, nil
-	case "desc":
-		return GetTransformationsRequestDirDesc, nil
-	}
-	var t GetTransformationsRequestDir
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (g GetTransformationsRequestDir) Ptr() *GetTransformationsRequestDir {
-	return &g
-}
-
-type GitHub struct {
-	Configs *GitHubConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (g *GitHub) Type() string {
-	return g.type_
-}
-
-func (g *GitHub) UnmarshalJSON(data []byte) error {
-	type unmarshaler GitHub
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GitHub(value)
-	g.type_ = "github"
-	return nil
-}
-
-func (g *GitHub) MarshalJSON() ([]byte, error) {
-	type embed GitHub
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*g),
-		Type:  "github",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for GitHub. Only included if the ?include=verification.configs query param is present
-type GitHubConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
-type GitLab struct {
-	Configs *GitLabConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (g *GitLab) Type() string {
-	return g.type_
-}
-
-func (g *GitLab) UnmarshalJSON(data []byte) error {
-	type unmarshaler GitLab
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GitLab(value)
-	g.type_ = "gitlab"
-	return nil
-}
-
-func (g *GitLab) MarshalJSON() ([]byte, error) {
-	type embed GitLab
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*g),
-		Type:  "gitlab",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for GitLab. Only included if the ?include=verification.configs query param is present
-type GitLabConfigs struct {
-	ApiKey string `json:"api_key"`
-}
-
 type HandledApiKeyIntegrationConfigs struct {
 	ApiKey string `json:"api_key"`
 }
 
 type HandledHmacConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
-type Hmac struct {
-	Configs *HmacConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (h *Hmac) Type() string {
-	return h.type_
-}
-
-func (h *Hmac) UnmarshalJSON(data []byte) error {
-	type unmarshaler Hmac
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*h = Hmac(value)
-	h.type_ = "hmac"
-	return nil
-}
-
-func (h *Hmac) MarshalJSON() ([]byte, error) {
-	type embed Hmac
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*h),
-		Type:  "hmac",
-	}
-	return json.Marshal(marshaler)
 }
 
 type HmacAlgorithms string
@@ -4832,36 +3066,6 @@ func NewHmacAlgorithmsFromString(s string) (HmacAlgorithms, error) {
 }
 
 func (h HmacAlgorithms) Ptr() *HmacAlgorithms {
-	return &h
-}
-
-// The verification configs for HMAC. Only included if the ?include=verification.configs query param is present
-type HmacConfigs struct {
-	WebhookSecretKey string              `json:"webhook_secret_key"`
-	Algorithm        HmacAlgorithms      `json:"algorithm,omitempty"`
-	HeaderKey        string              `json:"header_key"`
-	Encoding         HmacConfigsEncoding `json:"encoding,omitempty"`
-}
-
-type HmacConfigsEncoding string
-
-const (
-	HmacConfigsEncodingBase64 HmacConfigsEncoding = "base64"
-	HmacConfigsEncodingHex    HmacConfigsEncoding = "hex"
-)
-
-func NewHmacConfigsEncodingFromString(s string) (HmacConfigsEncoding, error) {
-	switch s {
-	case "base64":
-		return HmacConfigsEncodingBase64, nil
-	case "hex":
-		return HmacConfigsEncodingHex, nil
-	}
-	var t HmacConfigsEncoding
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (h HmacConfigsEncoding) Ptr() *HmacConfigsEncoding {
 	return &h
 }
 
@@ -4894,39 +3098,6 @@ func (h HmacIntegrationConfigsEncoding) Ptr() *HmacIntegrationConfigsEncoding {
 	return &h
 }
 
-// Hookdeck Signature
-type HookdeckSignature struct {
-	Config *DestinationAuthMethodSignatureConfig `json:"config,omitempty"`
-	type_  string
-}
-
-func (h *HookdeckSignature) Type() string {
-	return h.type_
-}
-
-func (h *HookdeckSignature) UnmarshalJSON(data []byte) error {
-	type unmarshaler HookdeckSignature
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*h = HookdeckSignature(value)
-	h.type_ = "HOOKDECK_SIGNATURE"
-	return nil
-}
-
-func (h *HookdeckSignature) MarshalJSON() ([]byte, error) {
-	type embed HookdeckSignature
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*h),
-		Type:  "HOOKDECK_SIGNATURE",
-	}
-	return json.Marshal(marshaler)
-}
-
 type IgnoredEvent struct {
 	Id        string            `json:"id"`
 	TeamId    string            `json:"team_id"`
@@ -4936,6 +3107,165 @@ type IgnoredEvent struct {
 	Meta      *IgnoredEventMeta `json:"meta,omitempty"`
 	UpdatedAt time.Time         `json:"updated_at"`
 	CreatedAt time.Time         `json:"created_at"`
+}
+
+// Filter by the bulk retry ignored event query object
+type IgnoredEventBulkRetryCreateRequestQuery struct {
+	// The cause of the ignored event
+	Cause *IgnoredEventBulkRetryCreateRequestQueryCause `json:"cause,omitempty"`
+	// Connection ID of the ignored event
+	WebhookId *IgnoredEventBulkRetryCreateRequestQueryWebhookId `json:"webhook_id,omitempty"`
+	// The associated transformation ID (only applicable to the cause `TRANSFORMATION_FAILED`) <span style="white-space: nowrap">`<= 255 characters`</span>
+	TransformationId *string `json:"transformation_id,omitempty"`
+}
+
+// The cause of the ignored event
+type IgnoredEventBulkRetryCreateRequestQueryCause struct {
+	typeName string
+	// <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewIgnoredEventBulkRetryCreateRequestQueryCauseFromString(value string) *IgnoredEventBulkRetryCreateRequestQueryCause {
+	return &IgnoredEventBulkRetryCreateRequestQueryCause{typeName: "string", String: value}
+}
+
+func NewIgnoredEventBulkRetryCreateRequestQueryCauseFromStringList(value []string) *IgnoredEventBulkRetryCreateRequestQueryCause {
+	return &IgnoredEventBulkRetryCreateRequestQueryCause{typeName: "stringList", StringList: value}
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQueryCause) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		i.typeName = "string"
+		i.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typeName = "stringList"
+		i.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IgnoredEventBulkRetryCreateRequestQueryCause) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return json.Marshal(i.String)
+	case "stringList":
+		return json.Marshal(i.StringList)
+	}
+}
+
+type IgnoredEventBulkRetryCreateRequestQueryCauseVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQueryCause) Accept(visitor IgnoredEventBulkRetryCreateRequestQueryCauseVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return visitor.VisitString(i.String)
+	case "stringList":
+		return visitor.VisitStringList(i.StringList)
+	}
+}
+
+// Connection ID of the ignored event
+type IgnoredEventBulkRetryCreateRequestQueryWebhookId struct {
+	typeName string
+	// <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewIgnoredEventBulkRetryCreateRequestQueryWebhookIdFromString(value string) *IgnoredEventBulkRetryCreateRequestQueryWebhookId {
+	return &IgnoredEventBulkRetryCreateRequestQueryWebhookId{typeName: "string", String: value}
+}
+
+func NewIgnoredEventBulkRetryCreateRequestQueryWebhookIdFromStringList(value []string) *IgnoredEventBulkRetryCreateRequestQueryWebhookId {
+	return &IgnoredEventBulkRetryCreateRequestQueryWebhookId{typeName: "stringList", StringList: value}
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQueryWebhookId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		i.typeName = "string"
+		i.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typeName = "stringList"
+		i.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IgnoredEventBulkRetryCreateRequestQueryWebhookId) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return json.Marshal(i.String)
+	case "stringList":
+		return json.Marshal(i.StringList)
+	}
+}
+
+type IgnoredEventBulkRetryCreateRequestQueryWebhookIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQueryWebhookId) Accept(visitor IgnoredEventBulkRetryCreateRequestQueryWebhookIdVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return visitor.VisitString(i.String)
+	case "stringList":
+		return visitor.VisitStringList(i.StringList)
+	}
+}
+
+type IgnoredEventBulkRetryListRequestDir string
+
+const (
+	IgnoredEventBulkRetryListRequestDirAsc  IgnoredEventBulkRetryListRequestDir = "asc"
+	IgnoredEventBulkRetryListRequestDirDesc IgnoredEventBulkRetryListRequestDir = "desc"
+)
+
+func NewIgnoredEventBulkRetryListRequestDirFromString(s string) (IgnoredEventBulkRetryListRequestDir, error) {
+	switch s {
+	case "asc":
+		return IgnoredEventBulkRetryListRequestDirAsc, nil
+	case "desc":
+		return IgnoredEventBulkRetryListRequestDirDesc, nil
+	}
+	var t IgnoredEventBulkRetryListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IgnoredEventBulkRetryListRequestDir) Ptr() *IgnoredEventBulkRetryListRequestDir {
+	return &i
+}
+
+type IgnoredEventBulkRetryPlanResponse struct {
+	// Number of batches required to complete the bulk retry
+	EstimatedBatch *int `json:"estimated_batch,omitempty"`
+	// Number of estimated events to be retried
+	EstimatedCount *int `json:"estimated_count,omitempty"`
+	// Progression of the batch operations, values 0 - 1
+	Progress *float64 `json:"progress,omitempty"`
 }
 
 type IgnoredEventCause string
@@ -5381,6 +3711,222 @@ type IssueCount struct {
 	Count int `json:"count"`
 }
 
+type IssueCountRequestDir string
+
+const (
+	IssueCountRequestDirAsc  IssueCountRequestDir = "asc"
+	IssueCountRequestDirDesc IssueCountRequestDir = "desc"
+)
+
+func NewIssueCountRequestDirFromString(s string) (IssueCountRequestDir, error) {
+	switch s {
+	case "asc":
+		return IssueCountRequestDirAsc, nil
+	case "desc":
+		return IssueCountRequestDirDesc, nil
+	}
+	var t IssueCountRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueCountRequestDir) Ptr() *IssueCountRequestDir {
+	return &i
+}
+
+type IssueCountRequestOrderBy string
+
+const (
+	IssueCountRequestOrderByCreatedAt   IssueCountRequestOrderBy = "created_at"
+	IssueCountRequestOrderByFirstSeenAt IssueCountRequestOrderBy = "first_seen_at"
+	IssueCountRequestOrderByLastSeenAt  IssueCountRequestOrderBy = "last_seen_at"
+	IssueCountRequestOrderByOpenedAt    IssueCountRequestOrderBy = "opened_at"
+	IssueCountRequestOrderByStatus      IssueCountRequestOrderBy = "status"
+)
+
+func NewIssueCountRequestOrderByFromString(s string) (IssueCountRequestOrderBy, error) {
+	switch s {
+	case "created_at":
+		return IssueCountRequestOrderByCreatedAt, nil
+	case "first_seen_at":
+		return IssueCountRequestOrderByFirstSeenAt, nil
+	case "last_seen_at":
+		return IssueCountRequestOrderByLastSeenAt, nil
+	case "opened_at":
+		return IssueCountRequestOrderByOpenedAt, nil
+	case "status":
+		return IssueCountRequestOrderByStatus, nil
+	}
+	var t IssueCountRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueCountRequestOrderBy) Ptr() *IssueCountRequestOrderBy {
+	return &i
+}
+
+// Issue status
+type IssueCountRequestStatus string
+
+const (
+	IssueCountRequestStatusOpened       IssueCountRequestStatus = "OPENED"
+	IssueCountRequestStatusIgnored      IssueCountRequestStatus = "IGNORED"
+	IssueCountRequestStatusAcknowledged IssueCountRequestStatus = "ACKNOWLEDGED"
+	IssueCountRequestStatusResolved     IssueCountRequestStatus = "RESOLVED"
+)
+
+func NewIssueCountRequestStatusFromString(s string) (IssueCountRequestStatus, error) {
+	switch s {
+	case "OPENED":
+		return IssueCountRequestStatusOpened, nil
+	case "IGNORED":
+		return IssueCountRequestStatusIgnored, nil
+	case "ACKNOWLEDGED":
+		return IssueCountRequestStatusAcknowledged, nil
+	case "RESOLVED":
+		return IssueCountRequestStatusResolved, nil
+	}
+	var t IssueCountRequestStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueCountRequestStatus) Ptr() *IssueCountRequestStatus {
+	return &i
+}
+
+// Issue type
+type IssueCountRequestType string
+
+const (
+	IssueCountRequestTypeDelivery       IssueCountRequestType = "delivery"
+	IssueCountRequestTypeTransformation IssueCountRequestType = "transformation"
+	IssueCountRequestTypeBackpressure   IssueCountRequestType = "backpressure"
+)
+
+func NewIssueCountRequestTypeFromString(s string) (IssueCountRequestType, error) {
+	switch s {
+	case "delivery":
+		return IssueCountRequestTypeDelivery, nil
+	case "transformation":
+		return IssueCountRequestTypeTransformation, nil
+	case "backpressure":
+		return IssueCountRequestTypeBackpressure, nil
+	}
+	var t IssueCountRequestType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueCountRequestType) Ptr() *IssueCountRequestType {
+	return &i
+}
+
+type IssueListRequestDir string
+
+const (
+	IssueListRequestDirAsc  IssueListRequestDir = "asc"
+	IssueListRequestDirDesc IssueListRequestDir = "desc"
+)
+
+func NewIssueListRequestDirFromString(s string) (IssueListRequestDir, error) {
+	switch s {
+	case "asc":
+		return IssueListRequestDirAsc, nil
+	case "desc":
+		return IssueListRequestDirDesc, nil
+	}
+	var t IssueListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueListRequestDir) Ptr() *IssueListRequestDir {
+	return &i
+}
+
+type IssueListRequestOrderBy string
+
+const (
+	IssueListRequestOrderByCreatedAt   IssueListRequestOrderBy = "created_at"
+	IssueListRequestOrderByFirstSeenAt IssueListRequestOrderBy = "first_seen_at"
+	IssueListRequestOrderByLastSeenAt  IssueListRequestOrderBy = "last_seen_at"
+	IssueListRequestOrderByOpenedAt    IssueListRequestOrderBy = "opened_at"
+	IssueListRequestOrderByStatus      IssueListRequestOrderBy = "status"
+)
+
+func NewIssueListRequestOrderByFromString(s string) (IssueListRequestOrderBy, error) {
+	switch s {
+	case "created_at":
+		return IssueListRequestOrderByCreatedAt, nil
+	case "first_seen_at":
+		return IssueListRequestOrderByFirstSeenAt, nil
+	case "last_seen_at":
+		return IssueListRequestOrderByLastSeenAt, nil
+	case "opened_at":
+		return IssueListRequestOrderByOpenedAt, nil
+	case "status":
+		return IssueListRequestOrderByStatus, nil
+	}
+	var t IssueListRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueListRequestOrderBy) Ptr() *IssueListRequestOrderBy {
+	return &i
+}
+
+// Issue status
+type IssueListRequestStatus string
+
+const (
+	IssueListRequestStatusOpened       IssueListRequestStatus = "OPENED"
+	IssueListRequestStatusIgnored      IssueListRequestStatus = "IGNORED"
+	IssueListRequestStatusAcknowledged IssueListRequestStatus = "ACKNOWLEDGED"
+	IssueListRequestStatusResolved     IssueListRequestStatus = "RESOLVED"
+)
+
+func NewIssueListRequestStatusFromString(s string) (IssueListRequestStatus, error) {
+	switch s {
+	case "OPENED":
+		return IssueListRequestStatusOpened, nil
+	case "IGNORED":
+		return IssueListRequestStatusIgnored, nil
+	case "ACKNOWLEDGED":
+		return IssueListRequestStatusAcknowledged, nil
+	case "RESOLVED":
+		return IssueListRequestStatusResolved, nil
+	}
+	var t IssueListRequestStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueListRequestStatus) Ptr() *IssueListRequestStatus {
+	return &i
+}
+
+// Issue type
+type IssueListRequestType string
+
+const (
+	IssueListRequestTypeDelivery       IssueListRequestType = "delivery"
+	IssueListRequestTypeTransformation IssueListRequestType = "transformation"
+	IssueListRequestTypeBackpressure   IssueListRequestType = "backpressure"
+)
+
+func NewIssueListRequestTypeFromString(s string) (IssueListRequestType, error) {
+	switch s {
+	case "delivery":
+		return IssueListRequestTypeDelivery, nil
+	case "transformation":
+		return IssueListRequestTypeTransformation, nil
+	case "backpressure":
+		return IssueListRequestTypeBackpressure, nil
+	}
+	var t IssueListRequestType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueListRequestType) Ptr() *IssueListRequestType {
+	return &i
+}
+
 // Issue status
 type IssueStatus string
 
@@ -5505,6 +4051,80 @@ type IssueTriggerChannels struct {
 	Email    *IssueTriggerEmailChannel       `json:"email,omitempty"`
 }
 
+// Configuration object for the specific issue type selected
+type IssueTriggerCreateRequestConfigs struct {
+	typeName                          string
+	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
+	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
+	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
+}
+
+func NewIssueTriggerCreateRequestConfigsFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *IssueTriggerCreateRequestConfigs {
+	return &IssueTriggerCreateRequestConfigs{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
+}
+
+func NewIssueTriggerCreateRequestConfigsFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *IssueTriggerCreateRequestConfigs {
+	return &IssueTriggerCreateRequestConfigs{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
+}
+
+func NewIssueTriggerCreateRequestConfigsFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *IssueTriggerCreateRequestConfigs {
+	return &IssueTriggerCreateRequestConfigs{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
+}
+
+func (i *IssueTriggerCreateRequestConfigs) UnmarshalJSON(data []byte) error {
+	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
+		i.typeName = "issueTriggerDeliveryConfigs"
+		i.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
+		return nil
+	}
+	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
+		i.typeName = "issueTriggerTransformationConfigs"
+		i.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
+		return nil
+	}
+	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
+		i.typeName = "issueTriggerBackpressureConfigs"
+		i.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IssueTriggerCreateRequestConfigs) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "issueTriggerDeliveryConfigs":
+		return json.Marshal(i.IssueTriggerDeliveryConfigs)
+	case "issueTriggerTransformationConfigs":
+		return json.Marshal(i.IssueTriggerTransformationConfigs)
+	case "issueTriggerBackpressureConfigs":
+		return json.Marshal(i.IssueTriggerBackpressureConfigs)
+	}
+}
+
+type IssueTriggerCreateRequestConfigsVisitor interface {
+	VisitIssueTriggerDeliveryConfigs(*IssueTriggerDeliveryConfigs) error
+	VisitIssueTriggerTransformationConfigs(*IssueTriggerTransformationConfigs) error
+	VisitIssueTriggerBackpressureConfigs(*IssueTriggerBackpressureConfigs) error
+}
+
+func (i *IssueTriggerCreateRequestConfigs) Accept(visitor IssueTriggerCreateRequestConfigsVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "issueTriggerDeliveryConfigs":
+		return visitor.VisitIssueTriggerDeliveryConfigs(i.IssueTriggerDeliveryConfigs)
+	case "issueTriggerTransformationConfigs":
+		return visitor.VisitIssueTriggerTransformationConfigs(i.IssueTriggerTransformationConfigs)
+	case "issueTriggerBackpressureConfigs":
+		return visitor.VisitIssueTriggerBackpressureConfigs(i.IssueTriggerBackpressureConfigs)
+	}
+}
+
 // Configurations for a 'delivery' issue trigger
 type IssueTriggerDeliveryConfigs struct {
 	Strategy IssueTriggerStrategy `json:"strategy,omitempty"`
@@ -5576,6 +4196,50 @@ type IssueTriggerEmailChannel struct {
 
 // Integration channel for an issue trigger
 type IssueTriggerIntegrationChannel struct {
+}
+
+type IssueTriggerListRequestDir string
+
+const (
+	IssueTriggerListRequestDirAsc  IssueTriggerListRequestDir = "asc"
+	IssueTriggerListRequestDirDesc IssueTriggerListRequestDir = "desc"
+)
+
+func NewIssueTriggerListRequestDirFromString(s string) (IssueTriggerListRequestDir, error) {
+	switch s {
+	case "asc":
+		return IssueTriggerListRequestDirAsc, nil
+	case "desc":
+		return IssueTriggerListRequestDirDesc, nil
+	}
+	var t IssueTriggerListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueTriggerListRequestDir) Ptr() *IssueTriggerListRequestDir {
+	return &i
+}
+
+type IssueTriggerListRequestOrderBy string
+
+const (
+	IssueTriggerListRequestOrderByCreatedAt IssueTriggerListRequestOrderBy = "created_at"
+	IssueTriggerListRequestOrderByType      IssueTriggerListRequestOrderBy = "type"
+)
+
+func NewIssueTriggerListRequestOrderByFromString(s string) (IssueTriggerListRequestOrderBy, error) {
+	switch s {
+	case "created_at":
+		return IssueTriggerListRequestOrderByCreatedAt, nil
+	case "type":
+		return IssueTriggerListRequestOrderByType, nil
+	}
+	var t IssueTriggerListRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueTriggerListRequestOrderBy) Ptr() *IssueTriggerListRequestOrderBy {
+	return &i
 }
 
 type IssueTriggerPaginatedResult struct {
@@ -5752,6 +4416,154 @@ func (i *IssueTriggerTransformationConfigsTransformations) Accept(visitor IssueT
 	}
 }
 
+// Configuration object for the specific issue type selected
+type IssueTriggerUpdateRequestConfigs struct {
+	typeName                          string
+	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
+	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
+	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
+}
+
+func NewIssueTriggerUpdateRequestConfigsFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *IssueTriggerUpdateRequestConfigs {
+	return &IssueTriggerUpdateRequestConfigs{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
+}
+
+func NewIssueTriggerUpdateRequestConfigsFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *IssueTriggerUpdateRequestConfigs {
+	return &IssueTriggerUpdateRequestConfigs{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
+}
+
+func NewIssueTriggerUpdateRequestConfigsFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *IssueTriggerUpdateRequestConfigs {
+	return &IssueTriggerUpdateRequestConfigs{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
+}
+
+func (i *IssueTriggerUpdateRequestConfigs) UnmarshalJSON(data []byte) error {
+	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
+		i.typeName = "issueTriggerDeliveryConfigs"
+		i.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
+		return nil
+	}
+	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
+		i.typeName = "issueTriggerTransformationConfigs"
+		i.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
+		return nil
+	}
+	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
+		i.typeName = "issueTriggerBackpressureConfigs"
+		i.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IssueTriggerUpdateRequestConfigs) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "issueTriggerDeliveryConfigs":
+		return json.Marshal(i.IssueTriggerDeliveryConfigs)
+	case "issueTriggerTransformationConfigs":
+		return json.Marshal(i.IssueTriggerTransformationConfigs)
+	case "issueTriggerBackpressureConfigs":
+		return json.Marshal(i.IssueTriggerBackpressureConfigs)
+	}
+}
+
+type IssueTriggerUpdateRequestConfigsVisitor interface {
+	VisitIssueTriggerDeliveryConfigs(*IssueTriggerDeliveryConfigs) error
+	VisitIssueTriggerTransformationConfigs(*IssueTriggerTransformationConfigs) error
+	VisitIssueTriggerBackpressureConfigs(*IssueTriggerBackpressureConfigs) error
+}
+
+func (i *IssueTriggerUpdateRequestConfigs) Accept(visitor IssueTriggerUpdateRequestConfigsVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "issueTriggerDeliveryConfigs":
+		return visitor.VisitIssueTriggerDeliveryConfigs(i.IssueTriggerDeliveryConfigs)
+	case "issueTriggerTransformationConfigs":
+		return visitor.VisitIssueTriggerTransformationConfigs(i.IssueTriggerTransformationConfigs)
+	case "issueTriggerBackpressureConfigs":
+		return visitor.VisitIssueTriggerBackpressureConfigs(i.IssueTriggerBackpressureConfigs)
+	}
+}
+
+// Configuration object for the specific issue type selected
+type IssueTriggerUpsertRequestConfigs struct {
+	typeName                          string
+	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
+	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
+	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
+}
+
+func NewIssueTriggerUpsertRequestConfigsFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *IssueTriggerUpsertRequestConfigs {
+	return &IssueTriggerUpsertRequestConfigs{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
+}
+
+func NewIssueTriggerUpsertRequestConfigsFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *IssueTriggerUpsertRequestConfigs {
+	return &IssueTriggerUpsertRequestConfigs{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
+}
+
+func NewIssueTriggerUpsertRequestConfigsFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *IssueTriggerUpsertRequestConfigs {
+	return &IssueTriggerUpsertRequestConfigs{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
+}
+
+func (i *IssueTriggerUpsertRequestConfigs) UnmarshalJSON(data []byte) error {
+	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
+		i.typeName = "issueTriggerDeliveryConfigs"
+		i.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
+		return nil
+	}
+	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
+		i.typeName = "issueTriggerTransformationConfigs"
+		i.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
+		return nil
+	}
+	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
+		i.typeName = "issueTriggerBackpressureConfigs"
+		i.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IssueTriggerUpsertRequestConfigs) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "issueTriggerDeliveryConfigs":
+		return json.Marshal(i.IssueTriggerDeliveryConfigs)
+	case "issueTriggerTransformationConfigs":
+		return json.Marshal(i.IssueTriggerTransformationConfigs)
+	case "issueTriggerBackpressureConfigs":
+		return json.Marshal(i.IssueTriggerBackpressureConfigs)
+	}
+}
+
+type IssueTriggerUpsertRequestConfigsVisitor interface {
+	VisitIssueTriggerDeliveryConfigs(*IssueTriggerDeliveryConfigs) error
+	VisitIssueTriggerTransformationConfigs(*IssueTriggerTransformationConfigs) error
+	VisitIssueTriggerBackpressureConfigs(*IssueTriggerBackpressureConfigs) error
+}
+
+func (i *IssueTriggerUpsertRequestConfigs) Accept(visitor IssueTriggerUpsertRequestConfigsVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "issueTriggerDeliveryConfigs":
+		return visitor.VisitIssueTriggerDeliveryConfigs(i.IssueTriggerDeliveryConfigs)
+	case "issueTriggerTransformationConfigs":
+		return visitor.VisitIssueTriggerTransformationConfigs(i.IssueTriggerTransformationConfigs)
+	case "issueTriggerBackpressureConfigs":
+		return visitor.VisitIssueTriggerBackpressureConfigs(i.IssueTriggerBackpressureConfigs)
+	}
+}
+
 // Issue type
 type IssueType string
 
@@ -5775,6 +4587,35 @@ func NewIssueTypeFromString(s string) (IssueType, error) {
 }
 
 func (i IssueType) Ptr() *IssueType {
+	return &i
+}
+
+// New status
+type IssueUpdateRequestStatus string
+
+const (
+	IssueUpdateRequestStatusOpened       IssueUpdateRequestStatus = "OPENED"
+	IssueUpdateRequestStatusIgnored      IssueUpdateRequestStatus = "IGNORED"
+	IssueUpdateRequestStatusAcknowledged IssueUpdateRequestStatus = "ACKNOWLEDGED"
+	IssueUpdateRequestStatusResolved     IssueUpdateRequestStatus = "RESOLVED"
+)
+
+func NewIssueUpdateRequestStatusFromString(s string) (IssueUpdateRequestStatus, error) {
+	switch s {
+	case "OPENED":
+		return IssueUpdateRequestStatusOpened, nil
+	case "IGNORED":
+		return IssueUpdateRequestStatusIgnored, nil
+	case "ACKNOWLEDGED":
+		return IssueUpdateRequestStatusAcknowledged, nil
+	case "RESOLVED":
+		return IssueUpdateRequestStatusResolved, nil
+	}
+	var t IssueUpdateRequestStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueUpdateRequestStatus) Ptr() *IssueUpdateRequestStatus {
 	return &i
 }
 
@@ -5889,43 +4730,6 @@ type ListCustomDomainSchemaItemSslValidationRecordsItem struct {
 	TxtValue *string `json:"txt_value,omitempty"`
 }
 
-type Mailgun struct {
-	Configs *MailgunConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (m *Mailgun) Type() string {
-	return m.type_
-}
-
-func (m *Mailgun) UnmarshalJSON(data []byte) error {
-	type unmarshaler Mailgun
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = Mailgun(value)
-	m.type_ = "mailgun"
-	return nil
-}
-
-func (m *Mailgun) MarshalJSON() ([]byte, error) {
-	type embed Mailgun
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*m),
-		Type:  "mailgun",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Mailgun. Only included if the ?include=verification.configs query param is present
-type MailgunConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
 type OrderByDirection string
 
 const (
@@ -5954,219 +4758,8 @@ func (o OrderByDirection) Ptr() *OrderByDirection {
 	return &o
 }
 
-type Oura struct {
-	Configs *OuraConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (o *Oura) Type() string {
-	return o.type_
-}
-
-func (o *Oura) UnmarshalJSON(data []byte) error {
-	type unmarshaler Oura
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*o = Oura(value)
-	o.type_ = "oura"
-	return nil
-}
-
-func (o *Oura) MarshalJSON() ([]byte, error) {
-	type embed Oura
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*o),
-		Type:  "oura",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Oura. Only included if the ?include=verification.configs query param is present
-type OuraConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
-type Pipedrive struct {
-	Configs *PipedriveConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (p *Pipedrive) Type() string {
-	return p.type_
-}
-
-func (p *Pipedrive) UnmarshalJSON(data []byte) error {
-	type unmarshaler Pipedrive
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = Pipedrive(value)
-	p.type_ = "pipedrive"
-	return nil
-}
-
-func (p *Pipedrive) MarshalJSON() ([]byte, error) {
-	type embed Pipedrive
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*p),
-		Type:  "pipedrive",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Pipedrive. Only included if the ?include=verification.configs query param is present
-type PipedriveConfigs struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
-}
-
-type Postmark struct {
-	Configs *PostmarkConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (p *Postmark) Type() string {
-	return p.type_
-}
-
-func (p *Postmark) UnmarshalJSON(data []byte) error {
-	type unmarshaler Postmark
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = Postmark(value)
-	p.type_ = "postmark"
-	return nil
-}
-
-func (p *Postmark) MarshalJSON() ([]byte, error) {
-	type embed Postmark
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*p),
-		Type:  "postmark",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Postmark. Only included if the ?include=verification.configs query param is present
-type PostmarkConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
-type PropertyFinder struct {
-	Configs *PropertyFinderConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (p *PropertyFinder) Type() string {
-	return p.type_
-}
-
-func (p *PropertyFinder) UnmarshalJSON(data []byte) error {
-	type unmarshaler PropertyFinder
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PropertyFinder(value)
-	p.type_ = "property-finder"
-	return nil
-}
-
-func (p *PropertyFinder) MarshalJSON() ([]byte, error) {
-	type embed PropertyFinder
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*p),
-		Type:  "property-finder",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Property Finder. Only included if the ?include=verification.configs query param is present
-type PropertyFinderConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
 type RawBody struct {
 	Body string `json:"body"`
-}
-
-type Recharge struct {
-	Configs *RechargeConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (r *Recharge) Type() string {
-	return r.type_
-}
-
-func (r *Recharge) UnmarshalJSON(data []byte) error {
-	type unmarshaler Recharge
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = Recharge(value)
-	r.type_ = "recharge"
-	return nil
-}
-
-func (r *Recharge) MarshalJSON() ([]byte, error) {
-	type embed Recharge
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*r),
-		Type:  "recharge",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Recharge. Only included if the ?include=verification.configs query param is present
-type RechargeConfigs struct {
-	WebhookSecretKey string                  `json:"webhook_secret_key"`
-	Algorithm        HmacAlgorithms          `json:"algorithm,omitempty"`
-	HeaderKey        string                  `json:"header_key"`
-	Encoding         RechargeConfigsEncoding `json:"encoding,omitempty"`
-}
-
-type RechargeConfigsEncoding string
-
-const (
-	RechargeConfigsEncodingBase64 RechargeConfigsEncoding = "base64"
-	RechargeConfigsEncodingHex    RechargeConfigsEncoding = "hex"
-)
-
-func NewRechargeConfigsEncodingFromString(s string) (RechargeConfigsEncoding, error) {
-	switch s {
-	case "base64":
-		return RechargeConfigsEncodingBase64, nil
-	case "hex":
-		return RechargeConfigsEncodingHex, nil
-	}
-	var t RechargeConfigsEncoding
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (r RechargeConfigsEncoding) Ptr() *RechargeConfigsEncoding {
-	return &r
 }
 
 type Request struct {
@@ -6197,6 +4790,740 @@ type Request struct {
 	Data      *ShortEventData `json:"data,omitempty"`
 }
 
+// Filter properties for the events to be included in the bulk retry, use query parameters of [Requests](#requests)
+type RequestBulkRetryCreateRequestQuery struct {
+	// Filter by requests IDs
+	Id *RequestBulkRetryCreateRequestQueryId `json:"id,omitempty"`
+	// Filter by status
+	Status *RequestBulkRetryCreateRequestQueryStatus `json:"status,omitempty"`
+	// Filter by rejection cause
+	RejectionCause *RequestBulkRetryCreateRequestQueryRejectionCause `json:"rejection_cause,omitempty"`
+	// Filter by source IDs
+	SourceId *RequestBulkRetryCreateRequestQuerySourceId `json:"source_id,omitempty"`
+	// Filter by verification status
+	Verified *bool `json:"verified,omitempty"`
+	// URL Encoded string of the value to match partially to the body, headers, parsed_query or path
+	SearchTerm *string `json:"search_term,omitempty"`
+	// URL Encoded string of the JSON to match to the data headers
+	Headers *RequestBulkRetryCreateRequestQueryHeaders `json:"headers,omitempty"`
+	// URL Encoded string of the JSON to match to the data body
+	Body *RequestBulkRetryCreateRequestQueryBody `json:"body,omitempty"`
+	// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
+	ParsedQuery *RequestBulkRetryCreateRequestQueryParsedQuery `json:"parsed_query,omitempty"`
+	// URL Encoded string of the value to match partially to the path
+	Path *string `json:"path,omitempty"`
+	// Filter by count of ignored events
+	IgnoredCount *RequestBulkRetryCreateRequestQueryIgnoredCount `json:"ignored_count,omitempty"`
+	// Filter by count of events
+	EventsCount *RequestBulkRetryCreateRequestQueryEventsCount `json:"events_count,omitempty"`
+	// Filter by event ingested date
+	IngestedAt  *RequestBulkRetryCreateRequestQueryIngestedAt  `json:"ingested_at,omitempty"`
+	BulkRetryId *RequestBulkRetryCreateRequestQueryBulkRetryId `json:"bulk_retry_id,omitempty"`
+}
+
+// URL Encoded string of the JSON to match to the data body
+type RequestBulkRetryCreateRequestQueryBody struct {
+	typeName                                  string
+	String                                    string
+	RequestBulkRetryCreateRequestQueryBodyOne *RequestBulkRetryCreateRequestQueryBodyOne
+}
+
+func NewRequestBulkRetryCreateRequestQueryBodyFromString(value string) *RequestBulkRetryCreateRequestQueryBody {
+	return &RequestBulkRetryCreateRequestQueryBody{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryBodyFromRequestBulkRetryCreateRequestQueryBodyOne(value *RequestBulkRetryCreateRequestQueryBodyOne) *RequestBulkRetryCreateRequestQueryBody {
+	return &RequestBulkRetryCreateRequestQueryBody{typeName: "requestBulkRetryCreateRequestQueryBodyOne", RequestBulkRetryCreateRequestQueryBodyOne: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBody) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryBodyOne := new(RequestBulkRetryCreateRequestQueryBodyOne)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryBodyOne); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryBodyOne"
+		r.RequestBulkRetryCreateRequestQueryBodyOne = valueRequestBulkRetryCreateRequestQueryBodyOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryBody) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "requestBulkRetryCreateRequestQueryBodyOne":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryBodyOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryBodyVisitor interface {
+	VisitString(string) error
+	VisitRequestBulkRetryCreateRequestQueryBodyOne(*RequestBulkRetryCreateRequestQueryBodyOne) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBody) Accept(visitor RequestBulkRetryCreateRequestQueryBodyVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "requestBulkRetryCreateRequestQueryBodyOne":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryBodyOne(r.RequestBulkRetryCreateRequestQueryBodyOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryBodyOne struct {
+}
+
+type RequestBulkRetryCreateRequestQueryBulkRetryId struct {
+	typeName string
+	// <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewRequestBulkRetryCreateRequestQueryBulkRetryIdFromString(value string) *RequestBulkRetryCreateRequestQueryBulkRetryId {
+	return &RequestBulkRetryCreateRequestQueryBulkRetryId{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryBulkRetryIdFromStringList(value []string) *RequestBulkRetryCreateRequestQueryBulkRetryId {
+	return &RequestBulkRetryCreateRequestQueryBulkRetryId{typeName: "stringList", StringList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBulkRetryId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		r.typeName = "stringList"
+		r.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryBulkRetryId) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "stringList":
+		return json.Marshal(r.StringList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryBulkRetryIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBulkRetryId) Accept(visitor RequestBulkRetryCreateRequestQueryBulkRetryIdVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "stringList":
+		return visitor.VisitStringList(r.StringList)
+	}
+}
+
+// Filter by count of events
+type RequestBulkRetryCreateRequestQueryEventsCount struct {
+	typeName                                         string
+	Integer                                          int
+	RequestBulkRetryCreateRequestQueryEventsCountAny *RequestBulkRetryCreateRequestQueryEventsCountAny
+	IntegerList                                      []int
+}
+
+func NewRequestBulkRetryCreateRequestQueryEventsCountFromInteger(value int) *RequestBulkRetryCreateRequestQueryEventsCount {
+	return &RequestBulkRetryCreateRequestQueryEventsCount{typeName: "integer", Integer: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryEventsCountFromRequestBulkRetryCreateRequestQueryEventsCountAny(value *RequestBulkRetryCreateRequestQueryEventsCountAny) *RequestBulkRetryCreateRequestQueryEventsCount {
+	return &RequestBulkRetryCreateRequestQueryEventsCount{typeName: "requestBulkRetryCreateRequestQueryEventsCountAny", RequestBulkRetryCreateRequestQueryEventsCountAny: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryEventsCountFromIntegerList(value []int) *RequestBulkRetryCreateRequestQueryEventsCount {
+	return &RequestBulkRetryCreateRequestQueryEventsCount{typeName: "integerList", IntegerList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryEventsCount) UnmarshalJSON(data []byte) error {
+	var valueInteger int
+	if err := json.Unmarshal(data, &valueInteger); err == nil {
+		r.typeName = "integer"
+		r.Integer = valueInteger
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryEventsCountAny := new(RequestBulkRetryCreateRequestQueryEventsCountAny)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryEventsCountAny); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryEventsCountAny"
+		r.RequestBulkRetryCreateRequestQueryEventsCountAny = valueRequestBulkRetryCreateRequestQueryEventsCountAny
+		return nil
+	}
+	var valueIntegerList []int
+	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
+		r.typeName = "integerList"
+		r.IntegerList = valueIntegerList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryEventsCount) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "integer":
+		return json.Marshal(r.Integer)
+	case "requestBulkRetryCreateRequestQueryEventsCountAny":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryEventsCountAny)
+	case "integerList":
+		return json.Marshal(r.IntegerList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryEventsCountVisitor interface {
+	VisitInteger(int) error
+	VisitRequestBulkRetryCreateRequestQueryEventsCountAny(*RequestBulkRetryCreateRequestQueryEventsCountAny) error
+	VisitIntegerList([]int) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryEventsCount) Accept(visitor RequestBulkRetryCreateRequestQueryEventsCountVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "integer":
+		return visitor.VisitInteger(r.Integer)
+	case "requestBulkRetryCreateRequestQueryEventsCountAny":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryEventsCountAny(r.RequestBulkRetryCreateRequestQueryEventsCountAny)
+	case "integerList":
+		return visitor.VisitIntegerList(r.IntegerList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryEventsCountAny struct {
+	Gt       *int  `json:"gt,omitempty"`
+	Gte      *int  `json:"gte,omitempty"`
+	Le       *int  `json:"le,omitempty"`
+	Lte      *int  `json:"lte,omitempty"`
+	Any      *bool `json:"any,omitempty"`
+	Contains *int  `json:"contains,omitempty"`
+}
+
+// URL Encoded string of the JSON to match to the data headers
+type RequestBulkRetryCreateRequestQueryHeaders struct {
+	typeName                                     string
+	String                                       string
+	RequestBulkRetryCreateRequestQueryHeadersOne *RequestBulkRetryCreateRequestQueryHeadersOne
+}
+
+func NewRequestBulkRetryCreateRequestQueryHeadersFromString(value string) *RequestBulkRetryCreateRequestQueryHeaders {
+	return &RequestBulkRetryCreateRequestQueryHeaders{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryHeadersFromRequestBulkRetryCreateRequestQueryHeadersOne(value *RequestBulkRetryCreateRequestQueryHeadersOne) *RequestBulkRetryCreateRequestQueryHeaders {
+	return &RequestBulkRetryCreateRequestQueryHeaders{typeName: "requestBulkRetryCreateRequestQueryHeadersOne", RequestBulkRetryCreateRequestQueryHeadersOne: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryHeaders) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryHeadersOne := new(RequestBulkRetryCreateRequestQueryHeadersOne)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryHeadersOne); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryHeadersOne"
+		r.RequestBulkRetryCreateRequestQueryHeadersOne = valueRequestBulkRetryCreateRequestQueryHeadersOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryHeaders) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "requestBulkRetryCreateRequestQueryHeadersOne":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryHeadersOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryHeadersVisitor interface {
+	VisitString(string) error
+	VisitRequestBulkRetryCreateRequestQueryHeadersOne(*RequestBulkRetryCreateRequestQueryHeadersOne) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryHeaders) Accept(visitor RequestBulkRetryCreateRequestQueryHeadersVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "requestBulkRetryCreateRequestQueryHeadersOne":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryHeadersOne(r.RequestBulkRetryCreateRequestQueryHeadersOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryHeadersOne struct {
+}
+
+// Filter by requests IDs
+type RequestBulkRetryCreateRequestQueryId struct {
+	typeName string
+	// Request ID <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewRequestBulkRetryCreateRequestQueryIdFromString(value string) *RequestBulkRetryCreateRequestQueryId {
+	return &RequestBulkRetryCreateRequestQueryId{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryIdFromStringList(value []string) *RequestBulkRetryCreateRequestQueryId {
+	return &RequestBulkRetryCreateRequestQueryId{typeName: "stringList", StringList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		r.typeName = "stringList"
+		r.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryId) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "stringList":
+		return json.Marshal(r.StringList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryId) Accept(visitor RequestBulkRetryCreateRequestQueryIdVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "stringList":
+		return visitor.VisitStringList(r.StringList)
+	}
+}
+
+// Filter by count of ignored events
+type RequestBulkRetryCreateRequestQueryIgnoredCount struct {
+	typeName                                          string
+	Integer                                           int
+	RequestBulkRetryCreateRequestQueryIgnoredCountAny *RequestBulkRetryCreateRequestQueryIgnoredCountAny
+	IntegerList                                       []int
+}
+
+func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromInteger(value int) *RequestBulkRetryCreateRequestQueryIgnoredCount {
+	return &RequestBulkRetryCreateRequestQueryIgnoredCount{typeName: "integer", Integer: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromRequestBulkRetryCreateRequestQueryIgnoredCountAny(value *RequestBulkRetryCreateRequestQueryIgnoredCountAny) *RequestBulkRetryCreateRequestQueryIgnoredCount {
+	return &RequestBulkRetryCreateRequestQueryIgnoredCount{typeName: "requestBulkRetryCreateRequestQueryIgnoredCountAny", RequestBulkRetryCreateRequestQueryIgnoredCountAny: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromIntegerList(value []int) *RequestBulkRetryCreateRequestQueryIgnoredCount {
+	return &RequestBulkRetryCreateRequestQueryIgnoredCount{typeName: "integerList", IntegerList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryIgnoredCount) UnmarshalJSON(data []byte) error {
+	var valueInteger int
+	if err := json.Unmarshal(data, &valueInteger); err == nil {
+		r.typeName = "integer"
+		r.Integer = valueInteger
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryIgnoredCountAny := new(RequestBulkRetryCreateRequestQueryIgnoredCountAny)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryIgnoredCountAny); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryIgnoredCountAny"
+		r.RequestBulkRetryCreateRequestQueryIgnoredCountAny = valueRequestBulkRetryCreateRequestQueryIgnoredCountAny
+		return nil
+	}
+	var valueIntegerList []int
+	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
+		r.typeName = "integerList"
+		r.IntegerList = valueIntegerList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryIgnoredCount) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "integer":
+		return json.Marshal(r.Integer)
+	case "requestBulkRetryCreateRequestQueryIgnoredCountAny":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryIgnoredCountAny)
+	case "integerList":
+		return json.Marshal(r.IntegerList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIgnoredCountVisitor interface {
+	VisitInteger(int) error
+	VisitRequestBulkRetryCreateRequestQueryIgnoredCountAny(*RequestBulkRetryCreateRequestQueryIgnoredCountAny) error
+	VisitIntegerList([]int) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryIgnoredCount) Accept(visitor RequestBulkRetryCreateRequestQueryIgnoredCountVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "integer":
+		return visitor.VisitInteger(r.Integer)
+	case "requestBulkRetryCreateRequestQueryIgnoredCountAny":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryIgnoredCountAny(r.RequestBulkRetryCreateRequestQueryIgnoredCountAny)
+	case "integerList":
+		return visitor.VisitIntegerList(r.IntegerList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIgnoredCountAny struct {
+	Gt       *int  `json:"gt,omitempty"`
+	Gte      *int  `json:"gte,omitempty"`
+	Le       *int  `json:"le,omitempty"`
+	Lte      *int  `json:"lte,omitempty"`
+	Any      *bool `json:"any,omitempty"`
+	Contains *int  `json:"contains,omitempty"`
+}
+
+// Filter by event ingested date
+type RequestBulkRetryCreateRequestQueryIngestedAt struct {
+	typeName                                        string
+	DateTime                                        time.Time
+	RequestBulkRetryCreateRequestQueryIngestedAtAny *RequestBulkRetryCreateRequestQueryIngestedAtAny
+}
+
+func NewRequestBulkRetryCreateRequestQueryIngestedAtFromDateTime(value time.Time) *RequestBulkRetryCreateRequestQueryIngestedAt {
+	return &RequestBulkRetryCreateRequestQueryIngestedAt{typeName: "dateTime", DateTime: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryIngestedAtFromRequestBulkRetryCreateRequestQueryIngestedAtAny(value *RequestBulkRetryCreateRequestQueryIngestedAtAny) *RequestBulkRetryCreateRequestQueryIngestedAt {
+	return &RequestBulkRetryCreateRequestQueryIngestedAt{typeName: "requestBulkRetryCreateRequestQueryIngestedAtAny", RequestBulkRetryCreateRequestQueryIngestedAtAny: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryIngestedAt) UnmarshalJSON(data []byte) error {
+	var valueDateTime time.Time
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		r.typeName = "dateTime"
+		r.DateTime = valueDateTime
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryIngestedAtAny := new(RequestBulkRetryCreateRequestQueryIngestedAtAny)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryIngestedAtAny); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryIngestedAtAny"
+		r.RequestBulkRetryCreateRequestQueryIngestedAtAny = valueRequestBulkRetryCreateRequestQueryIngestedAtAny
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryIngestedAt) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "dateTime":
+		return json.Marshal(r.DateTime)
+	case "requestBulkRetryCreateRequestQueryIngestedAtAny":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryIngestedAtAny)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIngestedAtVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitRequestBulkRetryCreateRequestQueryIngestedAtAny(*RequestBulkRetryCreateRequestQueryIngestedAtAny) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryIngestedAt) Accept(visitor RequestBulkRetryCreateRequestQueryIngestedAtVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "dateTime":
+		return visitor.VisitDateTime(r.DateTime)
+	case "requestBulkRetryCreateRequestQueryIngestedAtAny":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryIngestedAtAny(r.RequestBulkRetryCreateRequestQueryIngestedAtAny)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIngestedAtAny struct {
+	Gt  *time.Time `json:"gt,omitempty"`
+	Gte *time.Time `json:"gte,omitempty"`
+	Le  *time.Time `json:"le,omitempty"`
+	Lte *time.Time `json:"lte,omitempty"`
+	Any *bool      `json:"any,omitempty"`
+}
+
+// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
+type RequestBulkRetryCreateRequestQueryParsedQuery struct {
+	typeName                                         string
+	String                                           string
+	RequestBulkRetryCreateRequestQueryParsedQueryOne *RequestBulkRetryCreateRequestQueryParsedQueryOne
+}
+
+func NewRequestBulkRetryCreateRequestQueryParsedQueryFromString(value string) *RequestBulkRetryCreateRequestQueryParsedQuery {
+	return &RequestBulkRetryCreateRequestQueryParsedQuery{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryParsedQueryFromRequestBulkRetryCreateRequestQueryParsedQueryOne(value *RequestBulkRetryCreateRequestQueryParsedQueryOne) *RequestBulkRetryCreateRequestQueryParsedQuery {
+	return &RequestBulkRetryCreateRequestQueryParsedQuery{typeName: "requestBulkRetryCreateRequestQueryParsedQueryOne", RequestBulkRetryCreateRequestQueryParsedQueryOne: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryParsedQuery) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryParsedQueryOne := new(RequestBulkRetryCreateRequestQueryParsedQueryOne)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryParsedQueryOne); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryParsedQueryOne"
+		r.RequestBulkRetryCreateRequestQueryParsedQueryOne = valueRequestBulkRetryCreateRequestQueryParsedQueryOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryParsedQuery) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "requestBulkRetryCreateRequestQueryParsedQueryOne":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryParsedQueryOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryParsedQueryVisitor interface {
+	VisitString(string) error
+	VisitRequestBulkRetryCreateRequestQueryParsedQueryOne(*RequestBulkRetryCreateRequestQueryParsedQueryOne) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryParsedQuery) Accept(visitor RequestBulkRetryCreateRequestQueryParsedQueryVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "requestBulkRetryCreateRequestQueryParsedQueryOne":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryParsedQueryOne(r.RequestBulkRetryCreateRequestQueryParsedQueryOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryParsedQueryOne struct {
+}
+
+// Filter by rejection cause
+type RequestBulkRetryCreateRequestQueryRejectionCause struct {
+	typeName                  string
+	RequestRejectionCause     RequestRejectionCause
+	RequestRejectionCauseList []RequestRejectionCause
+}
+
+func NewRequestBulkRetryCreateRequestQueryRejectionCauseFromRequestRejectionCause(value RequestRejectionCause) *RequestBulkRetryCreateRequestQueryRejectionCause {
+	return &RequestBulkRetryCreateRequestQueryRejectionCause{typeName: "requestRejectionCause", RequestRejectionCause: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryRejectionCauseFromRequestRejectionCauseList(value []RequestRejectionCause) *RequestBulkRetryCreateRequestQueryRejectionCause {
+	return &RequestBulkRetryCreateRequestQueryRejectionCause{typeName: "requestRejectionCauseList", RequestRejectionCauseList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryRejectionCause) UnmarshalJSON(data []byte) error {
+	var valueRequestRejectionCause RequestRejectionCause
+	if err := json.Unmarshal(data, &valueRequestRejectionCause); err == nil {
+		r.typeName = "requestRejectionCause"
+		r.RequestRejectionCause = valueRequestRejectionCause
+		return nil
+	}
+	var valueRequestRejectionCauseList []RequestRejectionCause
+	if err := json.Unmarshal(data, &valueRequestRejectionCauseList); err == nil {
+		r.typeName = "requestRejectionCauseList"
+		r.RequestRejectionCauseList = valueRequestRejectionCauseList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryRejectionCause) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "requestRejectionCause":
+		return json.Marshal(r.RequestRejectionCause)
+	case "requestRejectionCauseList":
+		return json.Marshal(r.RequestRejectionCauseList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryRejectionCauseVisitor interface {
+	VisitRequestRejectionCause(RequestRejectionCause) error
+	VisitRequestRejectionCauseList([]RequestRejectionCause) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryRejectionCause) Accept(visitor RequestBulkRetryCreateRequestQueryRejectionCauseVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "requestRejectionCause":
+		return visitor.VisitRequestRejectionCause(r.RequestRejectionCause)
+	case "requestRejectionCauseList":
+		return visitor.VisitRequestRejectionCauseList(r.RequestRejectionCauseList)
+	}
+}
+
+// Filter by source IDs
+type RequestBulkRetryCreateRequestQuerySourceId struct {
+	typeName string
+	// Source ID <span style="white-space: nowrap">`<= 255 characters`</span>
+	String     string
+	StringList []string
+}
+
+func NewRequestBulkRetryCreateRequestQuerySourceIdFromString(value string) *RequestBulkRetryCreateRequestQuerySourceId {
+	return &RequestBulkRetryCreateRequestQuerySourceId{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQuerySourceIdFromStringList(value []string) *RequestBulkRetryCreateRequestQuerySourceId {
+	return &RequestBulkRetryCreateRequestQuerySourceId{typeName: "stringList", StringList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQuerySourceId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		r.typeName = "stringList"
+		r.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQuerySourceId) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "stringList":
+		return json.Marshal(r.StringList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQuerySourceIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (r *RequestBulkRetryCreateRequestQuerySourceId) Accept(visitor RequestBulkRetryCreateRequestQuerySourceIdVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "stringList":
+		return visitor.VisitStringList(r.StringList)
+	}
+}
+
+// Filter by status
+type RequestBulkRetryCreateRequestQueryStatus string
+
+const (
+	RequestBulkRetryCreateRequestQueryStatusAccepted RequestBulkRetryCreateRequestQueryStatus = "accepted"
+	RequestBulkRetryCreateRequestQueryStatusRejected RequestBulkRetryCreateRequestQueryStatus = "rejected"
+)
+
+func NewRequestBulkRetryCreateRequestQueryStatusFromString(s string) (RequestBulkRetryCreateRequestQueryStatus, error) {
+	switch s {
+	case "accepted":
+		return RequestBulkRetryCreateRequestQueryStatusAccepted, nil
+	case "rejected":
+		return RequestBulkRetryCreateRequestQueryStatusRejected, nil
+	}
+	var t RequestBulkRetryCreateRequestQueryStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestBulkRetryCreateRequestQueryStatus) Ptr() *RequestBulkRetryCreateRequestQueryStatus {
+	return &r
+}
+
+type RequestBulkRetryListRequestDir string
+
+const (
+	RequestBulkRetryListRequestDirAsc  RequestBulkRetryListRequestDir = "asc"
+	RequestBulkRetryListRequestDirDesc RequestBulkRetryListRequestDir = "desc"
+)
+
+func NewRequestBulkRetryListRequestDirFromString(s string) (RequestBulkRetryListRequestDir, error) {
+	switch s {
+	case "asc":
+		return RequestBulkRetryListRequestDirAsc, nil
+	case "desc":
+		return RequestBulkRetryListRequestDirDesc, nil
+	}
+	var t RequestBulkRetryListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestBulkRetryListRequestDir) Ptr() *RequestBulkRetryListRequestDir {
+	return &r
+}
+
+type RequestBulkRetryPlanResponse struct {
+	// Number of batches required to complete the bulk retry
+	EstimatedBatch *int `json:"estimated_batch,omitempty"`
+	// Number of estimated events to be retried
+	EstimatedCount *int `json:"estimated_count,omitempty"`
+	// Progression of the batch operations, values 0 - 1
+	Progress *float64 `json:"progress,omitempty"`
+}
+
 // The priority attributed to the request when received
 type RequestIngestPriority string
 
@@ -6217,6 +5544,143 @@ func NewRequestIngestPriorityFromString(s string) (RequestIngestPriority, error)
 }
 
 func (r RequestIngestPriority) Ptr() *RequestIngestPriority {
+	return &r
+}
+
+// Sort direction
+type RequestListEventRequestDir string
+
+const (
+	RequestListEventRequestDirAsc  RequestListEventRequestDir = "asc"
+	RequestListEventRequestDirDesc RequestListEventRequestDir = "desc"
+)
+
+func NewRequestListEventRequestDirFromString(s string) (RequestListEventRequestDir, error) {
+	switch s {
+	case "asc":
+		return RequestListEventRequestDirAsc, nil
+	case "desc":
+		return RequestListEventRequestDirDesc, nil
+	}
+	var t RequestListEventRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestListEventRequestDir) Ptr() *RequestListEventRequestDir {
+	return &r
+}
+
+// Sort key
+type RequestListEventRequestOrderBy string
+
+const (
+	RequestListEventRequestOrderByLastAttemptAt RequestListEventRequestOrderBy = "last_attempt_at"
+	RequestListEventRequestOrderByCreatedAt     RequestListEventRequestOrderBy = "created_at"
+)
+
+func NewRequestListEventRequestOrderByFromString(s string) (RequestListEventRequestOrderBy, error) {
+	switch s {
+	case "last_attempt_at":
+		return RequestListEventRequestOrderByLastAttemptAt, nil
+	case "created_at":
+		return RequestListEventRequestOrderByCreatedAt, nil
+	}
+	var t RequestListEventRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestListEventRequestOrderBy) Ptr() *RequestListEventRequestOrderBy {
+	return &r
+}
+
+type RequestListIgnoredEventRequestDir string
+
+const (
+	RequestListIgnoredEventRequestDirAsc  RequestListIgnoredEventRequestDir = "asc"
+	RequestListIgnoredEventRequestDirDesc RequestListIgnoredEventRequestDir = "desc"
+)
+
+func NewRequestListIgnoredEventRequestDirFromString(s string) (RequestListIgnoredEventRequestDir, error) {
+	switch s {
+	case "asc":
+		return RequestListIgnoredEventRequestDirAsc, nil
+	case "desc":
+		return RequestListIgnoredEventRequestDirDesc, nil
+	}
+	var t RequestListIgnoredEventRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestListIgnoredEventRequestDir) Ptr() *RequestListIgnoredEventRequestDir {
+	return &r
+}
+
+// Sort direction
+type RequestListRequestDir string
+
+const (
+	RequestListRequestDirAsc  RequestListRequestDir = "asc"
+	RequestListRequestDirDesc RequestListRequestDir = "desc"
+)
+
+func NewRequestListRequestDirFromString(s string) (RequestListRequestDir, error) {
+	switch s {
+	case "asc":
+		return RequestListRequestDirAsc, nil
+	case "desc":
+		return RequestListRequestDirDesc, nil
+	}
+	var t RequestListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestListRequestDir) Ptr() *RequestListRequestDir {
+	return &r
+}
+
+// Sort key
+type RequestListRequestOrderBy string
+
+const (
+	RequestListRequestOrderByIngestedAt RequestListRequestOrderBy = "ingested_at"
+	RequestListRequestOrderByCreatedAt  RequestListRequestOrderBy = "created_at"
+)
+
+func NewRequestListRequestOrderByFromString(s string) (RequestListRequestOrderBy, error) {
+	switch s {
+	case "ingested_at":
+		return RequestListRequestOrderByIngestedAt, nil
+	case "created_at":
+		return RequestListRequestOrderByCreatedAt, nil
+	}
+	var t RequestListRequestOrderBy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestListRequestOrderBy) Ptr() *RequestListRequestOrderBy {
+	return &r
+}
+
+// Filter by status
+type RequestListRequestStatus string
+
+const (
+	RequestListRequestStatusAccepted RequestListRequestStatus = "accepted"
+	RequestListRequestStatusRejected RequestListRequestStatus = "rejected"
+)
+
+func NewRequestListRequestStatusFromString(s string) (RequestListRequestStatus, error) {
+	switch s {
+	case "accepted":
+		return RequestListRequestStatusAccepted, nil
+	case "rejected":
+		return RequestListRequestStatusRejected, nil
+	}
+	var t RequestListRequestStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestListRequestStatus) Ptr() *RequestListRequestStatus {
 	return &r
 }
 
@@ -6547,107 +6011,6 @@ func (s *SeekPaginationOrderBy) Accept(visitor SeekPaginationOrderByVisitor) err
 	case "stringList":
 		return visitor.VisitStringList(s.StringList)
 	}
-}
-
-type SendGrid struct {
-	Configs *SendGridConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (s *SendGrid) Type() string {
-	return s.type_
-}
-
-func (s *SendGrid) UnmarshalJSON(data []byte) error {
-	type unmarshaler SendGrid
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SendGrid(value)
-	s.type_ = "sendgrid"
-	return nil
-}
-
-func (s *SendGrid) MarshalJSON() ([]byte, error) {
-	type embed SendGrid
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*s),
-		Type:  "sendgrid",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for SendGrid. Only included if the ?include=verification.configs query param is present
-type SendGridConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
-type Shopify struct {
-	Configs *ShopifyConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (s *Shopify) Type() string {
-	return s.type_
-}
-
-func (s *Shopify) UnmarshalJSON(data []byte) error {
-	type unmarshaler Shopify
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = Shopify(value)
-	s.type_ = "shopify"
-	return nil
-}
-
-func (s *Shopify) MarshalJSON() ([]byte, error) {
-	type embed Shopify
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*s),
-		Type:  "shopify",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Shopify. Only included if the ?include=verification.configs query param is present
-type ShopifyConfigs struct {
-	WebhookSecretKey string                         `json:"webhook_secret_key"`
-	RateLimitPeriod  *ShopifyConfigsRateLimitPeriod `json:"rate_limit_period,omitempty"`
-	RateLimit        *float64                       `json:"rate_limit,omitempty"`
-	ApiKey           *string                        `json:"api_key,omitempty"`
-	ApiSecret        *string                        `json:"api_secret,omitempty"`
-	Shop             *string                        `json:"shop,omitempty"`
-}
-
-type ShopifyConfigsRateLimitPeriod string
-
-const (
-	ShopifyConfigsRateLimitPeriodMinute ShopifyConfigsRateLimitPeriod = "minute"
-	ShopifyConfigsRateLimitPeriodSecond ShopifyConfigsRateLimitPeriod = "second"
-)
-
-func NewShopifyConfigsRateLimitPeriodFromString(s string) (ShopifyConfigsRateLimitPeriod, error) {
-	switch s {
-	case "minute":
-		return ShopifyConfigsRateLimitPeriodMinute, nil
-	case "second":
-		return ShopifyConfigsRateLimitPeriodSecond, nil
-	}
-	var t ShopifyConfigsRateLimitPeriod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (s ShopifyConfigsRateLimitPeriod) Ptr() *ShopifyConfigsRateLimitPeriod {
-	return &s
 }
 
 type ShopifyIntegrationConfigs struct {
@@ -6983,241 +6346,37 @@ func (s SourceCustomResponseContentType) Ptr() *SourceCustomResponseContentType 
 	return &s
 }
 
+type SourceDeleteResponse struct {
+	// ID of the source
+	Id string `json:"id"`
+}
+
+type SourceListRequestDir string
+
+const (
+	SourceListRequestDirAsc  SourceListRequestDir = "asc"
+	SourceListRequestDirDesc SourceListRequestDir = "desc"
+)
+
+func NewSourceListRequestDirFromString(s string) (SourceListRequestDir, error) {
+	switch s {
+	case "asc":
+		return SourceListRequestDirAsc, nil
+	case "desc":
+		return SourceListRequestDirDesc, nil
+	}
+	var t SourceListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (s SourceListRequestDir) Ptr() *SourceListRequestDir {
+	return &s
+}
+
 type SourcePaginatedResult struct {
 	Pagination *SeekPagination `json:"pagination,omitempty"`
 	Count      *int            `json:"count,omitempty"`
 	Models     []*Source       `json:"models,omitempty"`
-}
-
-type Stripe struct {
-	Configs *StripeConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (s *Stripe) Type() string {
-	return s.type_
-}
-
-func (s *Stripe) UnmarshalJSON(data []byte) error {
-	type unmarshaler Stripe
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = Stripe(value)
-	s.type_ = "stripe"
-	return nil
-}
-
-func (s *Stripe) MarshalJSON() ([]byte, error) {
-	type embed Stripe
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*s),
-		Type:  "stripe",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Stripe. Only included if the ?include=verification.configs query param is present
-type StripeConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
-type Svix struct {
-	Configs *SvixConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (s *Svix) Type() string {
-	return s.type_
-}
-
-func (s *Svix) UnmarshalJSON(data []byte) error {
-	type unmarshaler Svix
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = Svix(value)
-	s.type_ = "svix"
-	return nil
-}
-
-func (s *Svix) MarshalJSON() ([]byte, error) {
-	type embed Svix
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*s),
-		Type:  "svix",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Svix. Only included if the ?include=verification.configs query param is present
-type SvixConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
-type Synctera struct {
-	Configs *SyncteraConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (s *Synctera) Type() string {
-	return s.type_
-}
-
-func (s *Synctera) UnmarshalJSON(data []byte) error {
-	type unmarshaler Synctera
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = Synctera(value)
-	s.type_ = "synctera"
-	return nil
-}
-
-func (s *Synctera) MarshalJSON() ([]byte, error) {
-	type embed Synctera
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*s),
-		Type:  "synctera",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Synctera. Only included if the ?include=verification.configs query param is present
-type SyncteraConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
-}
-
-// Key-value environment variables to be passed to the transformation
-type TestTransformationRequestEnv struct {
-}
-
-// Request input to use for the transformation execution
-type TestTransformationRequestRequest struct {
-	// Headers of the request
-	Headers map[string]string `json:"headers,omitempty"`
-	// Body of the request
-	Body *TestTransformationRequestRequestBody `json:"body,omitempty"`
-	// Path of the request
-	Path *string `json:"path,omitempty"`
-	// String representation of the query params of the request
-	Query *string `json:"query,omitempty"`
-	// JSON representation of the query params
-	ParsedQuery *TestTransformationRequestRequestParsedQuery `json:"parsed_query,omitempty"`
-}
-
-// Body of the request
-type TestTransformationRequestRequestBody struct {
-	typeName                                 string
-	TestTransformationRequestRequestBodyZero *TestTransformationRequestRequestBodyZero
-	String                                   string
-}
-
-func NewTestTransformationRequestRequestBodyFromTestTransformationRequestRequestBodyZero(value *TestTransformationRequestRequestBodyZero) *TestTransformationRequestRequestBody {
-	return &TestTransformationRequestRequestBody{typeName: "testTransformationRequestRequestBodyZero", TestTransformationRequestRequestBodyZero: value}
-}
-
-func NewTestTransformationRequestRequestBodyFromString(value string) *TestTransformationRequestRequestBody {
-	return &TestTransformationRequestRequestBody{typeName: "string", String: value}
-}
-
-func (t *TestTransformationRequestRequestBody) UnmarshalJSON(data []byte) error {
-	valueTestTransformationRequestRequestBodyZero := new(TestTransformationRequestRequestBodyZero)
-	if err := json.Unmarshal(data, &valueTestTransformationRequestRequestBodyZero); err == nil {
-		t.typeName = "testTransformationRequestRequestBodyZero"
-		t.TestTransformationRequestRequestBodyZero = valueTestTransformationRequestRequestBodyZero
-		return nil
-	}
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		t.typeName = "string"
-		t.String = valueString
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
-}
-
-func (t TestTransformationRequestRequestBody) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "testTransformationRequestRequestBodyZero":
-		return json.Marshal(t.TestTransformationRequestRequestBodyZero)
-	case "string":
-		return json.Marshal(t.String)
-	}
-}
-
-type TestTransformationRequestRequestBodyVisitor interface {
-	VisitTestTransformationRequestRequestBodyZero(*TestTransformationRequestRequestBodyZero) error
-	VisitString(string) error
-}
-
-func (t *TestTransformationRequestRequestBody) Accept(visitor TestTransformationRequestRequestBodyVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "testTransformationRequestRequestBodyZero":
-		return visitor.VisitTestTransformationRequestRequestBodyZero(t.TestTransformationRequestRequestBodyZero)
-	case "string":
-		return visitor.VisitString(t.String)
-	}
-}
-
-type TestTransformationRequestRequestBodyZero struct {
-}
-
-// JSON representation of the query params
-type TestTransformationRequestRequestParsedQuery struct {
-}
-
-type ThreeDEye struct {
-	Configs *ThreeDEyeConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (t *ThreeDEye) Type() string {
-	return t.type_
-}
-
-func (t *ThreeDEye) UnmarshalJSON(data []byte) error {
-	type unmarshaler ThreeDEye
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = ThreeDEye(value)
-	t.type_ = "three_d_eye"
-	return nil
-}
-
-func (t *ThreeDEye) MarshalJSON() ([]byte, error) {
-	type embed ThreeDEye
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*t),
-		Type:  "three_d_eye",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for 3dEye. Only included if the ?include=verification.configs query param is present
-type ThreeDEyeConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
 type ToggleWebhookNotifications struct {
@@ -7407,6 +6566,63 @@ type Transformation struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	// Date the transformation was created
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type TransformationCreateRequestEnvValue struct {
+	typeName string
+	String   string
+	Double   float64
+}
+
+func NewTransformationCreateRequestEnvValueFromString(value string) *TransformationCreateRequestEnvValue {
+	return &TransformationCreateRequestEnvValue{typeName: "string", String: value}
+}
+
+func NewTransformationCreateRequestEnvValueFromDouble(value float64) *TransformationCreateRequestEnvValue {
+	return &TransformationCreateRequestEnvValue{typeName: "double", Double: value}
+}
+
+func (t *TransformationCreateRequestEnvValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		t.typeName = "string"
+		t.String = valueString
+		return nil
+	}
+	var valueDouble float64
+	if err := json.Unmarshal(data, &valueDouble); err == nil {
+		t.typeName = "double"
+		t.Double = valueDouble
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t TransformationCreateRequestEnvValue) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "string":
+		return json.Marshal(t.String)
+	case "double":
+		return json.Marshal(t.Double)
+	}
+}
+
+type TransformationCreateRequestEnvValueVisitor interface {
+	VisitString(string) error
+	VisitDouble(float64) error
+}
+
+func (t *TransformationCreateRequestEnvValue) Accept(visitor TransformationCreateRequestEnvValueVisitor) error {
+	switch t.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "string":
+		return visitor.VisitString(t.String)
+	case "double":
+		return visitor.VisitDouble(t.Double)
+	}
 }
 
 type TransformationExecution struct {
@@ -7851,950 +7067,845 @@ func (t *TransformationIssueWithData) MarshalJSON() ([]byte, error) {
 	return json.Marshal(marshaler)
 }
 
+type TransformationListExecutionRequestDir string
+
+const (
+	TransformationListExecutionRequestDirAsc  TransformationListExecutionRequestDir = "asc"
+	TransformationListExecutionRequestDirDesc TransformationListExecutionRequestDir = "desc"
+)
+
+func NewTransformationListExecutionRequestDirFromString(s string) (TransformationListExecutionRequestDir, error) {
+	switch s {
+	case "asc":
+		return TransformationListExecutionRequestDirAsc, nil
+	case "desc":
+		return TransformationListExecutionRequestDirDesc, nil
+	}
+	var t TransformationListExecutionRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TransformationListExecutionRequestDir) Ptr() *TransformationListExecutionRequestDir {
+	return &t
+}
+
+type TransformationListExecutionRequestLogLevel string
+
+const (
+	TransformationListExecutionRequestLogLevelDebug TransformationListExecutionRequestLogLevel = "debug"
+	TransformationListExecutionRequestLogLevelInfo  TransformationListExecutionRequestLogLevel = "info"
+	TransformationListExecutionRequestLogLevelWarn  TransformationListExecutionRequestLogLevel = "warn"
+	TransformationListExecutionRequestLogLevelError TransformationListExecutionRequestLogLevel = "error"
+	TransformationListExecutionRequestLogLevelFatal TransformationListExecutionRequestLogLevel = "fatal"
+)
+
+func NewTransformationListExecutionRequestLogLevelFromString(s string) (TransformationListExecutionRequestLogLevel, error) {
+	switch s {
+	case "debug":
+		return TransformationListExecutionRequestLogLevelDebug, nil
+	case "info":
+		return TransformationListExecutionRequestLogLevelInfo, nil
+	case "warn":
+		return TransformationListExecutionRequestLogLevelWarn, nil
+	case "error":
+		return TransformationListExecutionRequestLogLevelError, nil
+	case "fatal":
+		return TransformationListExecutionRequestLogLevelFatal, nil
+	}
+	var t TransformationListExecutionRequestLogLevel
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TransformationListExecutionRequestLogLevel) Ptr() *TransformationListExecutionRequestLogLevel {
+	return &t
+}
+
+type TransformationListRequestDir string
+
+const (
+	TransformationListRequestDirAsc  TransformationListRequestDir = "asc"
+	TransformationListRequestDirDesc TransformationListRequestDir = "desc"
+)
+
+func NewTransformationListRequestDirFromString(s string) (TransformationListRequestDir, error) {
+	switch s {
+	case "asc":
+		return TransformationListRequestDirAsc, nil
+	case "desc":
+		return TransformationListRequestDirDesc, nil
+	}
+	var t TransformationListRequestDir
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TransformationListRequestDir) Ptr() *TransformationListRequestDir {
+	return &t
+}
+
 type TransformationPaginatedResult struct {
 	Pagination *SeekPagination   `json:"pagination,omitempty"`
 	Count      *int              `json:"count,omitempty"`
 	Models     []*Transformation `json:"models,omitempty"`
 }
 
-// Bookmark target
-type TriggerBookmarkRequestTarget string
+// Key-value environment variables to be passed to the transformation
+type TransformationRunRequestEnv struct {
+}
 
-const (
-	TriggerBookmarkRequestTargetHttp TriggerBookmarkRequestTarget = "http"
-	TriggerBookmarkRequestTargetCli  TriggerBookmarkRequestTarget = "cli"
-)
+// Request input to use for the transformation execution
+type TransformationRunRequestRequest struct {
+	// Headers of the request
+	Headers map[string]string `json:"headers,omitempty"`
+	// Body of the request
+	Body *TransformationRunRequestRequestBody `json:"body,omitempty"`
+	// Path of the request
+	Path *string `json:"path,omitempty"`
+	// String representation of the query params of the request
+	Query *string `json:"query,omitempty"`
+	// JSON representation of the query params
+	ParsedQuery *TransformationRunRequestRequestParsedQuery `json:"parsed_query,omitempty"`
+}
 
-func NewTriggerBookmarkRequestTargetFromString(s string) (TriggerBookmarkRequestTarget, error) {
-	switch s {
-	case "http":
-		return TriggerBookmarkRequestTargetHttp, nil
-	case "cli":
-		return TriggerBookmarkRequestTargetCli, nil
+// Body of the request
+type TransformationRunRequestRequestBody struct {
+	typeName                                string
+	TransformationRunRequestRequestBodyZero *TransformationRunRequestRequestBodyZero
+	String                                  string
+}
+
+func NewTransformationRunRequestRequestBodyFromTransformationRunRequestRequestBodyZero(value *TransformationRunRequestRequestBodyZero) *TransformationRunRequestRequestBody {
+	return &TransformationRunRequestRequestBody{typeName: "transformationRunRequestRequestBodyZero", TransformationRunRequestRequestBodyZero: value}
+}
+
+func NewTransformationRunRequestRequestBodyFromString(value string) *TransformationRunRequestRequestBody {
+	return &TransformationRunRequestRequestBody{typeName: "string", String: value}
+}
+
+func (t *TransformationRunRequestRequestBody) UnmarshalJSON(data []byte) error {
+	valueTransformationRunRequestRequestBodyZero := new(TransformationRunRequestRequestBodyZero)
+	if err := json.Unmarshal(data, &valueTransformationRunRequestRequestBodyZero); err == nil {
+		t.typeName = "transformationRunRequestRequestBodyZero"
+		t.TransformationRunRequestRequestBodyZero = valueTransformationRunRequestRequestBodyZero
+		return nil
 	}
-	var t TriggerBookmarkRequestTarget
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		t.typeName = "string"
+		t.String = valueString
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
 }
 
-func (t TriggerBookmarkRequestTarget) Ptr() *TriggerBookmarkRequestTarget {
-	return &t
+func (t TransformationRunRequestRequestBody) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "transformationRunRequestRequestBodyZero":
+		return json.Marshal(t.TransformationRunRequestRequestBodyZero)
+	case "string":
+		return json.Marshal(t.String)
+	}
 }
 
-type Twitter struct {
-	Configs *TwitterConfigs `json:"configs,omitempty"`
+type TransformationRunRequestRequestBodyVisitor interface {
+	VisitTransformationRunRequestRequestBodyZero(*TransformationRunRequestRequestBodyZero) error
+	VisitString(string) error
+}
+
+func (t *TransformationRunRequestRequestBody) Accept(visitor TransformationRunRequestRequestBodyVisitor) error {
+	switch t.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "transformationRunRequestRequestBodyZero":
+		return visitor.VisitTransformationRunRequestRequestBodyZero(t.TransformationRunRequestRequestBodyZero)
+	case "string":
+		return visitor.VisitString(t.String)
+	}
+}
+
+type TransformationRunRequestRequestBodyZero struct {
+}
+
+// JSON representation of the query params
+type TransformationRunRequestRequestParsedQuery struct {
+}
+
+type TransformationUpdateRequestEnvValue struct {
+	typeName string
+	String   string
+	Double   float64
+}
+
+func NewTransformationUpdateRequestEnvValueFromString(value string) *TransformationUpdateRequestEnvValue {
+	return &TransformationUpdateRequestEnvValue{typeName: "string", String: value}
+}
+
+func NewTransformationUpdateRequestEnvValueFromDouble(value float64) *TransformationUpdateRequestEnvValue {
+	return &TransformationUpdateRequestEnvValue{typeName: "double", Double: value}
+}
+
+func (t *TransformationUpdateRequestEnvValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		t.typeName = "string"
+		t.String = valueString
+		return nil
+	}
+	var valueDouble float64
+	if err := json.Unmarshal(data, &valueDouble); err == nil {
+		t.typeName = "double"
+		t.Double = valueDouble
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t TransformationUpdateRequestEnvValue) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "string":
+		return json.Marshal(t.String)
+	case "double":
+		return json.Marshal(t.Double)
+	}
+}
+
+type TransformationUpdateRequestEnvValueVisitor interface {
+	VisitString(string) error
+	VisitDouble(float64) error
+}
+
+func (t *TransformationUpdateRequestEnvValue) Accept(visitor TransformationUpdateRequestEnvValueVisitor) error {
+	switch t.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "string":
+		return visitor.VisitString(t.String)
+	case "double":
+		return visitor.VisitDouble(t.Double)
+	}
+}
+
+type TransformationUpsertRequestEnvValue struct {
+	typeName string
+	String   string
+	Double   float64
+}
+
+func NewTransformationUpsertRequestEnvValueFromString(value string) *TransformationUpsertRequestEnvValue {
+	return &TransformationUpsertRequestEnvValue{typeName: "string", String: value}
+}
+
+func NewTransformationUpsertRequestEnvValueFromDouble(value float64) *TransformationUpsertRequestEnvValue {
+	return &TransformationUpsertRequestEnvValue{typeName: "double", Double: value}
+}
+
+func (t *TransformationUpsertRequestEnvValue) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		t.typeName = "string"
+		t.String = valueString
+		return nil
+	}
+	var valueDouble float64
+	if err := json.Unmarshal(data, &valueDouble); err == nil {
+		t.typeName = "double"
+		t.Double = valueDouble
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t TransformationUpsertRequestEnvValue) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "string":
+		return json.Marshal(t.String)
+	case "double":
+		return json.Marshal(t.Double)
+	}
+}
+
+type TransformationUpsertRequestEnvValueVisitor interface {
+	VisitString(string) error
+	VisitDouble(float64) error
+}
+
+func (t *TransformationUpsertRequestEnvValue) Accept(visitor TransformationUpsertRequestEnvValueVisitor) error {
+	switch t.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "string":
+		return visitor.VisitString(t.String)
+	case "double":
+		return visitor.VisitDouble(t.Double)
+	}
+}
+
+type Verification3DEye struct {
+	Configs *Verification3DEyeConfigs `json:"configs,omitempty"`
 	type_   string
 }
 
-func (t *Twitter) Type() string {
-	return t.type_
+func (v *Verification3DEye) Type() string {
+	return v.type_
 }
 
-func (t *Twitter) UnmarshalJSON(data []byte) error {
-	type unmarshaler Twitter
+func (v *Verification3DEye) UnmarshalJSON(data []byte) error {
+	type unmarshaler Verification3DEye
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*t = Twitter(value)
-	t.type_ = "twitter"
+	*v = Verification3DEye(value)
+	v.type_ = "three_d_eye"
 	return nil
 }
 
-func (t *Twitter) MarshalJSON() ([]byte, error) {
-	type embed Twitter
+func (v *Verification3DEye) MarshalJSON() ([]byte, error) {
+	type embed Verification3DEye
 	var marshaler = struct {
 		embed
 		Type string `json:"type"`
 	}{
-		embed: embed(*t),
-		Type:  "twitter",
+		embed: embed(*v),
+		Type:  "three_d_eye",
 	}
 	return json.Marshal(marshaler)
 }
 
-// The verification configs for Twitter. Only included if the ?include=verification.configs query param is present
-type TwitterConfigs struct {
-	ApiKey string `json:"api_key"`
-}
-
-type Typeform struct {
-	Configs *TypeformConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (t *Typeform) Type() string {
-	return t.type_
-}
-
-func (t *Typeform) UnmarshalJSON(data []byte) error {
-	type unmarshaler Typeform
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = Typeform(value)
-	t.type_ = "typeform"
-	return nil
-}
-
-func (t *Typeform) MarshalJSON() ([]byte, error) {
-	type embed Typeform
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*t),
-		Type:  "typeform",
-	}
-	return json.Marshal(marshaler)
-}
-
-// The verification configs for Typeform. Only included if the ?include=verification.configs query param is present
-type TypeformConfigs struct {
+// The verification configs for 3dEye. Only included if the ?include=verification.configs query param is present
+type Verification3DEyeConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-// Period to rate limit attempts
-type UpdateDestinationRequestRateLimitPeriod string
+type VerificationAdyen struct {
+	Configs *VerificationAdyenConfigs `json:"configs,omitempty"`
+	type_   string
+}
 
-const (
-	UpdateDestinationRequestRateLimitPeriodSecond UpdateDestinationRequestRateLimitPeriod = "second"
-	UpdateDestinationRequestRateLimitPeriodMinute UpdateDestinationRequestRateLimitPeriod = "minute"
-	UpdateDestinationRequestRateLimitPeriodHour   UpdateDestinationRequestRateLimitPeriod = "hour"
-)
+func (v *VerificationAdyen) Type() string {
+	return v.type_
+}
 
-func NewUpdateDestinationRequestRateLimitPeriodFromString(s string) (UpdateDestinationRequestRateLimitPeriod, error) {
-	switch s {
-	case "second":
-		return UpdateDestinationRequestRateLimitPeriodSecond, nil
-	case "minute":
-		return UpdateDestinationRequestRateLimitPeriodMinute, nil
-	case "hour":
-		return UpdateDestinationRequestRateLimitPeriodHour, nil
+func (v *VerificationAdyen) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationAdyen
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	var t UpdateDestinationRequestRateLimitPeriod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+	*v = VerificationAdyen(value)
+	v.type_ = "adyen"
+	return nil
 }
 
-func (u UpdateDestinationRequestRateLimitPeriod) Ptr() *UpdateDestinationRequestRateLimitPeriod {
-	return &u
-}
-
-// Decrypted Key/Value object of the associated configuration for that provider
-type UpdateIntegrationRequestConfigs struct {
-	typeName                           string
-	HmacIntegrationConfigs             *HmacIntegrationConfigs
-	ApiKeyIntegrationConfigs           *ApiKeyIntegrationConfigs
-	HandledApiKeyIntegrationConfigs    *HandledApiKeyIntegrationConfigs
-	HandledHmacConfigs                 *HandledHmacConfigs
-	BasicAuthIntegrationConfigs        *BasicAuthIntegrationConfigs
-	ShopifyIntegrationConfigs          *ShopifyIntegrationConfigs
-	UpdateIntegrationRequestConfigsSix *UpdateIntegrationRequestConfigsSix
-}
-
-func NewUpdateIntegrationRequestConfigsFromHmacIntegrationConfigs(value *HmacIntegrationConfigs) *UpdateIntegrationRequestConfigs {
-	return &UpdateIntegrationRequestConfigs{typeName: "hmacIntegrationConfigs", HmacIntegrationConfigs: value}
-}
-
-func NewUpdateIntegrationRequestConfigsFromApiKeyIntegrationConfigs(value *ApiKeyIntegrationConfigs) *UpdateIntegrationRequestConfigs {
-	return &UpdateIntegrationRequestConfigs{typeName: "apiKeyIntegrationConfigs", ApiKeyIntegrationConfigs: value}
-}
-
-func NewUpdateIntegrationRequestConfigsFromHandledApiKeyIntegrationConfigs(value *HandledApiKeyIntegrationConfigs) *UpdateIntegrationRequestConfigs {
-	return &UpdateIntegrationRequestConfigs{typeName: "handledApiKeyIntegrationConfigs", HandledApiKeyIntegrationConfigs: value}
-}
-
-func NewUpdateIntegrationRequestConfigsFromHandledHmacConfigs(value *HandledHmacConfigs) *UpdateIntegrationRequestConfigs {
-	return &UpdateIntegrationRequestConfigs{typeName: "handledHmacConfigs", HandledHmacConfigs: value}
-}
-
-func NewUpdateIntegrationRequestConfigsFromBasicAuthIntegrationConfigs(value *BasicAuthIntegrationConfigs) *UpdateIntegrationRequestConfigs {
-	return &UpdateIntegrationRequestConfigs{typeName: "basicAuthIntegrationConfigs", BasicAuthIntegrationConfigs: value}
-}
-
-func NewUpdateIntegrationRequestConfigsFromShopifyIntegrationConfigs(value *ShopifyIntegrationConfigs) *UpdateIntegrationRequestConfigs {
-	return &UpdateIntegrationRequestConfigs{typeName: "shopifyIntegrationConfigs", ShopifyIntegrationConfigs: value}
-}
-
-func NewUpdateIntegrationRequestConfigsFromUpdateIntegrationRequestConfigsSix(value *UpdateIntegrationRequestConfigsSix) *UpdateIntegrationRequestConfigs {
-	return &UpdateIntegrationRequestConfigs{typeName: "updateIntegrationRequestConfigsSix", UpdateIntegrationRequestConfigsSix: value}
-}
-
-func (u *UpdateIntegrationRequestConfigs) UnmarshalJSON(data []byte) error {
-	valueHmacIntegrationConfigs := new(HmacIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueHmacIntegrationConfigs); err == nil {
-		u.typeName = "hmacIntegrationConfigs"
-		u.HmacIntegrationConfigs = valueHmacIntegrationConfigs
-		return nil
+func (v *VerificationAdyen) MarshalJSON() ([]byte, error) {
+	type embed VerificationAdyen
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "adyen",
 	}
-	valueApiKeyIntegrationConfigs := new(ApiKeyIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueApiKeyIntegrationConfigs); err == nil {
-		u.typeName = "apiKeyIntegrationConfigs"
-		u.ApiKeyIntegrationConfigs = valueApiKeyIntegrationConfigs
-		return nil
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Adyen. Only included if the ?include=verification.configs query param is present
+type VerificationAdyenConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationAkeneo struct {
+	Configs *VerificationAkeneoConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationAkeneo) Type() string {
+	return v.type_
+}
+
+func (v *VerificationAkeneo) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationAkeneo
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	valueHandledApiKeyIntegrationConfigs := new(HandledApiKeyIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueHandledApiKeyIntegrationConfigs); err == nil {
-		u.typeName = "handledApiKeyIntegrationConfigs"
-		u.HandledApiKeyIntegrationConfigs = valueHandledApiKeyIntegrationConfigs
-		return nil
+	*v = VerificationAkeneo(value)
+	v.type_ = "akeneo"
+	return nil
+}
+
+func (v *VerificationAkeneo) MarshalJSON() ([]byte, error) {
+	type embed VerificationAkeneo
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "akeneo",
 	}
-	valueHandledHmacConfigs := new(HandledHmacConfigs)
-	if err := json.Unmarshal(data, &valueHandledHmacConfigs); err == nil {
-		u.typeName = "handledHmacConfigs"
-		u.HandledHmacConfigs = valueHandledHmacConfigs
-		return nil
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Akeneo. Only included if the ?include=verification.configs query param is present
+type VerificationAkeneoConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationApiKey struct {
+	Configs *VerificationApiKeyConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationApiKey) Type() string {
+	return v.type_
+}
+
+func (v *VerificationApiKey) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationApiKey
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	valueBasicAuthIntegrationConfigs := new(BasicAuthIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueBasicAuthIntegrationConfigs); err == nil {
-		u.typeName = "basicAuthIntegrationConfigs"
-		u.BasicAuthIntegrationConfigs = valueBasicAuthIntegrationConfigs
-		return nil
+	*v = VerificationApiKey(value)
+	v.type_ = "api_key"
+	return nil
+}
+
+func (v *VerificationApiKey) MarshalJSON() ([]byte, error) {
+	type embed VerificationApiKey
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "api_key",
 	}
-	valueShopifyIntegrationConfigs := new(ShopifyIntegrationConfigs)
-	if err := json.Unmarshal(data, &valueShopifyIntegrationConfigs); err == nil {
-		u.typeName = "shopifyIntegrationConfigs"
-		u.ShopifyIntegrationConfigs = valueShopifyIntegrationConfigs
-		return nil
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for API Key. Only included if the ?include=verification.configs query param is present
+type VerificationApiKeyConfigs struct {
+	HeaderKey string `json:"header_key"`
+	ApiKey    string `json:"api_key"`
+}
+
+type VerificationAwssns struct {
+	Configs *VerificationAwssnsConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationAwssns) Type() string {
+	return v.type_
+}
+
+func (v *VerificationAwssns) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationAwssns
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	valueUpdateIntegrationRequestConfigsSix := new(UpdateIntegrationRequestConfigsSix)
-	if err := json.Unmarshal(data, &valueUpdateIntegrationRequestConfigsSix); err == nil {
-		u.typeName = "updateIntegrationRequestConfigsSix"
-		u.UpdateIntegrationRequestConfigsSix = valueUpdateIntegrationRequestConfigsSix
-		return nil
+	*v = VerificationAwssns(value)
+	v.type_ = "aws_sns"
+	return nil
+}
+
+func (v *VerificationAwssns) MarshalJSON() ([]byte, error) {
+	type embed VerificationAwssns
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "aws_sns",
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, u)
+	return json.Marshal(marshaler)
 }
 
-func (u UpdateIntegrationRequestConfigs) MarshalJSON() ([]byte, error) {
-	switch u.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "hmacIntegrationConfigs":
-		return json.Marshal(u.HmacIntegrationConfigs)
-	case "apiKeyIntegrationConfigs":
-		return json.Marshal(u.ApiKeyIntegrationConfigs)
-	case "handledApiKeyIntegrationConfigs":
-		return json.Marshal(u.HandledApiKeyIntegrationConfigs)
-	case "handledHmacConfigs":
-		return json.Marshal(u.HandledHmacConfigs)
-	case "basicAuthIntegrationConfigs":
-		return json.Marshal(u.BasicAuthIntegrationConfigs)
-	case "shopifyIntegrationConfigs":
-		return json.Marshal(u.ShopifyIntegrationConfigs)
-	case "updateIntegrationRequestConfigsSix":
-		return json.Marshal(u.UpdateIntegrationRequestConfigsSix)
+// The verification configs for AWS SNS. Only included if the ?include=verification.configs query param is present
+type VerificationAwssnsConfigs struct {
+}
+
+type VerificationBasicAuth struct {
+	Configs *VerificationBasicAuthConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationBasicAuth) Type() string {
+	return v.type_
+}
+
+func (v *VerificationBasicAuth) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationBasicAuth
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
+	*v = VerificationBasicAuth(value)
+	v.type_ = "basic_auth"
+	return nil
 }
 
-type UpdateIntegrationRequestConfigsVisitor interface {
-	VisitHmacIntegrationConfigs(*HmacIntegrationConfigs) error
-	VisitApiKeyIntegrationConfigs(*ApiKeyIntegrationConfigs) error
-	VisitHandledApiKeyIntegrationConfigs(*HandledApiKeyIntegrationConfigs) error
-	VisitHandledHmacConfigs(*HandledHmacConfigs) error
-	VisitBasicAuthIntegrationConfigs(*BasicAuthIntegrationConfigs) error
-	VisitShopifyIntegrationConfigs(*ShopifyIntegrationConfigs) error
-	VisitUpdateIntegrationRequestConfigsSix(*UpdateIntegrationRequestConfigsSix) error
-}
-
-func (u *UpdateIntegrationRequestConfigs) Accept(visitor UpdateIntegrationRequestConfigsVisitor) error {
-	switch u.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "hmacIntegrationConfigs":
-		return visitor.VisitHmacIntegrationConfigs(u.HmacIntegrationConfigs)
-	case "apiKeyIntegrationConfigs":
-		return visitor.VisitApiKeyIntegrationConfigs(u.ApiKeyIntegrationConfigs)
-	case "handledApiKeyIntegrationConfigs":
-		return visitor.VisitHandledApiKeyIntegrationConfigs(u.HandledApiKeyIntegrationConfigs)
-	case "handledHmacConfigs":
-		return visitor.VisitHandledHmacConfigs(u.HandledHmacConfigs)
-	case "basicAuthIntegrationConfigs":
-		return visitor.VisitBasicAuthIntegrationConfigs(u.BasicAuthIntegrationConfigs)
-	case "shopifyIntegrationConfigs":
-		return visitor.VisitShopifyIntegrationConfigs(u.ShopifyIntegrationConfigs)
-	case "updateIntegrationRequestConfigsSix":
-		return visitor.VisitUpdateIntegrationRequestConfigsSix(u.UpdateIntegrationRequestConfigsSix)
+func (v *VerificationBasicAuth) MarshalJSON() ([]byte, error) {
+	type embed VerificationBasicAuth
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "basic_auth",
 	}
+	return json.Marshal(marshaler)
 }
 
-type UpdateIntegrationRequestConfigsSix struct {
+// The verification configs for Basic Auth. Only included if the ?include=verification.configs query param is present
+type VerificationBasicAuthConfigs struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
 }
 
-// New status
-type UpdateIssueRequestStatus string
+type VerificationCommercelayer struct {
+	Configs *VerificationCommercelayerConfigs `json:"configs,omitempty"`
+	type_   string
+}
 
-const (
-	UpdateIssueRequestStatusOpened       UpdateIssueRequestStatus = "OPENED"
-	UpdateIssueRequestStatusIgnored      UpdateIssueRequestStatus = "IGNORED"
-	UpdateIssueRequestStatusAcknowledged UpdateIssueRequestStatus = "ACKNOWLEDGED"
-	UpdateIssueRequestStatusResolved     UpdateIssueRequestStatus = "RESOLVED"
-)
+func (v *VerificationCommercelayer) Type() string {
+	return v.type_
+}
 
-func NewUpdateIssueRequestStatusFromString(s string) (UpdateIssueRequestStatus, error) {
-	switch s {
-	case "OPENED":
-		return UpdateIssueRequestStatusOpened, nil
-	case "IGNORED":
-		return UpdateIssueRequestStatusIgnored, nil
-	case "ACKNOWLEDGED":
-		return UpdateIssueRequestStatusAcknowledged, nil
-	case "RESOLVED":
-		return UpdateIssueRequestStatusResolved, nil
+func (v *VerificationCommercelayer) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationCommercelayer
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	var t UpdateIssueRequestStatus
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+	*v = VerificationCommercelayer(value)
+	v.type_ = "commercelayer"
+	return nil
 }
 
-func (u UpdateIssueRequestStatus) Ptr() *UpdateIssueRequestStatus {
-	return &u
-}
-
-// Configuration object for the specific issue type selected
-type UpdateIssueTriggerRequestConfigs struct {
-	typeName                          string
-	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
-	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
-	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
-}
-
-func NewUpdateIssueTriggerRequestConfigsFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *UpdateIssueTriggerRequestConfigs {
-	return &UpdateIssueTriggerRequestConfigs{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
-}
-
-func NewUpdateIssueTriggerRequestConfigsFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *UpdateIssueTriggerRequestConfigs {
-	return &UpdateIssueTriggerRequestConfigs{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
-}
-
-func NewUpdateIssueTriggerRequestConfigsFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *UpdateIssueTriggerRequestConfigs {
-	return &UpdateIssueTriggerRequestConfigs{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
-}
-
-func (u *UpdateIssueTriggerRequestConfigs) UnmarshalJSON(data []byte) error {
-	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
-	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
-		u.typeName = "issueTriggerDeliveryConfigs"
-		u.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
-		return nil
+func (v *VerificationCommercelayer) MarshalJSON() ([]byte, error) {
+	type embed VerificationCommercelayer
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "commercelayer",
 	}
-	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
-	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
-		u.typeName = "issueTriggerTransformationConfigs"
-		u.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
-		return nil
-	}
-	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
-	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
-		u.typeName = "issueTriggerBackpressureConfigs"
-		u.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, u)
+	return json.Marshal(marshaler)
 }
 
-func (u UpdateIssueTriggerRequestConfigs) MarshalJSON() ([]byte, error) {
-	switch u.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "issueTriggerDeliveryConfigs":
-		return json.Marshal(u.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
-		return json.Marshal(u.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
-		return json.Marshal(u.IssueTriggerBackpressureConfigs)
-	}
-}
-
-type UpdateIssueTriggerRequestConfigsVisitor interface {
-	VisitIssueTriggerDeliveryConfigs(*IssueTriggerDeliveryConfigs) error
-	VisitIssueTriggerTransformationConfigs(*IssueTriggerTransformationConfigs) error
-	VisitIssueTriggerBackpressureConfigs(*IssueTriggerBackpressureConfigs) error
-}
-
-func (u *UpdateIssueTriggerRequestConfigs) Accept(visitor UpdateIssueTriggerRequestConfigsVisitor) error {
-	switch u.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "issueTriggerDeliveryConfigs":
-		return visitor.VisitIssueTriggerDeliveryConfigs(u.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
-		return visitor.VisitIssueTriggerTransformationConfigs(u.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
-		return visitor.VisitIssueTriggerBackpressureConfigs(u.IssueTriggerBackpressureConfigs)
-	}
-}
-
-type UpdateTransformationRequestEnvValue struct {
-	typeName string
-	String   string
-	Double   float64
-}
-
-func NewUpdateTransformationRequestEnvValueFromString(value string) *UpdateTransformationRequestEnvValue {
-	return &UpdateTransformationRequestEnvValue{typeName: "string", String: value}
-}
-
-func NewUpdateTransformationRequestEnvValueFromDouble(value float64) *UpdateTransformationRequestEnvValue {
-	return &UpdateTransformationRequestEnvValue{typeName: "double", Double: value}
-}
-
-func (u *UpdateTransformationRequestEnvValue) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		u.typeName = "string"
-		u.String = valueString
-		return nil
-	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		u.typeName = "double"
-		u.Double = valueDouble
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, u)
-}
-
-func (u UpdateTransformationRequestEnvValue) MarshalJSON() ([]byte, error) {
-	switch u.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "string":
-		return json.Marshal(u.String)
-	case "double":
-		return json.Marshal(u.Double)
-	}
-}
-
-type UpdateTransformationRequestEnvValueVisitor interface {
-	VisitString(string) error
-	VisitDouble(float64) error
-}
-
-func (u *UpdateTransformationRequestEnvValue) Accept(visitor UpdateTransformationRequestEnvValueVisitor) error {
-	switch u.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "string":
-		return visitor.VisitString(u.String)
-	case "double":
-		return visitor.VisitDouble(u.Double)
-	}
-}
-
-// Destination input object
-type UpsertConnectionRequestDestination struct {
-	// Name for the destination <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name string `json:"name"`
-	// Description for the destination
-	Description *string `json:"description,omitempty"`
-	// Endpoint of the destination
-	Url *string `json:"url,omitempty"`
-	// Path for the CLI destination
-	CliPath *string `json:"cli_path,omitempty"`
-	// Period to rate limit attempts
-	RateLimitPeriod *UpsertConnectionRequestDestinationRateLimitPeriod `json:"rate_limit_period,omitempty"`
-	// Limit event attempts to receive per period
-	RateLimit              *int                         `json:"rate_limit,omitempty"`
-	HttpMethod             *DestinationHttpMethod       `json:"http_method,omitempty"`
-	AuthMethod             *DestinationAuthMethodConfig `json:"auth_method,omitempty"`
-	PathForwardingDisabled *bool                        `json:"path_forwarding_disabled,omitempty"`
-}
-
-// Period to rate limit attempts
-type UpsertConnectionRequestDestinationRateLimitPeriod string
-
-const (
-	UpsertConnectionRequestDestinationRateLimitPeriodSecond UpsertConnectionRequestDestinationRateLimitPeriod = "second"
-	UpsertConnectionRequestDestinationRateLimitPeriodMinute UpsertConnectionRequestDestinationRateLimitPeriod = "minute"
-	UpsertConnectionRequestDestinationRateLimitPeriodHour   UpsertConnectionRequestDestinationRateLimitPeriod = "hour"
-)
-
-func NewUpsertConnectionRequestDestinationRateLimitPeriodFromString(s string) (UpsertConnectionRequestDestinationRateLimitPeriod, error) {
-	switch s {
-	case "second":
-		return UpsertConnectionRequestDestinationRateLimitPeriodSecond, nil
-	case "minute":
-		return UpsertConnectionRequestDestinationRateLimitPeriodMinute, nil
-	case "hour":
-		return UpsertConnectionRequestDestinationRateLimitPeriodHour, nil
-	}
-	var t UpsertConnectionRequestDestinationRateLimitPeriod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (u UpsertConnectionRequestDestinationRateLimitPeriod) Ptr() *UpsertConnectionRequestDestinationRateLimitPeriod {
-	return &u
-}
-
-// Source input object
-type UpsertConnectionRequestSource struct {
-	// A unique name for the source <span style="white-space: nowrap">`<= 155 characters`</span>
-	Name string `json:"name"`
-	// Description for the source
-	Description        *string                  `json:"description,omitempty"`
-	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty"`
-	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty"`
-	Verification       *VerificationConfig      `json:"verification,omitempty"`
-}
-
-// Period to rate limit attempts
-type UpsertDestinationRequestRateLimitPeriod string
-
-const (
-	UpsertDestinationRequestRateLimitPeriodSecond UpsertDestinationRequestRateLimitPeriod = "second"
-	UpsertDestinationRequestRateLimitPeriodMinute UpsertDestinationRequestRateLimitPeriod = "minute"
-	UpsertDestinationRequestRateLimitPeriodHour   UpsertDestinationRequestRateLimitPeriod = "hour"
-)
-
-func NewUpsertDestinationRequestRateLimitPeriodFromString(s string) (UpsertDestinationRequestRateLimitPeriod, error) {
-	switch s {
-	case "second":
-		return UpsertDestinationRequestRateLimitPeriodSecond, nil
-	case "minute":
-		return UpsertDestinationRequestRateLimitPeriodMinute, nil
-	case "hour":
-		return UpsertDestinationRequestRateLimitPeriodHour, nil
-	}
-	var t UpsertDestinationRequestRateLimitPeriod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (u UpsertDestinationRequestRateLimitPeriod) Ptr() *UpsertDestinationRequestRateLimitPeriod {
-	return &u
-}
-
-// Configuration object for the specific issue type selected
-type UpsertIssueTriggerRequestConfigs struct {
-	typeName                          string
-	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
-	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
-	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
-}
-
-func NewUpsertIssueTriggerRequestConfigsFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *UpsertIssueTriggerRequestConfigs {
-	return &UpsertIssueTriggerRequestConfigs{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
-}
-
-func NewUpsertIssueTriggerRequestConfigsFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *UpsertIssueTriggerRequestConfigs {
-	return &UpsertIssueTriggerRequestConfigs{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
-}
-
-func NewUpsertIssueTriggerRequestConfigsFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *UpsertIssueTriggerRequestConfigs {
-	return &UpsertIssueTriggerRequestConfigs{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
-}
-
-func (u *UpsertIssueTriggerRequestConfigs) UnmarshalJSON(data []byte) error {
-	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
-	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
-		u.typeName = "issueTriggerDeliveryConfigs"
-		u.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
-		return nil
-	}
-	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
-	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
-		u.typeName = "issueTriggerTransformationConfigs"
-		u.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
-		return nil
-	}
-	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
-	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
-		u.typeName = "issueTriggerBackpressureConfigs"
-		u.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, u)
-}
-
-func (u UpsertIssueTriggerRequestConfigs) MarshalJSON() ([]byte, error) {
-	switch u.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "issueTriggerDeliveryConfigs":
-		return json.Marshal(u.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
-		return json.Marshal(u.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
-		return json.Marshal(u.IssueTriggerBackpressureConfigs)
-	}
-}
-
-type UpsertIssueTriggerRequestConfigsVisitor interface {
-	VisitIssueTriggerDeliveryConfigs(*IssueTriggerDeliveryConfigs) error
-	VisitIssueTriggerTransformationConfigs(*IssueTriggerTransformationConfigs) error
-	VisitIssueTriggerBackpressureConfigs(*IssueTriggerBackpressureConfigs) error
-}
-
-func (u *UpsertIssueTriggerRequestConfigs) Accept(visitor UpsertIssueTriggerRequestConfigsVisitor) error {
-	switch u.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "issueTriggerDeliveryConfigs":
-		return visitor.VisitIssueTriggerDeliveryConfigs(u.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
-		return visitor.VisitIssueTriggerTransformationConfigs(u.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
-		return visitor.VisitIssueTriggerBackpressureConfigs(u.IssueTriggerBackpressureConfigs)
-	}
-}
-
-type UpsertTransformationRequestEnvValue struct {
-	typeName string
-	String   string
-	Double   float64
-}
-
-func NewUpsertTransformationRequestEnvValueFromString(value string) *UpsertTransformationRequestEnvValue {
-	return &UpsertTransformationRequestEnvValue{typeName: "string", String: value}
-}
-
-func NewUpsertTransformationRequestEnvValueFromDouble(value float64) *UpsertTransformationRequestEnvValue {
-	return &UpsertTransformationRequestEnvValue{typeName: "double", Double: value}
-}
-
-func (u *UpsertTransformationRequestEnvValue) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		u.typeName = "string"
-		u.String = valueString
-		return nil
-	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		u.typeName = "double"
-		u.Double = valueDouble
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, u)
-}
-
-func (u UpsertTransformationRequestEnvValue) MarshalJSON() ([]byte, error) {
-	switch u.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "string":
-		return json.Marshal(u.String)
-	case "double":
-		return json.Marshal(u.Double)
-	}
-}
-
-type UpsertTransformationRequestEnvValueVisitor interface {
-	VisitString(string) error
-	VisitDouble(float64) error
-}
-
-func (u *UpsertTransformationRequestEnvValue) Accept(visitor UpsertTransformationRequestEnvValueVisitor) error {
-	switch u.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "string":
-		return visitor.VisitString(u.String)
-	case "double":
-		return visitor.VisitDouble(u.Double)
-	}
+// The verification configs for Commercelayer. Only included if the ?include=verification.configs query param is present
+type VerificationCommercelayerConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
 // The verification configs for the specific verification type
 type VerificationConfig struct {
-	typeName       string
-	Hmac           *Hmac
-	BasicAuth      *BasicAuth
-	ApiKey         *ApiKey
-	Twitter        *Twitter
-	Stripe         *Stripe
-	Recharge       *Recharge
-	GitHub         *GitHub
-	Shopify        *Shopify
-	Postmark       *Postmark
-	Typeform       *Typeform
-	Xero           *Xero
-	Svix           *Svix
-	Zoom           *Zoom
-	Akeneo         *Akeneo
-	Adyen          *Adyen
-	GitLab         *GitLab
-	PropertyFinder *PropertyFinder
-	WooCommerce    *WooCommerce
-	Oura           *Oura
-	Commercelayer  *Commercelayer
-	Mailgun        *Mailgun
-	Pipedrive      *Pipedrive
-	SendGrid       *SendGrid
-	WorkOs         *WorkOs
-	Synctera       *Synctera
-	AwsSns         *AwsSns
-	ThreeDEye      *ThreeDEye
+	typeName                   string
+	VerificationHmac           *VerificationHmac
+	VerificationBasicAuth      *VerificationBasicAuth
+	VerificationApiKey         *VerificationApiKey
+	VerificationTwitter        *VerificationTwitter
+	VerificationStripe         *VerificationStripe
+	VerificationRecharge       *VerificationRecharge
+	VerificationGitHub         *VerificationGitHub
+	VerificationShopify        *VerificationShopify
+	VerificationPostmark       *VerificationPostmark
+	VerificationTypeform       *VerificationTypeform
+	VerificationXero           *VerificationXero
+	VerificationSvix           *VerificationSvix
+	VerificationZoom           *VerificationZoom
+	VerificationAkeneo         *VerificationAkeneo
+	VerificationAdyen          *VerificationAdyen
+	VerificationGitLab         *VerificationGitLab
+	VerificationPropertyFinder *VerificationPropertyFinder
+	VerificationWooCommerce    *VerificationWooCommerce
+	VerificationOura           *VerificationOura
+	VerificationCommercelayer  *VerificationCommercelayer
+	VerificationMailgun        *VerificationMailgun
+	VerificationPipedrive      *VerificationPipedrive
+	VerificationSendGrid       *VerificationSendGrid
+	VerificationWorkOs         *VerificationWorkOs
+	VerificationSynctera       *VerificationSynctera
+	VerificationAwssns         *VerificationAwssns
+	Verification3DEye          *Verification3DEye
 }
 
-func NewVerificationConfigFromHmac(value *Hmac) *VerificationConfig {
-	return &VerificationConfig{typeName: "hmac", Hmac: value}
+func NewVerificationConfigFromVerificationHmac(value *VerificationHmac) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationHmac", VerificationHmac: value}
 }
 
-func NewVerificationConfigFromBasicAuth(value *BasicAuth) *VerificationConfig {
-	return &VerificationConfig{typeName: "basicAuth", BasicAuth: value}
+func NewVerificationConfigFromVerificationBasicAuth(value *VerificationBasicAuth) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationBasicAuth", VerificationBasicAuth: value}
 }
 
-func NewVerificationConfigFromApiKey(value *ApiKey) *VerificationConfig {
-	return &VerificationConfig{typeName: "apiKey", ApiKey: value}
+func NewVerificationConfigFromVerificationApiKey(value *VerificationApiKey) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationApiKey", VerificationApiKey: value}
 }
 
-func NewVerificationConfigFromTwitter(value *Twitter) *VerificationConfig {
-	return &VerificationConfig{typeName: "twitter", Twitter: value}
+func NewVerificationConfigFromVerificationTwitter(value *VerificationTwitter) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationTwitter", VerificationTwitter: value}
 }
 
-func NewVerificationConfigFromStripe(value *Stripe) *VerificationConfig {
-	return &VerificationConfig{typeName: "stripe", Stripe: value}
+func NewVerificationConfigFromVerificationStripe(value *VerificationStripe) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationStripe", VerificationStripe: value}
 }
 
-func NewVerificationConfigFromRecharge(value *Recharge) *VerificationConfig {
-	return &VerificationConfig{typeName: "recharge", Recharge: value}
+func NewVerificationConfigFromVerificationRecharge(value *VerificationRecharge) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationRecharge", VerificationRecharge: value}
 }
 
-func NewVerificationConfigFromGitHub(value *GitHub) *VerificationConfig {
-	return &VerificationConfig{typeName: "gitHub", GitHub: value}
+func NewVerificationConfigFromVerificationGitHub(value *VerificationGitHub) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationGitHub", VerificationGitHub: value}
 }
 
-func NewVerificationConfigFromShopify(value *Shopify) *VerificationConfig {
-	return &VerificationConfig{typeName: "shopify", Shopify: value}
+func NewVerificationConfigFromVerificationShopify(value *VerificationShopify) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationShopify", VerificationShopify: value}
 }
 
-func NewVerificationConfigFromPostmark(value *Postmark) *VerificationConfig {
-	return &VerificationConfig{typeName: "postmark", Postmark: value}
+func NewVerificationConfigFromVerificationPostmark(value *VerificationPostmark) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationPostmark", VerificationPostmark: value}
 }
 
-func NewVerificationConfigFromTypeform(value *Typeform) *VerificationConfig {
-	return &VerificationConfig{typeName: "typeform", Typeform: value}
+func NewVerificationConfigFromVerificationTypeform(value *VerificationTypeform) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationTypeform", VerificationTypeform: value}
 }
 
-func NewVerificationConfigFromXero(value *Xero) *VerificationConfig {
-	return &VerificationConfig{typeName: "xero", Xero: value}
+func NewVerificationConfigFromVerificationXero(value *VerificationXero) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationXero", VerificationXero: value}
 }
 
-func NewVerificationConfigFromSvix(value *Svix) *VerificationConfig {
-	return &VerificationConfig{typeName: "svix", Svix: value}
+func NewVerificationConfigFromVerificationSvix(value *VerificationSvix) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationSvix", VerificationSvix: value}
 }
 
-func NewVerificationConfigFromZoom(value *Zoom) *VerificationConfig {
-	return &VerificationConfig{typeName: "zoom", Zoom: value}
+func NewVerificationConfigFromVerificationZoom(value *VerificationZoom) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationZoom", VerificationZoom: value}
 }
 
-func NewVerificationConfigFromAkeneo(value *Akeneo) *VerificationConfig {
-	return &VerificationConfig{typeName: "akeneo", Akeneo: value}
+func NewVerificationConfigFromVerificationAkeneo(value *VerificationAkeneo) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationAkeneo", VerificationAkeneo: value}
 }
 
-func NewVerificationConfigFromAdyen(value *Adyen) *VerificationConfig {
-	return &VerificationConfig{typeName: "adyen", Adyen: value}
+func NewVerificationConfigFromVerificationAdyen(value *VerificationAdyen) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationAdyen", VerificationAdyen: value}
 }
 
-func NewVerificationConfigFromGitLab(value *GitLab) *VerificationConfig {
-	return &VerificationConfig{typeName: "gitLab", GitLab: value}
+func NewVerificationConfigFromVerificationGitLab(value *VerificationGitLab) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationGitLab", VerificationGitLab: value}
 }
 
-func NewVerificationConfigFromPropertyFinder(value *PropertyFinder) *VerificationConfig {
-	return &VerificationConfig{typeName: "propertyFinder", PropertyFinder: value}
+func NewVerificationConfigFromVerificationPropertyFinder(value *VerificationPropertyFinder) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationPropertyFinder", VerificationPropertyFinder: value}
 }
 
-func NewVerificationConfigFromWooCommerce(value *WooCommerce) *VerificationConfig {
-	return &VerificationConfig{typeName: "wooCommerce", WooCommerce: value}
+func NewVerificationConfigFromVerificationWooCommerce(value *VerificationWooCommerce) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationWooCommerce", VerificationWooCommerce: value}
 }
 
-func NewVerificationConfigFromOura(value *Oura) *VerificationConfig {
-	return &VerificationConfig{typeName: "oura", Oura: value}
+func NewVerificationConfigFromVerificationOura(value *VerificationOura) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationOura", VerificationOura: value}
 }
 
-func NewVerificationConfigFromCommercelayer(value *Commercelayer) *VerificationConfig {
-	return &VerificationConfig{typeName: "commercelayer", Commercelayer: value}
+func NewVerificationConfigFromVerificationCommercelayer(value *VerificationCommercelayer) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationCommercelayer", VerificationCommercelayer: value}
 }
 
-func NewVerificationConfigFromMailgun(value *Mailgun) *VerificationConfig {
-	return &VerificationConfig{typeName: "mailgun", Mailgun: value}
+func NewVerificationConfigFromVerificationMailgun(value *VerificationMailgun) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationMailgun", VerificationMailgun: value}
 }
 
-func NewVerificationConfigFromPipedrive(value *Pipedrive) *VerificationConfig {
-	return &VerificationConfig{typeName: "pipedrive", Pipedrive: value}
+func NewVerificationConfigFromVerificationPipedrive(value *VerificationPipedrive) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationPipedrive", VerificationPipedrive: value}
 }
 
-func NewVerificationConfigFromSendGrid(value *SendGrid) *VerificationConfig {
-	return &VerificationConfig{typeName: "sendGrid", SendGrid: value}
+func NewVerificationConfigFromVerificationSendGrid(value *VerificationSendGrid) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationSendGrid", VerificationSendGrid: value}
 }
 
-func NewVerificationConfigFromWorkOs(value *WorkOs) *VerificationConfig {
-	return &VerificationConfig{typeName: "workOs", WorkOs: value}
+func NewVerificationConfigFromVerificationWorkOs(value *VerificationWorkOs) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationWorkOs", VerificationWorkOs: value}
 }
 
-func NewVerificationConfigFromSynctera(value *Synctera) *VerificationConfig {
-	return &VerificationConfig{typeName: "synctera", Synctera: value}
+func NewVerificationConfigFromVerificationSynctera(value *VerificationSynctera) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationSynctera", VerificationSynctera: value}
 }
 
-func NewVerificationConfigFromAwsSns(value *AwsSns) *VerificationConfig {
-	return &VerificationConfig{typeName: "awsSns", AwsSns: value}
+func NewVerificationConfigFromVerificationAwssns(value *VerificationAwssns) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationAwssns", VerificationAwssns: value}
 }
 
-func NewVerificationConfigFromThreeDEye(value *ThreeDEye) *VerificationConfig {
-	return &VerificationConfig{typeName: "threeDEye", ThreeDEye: value}
+func NewVerificationConfigFromVerification3DEye(value *Verification3DEye) *VerificationConfig {
+	return &VerificationConfig{typeName: "verification3DEye", Verification3DEye: value}
 }
 
 func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
-	valueHmac := new(Hmac)
-	if err := json.Unmarshal(data, &valueHmac); err == nil {
-		v.typeName = "hmac"
-		v.Hmac = valueHmac
+	valueVerificationHmac := new(VerificationHmac)
+	if err := json.Unmarshal(data, &valueVerificationHmac); err == nil {
+		v.typeName = "verificationHmac"
+		v.VerificationHmac = valueVerificationHmac
 		return nil
 	}
-	valueBasicAuth := new(BasicAuth)
-	if err := json.Unmarshal(data, &valueBasicAuth); err == nil {
-		v.typeName = "basicAuth"
-		v.BasicAuth = valueBasicAuth
+	valueVerificationBasicAuth := new(VerificationBasicAuth)
+	if err := json.Unmarshal(data, &valueVerificationBasicAuth); err == nil {
+		v.typeName = "verificationBasicAuth"
+		v.VerificationBasicAuth = valueVerificationBasicAuth
 		return nil
 	}
-	valueApiKey := new(ApiKey)
-	if err := json.Unmarshal(data, &valueApiKey); err == nil {
-		v.typeName = "apiKey"
-		v.ApiKey = valueApiKey
+	valueVerificationApiKey := new(VerificationApiKey)
+	if err := json.Unmarshal(data, &valueVerificationApiKey); err == nil {
+		v.typeName = "verificationApiKey"
+		v.VerificationApiKey = valueVerificationApiKey
 		return nil
 	}
-	valueTwitter := new(Twitter)
-	if err := json.Unmarshal(data, &valueTwitter); err == nil {
-		v.typeName = "twitter"
-		v.Twitter = valueTwitter
+	valueVerificationTwitter := new(VerificationTwitter)
+	if err := json.Unmarshal(data, &valueVerificationTwitter); err == nil {
+		v.typeName = "verificationTwitter"
+		v.VerificationTwitter = valueVerificationTwitter
 		return nil
 	}
-	valueStripe := new(Stripe)
-	if err := json.Unmarshal(data, &valueStripe); err == nil {
-		v.typeName = "stripe"
-		v.Stripe = valueStripe
+	valueVerificationStripe := new(VerificationStripe)
+	if err := json.Unmarshal(data, &valueVerificationStripe); err == nil {
+		v.typeName = "verificationStripe"
+		v.VerificationStripe = valueVerificationStripe
 		return nil
 	}
-	valueRecharge := new(Recharge)
-	if err := json.Unmarshal(data, &valueRecharge); err == nil {
-		v.typeName = "recharge"
-		v.Recharge = valueRecharge
+	valueVerificationRecharge := new(VerificationRecharge)
+	if err := json.Unmarshal(data, &valueVerificationRecharge); err == nil {
+		v.typeName = "verificationRecharge"
+		v.VerificationRecharge = valueVerificationRecharge
 		return nil
 	}
-	valueGitHub := new(GitHub)
-	if err := json.Unmarshal(data, &valueGitHub); err == nil {
-		v.typeName = "gitHub"
-		v.GitHub = valueGitHub
+	valueVerificationGitHub := new(VerificationGitHub)
+	if err := json.Unmarshal(data, &valueVerificationGitHub); err == nil {
+		v.typeName = "verificationGitHub"
+		v.VerificationGitHub = valueVerificationGitHub
 		return nil
 	}
-	valueShopify := new(Shopify)
-	if err := json.Unmarshal(data, &valueShopify); err == nil {
-		v.typeName = "shopify"
-		v.Shopify = valueShopify
+	valueVerificationShopify := new(VerificationShopify)
+	if err := json.Unmarshal(data, &valueVerificationShopify); err == nil {
+		v.typeName = "verificationShopify"
+		v.VerificationShopify = valueVerificationShopify
 		return nil
 	}
-	valuePostmark := new(Postmark)
-	if err := json.Unmarshal(data, &valuePostmark); err == nil {
-		v.typeName = "postmark"
-		v.Postmark = valuePostmark
+	valueVerificationPostmark := new(VerificationPostmark)
+	if err := json.Unmarshal(data, &valueVerificationPostmark); err == nil {
+		v.typeName = "verificationPostmark"
+		v.VerificationPostmark = valueVerificationPostmark
 		return nil
 	}
-	valueTypeform := new(Typeform)
-	if err := json.Unmarshal(data, &valueTypeform); err == nil {
-		v.typeName = "typeform"
-		v.Typeform = valueTypeform
+	valueVerificationTypeform := new(VerificationTypeform)
+	if err := json.Unmarshal(data, &valueVerificationTypeform); err == nil {
+		v.typeName = "verificationTypeform"
+		v.VerificationTypeform = valueVerificationTypeform
 		return nil
 	}
-	valueXero := new(Xero)
-	if err := json.Unmarshal(data, &valueXero); err == nil {
-		v.typeName = "xero"
-		v.Xero = valueXero
+	valueVerificationXero := new(VerificationXero)
+	if err := json.Unmarshal(data, &valueVerificationXero); err == nil {
+		v.typeName = "verificationXero"
+		v.VerificationXero = valueVerificationXero
 		return nil
 	}
-	valueSvix := new(Svix)
-	if err := json.Unmarshal(data, &valueSvix); err == nil {
-		v.typeName = "svix"
-		v.Svix = valueSvix
+	valueVerificationSvix := new(VerificationSvix)
+	if err := json.Unmarshal(data, &valueVerificationSvix); err == nil {
+		v.typeName = "verificationSvix"
+		v.VerificationSvix = valueVerificationSvix
 		return nil
 	}
-	valueZoom := new(Zoom)
-	if err := json.Unmarshal(data, &valueZoom); err == nil {
-		v.typeName = "zoom"
-		v.Zoom = valueZoom
+	valueVerificationZoom := new(VerificationZoom)
+	if err := json.Unmarshal(data, &valueVerificationZoom); err == nil {
+		v.typeName = "verificationZoom"
+		v.VerificationZoom = valueVerificationZoom
 		return nil
 	}
-	valueAkeneo := new(Akeneo)
-	if err := json.Unmarshal(data, &valueAkeneo); err == nil {
-		v.typeName = "akeneo"
-		v.Akeneo = valueAkeneo
+	valueVerificationAkeneo := new(VerificationAkeneo)
+	if err := json.Unmarshal(data, &valueVerificationAkeneo); err == nil {
+		v.typeName = "verificationAkeneo"
+		v.VerificationAkeneo = valueVerificationAkeneo
 		return nil
 	}
-	valueAdyen := new(Adyen)
-	if err := json.Unmarshal(data, &valueAdyen); err == nil {
-		v.typeName = "adyen"
-		v.Adyen = valueAdyen
+	valueVerificationAdyen := new(VerificationAdyen)
+	if err := json.Unmarshal(data, &valueVerificationAdyen); err == nil {
+		v.typeName = "verificationAdyen"
+		v.VerificationAdyen = valueVerificationAdyen
 		return nil
 	}
-	valueGitLab := new(GitLab)
-	if err := json.Unmarshal(data, &valueGitLab); err == nil {
-		v.typeName = "gitLab"
-		v.GitLab = valueGitLab
+	valueVerificationGitLab := new(VerificationGitLab)
+	if err := json.Unmarshal(data, &valueVerificationGitLab); err == nil {
+		v.typeName = "verificationGitLab"
+		v.VerificationGitLab = valueVerificationGitLab
 		return nil
 	}
-	valuePropertyFinder := new(PropertyFinder)
-	if err := json.Unmarshal(data, &valuePropertyFinder); err == nil {
-		v.typeName = "propertyFinder"
-		v.PropertyFinder = valuePropertyFinder
+	valueVerificationPropertyFinder := new(VerificationPropertyFinder)
+	if err := json.Unmarshal(data, &valueVerificationPropertyFinder); err == nil {
+		v.typeName = "verificationPropertyFinder"
+		v.VerificationPropertyFinder = valueVerificationPropertyFinder
 		return nil
 	}
-	valueWooCommerce := new(WooCommerce)
-	if err := json.Unmarshal(data, &valueWooCommerce); err == nil {
-		v.typeName = "wooCommerce"
-		v.WooCommerce = valueWooCommerce
+	valueVerificationWooCommerce := new(VerificationWooCommerce)
+	if err := json.Unmarshal(data, &valueVerificationWooCommerce); err == nil {
+		v.typeName = "verificationWooCommerce"
+		v.VerificationWooCommerce = valueVerificationWooCommerce
 		return nil
 	}
-	valueOura := new(Oura)
-	if err := json.Unmarshal(data, &valueOura); err == nil {
-		v.typeName = "oura"
-		v.Oura = valueOura
+	valueVerificationOura := new(VerificationOura)
+	if err := json.Unmarshal(data, &valueVerificationOura); err == nil {
+		v.typeName = "verificationOura"
+		v.VerificationOura = valueVerificationOura
 		return nil
 	}
-	valueCommercelayer := new(Commercelayer)
-	if err := json.Unmarshal(data, &valueCommercelayer); err == nil {
-		v.typeName = "commercelayer"
-		v.Commercelayer = valueCommercelayer
+	valueVerificationCommercelayer := new(VerificationCommercelayer)
+	if err := json.Unmarshal(data, &valueVerificationCommercelayer); err == nil {
+		v.typeName = "verificationCommercelayer"
+		v.VerificationCommercelayer = valueVerificationCommercelayer
 		return nil
 	}
-	valueMailgun := new(Mailgun)
-	if err := json.Unmarshal(data, &valueMailgun); err == nil {
-		v.typeName = "mailgun"
-		v.Mailgun = valueMailgun
+	valueVerificationMailgun := new(VerificationMailgun)
+	if err := json.Unmarshal(data, &valueVerificationMailgun); err == nil {
+		v.typeName = "verificationMailgun"
+		v.VerificationMailgun = valueVerificationMailgun
 		return nil
 	}
-	valuePipedrive := new(Pipedrive)
-	if err := json.Unmarshal(data, &valuePipedrive); err == nil {
-		v.typeName = "pipedrive"
-		v.Pipedrive = valuePipedrive
+	valueVerificationPipedrive := new(VerificationPipedrive)
+	if err := json.Unmarshal(data, &valueVerificationPipedrive); err == nil {
+		v.typeName = "verificationPipedrive"
+		v.VerificationPipedrive = valueVerificationPipedrive
 		return nil
 	}
-	valueSendGrid := new(SendGrid)
-	if err := json.Unmarshal(data, &valueSendGrid); err == nil {
-		v.typeName = "sendGrid"
-		v.SendGrid = valueSendGrid
+	valueVerificationSendGrid := new(VerificationSendGrid)
+	if err := json.Unmarshal(data, &valueVerificationSendGrid); err == nil {
+		v.typeName = "verificationSendGrid"
+		v.VerificationSendGrid = valueVerificationSendGrid
 		return nil
 	}
-	valueWorkOs := new(WorkOs)
-	if err := json.Unmarshal(data, &valueWorkOs); err == nil {
-		v.typeName = "workOs"
-		v.WorkOs = valueWorkOs
+	valueVerificationWorkOs := new(VerificationWorkOs)
+	if err := json.Unmarshal(data, &valueVerificationWorkOs); err == nil {
+		v.typeName = "verificationWorkOs"
+		v.VerificationWorkOs = valueVerificationWorkOs
 		return nil
 	}
-	valueSynctera := new(Synctera)
-	if err := json.Unmarshal(data, &valueSynctera); err == nil {
-		v.typeName = "synctera"
-		v.Synctera = valueSynctera
+	valueVerificationSynctera := new(VerificationSynctera)
+	if err := json.Unmarshal(data, &valueVerificationSynctera); err == nil {
+		v.typeName = "verificationSynctera"
+		v.VerificationSynctera = valueVerificationSynctera
 		return nil
 	}
-	valueAwsSns := new(AwsSns)
-	if err := json.Unmarshal(data, &valueAwsSns); err == nil {
-		v.typeName = "awsSns"
-		v.AwsSns = valueAwsSns
+	valueVerificationAwssns := new(VerificationAwssns)
+	if err := json.Unmarshal(data, &valueVerificationAwssns); err == nil {
+		v.typeName = "verificationAwssns"
+		v.VerificationAwssns = valueVerificationAwssns
 		return nil
 	}
-	valueThreeDEye := new(ThreeDEye)
-	if err := json.Unmarshal(data, &valueThreeDEye); err == nil {
-		v.typeName = "threeDEye"
-		v.ThreeDEye = valueThreeDEye
+	valueVerification3DEye := new(Verification3DEye)
+	if err := json.Unmarshal(data, &valueVerification3DEye); err == nil {
+		v.typeName = "verification3DEye"
+		v.Verification3DEye = valueVerification3DEye
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
@@ -8804,298 +7915,968 @@ func (v VerificationConfig) MarshalJSON() ([]byte, error) {
 	switch v.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "hmac":
-		return json.Marshal(v.Hmac)
-	case "basicAuth":
-		return json.Marshal(v.BasicAuth)
-	case "apiKey":
-		return json.Marshal(v.ApiKey)
-	case "twitter":
-		return json.Marshal(v.Twitter)
-	case "stripe":
-		return json.Marshal(v.Stripe)
-	case "recharge":
-		return json.Marshal(v.Recharge)
-	case "gitHub":
-		return json.Marshal(v.GitHub)
-	case "shopify":
-		return json.Marshal(v.Shopify)
-	case "postmark":
-		return json.Marshal(v.Postmark)
-	case "typeform":
-		return json.Marshal(v.Typeform)
-	case "xero":
-		return json.Marshal(v.Xero)
-	case "svix":
-		return json.Marshal(v.Svix)
-	case "zoom":
-		return json.Marshal(v.Zoom)
-	case "akeneo":
-		return json.Marshal(v.Akeneo)
-	case "adyen":
-		return json.Marshal(v.Adyen)
-	case "gitLab":
-		return json.Marshal(v.GitLab)
-	case "propertyFinder":
-		return json.Marshal(v.PropertyFinder)
-	case "wooCommerce":
-		return json.Marshal(v.WooCommerce)
-	case "oura":
-		return json.Marshal(v.Oura)
-	case "commercelayer":
-		return json.Marshal(v.Commercelayer)
-	case "mailgun":
-		return json.Marshal(v.Mailgun)
-	case "pipedrive":
-		return json.Marshal(v.Pipedrive)
-	case "sendGrid":
-		return json.Marshal(v.SendGrid)
-	case "workOs":
-		return json.Marshal(v.WorkOs)
-	case "synctera":
-		return json.Marshal(v.Synctera)
-	case "awsSns":
-		return json.Marshal(v.AwsSns)
-	case "threeDEye":
-		return json.Marshal(v.ThreeDEye)
+	case "verificationHmac":
+		return json.Marshal(v.VerificationHmac)
+	case "verificationBasicAuth":
+		return json.Marshal(v.VerificationBasicAuth)
+	case "verificationApiKey":
+		return json.Marshal(v.VerificationApiKey)
+	case "verificationTwitter":
+		return json.Marshal(v.VerificationTwitter)
+	case "verificationStripe":
+		return json.Marshal(v.VerificationStripe)
+	case "verificationRecharge":
+		return json.Marshal(v.VerificationRecharge)
+	case "verificationGitHub":
+		return json.Marshal(v.VerificationGitHub)
+	case "verificationShopify":
+		return json.Marshal(v.VerificationShopify)
+	case "verificationPostmark":
+		return json.Marshal(v.VerificationPostmark)
+	case "verificationTypeform":
+		return json.Marshal(v.VerificationTypeform)
+	case "verificationXero":
+		return json.Marshal(v.VerificationXero)
+	case "verificationSvix":
+		return json.Marshal(v.VerificationSvix)
+	case "verificationZoom":
+		return json.Marshal(v.VerificationZoom)
+	case "verificationAkeneo":
+		return json.Marshal(v.VerificationAkeneo)
+	case "verificationAdyen":
+		return json.Marshal(v.VerificationAdyen)
+	case "verificationGitLab":
+		return json.Marshal(v.VerificationGitLab)
+	case "verificationPropertyFinder":
+		return json.Marshal(v.VerificationPropertyFinder)
+	case "verificationWooCommerce":
+		return json.Marshal(v.VerificationWooCommerce)
+	case "verificationOura":
+		return json.Marshal(v.VerificationOura)
+	case "verificationCommercelayer":
+		return json.Marshal(v.VerificationCommercelayer)
+	case "verificationMailgun":
+		return json.Marshal(v.VerificationMailgun)
+	case "verificationPipedrive":
+		return json.Marshal(v.VerificationPipedrive)
+	case "verificationSendGrid":
+		return json.Marshal(v.VerificationSendGrid)
+	case "verificationWorkOs":
+		return json.Marshal(v.VerificationWorkOs)
+	case "verificationSynctera":
+		return json.Marshal(v.VerificationSynctera)
+	case "verificationAwssns":
+		return json.Marshal(v.VerificationAwssns)
+	case "verification3DEye":
+		return json.Marshal(v.Verification3DEye)
 	}
 }
 
 type VerificationConfigVisitor interface {
-	VisitHmac(*Hmac) error
-	VisitBasicAuth(*BasicAuth) error
-	VisitApiKey(*ApiKey) error
-	VisitTwitter(*Twitter) error
-	VisitStripe(*Stripe) error
-	VisitRecharge(*Recharge) error
-	VisitGitHub(*GitHub) error
-	VisitShopify(*Shopify) error
-	VisitPostmark(*Postmark) error
-	VisitTypeform(*Typeform) error
-	VisitXero(*Xero) error
-	VisitSvix(*Svix) error
-	VisitZoom(*Zoom) error
-	VisitAkeneo(*Akeneo) error
-	VisitAdyen(*Adyen) error
-	VisitGitLab(*GitLab) error
-	VisitPropertyFinder(*PropertyFinder) error
-	VisitWooCommerce(*WooCommerce) error
-	VisitOura(*Oura) error
-	VisitCommercelayer(*Commercelayer) error
-	VisitMailgun(*Mailgun) error
-	VisitPipedrive(*Pipedrive) error
-	VisitSendGrid(*SendGrid) error
-	VisitWorkOs(*WorkOs) error
-	VisitSynctera(*Synctera) error
-	VisitAwsSns(*AwsSns) error
-	VisitThreeDEye(*ThreeDEye) error
+	VisitVerificationHmac(*VerificationHmac) error
+	VisitVerificationBasicAuth(*VerificationBasicAuth) error
+	VisitVerificationApiKey(*VerificationApiKey) error
+	VisitVerificationTwitter(*VerificationTwitter) error
+	VisitVerificationStripe(*VerificationStripe) error
+	VisitVerificationRecharge(*VerificationRecharge) error
+	VisitVerificationGitHub(*VerificationGitHub) error
+	VisitVerificationShopify(*VerificationShopify) error
+	VisitVerificationPostmark(*VerificationPostmark) error
+	VisitVerificationTypeform(*VerificationTypeform) error
+	VisitVerificationXero(*VerificationXero) error
+	VisitVerificationSvix(*VerificationSvix) error
+	VisitVerificationZoom(*VerificationZoom) error
+	VisitVerificationAkeneo(*VerificationAkeneo) error
+	VisitVerificationAdyen(*VerificationAdyen) error
+	VisitVerificationGitLab(*VerificationGitLab) error
+	VisitVerificationPropertyFinder(*VerificationPropertyFinder) error
+	VisitVerificationWooCommerce(*VerificationWooCommerce) error
+	VisitVerificationOura(*VerificationOura) error
+	VisitVerificationCommercelayer(*VerificationCommercelayer) error
+	VisitVerificationMailgun(*VerificationMailgun) error
+	VisitVerificationPipedrive(*VerificationPipedrive) error
+	VisitVerificationSendGrid(*VerificationSendGrid) error
+	VisitVerificationWorkOs(*VerificationWorkOs) error
+	VisitVerificationSynctera(*VerificationSynctera) error
+	VisitVerificationAwssns(*VerificationAwssns) error
+	VisitVerification3DEye(*Verification3DEye) error
 }
 
 func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
 	switch v.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "hmac":
-		return visitor.VisitHmac(v.Hmac)
-	case "basicAuth":
-		return visitor.VisitBasicAuth(v.BasicAuth)
-	case "apiKey":
-		return visitor.VisitApiKey(v.ApiKey)
-	case "twitter":
-		return visitor.VisitTwitter(v.Twitter)
-	case "stripe":
-		return visitor.VisitStripe(v.Stripe)
-	case "recharge":
-		return visitor.VisitRecharge(v.Recharge)
-	case "gitHub":
-		return visitor.VisitGitHub(v.GitHub)
-	case "shopify":
-		return visitor.VisitShopify(v.Shopify)
-	case "postmark":
-		return visitor.VisitPostmark(v.Postmark)
-	case "typeform":
-		return visitor.VisitTypeform(v.Typeform)
-	case "xero":
-		return visitor.VisitXero(v.Xero)
-	case "svix":
-		return visitor.VisitSvix(v.Svix)
-	case "zoom":
-		return visitor.VisitZoom(v.Zoom)
-	case "akeneo":
-		return visitor.VisitAkeneo(v.Akeneo)
-	case "adyen":
-		return visitor.VisitAdyen(v.Adyen)
-	case "gitLab":
-		return visitor.VisitGitLab(v.GitLab)
-	case "propertyFinder":
-		return visitor.VisitPropertyFinder(v.PropertyFinder)
-	case "wooCommerce":
-		return visitor.VisitWooCommerce(v.WooCommerce)
-	case "oura":
-		return visitor.VisitOura(v.Oura)
-	case "commercelayer":
-		return visitor.VisitCommercelayer(v.Commercelayer)
-	case "mailgun":
-		return visitor.VisitMailgun(v.Mailgun)
-	case "pipedrive":
-		return visitor.VisitPipedrive(v.Pipedrive)
-	case "sendGrid":
-		return visitor.VisitSendGrid(v.SendGrid)
-	case "workOs":
-		return visitor.VisitWorkOs(v.WorkOs)
-	case "synctera":
-		return visitor.VisitSynctera(v.Synctera)
-	case "awsSns":
-		return visitor.VisitAwsSns(v.AwsSns)
-	case "threeDEye":
-		return visitor.VisitThreeDEye(v.ThreeDEye)
+	case "verificationHmac":
+		return visitor.VisitVerificationHmac(v.VerificationHmac)
+	case "verificationBasicAuth":
+		return visitor.VisitVerificationBasicAuth(v.VerificationBasicAuth)
+	case "verificationApiKey":
+		return visitor.VisitVerificationApiKey(v.VerificationApiKey)
+	case "verificationTwitter":
+		return visitor.VisitVerificationTwitter(v.VerificationTwitter)
+	case "verificationStripe":
+		return visitor.VisitVerificationStripe(v.VerificationStripe)
+	case "verificationRecharge":
+		return visitor.VisitVerificationRecharge(v.VerificationRecharge)
+	case "verificationGitHub":
+		return visitor.VisitVerificationGitHub(v.VerificationGitHub)
+	case "verificationShopify":
+		return visitor.VisitVerificationShopify(v.VerificationShopify)
+	case "verificationPostmark":
+		return visitor.VisitVerificationPostmark(v.VerificationPostmark)
+	case "verificationTypeform":
+		return visitor.VisitVerificationTypeform(v.VerificationTypeform)
+	case "verificationXero":
+		return visitor.VisitVerificationXero(v.VerificationXero)
+	case "verificationSvix":
+		return visitor.VisitVerificationSvix(v.VerificationSvix)
+	case "verificationZoom":
+		return visitor.VisitVerificationZoom(v.VerificationZoom)
+	case "verificationAkeneo":
+		return visitor.VisitVerificationAkeneo(v.VerificationAkeneo)
+	case "verificationAdyen":
+		return visitor.VisitVerificationAdyen(v.VerificationAdyen)
+	case "verificationGitLab":
+		return visitor.VisitVerificationGitLab(v.VerificationGitLab)
+	case "verificationPropertyFinder":
+		return visitor.VisitVerificationPropertyFinder(v.VerificationPropertyFinder)
+	case "verificationWooCommerce":
+		return visitor.VisitVerificationWooCommerce(v.VerificationWooCommerce)
+	case "verificationOura":
+		return visitor.VisitVerificationOura(v.VerificationOura)
+	case "verificationCommercelayer":
+		return visitor.VisitVerificationCommercelayer(v.VerificationCommercelayer)
+	case "verificationMailgun":
+		return visitor.VisitVerificationMailgun(v.VerificationMailgun)
+	case "verificationPipedrive":
+		return visitor.VisitVerificationPipedrive(v.VerificationPipedrive)
+	case "verificationSendGrid":
+		return visitor.VisitVerificationSendGrid(v.VerificationSendGrid)
+	case "verificationWorkOs":
+		return visitor.VisitVerificationWorkOs(v.VerificationWorkOs)
+	case "verificationSynctera":
+		return visitor.VisitVerificationSynctera(v.VerificationSynctera)
+	case "verificationAwssns":
+		return visitor.VisitVerificationAwssns(v.VerificationAwssns)
+	case "verification3DEye":
+		return visitor.VisitVerification3DEye(v.Verification3DEye)
 	}
 }
 
-type WooCommerce struct {
-	Configs *WooCommerceConfigs `json:"configs,omitempty"`
+type VerificationGitHub struct {
+	Configs *VerificationGitHubConfigs `json:"configs,omitempty"`
 	type_   string
 }
 
-func (w *WooCommerce) Type() string {
-	return w.type_
+func (v *VerificationGitHub) Type() string {
+	return v.type_
 }
 
-func (w *WooCommerce) UnmarshalJSON(data []byte) error {
-	type unmarshaler WooCommerce
+func (v *VerificationGitHub) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationGitHub
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*w = WooCommerce(value)
-	w.type_ = "woocommerce"
+	*v = VerificationGitHub(value)
+	v.type_ = "github"
 	return nil
 }
 
-func (w *WooCommerce) MarshalJSON() ([]byte, error) {
-	type embed WooCommerce
+func (v *VerificationGitHub) MarshalJSON() ([]byte, error) {
+	type embed VerificationGitHub
 	var marshaler = struct {
 		embed
 		Type string `json:"type"`
 	}{
-		embed: embed(*w),
+		embed: embed(*v),
+		Type:  "github",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for GitHub. Only included if the ?include=verification.configs query param is present
+type VerificationGitHubConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationGitLab struct {
+	Configs *VerificationGitLabConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationGitLab) Type() string {
+	return v.type_
+}
+
+func (v *VerificationGitLab) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationGitLab
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationGitLab(value)
+	v.type_ = "gitlab"
+	return nil
+}
+
+func (v *VerificationGitLab) MarshalJSON() ([]byte, error) {
+	type embed VerificationGitLab
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "gitlab",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for GitLab. Only included if the ?include=verification.configs query param is present
+type VerificationGitLabConfigs struct {
+	ApiKey string `json:"api_key"`
+}
+
+type VerificationHmac struct {
+	Configs *VerificationHmacConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationHmac) Type() string {
+	return v.type_
+}
+
+func (v *VerificationHmac) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationHmac
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationHmac(value)
+	v.type_ = "hmac"
+	return nil
+}
+
+func (v *VerificationHmac) MarshalJSON() ([]byte, error) {
+	type embed VerificationHmac
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "hmac",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for HMAC. Only included if the ?include=verification.configs query param is present
+type VerificationHmacConfigs struct {
+	WebhookSecretKey string                          `json:"webhook_secret_key"`
+	Algorithm        HmacAlgorithms                  `json:"algorithm,omitempty"`
+	HeaderKey        string                          `json:"header_key"`
+	Encoding         VerificationHmacConfigsEncoding `json:"encoding,omitempty"`
+}
+
+type VerificationHmacConfigsEncoding string
+
+const (
+	VerificationHmacConfigsEncodingBase64 VerificationHmacConfigsEncoding = "base64"
+	VerificationHmacConfigsEncodingHex    VerificationHmacConfigsEncoding = "hex"
+)
+
+func NewVerificationHmacConfigsEncodingFromString(s string) (VerificationHmacConfigsEncoding, error) {
+	switch s {
+	case "base64":
+		return VerificationHmacConfigsEncodingBase64, nil
+	case "hex":
+		return VerificationHmacConfigsEncodingHex, nil
+	}
+	var t VerificationHmacConfigsEncoding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationHmacConfigsEncoding) Ptr() *VerificationHmacConfigsEncoding {
+	return &v
+}
+
+type VerificationMailgun struct {
+	Configs *VerificationMailgunConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationMailgun) Type() string {
+	return v.type_
+}
+
+func (v *VerificationMailgun) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationMailgun
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationMailgun(value)
+	v.type_ = "mailgun"
+	return nil
+}
+
+func (v *VerificationMailgun) MarshalJSON() ([]byte, error) {
+	type embed VerificationMailgun
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "mailgun",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Mailgun. Only included if the ?include=verification.configs query param is present
+type VerificationMailgunConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationOura struct {
+	Configs *VerificationOuraConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationOura) Type() string {
+	return v.type_
+}
+
+func (v *VerificationOura) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationOura
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationOura(value)
+	v.type_ = "oura"
+	return nil
+}
+
+func (v *VerificationOura) MarshalJSON() ([]byte, error) {
+	type embed VerificationOura
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "oura",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Oura. Only included if the ?include=verification.configs query param is present
+type VerificationOuraConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationPipedrive struct {
+	Configs *VerificationPipedriveConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationPipedrive) Type() string {
+	return v.type_
+}
+
+func (v *VerificationPipedrive) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPipedrive
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPipedrive(value)
+	v.type_ = "pipedrive"
+	return nil
+}
+
+func (v *VerificationPipedrive) MarshalJSON() ([]byte, error) {
+	type embed VerificationPipedrive
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "pipedrive",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Pipedrive. Only included if the ?include=verification.configs query param is present
+type VerificationPipedriveConfigs struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
+type VerificationPostmark struct {
+	Configs *VerificationPostmarkConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationPostmark) Type() string {
+	return v.type_
+}
+
+func (v *VerificationPostmark) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPostmark
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPostmark(value)
+	v.type_ = "postmark"
+	return nil
+}
+
+func (v *VerificationPostmark) MarshalJSON() ([]byte, error) {
+	type embed VerificationPostmark
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "postmark",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Postmark. Only included if the ?include=verification.configs query param is present
+type VerificationPostmarkConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationPropertyFinder struct {
+	Configs *VerificationPropertyFinderConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationPropertyFinder) Type() string {
+	return v.type_
+}
+
+func (v *VerificationPropertyFinder) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPropertyFinder
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPropertyFinder(value)
+	v.type_ = "property-finder"
+	return nil
+}
+
+func (v *VerificationPropertyFinder) MarshalJSON() ([]byte, error) {
+	type embed VerificationPropertyFinder
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "property-finder",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Property Finder. Only included if the ?include=verification.configs query param is present
+type VerificationPropertyFinderConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationRecharge struct {
+	Configs *VerificationRechargeConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationRecharge) Type() string {
+	return v.type_
+}
+
+func (v *VerificationRecharge) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationRecharge
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationRecharge(value)
+	v.type_ = "recharge"
+	return nil
+}
+
+func (v *VerificationRecharge) MarshalJSON() ([]byte, error) {
+	type embed VerificationRecharge
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "recharge",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Recharge. Only included if the ?include=verification.configs query param is present
+type VerificationRechargeConfigs struct {
+	WebhookSecretKey string                              `json:"webhook_secret_key"`
+	Algorithm        HmacAlgorithms                      `json:"algorithm,omitempty"`
+	HeaderKey        string                              `json:"header_key"`
+	Encoding         VerificationRechargeConfigsEncoding `json:"encoding,omitempty"`
+}
+
+type VerificationRechargeConfigsEncoding string
+
+const (
+	VerificationRechargeConfigsEncodingBase64 VerificationRechargeConfigsEncoding = "base64"
+	VerificationRechargeConfigsEncodingHex    VerificationRechargeConfigsEncoding = "hex"
+)
+
+func NewVerificationRechargeConfigsEncodingFromString(s string) (VerificationRechargeConfigsEncoding, error) {
+	switch s {
+	case "base64":
+		return VerificationRechargeConfigsEncodingBase64, nil
+	case "hex":
+		return VerificationRechargeConfigsEncodingHex, nil
+	}
+	var t VerificationRechargeConfigsEncoding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationRechargeConfigsEncoding) Ptr() *VerificationRechargeConfigsEncoding {
+	return &v
+}
+
+type VerificationSendGrid struct {
+	Configs *VerificationSendGridConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationSendGrid) Type() string {
+	return v.type_
+}
+
+func (v *VerificationSendGrid) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSendGrid
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSendGrid(value)
+	v.type_ = "sendgrid"
+	return nil
+}
+
+func (v *VerificationSendGrid) MarshalJSON() ([]byte, error) {
+	type embed VerificationSendGrid
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "sendgrid",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for SendGrid. Only included if the ?include=verification.configs query param is present
+type VerificationSendGridConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationShopify struct {
+	Configs *VerificationShopifyConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationShopify) Type() string {
+	return v.type_
+}
+
+func (v *VerificationShopify) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationShopify
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationShopify(value)
+	v.type_ = "shopify"
+	return nil
+}
+
+func (v *VerificationShopify) MarshalJSON() ([]byte, error) {
+	type embed VerificationShopify
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "shopify",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Shopify. Only included if the ?include=verification.configs query param is present
+type VerificationShopifyConfigs struct {
+	WebhookSecretKey string                                     `json:"webhook_secret_key"`
+	RateLimitPeriod  *VerificationShopifyConfigsRateLimitPeriod `json:"rate_limit_period,omitempty"`
+	RateLimit        *float64                                   `json:"rate_limit,omitempty"`
+	ApiKey           *string                                    `json:"api_key,omitempty"`
+	ApiSecret        *string                                    `json:"api_secret,omitempty"`
+	Shop             *string                                    `json:"shop,omitempty"`
+}
+
+type VerificationShopifyConfigsRateLimitPeriod string
+
+const (
+	VerificationShopifyConfigsRateLimitPeriodMinute VerificationShopifyConfigsRateLimitPeriod = "minute"
+	VerificationShopifyConfigsRateLimitPeriodSecond VerificationShopifyConfigsRateLimitPeriod = "second"
+)
+
+func NewVerificationShopifyConfigsRateLimitPeriodFromString(s string) (VerificationShopifyConfigsRateLimitPeriod, error) {
+	switch s {
+	case "minute":
+		return VerificationShopifyConfigsRateLimitPeriodMinute, nil
+	case "second":
+		return VerificationShopifyConfigsRateLimitPeriodSecond, nil
+	}
+	var t VerificationShopifyConfigsRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationShopifyConfigsRateLimitPeriod) Ptr() *VerificationShopifyConfigsRateLimitPeriod {
+	return &v
+}
+
+type VerificationStripe struct {
+	Configs *VerificationStripeConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationStripe) Type() string {
+	return v.type_
+}
+
+func (v *VerificationStripe) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationStripe
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationStripe(value)
+	v.type_ = "stripe"
+	return nil
+}
+
+func (v *VerificationStripe) MarshalJSON() ([]byte, error) {
+	type embed VerificationStripe
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "stripe",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Stripe. Only included if the ?include=verification.configs query param is present
+type VerificationStripeConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationSvix struct {
+	Configs *VerificationSvixConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationSvix) Type() string {
+	return v.type_
+}
+
+func (v *VerificationSvix) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSvix
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSvix(value)
+	v.type_ = "svix"
+	return nil
+}
+
+func (v *VerificationSvix) MarshalJSON() ([]byte, error) {
+	type embed VerificationSvix
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "svix",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Svix. Only included if the ?include=verification.configs query param is present
+type VerificationSvixConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationSynctera struct {
+	Configs *VerificationSyncteraConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationSynctera) Type() string {
+	return v.type_
+}
+
+func (v *VerificationSynctera) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSynctera
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSynctera(value)
+	v.type_ = "synctera"
+	return nil
+}
+
+func (v *VerificationSynctera) MarshalJSON() ([]byte, error) {
+	type embed VerificationSynctera
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "synctera",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Synctera. Only included if the ?include=verification.configs query param is present
+type VerificationSyncteraConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationTwitter struct {
+	Configs *VerificationTwitterConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationTwitter) Type() string {
+	return v.type_
+}
+
+func (v *VerificationTwitter) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTwitter
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTwitter(value)
+	v.type_ = "twitter"
+	return nil
+}
+
+func (v *VerificationTwitter) MarshalJSON() ([]byte, error) {
+	type embed VerificationTwitter
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "twitter",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Twitter. Only included if the ?include=verification.configs query param is present
+type VerificationTwitterConfigs struct {
+	ApiKey string `json:"api_key"`
+}
+
+type VerificationTypeform struct {
+	Configs *VerificationTypeformConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationTypeform) Type() string {
+	return v.type_
+}
+
+func (v *VerificationTypeform) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTypeform
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTypeform(value)
+	v.type_ = "typeform"
+	return nil
+}
+
+func (v *VerificationTypeform) MarshalJSON() ([]byte, error) {
+	type embed VerificationTypeform
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
+		Type:  "typeform",
+	}
+	return json.Marshal(marshaler)
+}
+
+// The verification configs for Typeform. Only included if the ?include=verification.configs query param is present
+type VerificationTypeformConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationWooCommerce struct {
+	Configs *VerificationWooCommerceConfigs `json:"configs,omitempty"`
+	type_   string
+}
+
+func (v *VerificationWooCommerce) Type() string {
+	return v.type_
+}
+
+func (v *VerificationWooCommerce) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationWooCommerce
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationWooCommerce(value)
+	v.type_ = "woocommerce"
+	return nil
+}
+
+func (v *VerificationWooCommerce) MarshalJSON() ([]byte, error) {
+	type embed VerificationWooCommerce
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*v),
 		Type:  "woocommerce",
 	}
 	return json.Marshal(marshaler)
 }
 
 // The verification configs for WooCommerce. Only included if the ?include=verification.configs query param is present
-type WooCommerceConfigs struct {
+type VerificationWooCommerceConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-type WorkOs struct {
-	Configs *WorkOsConfigs `json:"configs,omitempty"`
+type VerificationWorkOs struct {
+	Configs *VerificationWorkOsConfigs `json:"configs,omitempty"`
 	type_   string
 }
 
-func (w *WorkOs) Type() string {
-	return w.type_
+func (v *VerificationWorkOs) Type() string {
+	return v.type_
 }
 
-func (w *WorkOs) UnmarshalJSON(data []byte) error {
-	type unmarshaler WorkOs
+func (v *VerificationWorkOs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationWorkOs
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*w = WorkOs(value)
-	w.type_ = "workos"
+	*v = VerificationWorkOs(value)
+	v.type_ = "workos"
 	return nil
 }
 
-func (w *WorkOs) MarshalJSON() ([]byte, error) {
-	type embed WorkOs
+func (v *VerificationWorkOs) MarshalJSON() ([]byte, error) {
+	type embed VerificationWorkOs
 	var marshaler = struct {
 		embed
 		Type string `json:"type"`
 	}{
-		embed: embed(*w),
+		embed: embed(*v),
 		Type:  "workos",
 	}
 	return json.Marshal(marshaler)
 }
 
 // The verification configs for WorkOS. Only included if the ?include=verification.configs query param is present
-type WorkOsConfigs struct {
+type VerificationWorkOsConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-type Xero struct {
-	Configs *XeroConfigs `json:"configs,omitempty"`
+type VerificationXero struct {
+	Configs *VerificationXeroConfigs `json:"configs,omitempty"`
 	type_   string
 }
 
-func (x *Xero) Type() string {
-	return x.type_
+func (v *VerificationXero) Type() string {
+	return v.type_
 }
 
-func (x *Xero) UnmarshalJSON(data []byte) error {
-	type unmarshaler Xero
+func (v *VerificationXero) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationXero
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*x = Xero(value)
-	x.type_ = "xero"
+	*v = VerificationXero(value)
+	v.type_ = "xero"
 	return nil
 }
 
-func (x *Xero) MarshalJSON() ([]byte, error) {
-	type embed Xero
+func (v *VerificationXero) MarshalJSON() ([]byte, error) {
+	type embed VerificationXero
 	var marshaler = struct {
 		embed
 		Type string `json:"type"`
 	}{
-		embed: embed(*x),
+		embed: embed(*v),
 		Type:  "xero",
 	}
 	return json.Marshal(marshaler)
 }
 
 // The verification configs for Xero. Only included if the ?include=verification.configs query param is present
-type XeroConfigs struct {
+type VerificationXeroConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-type Zoom struct {
-	Configs *ZoomConfigs `json:"configs,omitempty"`
+type VerificationZoom struct {
+	Configs *VerificationZoomConfigs `json:"configs,omitempty"`
 	type_   string
 }
 
-func (z *Zoom) Type() string {
-	return z.type_
+func (v *VerificationZoom) Type() string {
+	return v.type_
 }
 
-func (z *Zoom) UnmarshalJSON(data []byte) error {
-	type unmarshaler Zoom
+func (v *VerificationZoom) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationZoom
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*z = Zoom(value)
-	z.type_ = "zoom"
+	*v = VerificationZoom(value)
+	v.type_ = "zoom"
 	return nil
 }
 
-func (z *Zoom) MarshalJSON() ([]byte, error) {
-	type embed Zoom
+func (v *VerificationZoom) MarshalJSON() ([]byte, error) {
+	type embed VerificationZoom
 	var marshaler = struct {
 		embed
 		Type string `json:"type"`
 	}{
-		embed: embed(*z),
+		embed: embed(*v),
 		Type:  "zoom",
 	}
 	return json.Marshal(marshaler)
 }
 
 // The verification configs for Zoom. Only included if the ?include=verification.configs query param is present
-type ZoomConfigs struct {
+type VerificationZoomConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
