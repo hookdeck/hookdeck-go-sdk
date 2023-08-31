@@ -20,3 +20,12 @@ func Null[T any]() *core.Optional[T] {
 		Null: true,
 	}
 }
+
+// OptionalOrNull initializes an optional field, setting the value
+// to an explicit null if the value is nil.
+func OptionalOrNull[T any](value *T) *core.Optional[T] {
+	if value == nil {
+		return Null[T]()
+	}
+	return Optional(*value)
+}
