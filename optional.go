@@ -3,6 +3,8 @@
 package api
 
 import (
+	"reflect"
+
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
 )
 
@@ -23,7 +25,24 @@ func Null[T any]() *core.Optional[T] {
 
 // OptionalOrNull initializes an optional field, setting the value
 // to an explicit null if the value is nil.
-func OptionalOrNull[T any](value *T) *core.Optional[T] {
+func OptionalOrNull[T any](value T) *core.Optional[T] {
+	switch v := reflect.ValueOf(value); v.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice, reflect.UnsafePointer:
+		if v.IsNil() {
+			return Null[T]()
+		}
+	}
+	return Optional(value)
+}
+
+// OptionalOrNullPtr initializes an optional field, setting the value
+// to an explicit null if the value is nil.
+//
+// This function avoids the cost of reflection and simply returns
+// a Optional[T] with the type pointed to by the given value. This
+// is  particularly useful for transforming struct pointers into their
+// value-based equivalent (i.e. *T -> Optional[T]).
+func OptionalOrNullPtr[T any](value *T) *core.Optional[T] {
 	if value == nil {
 		return Null[T]()
 	}
