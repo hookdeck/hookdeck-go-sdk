@@ -438,11 +438,11 @@ type BatchOperationPaginatedResult struct {
 // Query object to filter records
 type BatchOperationQuery struct {
 	typeName         string
-	StringUnknownMap map[string]any
+	StringUnknownMap map[string]interface{}
 	StringOptional   *string
 }
 
-func NewBatchOperationQueryFromStringUnknownMap(value map[string]any) *BatchOperationQuery {
+func NewBatchOperationQueryFromStringUnknownMap(value map[string]interface{}) *BatchOperationQuery {
 	return &BatchOperationQuery{typeName: "stringUnknownMap", StringUnknownMap: value}
 }
 
@@ -451,7 +451,7 @@ func NewBatchOperationQueryFromStringOptional(value *string) *BatchOperationQuer
 }
 
 func (b *BatchOperationQuery) UnmarshalJSON(data []byte) error {
-	var valueStringUnknownMap map[string]any
+	var valueStringUnknownMap map[string]interface{}
 	if err := json.Unmarshal(data, &valueStringUnknownMap); err == nil {
 		b.typeName = "stringUnknownMap"
 		b.StringUnknownMap = valueStringUnknownMap
@@ -478,7 +478,7 @@ func (b BatchOperationQuery) MarshalJSON() ([]byte, error) {
 }
 
 type BatchOperationQueryVisitor interface {
-	VisitStringUnknownMap(map[string]any) error
+	VisitStringUnknownMap(map[string]interface{}) error
 	VisitStringOptional(*string) error
 }
 
@@ -2921,7 +2921,7 @@ type FilterRuleProperty struct {
 	StringOptional           *string
 	DoubleOptional           *float64
 	BooleanOptional          *bool
-	StringUnknownMapOptional map[string]any
+	StringUnknownMapOptional map[string]interface{}
 }
 
 func NewFilterRulePropertyFromStringOptional(value *string) *FilterRuleProperty {
@@ -2936,7 +2936,7 @@ func NewFilterRulePropertyFromBooleanOptional(value *bool) *FilterRuleProperty {
 	return &FilterRuleProperty{typeName: "booleanOptional", BooleanOptional: value}
 }
 
-func NewFilterRulePropertyFromStringUnknownMapOptional(value map[string]any) *FilterRuleProperty {
+func NewFilterRulePropertyFromStringUnknownMapOptional(value map[string]interface{}) *FilterRuleProperty {
 	return &FilterRuleProperty{typeName: "stringUnknownMapOptional", StringUnknownMapOptional: value}
 }
 
@@ -2959,7 +2959,7 @@ func (f *FilterRuleProperty) UnmarshalJSON(data []byte) error {
 		f.BooleanOptional = valueBooleanOptional
 		return nil
 	}
-	var valueStringUnknownMapOptional map[string]any
+	var valueStringUnknownMapOptional map[string]interface{}
 	if err := json.Unmarshal(data, &valueStringUnknownMapOptional); err == nil {
 		f.typeName = "stringUnknownMapOptional"
 		f.StringUnknownMapOptional = valueStringUnknownMapOptional
@@ -2987,7 +2987,7 @@ type FilterRulePropertyVisitor interface {
 	VisitStringOptional(*string) error
 	VisitDoubleOptional(*float64) error
 	VisitBooleanOptional(*bool) error
-	VisitStringUnknownMapOptional(map[string]any) error
+	VisitStringUnknownMapOptional(map[string]interface{}) error
 }
 
 func (f *FilterRuleProperty) Accept(visitor FilterRulePropertyVisitor) error {
@@ -6065,7 +6065,7 @@ type ShortEventDataBody struct {
 	typeName              string
 	String                string
 	ShortEventDataBodyOne *ShortEventDataBodyOne
-	UnknownList           []any
+	UnknownList           []interface{}
 }
 
 func NewShortEventDataBodyFromString(value string) *ShortEventDataBody {
@@ -6076,7 +6076,7 @@ func NewShortEventDataBodyFromShortEventDataBodyOne(value *ShortEventDataBodyOne
 	return &ShortEventDataBody{typeName: "shortEventDataBodyOne", ShortEventDataBodyOne: value}
 }
 
-func NewShortEventDataBodyFromUnknownList(value []any) *ShortEventDataBody {
+func NewShortEventDataBodyFromUnknownList(value []interface{}) *ShortEventDataBody {
 	return &ShortEventDataBody{typeName: "unknownList", UnknownList: value}
 }
 
@@ -6093,7 +6093,7 @@ func (s *ShortEventDataBody) UnmarshalJSON(data []byte) error {
 		s.ShortEventDataBodyOne = valueShortEventDataBodyOne
 		return nil
 	}
-	var valueUnknownList []any
+	var valueUnknownList []interface{}
 	if err := json.Unmarshal(data, &valueUnknownList); err == nil {
 		s.typeName = "unknownList"
 		s.UnknownList = valueUnknownList
@@ -6118,7 +6118,7 @@ func (s ShortEventDataBody) MarshalJSON() ([]byte, error) {
 type ShortEventDataBodyVisitor interface {
 	VisitString(string) error
 	VisitShortEventDataBodyOne(*ShortEventDataBodyOne) error
-	VisitUnknownList([]any) error
+	VisitUnknownList([]interface{}) error
 }
 
 func (s *ShortEventDataBody) Accept(visitor ShortEventDataBodyVisitor) error {
@@ -6568,63 +6568,6 @@ type Transformation struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type TransformationCreateRequestEnvValue struct {
-	typeName string
-	String   string
-	Double   float64
-}
-
-func NewTransformationCreateRequestEnvValueFromString(value string) *TransformationCreateRequestEnvValue {
-	return &TransformationCreateRequestEnvValue{typeName: "string", String: value}
-}
-
-func NewTransformationCreateRequestEnvValueFromDouble(value float64) *TransformationCreateRequestEnvValue {
-	return &TransformationCreateRequestEnvValue{typeName: "double", Double: value}
-}
-
-func (t *TransformationCreateRequestEnvValue) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		t.typeName = "string"
-		t.String = valueString
-		return nil
-	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		t.typeName = "double"
-		t.Double = valueDouble
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
-}
-
-func (t TransformationCreateRequestEnvValue) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
-		return json.Marshal(t.String)
-	case "double":
-		return json.Marshal(t.Double)
-	}
-}
-
-type TransformationCreateRequestEnvValueVisitor interface {
-	VisitString(string) error
-	VisitDouble(float64) error
-}
-
-func (t *TransformationCreateRequestEnvValue) Accept(visitor TransformationCreateRequestEnvValueVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
-		return visitor.VisitString(t.String)
-	case "double":
-		return visitor.VisitDouble(t.Double)
-	}
-}
-
 type TransformationExecution struct {
 	Id                     string                          `json:"id"`
 	TransformedEventDataId string                          `json:"transformed_event_data_id"`
@@ -6759,14 +6702,14 @@ type TransformationExecutorOutputRequestBodyOne struct {
 type TransformationExecutorOutputRequestHeaders struct {
 	typeName         string
 	String           string
-	StringUnknownMap map[string]any
+	StringUnknownMap map[string]interface{}
 }
 
 func NewTransformationExecutorOutputRequestHeadersFromString(value string) *TransformationExecutorOutputRequestHeaders {
 	return &TransformationExecutorOutputRequestHeaders{typeName: "string", String: value}
 }
 
-func NewTransformationExecutorOutputRequestHeadersFromStringUnknownMap(value map[string]any) *TransformationExecutorOutputRequestHeaders {
+func NewTransformationExecutorOutputRequestHeadersFromStringUnknownMap(value map[string]interface{}) *TransformationExecutorOutputRequestHeaders {
 	return &TransformationExecutorOutputRequestHeaders{typeName: "stringUnknownMap", StringUnknownMap: value}
 }
 
@@ -6777,7 +6720,7 @@ func (t *TransformationExecutorOutputRequestHeaders) UnmarshalJSON(data []byte) 
 		t.String = valueString
 		return nil
 	}
-	var valueStringUnknownMap map[string]any
+	var valueStringUnknownMap map[string]interface{}
 	if err := json.Unmarshal(data, &valueStringUnknownMap); err == nil {
 		t.typeName = "stringUnknownMap"
 		t.StringUnknownMap = valueStringUnknownMap
@@ -6799,7 +6742,7 @@ func (t TransformationExecutorOutputRequestHeaders) MarshalJSON() ([]byte, error
 
 type TransformationExecutorOutputRequestHeadersVisitor interface {
 	VisitString(string) error
-	VisitStringUnknownMap(map[string]any) error
+	VisitStringUnknownMap(map[string]interface{}) error
 }
 
 func (t *TransformationExecutorOutputRequestHeaders) Accept(visitor TransformationExecutorOutputRequestHeadersVisitor) error {
@@ -7148,10 +7091,6 @@ type TransformationPaginatedResult struct {
 	Models     []*Transformation `json:"models,omitempty"`
 }
 
-// Key-value environment variables to be passed to the transformation
-type TransformationRunRequestEnv struct {
-}
-
 // Request input to use for the transformation execution
 type TransformationRunRequestRequest struct {
 	// Headers of the request
@@ -7229,120 +7168,6 @@ type TransformationRunRequestRequestBodyZero struct {
 
 // JSON representation of the query params
 type TransformationRunRequestRequestParsedQuery struct {
-}
-
-type TransformationUpdateRequestEnvValue struct {
-	typeName string
-	String   string
-	Double   float64
-}
-
-func NewTransformationUpdateRequestEnvValueFromString(value string) *TransformationUpdateRequestEnvValue {
-	return &TransformationUpdateRequestEnvValue{typeName: "string", String: value}
-}
-
-func NewTransformationUpdateRequestEnvValueFromDouble(value float64) *TransformationUpdateRequestEnvValue {
-	return &TransformationUpdateRequestEnvValue{typeName: "double", Double: value}
-}
-
-func (t *TransformationUpdateRequestEnvValue) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		t.typeName = "string"
-		t.String = valueString
-		return nil
-	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		t.typeName = "double"
-		t.Double = valueDouble
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
-}
-
-func (t TransformationUpdateRequestEnvValue) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
-		return json.Marshal(t.String)
-	case "double":
-		return json.Marshal(t.Double)
-	}
-}
-
-type TransformationUpdateRequestEnvValueVisitor interface {
-	VisitString(string) error
-	VisitDouble(float64) error
-}
-
-func (t *TransformationUpdateRequestEnvValue) Accept(visitor TransformationUpdateRequestEnvValueVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
-		return visitor.VisitString(t.String)
-	case "double":
-		return visitor.VisitDouble(t.Double)
-	}
-}
-
-type TransformationUpsertRequestEnvValue struct {
-	typeName string
-	String   string
-	Double   float64
-}
-
-func NewTransformationUpsertRequestEnvValueFromString(value string) *TransformationUpsertRequestEnvValue {
-	return &TransformationUpsertRequestEnvValue{typeName: "string", String: value}
-}
-
-func NewTransformationUpsertRequestEnvValueFromDouble(value float64) *TransformationUpsertRequestEnvValue {
-	return &TransformationUpsertRequestEnvValue{typeName: "double", Double: value}
-}
-
-func (t *TransformationUpsertRequestEnvValue) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		t.typeName = "string"
-		t.String = valueString
-		return nil
-	}
-	var valueDouble float64
-	if err := json.Unmarshal(data, &valueDouble); err == nil {
-		t.typeName = "double"
-		t.Double = valueDouble
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
-}
-
-func (t TransformationUpsertRequestEnvValue) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
-		return json.Marshal(t.String)
-	case "double":
-		return json.Marshal(t.Double)
-	}
-}
-
-type TransformationUpsertRequestEnvValueVisitor interface {
-	VisitString(string) error
-	VisitDouble(float64) error
-}
-
-func (t *TransformationUpsertRequestEnvValue) Accept(visitor TransformationUpsertRequestEnvValueVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
-		return visitor.VisitString(t.String)
-	case "double":
-		return visitor.VisitDouble(t.Double)
-	}
 }
 
 type Verification3DEye struct {

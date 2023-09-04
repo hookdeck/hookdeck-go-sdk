@@ -10,7 +10,7 @@ type NotificationUpdateRequest struct {
 	// Enable or disable webhook notifications on the workspace
 	Enabled *core.Optional[bool] `json:"enabled,omitempty"`
 	// List of topics to send notifications for
-	Topics []TopicsValue `json:"topics,omitempty"`
+	Topics *core.Optional[[]TopicsValue] `json:"topics,omitempty"`
 	// The Hookdeck Source to send the webhook to
 	SourceId *core.Optional[string] `json:"source_id,omitempty"`
 }

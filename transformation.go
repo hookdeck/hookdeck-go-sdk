@@ -13,7 +13,7 @@ type TransformationCreateRequest struct {
 	// JavaScript code to be executed as string
 	Code string `json:"code"`
 	// Key-value environment variables to be passed to the transformation
-	Env map[string]*TransformationCreateRequestEnvValue `json:"env,omitempty"`
+	Env *core.Optional[map[string]string] `json:"env,omitempty"`
 }
 
 type TransformationListRequest struct {
@@ -40,7 +40,7 @@ type TransformationListExecutionRequest struct {
 
 type TransformationRunRequest struct {
 	// Key-value environment variables to be passed to the transformation
-	Env *core.Optional[TransformationRunRequestEnv] `json:"env,omitempty"`
+	Env *core.Optional[map[string]string] `json:"env,omitempty"`
 	// ID of the connection to use for the execution `context`
 	WebhookId *core.Optional[string] `json:"webhook_id,omitempty"`
 	// JavaScript code to be executed
@@ -58,7 +58,7 @@ type TransformationUpdateRequest struct {
 	// JavaScript code to be executed
 	Code *core.Optional[string] `json:"code,omitempty"`
 	// Key-value environment variables to be passed to the transformation
-	Env map[string]*TransformationUpdateRequestEnvValue `json:"env,omitempty"`
+	Env *core.Optional[map[string]string] `json:"env,omitempty"`
 }
 
 type TransformationUpsertRequest struct {
@@ -67,5 +67,5 @@ type TransformationUpsertRequest struct {
 	// JavaScript code to be executed as string
 	Code string `json:"code"`
 	// Key-value environment variables to be passed to the transformation
-	Env map[string]*TransformationUpsertRequestEnvValue `json:"env,omitempty"`
+	Env *core.Optional[map[string]string] `json:"env,omitempty"`
 }

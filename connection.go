@@ -20,7 +20,7 @@ type ConnectionCreateRequest struct {
 	Destination *core.Optional[ConnectionCreateRequestDestination] `json:"destination,omitempty"`
 	// Source input object
 	Source *core.Optional[ConnectionCreateRequestSource] `json:"source,omitempty"`
-	Rules  []*Rule                                       `json:"rules,omitempty"`
+	Rules  *core.Optional[[]*Rule]                       `json:"rules,omitempty"`
 }
 
 type ConnectionListRequest struct {
@@ -43,8 +43,8 @@ type ConnectionUpdateRequest struct {
 	// <span style="white-space: nowrap">`<= 155 characters`</span>
 	Name *core.Optional[string] `json:"name,omitempty"`
 	// Description for the connection
-	Description *core.Optional[string] `json:"description,omitempty"`
-	Rules       []*Rule                `json:"rules,omitempty"`
+	Description *core.Optional[string]  `json:"description,omitempty"`
+	Rules       *core.Optional[[]*Rule] `json:"rules,omitempty"`
 }
 
 type ConnectionUpsertRequest struct {
@@ -60,5 +60,5 @@ type ConnectionUpsertRequest struct {
 	Destination *core.Optional[ConnectionUpsertRequestDestination] `json:"destination,omitempty"`
 	// Source input object
 	Source *core.Optional[ConnectionUpsertRequestSource] `json:"source,omitempty"`
-	Rules  []*Rule                                       `json:"rules,omitempty"`
+	Rules  *core.Optional[[]*Rule]                       `json:"rules,omitempty"`
 }
