@@ -82,22 +82,22 @@ func TestOptionalOrNull(t *testing.T) {
 	})
 }
 
-func TestOptionalOrNullPtr(t *testing.T) {
+func TestOptionalOrNullFromPtr(t *testing.T) {
 	t.Run("nil primitive", func(t *testing.T) {
 		var value *string
-		optional := OptionalOrNullPtr(value)
+		optional := OptionalOrNullFromPtr(value)
 		assert.Equal(t, &core.Optional[string]{Null: true}, optional)
 	})
 
 	t.Run("zero primitive", func(t *testing.T) {
 		var zero int
-		optional := OptionalOrNullPtr(&zero)
+		optional := OptionalOrNullFromPtr(&zero)
 		assert.Equal(t, &core.Optional[int]{Value: zero}, optional)
 	})
 
 	t.Run("non-zero primitive", func(t *testing.T) {
 		value := "test"
-		optional := OptionalOrNullPtr(&value)
+		optional := OptionalOrNullFromPtr(&value)
 		assert.Equal(t, &core.Optional[string]{Value: value}, optional)
 	})
 
@@ -106,7 +106,7 @@ func TestOptionalOrNullPtr(t *testing.T) {
 			Name string
 		}
 		var zero *foo
-		optional := OptionalOrNullPtr(zero)
+		optional := OptionalOrNullFromPtr(zero)
 		assert.Equal(t, &core.Optional[foo]{Null: true}, optional)
 	})
 
@@ -115,7 +115,7 @@ func TestOptionalOrNullPtr(t *testing.T) {
 			Name string
 		}
 		zero := new(foo)
-		optional := OptionalOrNullPtr(zero)
+		optional := OptionalOrNullFromPtr(zero)
 		assert.Equal(t, &core.Optional[foo]{Value: *zero}, optional)
 	})
 
@@ -124,7 +124,7 @@ func TestOptionalOrNullPtr(t *testing.T) {
 			Name string
 		}
 		value := &foo{Name: "test"}
-		optional := OptionalOrNullPtr(value)
+		optional := OptionalOrNullFromPtr(value)
 		assert.Equal(t, &core.Optional[foo]{Value: *value}, optional)
 	})
 }

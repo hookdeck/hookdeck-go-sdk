@@ -35,14 +35,14 @@ func OptionalOrNull[T any](value T) *core.Optional[T] {
 	return Optional(value)
 }
 
-// OptionalOrNullPtr initializes an optional field, setting the value
+// OptionalOrNullFromPtr initializes an optional field, setting the value
 // to an explicit null if the value is nil.
 //
 // This function avoids the cost of reflection and simply returns
 // a Optional[T] with the type pointed to by the given value. This
 // is  particularly useful for transforming struct pointers into their
 // value-based equivalent (i.e. *T -> Optional[T]).
-func OptionalOrNullPtr[T any](value *T) *core.Optional[T] {
+func OptionalOrNullFromPtr[T any](value *T) *core.Optional[T] {
 	if value == nil {
 		return Null[T]()
 	}
