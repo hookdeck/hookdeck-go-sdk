@@ -230,166 +230,26 @@ func (a AttemptTrigger) Ptr() *AttemptTrigger {
 // API Key
 type AuthApiKey struct {
 	Config *DestinationAuthMethodApiKeyConfig `json:"config,omitempty"`
-	type_  string
-}
-
-func (a *AuthApiKey) Type() string {
-	return a.type_
-}
-
-func (a *AuthApiKey) UnmarshalJSON(data []byte) error {
-	type unmarshaler AuthApiKey
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = AuthApiKey(value)
-	a.type_ = "API_KEY"
-	return nil
-}
-
-func (a *AuthApiKey) MarshalJSON() ([]byte, error) {
-	type embed AuthApiKey
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*a),
-		Type:  "API_KEY",
-	}
-	return json.Marshal(marshaler)
 }
 
 // Basic Auth
 type AuthBasicAuth struct {
 	Config *DestinationAuthMethodBasicAuthConfig `json:"config,omitempty"`
-	type_  string
-}
-
-func (a *AuthBasicAuth) Type() string {
-	return a.type_
-}
-
-func (a *AuthBasicAuth) UnmarshalJSON(data []byte) error {
-	type unmarshaler AuthBasicAuth
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = AuthBasicAuth(value)
-	a.type_ = "BASIC_AUTH"
-	return nil
-}
-
-func (a *AuthBasicAuth) MarshalJSON() ([]byte, error) {
-	type embed AuthBasicAuth
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*a),
-		Type:  "BASIC_AUTH",
-	}
-	return json.Marshal(marshaler)
 }
 
 // Bearer Token
 type AuthBearerToken struct {
 	Config *DestinationAuthMethodBearerTokenConfig `json:"config,omitempty"`
-	type_  string
-}
-
-func (a *AuthBearerToken) Type() string {
-	return a.type_
-}
-
-func (a *AuthBearerToken) UnmarshalJSON(data []byte) error {
-	type unmarshaler AuthBearerToken
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = AuthBearerToken(value)
-	a.type_ = "BEARER_TOKEN"
-	return nil
-}
-
-func (a *AuthBearerToken) MarshalJSON() ([]byte, error) {
-	type embed AuthBearerToken
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*a),
-		Type:  "BEARER_TOKEN",
-	}
-	return json.Marshal(marshaler)
 }
 
 // Custom Signature
 type AuthCustomSignature struct {
 	Config *DestinationAuthMethodCustomSignatureConfig `json:"config,omitempty"`
-	type_  string
-}
-
-func (a *AuthCustomSignature) Type() string {
-	return a.type_
-}
-
-func (a *AuthCustomSignature) UnmarshalJSON(data []byte) error {
-	type unmarshaler AuthCustomSignature
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = AuthCustomSignature(value)
-	a.type_ = "CUSTOM_SIGNATURE"
-	return nil
-}
-
-func (a *AuthCustomSignature) MarshalJSON() ([]byte, error) {
-	type embed AuthCustomSignature
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*a),
-		Type:  "CUSTOM_SIGNATURE",
-	}
-	return json.Marshal(marshaler)
 }
 
 // Hookdeck Signature
 type AuthHookdeckSignature struct {
 	Config *DestinationAuthMethodSignatureConfig `json:"config,omitempty"`
-	type_  string
-}
-
-func (a *AuthHookdeckSignature) Type() string {
-	return a.type_
-}
-
-func (a *AuthHookdeckSignature) UnmarshalJSON(data []byte) error {
-	type unmarshaler AuthHookdeckSignature
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = AuthHookdeckSignature(value)
-	a.type_ = "HOOKDECK_SIGNATURE"
-	return nil
-}
-
-func (a *AuthHookdeckSignature) MarshalJSON() ([]byte, error) {
-	type embed AuthHookdeckSignature
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*a),
-		Type:  "HOOKDECK_SIGNATURE",
-	}
-	return json.Marshal(marshaler)
 }
 
 type BasicAuthIntegrationConfigs struct {
@@ -882,34 +742,6 @@ type DeliveryIssue struct {
 	CreatedAt       string                        `json:"created_at"`
 	AggregationKeys *DeliveryIssueAggregationKeys `json:"aggregation_keys,omitempty"`
 	Reference       *DeliveryIssueReference       `json:"reference,omitempty"`
-	type_           string
-}
-
-func (d *DeliveryIssue) Type() string {
-	return d.type_
-}
-
-func (d *DeliveryIssue) UnmarshalJSON(data []byte) error {
-	type unmarshaler DeliveryIssue
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DeliveryIssue(value)
-	d.type_ = "delivery"
-	return nil
-}
-
-func (d *DeliveryIssue) MarshalJSON() ([]byte, error) {
-	type embed DeliveryIssue
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*d),
-		Type:  "delivery",
-	}
-	return json.Marshal(marshaler)
 }
 
 // Keys used as the aggregation keys a 'delivery' type issue
@@ -957,34 +789,6 @@ type DeliveryIssueWithData struct {
 	AggregationKeys *DeliveryIssueAggregationKeys `json:"aggregation_keys,omitempty"`
 	Reference       *DeliveryIssueReference       `json:"reference,omitempty"`
 	Data            *DeliveryIssueData            `json:"data,omitempty"`
-	type_           string
-}
-
-func (d *DeliveryIssueWithData) Type() string {
-	return d.type_
-}
-
-func (d *DeliveryIssueWithData) UnmarshalJSON(data []byte) error {
-	type unmarshaler DeliveryIssueWithData
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DeliveryIssueWithData(value)
-	d.type_ = "delivery"
-	return nil
-}
-
-func (d *DeliveryIssueWithData) MarshalJSON() ([]byte, error) {
-	type embed DeliveryIssueWithData
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*d),
-		Type:  "delivery",
-	}
-	return json.Marshal(marshaler)
 }
 
 // Associated [Destination](#destination-object) object
@@ -1064,107 +868,151 @@ type DestinationAuthMethodBearerTokenConfig struct {
 
 // Config for the destination's auth method
 type DestinationAuthMethodConfig struct {
-	typeName              string
-	AuthHookdeckSignature *AuthHookdeckSignature
-	AuthBasicAuth         *AuthBasicAuth
-	AuthApiKey            *AuthApiKey
-	AuthBearerToken       *AuthBearerToken
-	AuthCustomSignature   *AuthCustomSignature
+	Type              string
+	HookdeckSignature *AuthHookdeckSignature
+	BasicAuth         *AuthBasicAuth
+	ApiKey            *AuthApiKey
+	BearerToken       *AuthBearerToken
+	CustomSignature   *AuthCustomSignature
 }
 
-func NewDestinationAuthMethodConfigFromAuthHookdeckSignature(value *AuthHookdeckSignature) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "authHookdeckSignature", AuthHookdeckSignature: value}
+func NewDestinationAuthMethodConfigFromHookdeckSignature(value *AuthHookdeckSignature) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "HOOKDECK_SIGNATURE", HookdeckSignature: value}
 }
 
-func NewDestinationAuthMethodConfigFromAuthBasicAuth(value *AuthBasicAuth) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "authBasicAuth", AuthBasicAuth: value}
+func NewDestinationAuthMethodConfigFromBasicAuth(value *AuthBasicAuth) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "BASIC_AUTH", BasicAuth: value}
 }
 
-func NewDestinationAuthMethodConfigFromAuthApiKey(value *AuthApiKey) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "authApiKey", AuthApiKey: value}
+func NewDestinationAuthMethodConfigFromApiKey(value *AuthApiKey) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "API_KEY", ApiKey: value}
 }
 
-func NewDestinationAuthMethodConfigFromAuthBearerToken(value *AuthBearerToken) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "authBearerToken", AuthBearerToken: value}
+func NewDestinationAuthMethodConfigFromBearerToken(value *AuthBearerToken) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "BEARER_TOKEN", BearerToken: value}
 }
 
-func NewDestinationAuthMethodConfigFromAuthCustomSignature(value *AuthCustomSignature) *DestinationAuthMethodConfig {
-	return &DestinationAuthMethodConfig{typeName: "authCustomSignature", AuthCustomSignature: value}
+func NewDestinationAuthMethodConfigFromCustomSignature(value *AuthCustomSignature) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "CUSTOM_SIGNATURE", CustomSignature: value}
 }
 
 func (d *DestinationAuthMethodConfig) UnmarshalJSON(data []byte) error {
-	valueAuthHookdeckSignature := new(AuthHookdeckSignature)
-	if err := json.Unmarshal(data, &valueAuthHookdeckSignature); err == nil {
-		d.typeName = "authHookdeckSignature"
-		d.AuthHookdeckSignature = valueAuthHookdeckSignature
-		return nil
+	var unmarshaler struct {
+		Type string `json:"type"`
 	}
-	valueAuthBasicAuth := new(AuthBasicAuth)
-	if err := json.Unmarshal(data, &valueAuthBasicAuth); err == nil {
-		d.typeName = "authBasicAuth"
-		d.AuthBasicAuth = valueAuthBasicAuth
-		return nil
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
 	}
-	valueAuthApiKey := new(AuthApiKey)
-	if err := json.Unmarshal(data, &valueAuthApiKey); err == nil {
-		d.typeName = "authApiKey"
-		d.AuthApiKey = valueAuthApiKey
-		return nil
+	d.Type = unmarshaler.Type
+	switch unmarshaler.Type {
+	case "HOOKDECK_SIGNATURE":
+		value := new(AuthHookdeckSignature)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.HookdeckSignature = value
+	case "BASIC_AUTH":
+		value := new(AuthBasicAuth)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.BasicAuth = value
+	case "API_KEY":
+		value := new(AuthApiKey)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.ApiKey = value
+	case "BEARER_TOKEN":
+		value := new(AuthBearerToken)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.BearerToken = value
+	case "CUSTOM_SIGNATURE":
+		value := new(AuthCustomSignature)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.CustomSignature = value
 	}
-	valueAuthBearerToken := new(AuthBearerToken)
-	if err := json.Unmarshal(data, &valueAuthBearerToken); err == nil {
-		d.typeName = "authBearerToken"
-		d.AuthBearerToken = valueAuthBearerToken
-		return nil
-	}
-	valueAuthCustomSignature := new(AuthCustomSignature)
-	if err := json.Unmarshal(data, &valueAuthCustomSignature); err == nil {
-		d.typeName = "authCustomSignature"
-		d.AuthCustomSignature = valueAuthCustomSignature
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
+	return nil
 }
 
 func (d DestinationAuthMethodConfig) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
+	switch d.Type {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "authHookdeckSignature":
-		return json.Marshal(d.AuthHookdeckSignature)
-	case "authBasicAuth":
-		return json.Marshal(d.AuthBasicAuth)
-	case "authApiKey":
-		return json.Marshal(d.AuthApiKey)
-	case "authBearerToken":
-		return json.Marshal(d.AuthBearerToken)
-	case "authCustomSignature":
-		return json.Marshal(d.AuthCustomSignature)
+		return nil, fmt.Errorf("invalid type %s in %T", d.Type, d)
+	case "HOOKDECK_SIGNATURE":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthHookdeckSignature
+		}{
+			Type:                  d.Type,
+			AuthHookdeckSignature: d.HookdeckSignature,
+		}
+		return json.Marshal(marshaler)
+	case "BASIC_AUTH":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthBasicAuth
+		}{
+			Type:          d.Type,
+			AuthBasicAuth: d.BasicAuth,
+		}
+		return json.Marshal(marshaler)
+	case "API_KEY":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthApiKey
+		}{
+			Type:       d.Type,
+			AuthApiKey: d.ApiKey,
+		}
+		return json.Marshal(marshaler)
+	case "BEARER_TOKEN":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthBearerToken
+		}{
+			Type:            d.Type,
+			AuthBearerToken: d.BearerToken,
+		}
+		return json.Marshal(marshaler)
+	case "CUSTOM_SIGNATURE":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthCustomSignature
+		}{
+			Type:                d.Type,
+			AuthCustomSignature: d.CustomSignature,
+		}
+		return json.Marshal(marshaler)
 	}
 }
 
 type DestinationAuthMethodConfigVisitor interface {
-	VisitAuthHookdeckSignature(*AuthHookdeckSignature) error
-	VisitAuthBasicAuth(*AuthBasicAuth) error
-	VisitAuthApiKey(*AuthApiKey) error
-	VisitAuthBearerToken(*AuthBearerToken) error
-	VisitAuthCustomSignature(*AuthCustomSignature) error
+	VisitHookdeckSignature(*AuthHookdeckSignature) error
+	VisitBasicAuth(*AuthBasicAuth) error
+	VisitApiKey(*AuthApiKey) error
+	VisitBearerToken(*AuthBearerToken) error
+	VisitCustomSignature(*AuthCustomSignature) error
 }
 
 func (d *DestinationAuthMethodConfig) Accept(visitor DestinationAuthMethodConfigVisitor) error {
-	switch d.typeName {
+	switch d.Type {
 	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "authHookdeckSignature":
-		return visitor.VisitAuthHookdeckSignature(d.AuthHookdeckSignature)
-	case "authBasicAuth":
-		return visitor.VisitAuthBasicAuth(d.AuthBasicAuth)
-	case "authApiKey":
-		return visitor.VisitAuthApiKey(d.AuthApiKey)
-	case "authBearerToken":
-		return visitor.VisitAuthBearerToken(d.AuthBearerToken)
-	case "authCustomSignature":
-		return visitor.VisitAuthCustomSignature(d.AuthCustomSignature)
+		return fmt.Errorf("invalid type %s in %T", d.Type, d)
+	case "HOOKDECK_SIGNATURE":
+		return visitor.VisitHookdeckSignature(d.HookdeckSignature)
+	case "BASIC_AUTH":
+		return visitor.VisitBasicAuth(d.BasicAuth)
+	case "API_KEY":
+		return visitor.VisitApiKey(d.ApiKey)
+	case "BEARER_TOKEN":
+		return visitor.VisitBearerToken(d.BearerToken)
+	case "CUSTOM_SIGNATURE":
+		return visitor.VisitCustomSignature(d.CustomSignature)
 	}
 }
 
@@ -3650,59 +3498,82 @@ func (i IntegrationProvider) Ptr() *IntegrationProvider {
 
 // Issue
 type Issue struct {
-	typeName            string
-	DeliveryIssue       *DeliveryIssue
-	TransformationIssue *TransformationIssue
+	Type           string
+	Delivery       *DeliveryIssue
+	Transformation *TransformationIssue
 }
 
-func NewIssueFromDeliveryIssue(value *DeliveryIssue) *Issue {
-	return &Issue{typeName: "deliveryIssue", DeliveryIssue: value}
+func NewIssueFromDelivery(value *DeliveryIssue) *Issue {
+	return &Issue{Type: "delivery", Delivery: value}
 }
 
-func NewIssueFromTransformationIssue(value *TransformationIssue) *Issue {
-	return &Issue{typeName: "transformationIssue", TransformationIssue: value}
+func NewIssueFromTransformation(value *TransformationIssue) *Issue {
+	return &Issue{Type: "transformation", Transformation: value}
 }
 
 func (i *Issue) UnmarshalJSON(data []byte) error {
-	valueDeliveryIssue := new(DeliveryIssue)
-	if err := json.Unmarshal(data, &valueDeliveryIssue); err == nil {
-		i.typeName = "deliveryIssue"
-		i.DeliveryIssue = valueDeliveryIssue
-		return nil
+	var unmarshaler struct {
+		Type string `json:"type"`
 	}
-	valueTransformationIssue := new(TransformationIssue)
-	if err := json.Unmarshal(data, &valueTransformationIssue); err == nil {
-		i.typeName = "transformationIssue"
-		i.TransformationIssue = valueTransformationIssue
-		return nil
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+	i.Type = unmarshaler.Type
+	switch unmarshaler.Type {
+	case "delivery":
+		value := new(DeliveryIssue)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		i.Delivery = value
+	case "transformation":
+		value := new(TransformationIssue)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		i.Transformation = value
+	}
+	return nil
 }
 
 func (i Issue) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
+	switch i.Type {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "deliveryIssue":
-		return json.Marshal(i.DeliveryIssue)
-	case "transformationIssue":
-		return json.Marshal(i.TransformationIssue)
+		return nil, fmt.Errorf("invalid type %s in %T", i.Type, i)
+	case "delivery":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*DeliveryIssue
+		}{
+			Type:          i.Type,
+			DeliveryIssue: i.Delivery,
+		}
+		return json.Marshal(marshaler)
+	case "transformation":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*TransformationIssue
+		}{
+			Type:                i.Type,
+			TransformationIssue: i.Transformation,
+		}
+		return json.Marshal(marshaler)
 	}
 }
 
 type IssueVisitor interface {
-	VisitDeliveryIssue(*DeliveryIssue) error
-	VisitTransformationIssue(*TransformationIssue) error
+	VisitDelivery(*DeliveryIssue) error
+	VisitTransformation(*TransformationIssue) error
 }
 
 func (i *Issue) Accept(visitor IssueVisitor) error {
-	switch i.typeName {
+	switch i.Type {
 	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "deliveryIssue":
-		return visitor.VisitDeliveryIssue(i.DeliveryIssue)
-	case "transformationIssue":
-		return visitor.VisitTransformationIssue(i.TransformationIssue)
+		return fmt.Errorf("invalid type %s in %T", i.Type, i)
+	case "delivery":
+		return visitor.VisitDelivery(i.Delivery)
+	case "transformation":
+		return visitor.VisitTransformation(i.Transformation)
 	}
 }
 
@@ -4620,59 +4491,82 @@ func (i IssueUpdateRequestStatus) Ptr() *IssueUpdateRequestStatus {
 }
 
 type IssueWithData struct {
-	typeName                    string
-	DeliveryIssueWithData       *DeliveryIssueWithData
-	TransformationIssueWithData *TransformationIssueWithData
+	Type           string
+	Delivery       *DeliveryIssueWithData
+	Transformation *TransformationIssueWithData
 }
 
-func NewIssueWithDataFromDeliveryIssueWithData(value *DeliveryIssueWithData) *IssueWithData {
-	return &IssueWithData{typeName: "deliveryIssueWithData", DeliveryIssueWithData: value}
+func NewIssueWithDataFromDelivery(value *DeliveryIssueWithData) *IssueWithData {
+	return &IssueWithData{Type: "delivery", Delivery: value}
 }
 
-func NewIssueWithDataFromTransformationIssueWithData(value *TransformationIssueWithData) *IssueWithData {
-	return &IssueWithData{typeName: "transformationIssueWithData", TransformationIssueWithData: value}
+func NewIssueWithDataFromTransformation(value *TransformationIssueWithData) *IssueWithData {
+	return &IssueWithData{Type: "transformation", Transformation: value}
 }
 
 func (i *IssueWithData) UnmarshalJSON(data []byte) error {
-	valueDeliveryIssueWithData := new(DeliveryIssueWithData)
-	if err := json.Unmarshal(data, &valueDeliveryIssueWithData); err == nil {
-		i.typeName = "deliveryIssueWithData"
-		i.DeliveryIssueWithData = valueDeliveryIssueWithData
-		return nil
+	var unmarshaler struct {
+		Type string `json:"type"`
 	}
-	valueTransformationIssueWithData := new(TransformationIssueWithData)
-	if err := json.Unmarshal(data, &valueTransformationIssueWithData); err == nil {
-		i.typeName = "transformationIssueWithData"
-		i.TransformationIssueWithData = valueTransformationIssueWithData
-		return nil
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+	i.Type = unmarshaler.Type
+	switch unmarshaler.Type {
+	case "delivery":
+		value := new(DeliveryIssueWithData)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		i.Delivery = value
+	case "transformation":
+		value := new(TransformationIssueWithData)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		i.Transformation = value
+	}
+	return nil
 }
 
 func (i IssueWithData) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
+	switch i.Type {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "deliveryIssueWithData":
-		return json.Marshal(i.DeliveryIssueWithData)
-	case "transformationIssueWithData":
-		return json.Marshal(i.TransformationIssueWithData)
+		return nil, fmt.Errorf("invalid type %s in %T", i.Type, i)
+	case "delivery":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*DeliveryIssueWithData
+		}{
+			Type:                  i.Type,
+			DeliveryIssueWithData: i.Delivery,
+		}
+		return json.Marshal(marshaler)
+	case "transformation":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*TransformationIssueWithData
+		}{
+			Type:                        i.Type,
+			TransformationIssueWithData: i.Transformation,
+		}
+		return json.Marshal(marshaler)
 	}
 }
 
 type IssueWithDataVisitor interface {
-	VisitDeliveryIssueWithData(*DeliveryIssueWithData) error
-	VisitTransformationIssueWithData(*TransformationIssueWithData) error
+	VisitDelivery(*DeliveryIssueWithData) error
+	VisitTransformation(*TransformationIssueWithData) error
 }
 
 func (i *IssueWithData) Accept(visitor IssueWithDataVisitor) error {
-	switch i.typeName {
+	switch i.Type {
 	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "deliveryIssueWithData":
-		return visitor.VisitDeliveryIssueWithData(i.DeliveryIssueWithData)
-	case "transformationIssueWithData":
-		return visitor.VisitTransformationIssueWithData(i.TransformationIssueWithData)
+		return fmt.Errorf("invalid type %s in %T", i.Type, i)
+	case "delivery":
+		return visitor.VisitDelivery(i.Delivery)
+	case "transformation":
+		return visitor.VisitTransformation(i.Transformation)
 	}
 }
 
@@ -6905,34 +6799,6 @@ type TransformationIssue struct {
 	CreatedAt       string                              `json:"created_at"`
 	AggregationKeys *TransformationIssueAggregationKeys `json:"aggregation_keys,omitempty"`
 	Reference       *TransformationIssueReference       `json:"reference,omitempty"`
-	type_           string
-}
-
-func (t *TransformationIssue) Type() string {
-	return t.type_
-}
-
-func (t *TransformationIssue) UnmarshalJSON(data []byte) error {
-	type unmarshaler TransformationIssue
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TransformationIssue(value)
-	t.type_ = "transformation"
-	return nil
-}
-
-func (t *TransformationIssue) MarshalJSON() ([]byte, error) {
-	type embed TransformationIssue
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*t),
-		Type:  "transformation",
-	}
-	return json.Marshal(marshaler)
 }
 
 // Keys used as the aggregation keys a 'transformation' type issue
@@ -6980,34 +6846,6 @@ type TransformationIssueWithData struct {
 	AggregationKeys *TransformationIssueAggregationKeys `json:"aggregation_keys,omitempty"`
 	Reference       *TransformationIssueReference       `json:"reference,omitempty"`
 	Data            *TransformationIssueData            `json:"data,omitempty"`
-	type_           string
-}
-
-func (t *TransformationIssueWithData) Type() string {
-	return t.type_
-}
-
-func (t *TransformationIssueWithData) UnmarshalJSON(data []byte) error {
-	type unmarshaler TransformationIssueWithData
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TransformationIssueWithData(value)
-	t.type_ = "transformation"
-	return nil
-}
-
-func (t *TransformationIssueWithData) MarshalJSON() ([]byte, error) {
-	type embed TransformationIssueWithData
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*t),
-		Type:  "transformation",
-	}
-	return json.Marshal(marshaler)
 }
 
 type TransformationListExecutionRequestDir string
@@ -7172,34 +7010,6 @@ type TransformationRunRequestRequestParsedQuery struct {
 
 type Verification3DEye struct {
 	Configs *Verification3DEyeConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *Verification3DEye) Type() string {
-	return v.type_
-}
-
-func (v *Verification3DEye) UnmarshalJSON(data []byte) error {
-	type unmarshaler Verification3DEye
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = Verification3DEye(value)
-	v.type_ = "three_d_eye"
-	return nil
-}
-
-func (v *Verification3DEye) MarshalJSON() ([]byte, error) {
-	type embed Verification3DEye
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "three_d_eye",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for 3dEye. Only included if the ?include=verification.configs query param is present
@@ -7209,34 +7019,6 @@ type Verification3DEyeConfigs struct {
 
 type VerificationAdyen struct {
 	Configs *VerificationAdyenConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationAdyen) Type() string {
-	return v.type_
-}
-
-func (v *VerificationAdyen) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationAdyen
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationAdyen(value)
-	v.type_ = "adyen"
-	return nil
-}
-
-func (v *VerificationAdyen) MarshalJSON() ([]byte, error) {
-	type embed VerificationAdyen
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "adyen",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Adyen. Only included if the ?include=verification.configs query param is present
@@ -7246,34 +7028,6 @@ type VerificationAdyenConfigs struct {
 
 type VerificationAkeneo struct {
 	Configs *VerificationAkeneoConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationAkeneo) Type() string {
-	return v.type_
-}
-
-func (v *VerificationAkeneo) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationAkeneo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationAkeneo(value)
-	v.type_ = "akeneo"
-	return nil
-}
-
-func (v *VerificationAkeneo) MarshalJSON() ([]byte, error) {
-	type embed VerificationAkeneo
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "akeneo",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Akeneo. Only included if the ?include=verification.configs query param is present
@@ -7283,34 +7037,6 @@ type VerificationAkeneoConfigs struct {
 
 type VerificationApiKey struct {
 	Configs *VerificationApiKeyConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationApiKey) Type() string {
-	return v.type_
-}
-
-func (v *VerificationApiKey) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationApiKey
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationApiKey(value)
-	v.type_ = "api_key"
-	return nil
-}
-
-func (v *VerificationApiKey) MarshalJSON() ([]byte, error) {
-	type embed VerificationApiKey
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "api_key",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for API Key. Only included if the ?include=verification.configs query param is present
@@ -7321,34 +7047,6 @@ type VerificationApiKeyConfigs struct {
 
 type VerificationAwssns struct {
 	Configs *VerificationAwssnsConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationAwssns) Type() string {
-	return v.type_
-}
-
-func (v *VerificationAwssns) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationAwssns
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationAwssns(value)
-	v.type_ = "aws_sns"
-	return nil
-}
-
-func (v *VerificationAwssns) MarshalJSON() ([]byte, error) {
-	type embed VerificationAwssns
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "aws_sns",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for AWS SNS. Only included if the ?include=verification.configs query param is present
@@ -7357,34 +7055,6 @@ type VerificationAwssnsConfigs struct {
 
 type VerificationBasicAuth struct {
 	Configs *VerificationBasicAuthConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationBasicAuth) Type() string {
-	return v.type_
-}
-
-func (v *VerificationBasicAuth) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationBasicAuth
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationBasicAuth(value)
-	v.type_ = "basic_auth"
-	return nil
-}
-
-func (v *VerificationBasicAuth) MarshalJSON() ([]byte, error) {
-	type embed VerificationBasicAuth
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "basic_auth",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Basic Auth. Only included if the ?include=verification.configs query param is present
@@ -7395,34 +7065,6 @@ type VerificationBasicAuthConfigs struct {
 
 type VerificationCommercelayer struct {
 	Configs *VerificationCommercelayerConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationCommercelayer) Type() string {
-	return v.type_
-}
-
-func (v *VerificationCommercelayer) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationCommercelayer
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationCommercelayer(value)
-	v.type_ = "commercelayer"
-	return nil
-}
-
-func (v *VerificationCommercelayer) MarshalJSON() ([]byte, error) {
-	type embed VerificationCommercelayer
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "commercelayer",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Commercelayer. Only included if the ?include=verification.configs query param is present
@@ -7432,492 +7074,662 @@ type VerificationCommercelayerConfigs struct {
 
 // The verification configs for the specific verification type
 type VerificationConfig struct {
-	typeName                   string
-	VerificationHmac           *VerificationHmac
-	VerificationBasicAuth      *VerificationBasicAuth
-	VerificationApiKey         *VerificationApiKey
-	VerificationTwitter        *VerificationTwitter
-	VerificationStripe         *VerificationStripe
-	VerificationRecharge       *VerificationRecharge
-	VerificationGitHub         *VerificationGitHub
-	VerificationShopify        *VerificationShopify
-	VerificationPostmark       *VerificationPostmark
-	VerificationTypeform       *VerificationTypeform
-	VerificationXero           *VerificationXero
-	VerificationSvix           *VerificationSvix
-	VerificationZoom           *VerificationZoom
-	VerificationAkeneo         *VerificationAkeneo
-	VerificationAdyen          *VerificationAdyen
-	VerificationGitLab         *VerificationGitLab
-	VerificationPropertyFinder *VerificationPropertyFinder
-	VerificationWooCommerce    *VerificationWooCommerce
-	VerificationOura           *VerificationOura
-	VerificationCommercelayer  *VerificationCommercelayer
-	VerificationMailgun        *VerificationMailgun
-	VerificationPipedrive      *VerificationPipedrive
-	VerificationSendGrid       *VerificationSendGrid
-	VerificationWorkOs         *VerificationWorkOs
-	VerificationSynctera       *VerificationSynctera
-	VerificationAwssns         *VerificationAwssns
-	Verification3DEye          *Verification3DEye
+	Type           string
+	Hmac           *VerificationHmac
+	BasicAuth      *VerificationBasicAuth
+	ApiKey         *VerificationApiKey
+	Twitter        *VerificationTwitter
+	Stripe         *VerificationStripe
+	Recharge       *VerificationRecharge
+	Github         *VerificationGitHub
+	Shopify        *VerificationShopify
+	Postmark       *VerificationPostmark
+	Typeform       *VerificationTypeform
+	Xero           *VerificationXero
+	Svix           *VerificationSvix
+	Zoom           *VerificationZoom
+	Akeneo         *VerificationAkeneo
+	Adyen          *VerificationAdyen
+	Gitlab         *VerificationGitLab
+	PropertyFinder *VerificationPropertyFinder
+	Woocommerce    *VerificationWooCommerce
+	Oura           *VerificationOura
+	Commercelayer  *VerificationCommercelayer
+	Mailgun        *VerificationMailgun
+	Pipedrive      *VerificationPipedrive
+	Sendgrid       *VerificationSendGrid
+	Workos         *VerificationWorkOs
+	Synctera       *VerificationSynctera
+	AwsSns         *VerificationAwssns
+	ThreeDEye      *Verification3DEye
 }
 
-func NewVerificationConfigFromVerificationHmac(value *VerificationHmac) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationHmac", VerificationHmac: value}
+func NewVerificationConfigFromHmac(value *VerificationHmac) *VerificationConfig {
+	return &VerificationConfig{Type: "hmac", Hmac: value}
 }
 
-func NewVerificationConfigFromVerificationBasicAuth(value *VerificationBasicAuth) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationBasicAuth", VerificationBasicAuth: value}
+func NewVerificationConfigFromBasicAuth(value *VerificationBasicAuth) *VerificationConfig {
+	return &VerificationConfig{Type: "basic_auth", BasicAuth: value}
 }
 
-func NewVerificationConfigFromVerificationApiKey(value *VerificationApiKey) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationApiKey", VerificationApiKey: value}
+func NewVerificationConfigFromApiKey(value *VerificationApiKey) *VerificationConfig {
+	return &VerificationConfig{Type: "api_key", ApiKey: value}
 }
 
-func NewVerificationConfigFromVerificationTwitter(value *VerificationTwitter) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationTwitter", VerificationTwitter: value}
+func NewVerificationConfigFromTwitter(value *VerificationTwitter) *VerificationConfig {
+	return &VerificationConfig{Type: "twitter", Twitter: value}
 }
 
-func NewVerificationConfigFromVerificationStripe(value *VerificationStripe) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationStripe", VerificationStripe: value}
+func NewVerificationConfigFromStripe(value *VerificationStripe) *VerificationConfig {
+	return &VerificationConfig{Type: "stripe", Stripe: value}
 }
 
-func NewVerificationConfigFromVerificationRecharge(value *VerificationRecharge) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationRecharge", VerificationRecharge: value}
+func NewVerificationConfigFromRecharge(value *VerificationRecharge) *VerificationConfig {
+	return &VerificationConfig{Type: "recharge", Recharge: value}
 }
 
-func NewVerificationConfigFromVerificationGitHub(value *VerificationGitHub) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationGitHub", VerificationGitHub: value}
+func NewVerificationConfigFromGithub(value *VerificationGitHub) *VerificationConfig {
+	return &VerificationConfig{Type: "github", Github: value}
 }
 
-func NewVerificationConfigFromVerificationShopify(value *VerificationShopify) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationShopify", VerificationShopify: value}
+func NewVerificationConfigFromShopify(value *VerificationShopify) *VerificationConfig {
+	return &VerificationConfig{Type: "shopify", Shopify: value}
 }
 
-func NewVerificationConfigFromVerificationPostmark(value *VerificationPostmark) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationPostmark", VerificationPostmark: value}
+func NewVerificationConfigFromPostmark(value *VerificationPostmark) *VerificationConfig {
+	return &VerificationConfig{Type: "postmark", Postmark: value}
 }
 
-func NewVerificationConfigFromVerificationTypeform(value *VerificationTypeform) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationTypeform", VerificationTypeform: value}
+func NewVerificationConfigFromTypeform(value *VerificationTypeform) *VerificationConfig {
+	return &VerificationConfig{Type: "typeform", Typeform: value}
 }
 
-func NewVerificationConfigFromVerificationXero(value *VerificationXero) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationXero", VerificationXero: value}
+func NewVerificationConfigFromXero(value *VerificationXero) *VerificationConfig {
+	return &VerificationConfig{Type: "xero", Xero: value}
 }
 
-func NewVerificationConfigFromVerificationSvix(value *VerificationSvix) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationSvix", VerificationSvix: value}
+func NewVerificationConfigFromSvix(value *VerificationSvix) *VerificationConfig {
+	return &VerificationConfig{Type: "svix", Svix: value}
 }
 
-func NewVerificationConfigFromVerificationZoom(value *VerificationZoom) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationZoom", VerificationZoom: value}
+func NewVerificationConfigFromZoom(value *VerificationZoom) *VerificationConfig {
+	return &VerificationConfig{Type: "zoom", Zoom: value}
 }
 
-func NewVerificationConfigFromVerificationAkeneo(value *VerificationAkeneo) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationAkeneo", VerificationAkeneo: value}
+func NewVerificationConfigFromAkeneo(value *VerificationAkeneo) *VerificationConfig {
+	return &VerificationConfig{Type: "akeneo", Akeneo: value}
 }
 
-func NewVerificationConfigFromVerificationAdyen(value *VerificationAdyen) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationAdyen", VerificationAdyen: value}
+func NewVerificationConfigFromAdyen(value *VerificationAdyen) *VerificationConfig {
+	return &VerificationConfig{Type: "adyen", Adyen: value}
 }
 
-func NewVerificationConfigFromVerificationGitLab(value *VerificationGitLab) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationGitLab", VerificationGitLab: value}
+func NewVerificationConfigFromGitlab(value *VerificationGitLab) *VerificationConfig {
+	return &VerificationConfig{Type: "gitlab", Gitlab: value}
 }
 
-func NewVerificationConfigFromVerificationPropertyFinder(value *VerificationPropertyFinder) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationPropertyFinder", VerificationPropertyFinder: value}
+func NewVerificationConfigFromPropertyFinder(value *VerificationPropertyFinder) *VerificationConfig {
+	return &VerificationConfig{Type: "property-finder", PropertyFinder: value}
 }
 
-func NewVerificationConfigFromVerificationWooCommerce(value *VerificationWooCommerce) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationWooCommerce", VerificationWooCommerce: value}
+func NewVerificationConfigFromWoocommerce(value *VerificationWooCommerce) *VerificationConfig {
+	return &VerificationConfig{Type: "woocommerce", Woocommerce: value}
 }
 
-func NewVerificationConfigFromVerificationOura(value *VerificationOura) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationOura", VerificationOura: value}
+func NewVerificationConfigFromOura(value *VerificationOura) *VerificationConfig {
+	return &VerificationConfig{Type: "oura", Oura: value}
 }
 
-func NewVerificationConfigFromVerificationCommercelayer(value *VerificationCommercelayer) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationCommercelayer", VerificationCommercelayer: value}
+func NewVerificationConfigFromCommercelayer(value *VerificationCommercelayer) *VerificationConfig {
+	return &VerificationConfig{Type: "commercelayer", Commercelayer: value}
 }
 
-func NewVerificationConfigFromVerificationMailgun(value *VerificationMailgun) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationMailgun", VerificationMailgun: value}
+func NewVerificationConfigFromMailgun(value *VerificationMailgun) *VerificationConfig {
+	return &VerificationConfig{Type: "mailgun", Mailgun: value}
 }
 
-func NewVerificationConfigFromVerificationPipedrive(value *VerificationPipedrive) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationPipedrive", VerificationPipedrive: value}
+func NewVerificationConfigFromPipedrive(value *VerificationPipedrive) *VerificationConfig {
+	return &VerificationConfig{Type: "pipedrive", Pipedrive: value}
 }
 
-func NewVerificationConfigFromVerificationSendGrid(value *VerificationSendGrid) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationSendGrid", VerificationSendGrid: value}
+func NewVerificationConfigFromSendgrid(value *VerificationSendGrid) *VerificationConfig {
+	return &VerificationConfig{Type: "sendgrid", Sendgrid: value}
 }
 
-func NewVerificationConfigFromVerificationWorkOs(value *VerificationWorkOs) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationWorkOs", VerificationWorkOs: value}
+func NewVerificationConfigFromWorkos(value *VerificationWorkOs) *VerificationConfig {
+	return &VerificationConfig{Type: "workos", Workos: value}
 }
 
-func NewVerificationConfigFromVerificationSynctera(value *VerificationSynctera) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationSynctera", VerificationSynctera: value}
+func NewVerificationConfigFromSynctera(value *VerificationSynctera) *VerificationConfig {
+	return &VerificationConfig{Type: "synctera", Synctera: value}
 }
 
-func NewVerificationConfigFromVerificationAwssns(value *VerificationAwssns) *VerificationConfig {
-	return &VerificationConfig{typeName: "verificationAwssns", VerificationAwssns: value}
+func NewVerificationConfigFromAwsSns(value *VerificationAwssns) *VerificationConfig {
+	return &VerificationConfig{Type: "aws_sns", AwsSns: value}
 }
 
-func NewVerificationConfigFromVerification3DEye(value *Verification3DEye) *VerificationConfig {
-	return &VerificationConfig{typeName: "verification3DEye", Verification3DEye: value}
+func NewVerificationConfigFromThreeDEye(value *Verification3DEye) *VerificationConfig {
+	return &VerificationConfig{Type: "three_d_eye", ThreeDEye: value}
 }
 
 func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
-	valueVerificationHmac := new(VerificationHmac)
-	if err := json.Unmarshal(data, &valueVerificationHmac); err == nil {
-		v.typeName = "verificationHmac"
-		v.VerificationHmac = valueVerificationHmac
-		return nil
+	var unmarshaler struct {
+		Type string `json:"type"`
 	}
-	valueVerificationBasicAuth := new(VerificationBasicAuth)
-	if err := json.Unmarshal(data, &valueVerificationBasicAuth); err == nil {
-		v.typeName = "verificationBasicAuth"
-		v.VerificationBasicAuth = valueVerificationBasicAuth
-		return nil
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
 	}
-	valueVerificationApiKey := new(VerificationApiKey)
-	if err := json.Unmarshal(data, &valueVerificationApiKey); err == nil {
-		v.typeName = "verificationApiKey"
-		v.VerificationApiKey = valueVerificationApiKey
-		return nil
+	v.Type = unmarshaler.Type
+	switch unmarshaler.Type {
+	case "hmac":
+		value := new(VerificationHmac)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Hmac = value
+	case "basic_auth":
+		value := new(VerificationBasicAuth)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.BasicAuth = value
+	case "api_key":
+		value := new(VerificationApiKey)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.ApiKey = value
+	case "twitter":
+		value := new(VerificationTwitter)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Twitter = value
+	case "stripe":
+		value := new(VerificationStripe)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Stripe = value
+	case "recharge":
+		value := new(VerificationRecharge)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Recharge = value
+	case "github":
+		value := new(VerificationGitHub)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Github = value
+	case "shopify":
+		value := new(VerificationShopify)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Shopify = value
+	case "postmark":
+		value := new(VerificationPostmark)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Postmark = value
+	case "typeform":
+		value := new(VerificationTypeform)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Typeform = value
+	case "xero":
+		value := new(VerificationXero)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Xero = value
+	case "svix":
+		value := new(VerificationSvix)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Svix = value
+	case "zoom":
+		value := new(VerificationZoom)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Zoom = value
+	case "akeneo":
+		value := new(VerificationAkeneo)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Akeneo = value
+	case "adyen":
+		value := new(VerificationAdyen)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Adyen = value
+	case "gitlab":
+		value := new(VerificationGitLab)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Gitlab = value
+	case "property-finder":
+		value := new(VerificationPropertyFinder)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.PropertyFinder = value
+	case "woocommerce":
+		value := new(VerificationWooCommerce)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Woocommerce = value
+	case "oura":
+		value := new(VerificationOura)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Oura = value
+	case "commercelayer":
+		value := new(VerificationCommercelayer)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Commercelayer = value
+	case "mailgun":
+		value := new(VerificationMailgun)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Mailgun = value
+	case "pipedrive":
+		value := new(VerificationPipedrive)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Pipedrive = value
+	case "sendgrid":
+		value := new(VerificationSendGrid)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Sendgrid = value
+	case "workos":
+		value := new(VerificationWorkOs)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Workos = value
+	case "synctera":
+		value := new(VerificationSynctera)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Synctera = value
+	case "aws_sns":
+		value := new(VerificationAwssns)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.AwsSns = value
+	case "three_d_eye":
+		value := new(Verification3DEye)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.ThreeDEye = value
 	}
-	valueVerificationTwitter := new(VerificationTwitter)
-	if err := json.Unmarshal(data, &valueVerificationTwitter); err == nil {
-		v.typeName = "verificationTwitter"
-		v.VerificationTwitter = valueVerificationTwitter
-		return nil
-	}
-	valueVerificationStripe := new(VerificationStripe)
-	if err := json.Unmarshal(data, &valueVerificationStripe); err == nil {
-		v.typeName = "verificationStripe"
-		v.VerificationStripe = valueVerificationStripe
-		return nil
-	}
-	valueVerificationRecharge := new(VerificationRecharge)
-	if err := json.Unmarshal(data, &valueVerificationRecharge); err == nil {
-		v.typeName = "verificationRecharge"
-		v.VerificationRecharge = valueVerificationRecharge
-		return nil
-	}
-	valueVerificationGitHub := new(VerificationGitHub)
-	if err := json.Unmarshal(data, &valueVerificationGitHub); err == nil {
-		v.typeName = "verificationGitHub"
-		v.VerificationGitHub = valueVerificationGitHub
-		return nil
-	}
-	valueVerificationShopify := new(VerificationShopify)
-	if err := json.Unmarshal(data, &valueVerificationShopify); err == nil {
-		v.typeName = "verificationShopify"
-		v.VerificationShopify = valueVerificationShopify
-		return nil
-	}
-	valueVerificationPostmark := new(VerificationPostmark)
-	if err := json.Unmarshal(data, &valueVerificationPostmark); err == nil {
-		v.typeName = "verificationPostmark"
-		v.VerificationPostmark = valueVerificationPostmark
-		return nil
-	}
-	valueVerificationTypeform := new(VerificationTypeform)
-	if err := json.Unmarshal(data, &valueVerificationTypeform); err == nil {
-		v.typeName = "verificationTypeform"
-		v.VerificationTypeform = valueVerificationTypeform
-		return nil
-	}
-	valueVerificationXero := new(VerificationXero)
-	if err := json.Unmarshal(data, &valueVerificationXero); err == nil {
-		v.typeName = "verificationXero"
-		v.VerificationXero = valueVerificationXero
-		return nil
-	}
-	valueVerificationSvix := new(VerificationSvix)
-	if err := json.Unmarshal(data, &valueVerificationSvix); err == nil {
-		v.typeName = "verificationSvix"
-		v.VerificationSvix = valueVerificationSvix
-		return nil
-	}
-	valueVerificationZoom := new(VerificationZoom)
-	if err := json.Unmarshal(data, &valueVerificationZoom); err == nil {
-		v.typeName = "verificationZoom"
-		v.VerificationZoom = valueVerificationZoom
-		return nil
-	}
-	valueVerificationAkeneo := new(VerificationAkeneo)
-	if err := json.Unmarshal(data, &valueVerificationAkeneo); err == nil {
-		v.typeName = "verificationAkeneo"
-		v.VerificationAkeneo = valueVerificationAkeneo
-		return nil
-	}
-	valueVerificationAdyen := new(VerificationAdyen)
-	if err := json.Unmarshal(data, &valueVerificationAdyen); err == nil {
-		v.typeName = "verificationAdyen"
-		v.VerificationAdyen = valueVerificationAdyen
-		return nil
-	}
-	valueVerificationGitLab := new(VerificationGitLab)
-	if err := json.Unmarshal(data, &valueVerificationGitLab); err == nil {
-		v.typeName = "verificationGitLab"
-		v.VerificationGitLab = valueVerificationGitLab
-		return nil
-	}
-	valueVerificationPropertyFinder := new(VerificationPropertyFinder)
-	if err := json.Unmarshal(data, &valueVerificationPropertyFinder); err == nil {
-		v.typeName = "verificationPropertyFinder"
-		v.VerificationPropertyFinder = valueVerificationPropertyFinder
-		return nil
-	}
-	valueVerificationWooCommerce := new(VerificationWooCommerce)
-	if err := json.Unmarshal(data, &valueVerificationWooCommerce); err == nil {
-		v.typeName = "verificationWooCommerce"
-		v.VerificationWooCommerce = valueVerificationWooCommerce
-		return nil
-	}
-	valueVerificationOura := new(VerificationOura)
-	if err := json.Unmarshal(data, &valueVerificationOura); err == nil {
-		v.typeName = "verificationOura"
-		v.VerificationOura = valueVerificationOura
-		return nil
-	}
-	valueVerificationCommercelayer := new(VerificationCommercelayer)
-	if err := json.Unmarshal(data, &valueVerificationCommercelayer); err == nil {
-		v.typeName = "verificationCommercelayer"
-		v.VerificationCommercelayer = valueVerificationCommercelayer
-		return nil
-	}
-	valueVerificationMailgun := new(VerificationMailgun)
-	if err := json.Unmarshal(data, &valueVerificationMailgun); err == nil {
-		v.typeName = "verificationMailgun"
-		v.VerificationMailgun = valueVerificationMailgun
-		return nil
-	}
-	valueVerificationPipedrive := new(VerificationPipedrive)
-	if err := json.Unmarshal(data, &valueVerificationPipedrive); err == nil {
-		v.typeName = "verificationPipedrive"
-		v.VerificationPipedrive = valueVerificationPipedrive
-		return nil
-	}
-	valueVerificationSendGrid := new(VerificationSendGrid)
-	if err := json.Unmarshal(data, &valueVerificationSendGrid); err == nil {
-		v.typeName = "verificationSendGrid"
-		v.VerificationSendGrid = valueVerificationSendGrid
-		return nil
-	}
-	valueVerificationWorkOs := new(VerificationWorkOs)
-	if err := json.Unmarshal(data, &valueVerificationWorkOs); err == nil {
-		v.typeName = "verificationWorkOs"
-		v.VerificationWorkOs = valueVerificationWorkOs
-		return nil
-	}
-	valueVerificationSynctera := new(VerificationSynctera)
-	if err := json.Unmarshal(data, &valueVerificationSynctera); err == nil {
-		v.typeName = "verificationSynctera"
-		v.VerificationSynctera = valueVerificationSynctera
-		return nil
-	}
-	valueVerificationAwssns := new(VerificationAwssns)
-	if err := json.Unmarshal(data, &valueVerificationAwssns); err == nil {
-		v.typeName = "verificationAwssns"
-		v.VerificationAwssns = valueVerificationAwssns
-		return nil
-	}
-	valueVerification3DEye := new(Verification3DEye)
-	if err := json.Unmarshal(data, &valueVerification3DEye); err == nil {
-		v.typeName = "verification3DEye"
-		v.Verification3DEye = valueVerification3DEye
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
+	return nil
 }
 
 func (v VerificationConfig) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
+	switch v.Type {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "verificationHmac":
-		return json.Marshal(v.VerificationHmac)
-	case "verificationBasicAuth":
-		return json.Marshal(v.VerificationBasicAuth)
-	case "verificationApiKey":
-		return json.Marshal(v.VerificationApiKey)
-	case "verificationTwitter":
-		return json.Marshal(v.VerificationTwitter)
-	case "verificationStripe":
-		return json.Marshal(v.VerificationStripe)
-	case "verificationRecharge":
-		return json.Marshal(v.VerificationRecharge)
-	case "verificationGitHub":
-		return json.Marshal(v.VerificationGitHub)
-	case "verificationShopify":
-		return json.Marshal(v.VerificationShopify)
-	case "verificationPostmark":
-		return json.Marshal(v.VerificationPostmark)
-	case "verificationTypeform":
-		return json.Marshal(v.VerificationTypeform)
-	case "verificationXero":
-		return json.Marshal(v.VerificationXero)
-	case "verificationSvix":
-		return json.Marshal(v.VerificationSvix)
-	case "verificationZoom":
-		return json.Marshal(v.VerificationZoom)
-	case "verificationAkeneo":
-		return json.Marshal(v.VerificationAkeneo)
-	case "verificationAdyen":
-		return json.Marshal(v.VerificationAdyen)
-	case "verificationGitLab":
-		return json.Marshal(v.VerificationGitLab)
-	case "verificationPropertyFinder":
-		return json.Marshal(v.VerificationPropertyFinder)
-	case "verificationWooCommerce":
-		return json.Marshal(v.VerificationWooCommerce)
-	case "verificationOura":
-		return json.Marshal(v.VerificationOura)
-	case "verificationCommercelayer":
-		return json.Marshal(v.VerificationCommercelayer)
-	case "verificationMailgun":
-		return json.Marshal(v.VerificationMailgun)
-	case "verificationPipedrive":
-		return json.Marshal(v.VerificationPipedrive)
-	case "verificationSendGrid":
-		return json.Marshal(v.VerificationSendGrid)
-	case "verificationWorkOs":
-		return json.Marshal(v.VerificationWorkOs)
-	case "verificationSynctera":
-		return json.Marshal(v.VerificationSynctera)
-	case "verificationAwssns":
-		return json.Marshal(v.VerificationAwssns)
-	case "verification3DEye":
-		return json.Marshal(v.Verification3DEye)
+		return nil, fmt.Errorf("invalid type %s in %T", v.Type, v)
+	case "hmac":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationHmac
+		}{
+			Type:             v.Type,
+			VerificationHmac: v.Hmac,
+		}
+		return json.Marshal(marshaler)
+	case "basic_auth":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationBasicAuth
+		}{
+			Type:                  v.Type,
+			VerificationBasicAuth: v.BasicAuth,
+		}
+		return json.Marshal(marshaler)
+	case "api_key":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationApiKey
+		}{
+			Type:               v.Type,
+			VerificationApiKey: v.ApiKey,
+		}
+		return json.Marshal(marshaler)
+	case "twitter":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationTwitter
+		}{
+			Type:                v.Type,
+			VerificationTwitter: v.Twitter,
+		}
+		return json.Marshal(marshaler)
+	case "stripe":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationStripe
+		}{
+			Type:               v.Type,
+			VerificationStripe: v.Stripe,
+		}
+		return json.Marshal(marshaler)
+	case "recharge":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationRecharge
+		}{
+			Type:                 v.Type,
+			VerificationRecharge: v.Recharge,
+		}
+		return json.Marshal(marshaler)
+	case "github":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationGitHub
+		}{
+			Type:               v.Type,
+			VerificationGitHub: v.Github,
+		}
+		return json.Marshal(marshaler)
+	case "shopify":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationShopify
+		}{
+			Type:                v.Type,
+			VerificationShopify: v.Shopify,
+		}
+		return json.Marshal(marshaler)
+	case "postmark":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationPostmark
+		}{
+			Type:                 v.Type,
+			VerificationPostmark: v.Postmark,
+		}
+		return json.Marshal(marshaler)
+	case "typeform":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationTypeform
+		}{
+			Type:                 v.Type,
+			VerificationTypeform: v.Typeform,
+		}
+		return json.Marshal(marshaler)
+	case "xero":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationXero
+		}{
+			Type:             v.Type,
+			VerificationXero: v.Xero,
+		}
+		return json.Marshal(marshaler)
+	case "svix":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSvix
+		}{
+			Type:             v.Type,
+			VerificationSvix: v.Svix,
+		}
+		return json.Marshal(marshaler)
+	case "zoom":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationZoom
+		}{
+			Type:             v.Type,
+			VerificationZoom: v.Zoom,
+		}
+		return json.Marshal(marshaler)
+	case "akeneo":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationAkeneo
+		}{
+			Type:               v.Type,
+			VerificationAkeneo: v.Akeneo,
+		}
+		return json.Marshal(marshaler)
+	case "adyen":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationAdyen
+		}{
+			Type:              v.Type,
+			VerificationAdyen: v.Adyen,
+		}
+		return json.Marshal(marshaler)
+	case "gitlab":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationGitLab
+		}{
+			Type:               v.Type,
+			VerificationGitLab: v.Gitlab,
+		}
+		return json.Marshal(marshaler)
+	case "property-finder":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationPropertyFinder
+		}{
+			Type:                       v.Type,
+			VerificationPropertyFinder: v.PropertyFinder,
+		}
+		return json.Marshal(marshaler)
+	case "woocommerce":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationWooCommerce
+		}{
+			Type:                    v.Type,
+			VerificationWooCommerce: v.Woocommerce,
+		}
+		return json.Marshal(marshaler)
+	case "oura":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationOura
+		}{
+			Type:             v.Type,
+			VerificationOura: v.Oura,
+		}
+		return json.Marshal(marshaler)
+	case "commercelayer":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationCommercelayer
+		}{
+			Type:                      v.Type,
+			VerificationCommercelayer: v.Commercelayer,
+		}
+		return json.Marshal(marshaler)
+	case "mailgun":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationMailgun
+		}{
+			Type:                v.Type,
+			VerificationMailgun: v.Mailgun,
+		}
+		return json.Marshal(marshaler)
+	case "pipedrive":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationPipedrive
+		}{
+			Type:                  v.Type,
+			VerificationPipedrive: v.Pipedrive,
+		}
+		return json.Marshal(marshaler)
+	case "sendgrid":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSendGrid
+		}{
+			Type:                 v.Type,
+			VerificationSendGrid: v.Sendgrid,
+		}
+		return json.Marshal(marshaler)
+	case "workos":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationWorkOs
+		}{
+			Type:               v.Type,
+			VerificationWorkOs: v.Workos,
+		}
+		return json.Marshal(marshaler)
+	case "synctera":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSynctera
+		}{
+			Type:                 v.Type,
+			VerificationSynctera: v.Synctera,
+		}
+		return json.Marshal(marshaler)
+	case "aws_sns":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationAwssns
+		}{
+			Type:               v.Type,
+			VerificationAwssns: v.AwsSns,
+		}
+		return json.Marshal(marshaler)
+	case "three_d_eye":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*Verification3DEye
+		}{
+			Type:              v.Type,
+			Verification3DEye: v.ThreeDEye,
+		}
+		return json.Marshal(marshaler)
 	}
 }
 
 type VerificationConfigVisitor interface {
-	VisitVerificationHmac(*VerificationHmac) error
-	VisitVerificationBasicAuth(*VerificationBasicAuth) error
-	VisitVerificationApiKey(*VerificationApiKey) error
-	VisitVerificationTwitter(*VerificationTwitter) error
-	VisitVerificationStripe(*VerificationStripe) error
-	VisitVerificationRecharge(*VerificationRecharge) error
-	VisitVerificationGitHub(*VerificationGitHub) error
-	VisitVerificationShopify(*VerificationShopify) error
-	VisitVerificationPostmark(*VerificationPostmark) error
-	VisitVerificationTypeform(*VerificationTypeform) error
-	VisitVerificationXero(*VerificationXero) error
-	VisitVerificationSvix(*VerificationSvix) error
-	VisitVerificationZoom(*VerificationZoom) error
-	VisitVerificationAkeneo(*VerificationAkeneo) error
-	VisitVerificationAdyen(*VerificationAdyen) error
-	VisitVerificationGitLab(*VerificationGitLab) error
-	VisitVerificationPropertyFinder(*VerificationPropertyFinder) error
-	VisitVerificationWooCommerce(*VerificationWooCommerce) error
-	VisitVerificationOura(*VerificationOura) error
-	VisitVerificationCommercelayer(*VerificationCommercelayer) error
-	VisitVerificationMailgun(*VerificationMailgun) error
-	VisitVerificationPipedrive(*VerificationPipedrive) error
-	VisitVerificationSendGrid(*VerificationSendGrid) error
-	VisitVerificationWorkOs(*VerificationWorkOs) error
-	VisitVerificationSynctera(*VerificationSynctera) error
-	VisitVerificationAwssns(*VerificationAwssns) error
-	VisitVerification3DEye(*Verification3DEye) error
+	VisitHmac(*VerificationHmac) error
+	VisitBasicAuth(*VerificationBasicAuth) error
+	VisitApiKey(*VerificationApiKey) error
+	VisitTwitter(*VerificationTwitter) error
+	VisitStripe(*VerificationStripe) error
+	VisitRecharge(*VerificationRecharge) error
+	VisitGithub(*VerificationGitHub) error
+	VisitShopify(*VerificationShopify) error
+	VisitPostmark(*VerificationPostmark) error
+	VisitTypeform(*VerificationTypeform) error
+	VisitXero(*VerificationXero) error
+	VisitSvix(*VerificationSvix) error
+	VisitZoom(*VerificationZoom) error
+	VisitAkeneo(*VerificationAkeneo) error
+	VisitAdyen(*VerificationAdyen) error
+	VisitGitlab(*VerificationGitLab) error
+	VisitPropertyFinder(*VerificationPropertyFinder) error
+	VisitWoocommerce(*VerificationWooCommerce) error
+	VisitOura(*VerificationOura) error
+	VisitCommercelayer(*VerificationCommercelayer) error
+	VisitMailgun(*VerificationMailgun) error
+	VisitPipedrive(*VerificationPipedrive) error
+	VisitSendgrid(*VerificationSendGrid) error
+	VisitWorkos(*VerificationWorkOs) error
+	VisitSynctera(*VerificationSynctera) error
+	VisitAwsSns(*VerificationAwssns) error
+	VisitThreeDEye(*Verification3DEye) error
 }
 
 func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
-	switch v.typeName {
+	switch v.Type {
 	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "verificationHmac":
-		return visitor.VisitVerificationHmac(v.VerificationHmac)
-	case "verificationBasicAuth":
-		return visitor.VisitVerificationBasicAuth(v.VerificationBasicAuth)
-	case "verificationApiKey":
-		return visitor.VisitVerificationApiKey(v.VerificationApiKey)
-	case "verificationTwitter":
-		return visitor.VisitVerificationTwitter(v.VerificationTwitter)
-	case "verificationStripe":
-		return visitor.VisitVerificationStripe(v.VerificationStripe)
-	case "verificationRecharge":
-		return visitor.VisitVerificationRecharge(v.VerificationRecharge)
-	case "verificationGitHub":
-		return visitor.VisitVerificationGitHub(v.VerificationGitHub)
-	case "verificationShopify":
-		return visitor.VisitVerificationShopify(v.VerificationShopify)
-	case "verificationPostmark":
-		return visitor.VisitVerificationPostmark(v.VerificationPostmark)
-	case "verificationTypeform":
-		return visitor.VisitVerificationTypeform(v.VerificationTypeform)
-	case "verificationXero":
-		return visitor.VisitVerificationXero(v.VerificationXero)
-	case "verificationSvix":
-		return visitor.VisitVerificationSvix(v.VerificationSvix)
-	case "verificationZoom":
-		return visitor.VisitVerificationZoom(v.VerificationZoom)
-	case "verificationAkeneo":
-		return visitor.VisitVerificationAkeneo(v.VerificationAkeneo)
-	case "verificationAdyen":
-		return visitor.VisitVerificationAdyen(v.VerificationAdyen)
-	case "verificationGitLab":
-		return visitor.VisitVerificationGitLab(v.VerificationGitLab)
-	case "verificationPropertyFinder":
-		return visitor.VisitVerificationPropertyFinder(v.VerificationPropertyFinder)
-	case "verificationWooCommerce":
-		return visitor.VisitVerificationWooCommerce(v.VerificationWooCommerce)
-	case "verificationOura":
-		return visitor.VisitVerificationOura(v.VerificationOura)
-	case "verificationCommercelayer":
-		return visitor.VisitVerificationCommercelayer(v.VerificationCommercelayer)
-	case "verificationMailgun":
-		return visitor.VisitVerificationMailgun(v.VerificationMailgun)
-	case "verificationPipedrive":
-		return visitor.VisitVerificationPipedrive(v.VerificationPipedrive)
-	case "verificationSendGrid":
-		return visitor.VisitVerificationSendGrid(v.VerificationSendGrid)
-	case "verificationWorkOs":
-		return visitor.VisitVerificationWorkOs(v.VerificationWorkOs)
-	case "verificationSynctera":
-		return visitor.VisitVerificationSynctera(v.VerificationSynctera)
-	case "verificationAwssns":
-		return visitor.VisitVerificationAwssns(v.VerificationAwssns)
-	case "verification3DEye":
-		return visitor.VisitVerification3DEye(v.Verification3DEye)
+		return fmt.Errorf("invalid type %s in %T", v.Type, v)
+	case "hmac":
+		return visitor.VisitHmac(v.Hmac)
+	case "basic_auth":
+		return visitor.VisitBasicAuth(v.BasicAuth)
+	case "api_key":
+		return visitor.VisitApiKey(v.ApiKey)
+	case "twitter":
+		return visitor.VisitTwitter(v.Twitter)
+	case "stripe":
+		return visitor.VisitStripe(v.Stripe)
+	case "recharge":
+		return visitor.VisitRecharge(v.Recharge)
+	case "github":
+		return visitor.VisitGithub(v.Github)
+	case "shopify":
+		return visitor.VisitShopify(v.Shopify)
+	case "postmark":
+		return visitor.VisitPostmark(v.Postmark)
+	case "typeform":
+		return visitor.VisitTypeform(v.Typeform)
+	case "xero":
+		return visitor.VisitXero(v.Xero)
+	case "svix":
+		return visitor.VisitSvix(v.Svix)
+	case "zoom":
+		return visitor.VisitZoom(v.Zoom)
+	case "akeneo":
+		return visitor.VisitAkeneo(v.Akeneo)
+	case "adyen":
+		return visitor.VisitAdyen(v.Adyen)
+	case "gitlab":
+		return visitor.VisitGitlab(v.Gitlab)
+	case "property-finder":
+		return visitor.VisitPropertyFinder(v.PropertyFinder)
+	case "woocommerce":
+		return visitor.VisitWoocommerce(v.Woocommerce)
+	case "oura":
+		return visitor.VisitOura(v.Oura)
+	case "commercelayer":
+		return visitor.VisitCommercelayer(v.Commercelayer)
+	case "mailgun":
+		return visitor.VisitMailgun(v.Mailgun)
+	case "pipedrive":
+		return visitor.VisitPipedrive(v.Pipedrive)
+	case "sendgrid":
+		return visitor.VisitSendgrid(v.Sendgrid)
+	case "workos":
+		return visitor.VisitWorkos(v.Workos)
+	case "synctera":
+		return visitor.VisitSynctera(v.Synctera)
+	case "aws_sns":
+		return visitor.VisitAwsSns(v.AwsSns)
+	case "three_d_eye":
+		return visitor.VisitThreeDEye(v.ThreeDEye)
 	}
 }
 
 type VerificationGitHub struct {
 	Configs *VerificationGitHubConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationGitHub) Type() string {
-	return v.type_
-}
-
-func (v *VerificationGitHub) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationGitHub
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationGitHub(value)
-	v.type_ = "github"
-	return nil
-}
-
-func (v *VerificationGitHub) MarshalJSON() ([]byte, error) {
-	type embed VerificationGitHub
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "github",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for GitHub. Only included if the ?include=verification.configs query param is present
@@ -7927,34 +7739,6 @@ type VerificationGitHubConfigs struct {
 
 type VerificationGitLab struct {
 	Configs *VerificationGitLabConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationGitLab) Type() string {
-	return v.type_
-}
-
-func (v *VerificationGitLab) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationGitLab
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationGitLab(value)
-	v.type_ = "gitlab"
-	return nil
-}
-
-func (v *VerificationGitLab) MarshalJSON() ([]byte, error) {
-	type embed VerificationGitLab
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "gitlab",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for GitLab. Only included if the ?include=verification.configs query param is present
@@ -7964,34 +7748,6 @@ type VerificationGitLabConfigs struct {
 
 type VerificationHmac struct {
 	Configs *VerificationHmacConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationHmac) Type() string {
-	return v.type_
-}
-
-func (v *VerificationHmac) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationHmac
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationHmac(value)
-	v.type_ = "hmac"
-	return nil
-}
-
-func (v *VerificationHmac) MarshalJSON() ([]byte, error) {
-	type embed VerificationHmac
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "hmac",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for HMAC. Only included if the ?include=verification.configs query param is present
@@ -8026,34 +7782,6 @@ func (v VerificationHmacConfigsEncoding) Ptr() *VerificationHmacConfigsEncoding 
 
 type VerificationMailgun struct {
 	Configs *VerificationMailgunConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationMailgun) Type() string {
-	return v.type_
-}
-
-func (v *VerificationMailgun) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationMailgun
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationMailgun(value)
-	v.type_ = "mailgun"
-	return nil
-}
-
-func (v *VerificationMailgun) MarshalJSON() ([]byte, error) {
-	type embed VerificationMailgun
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "mailgun",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Mailgun. Only included if the ?include=verification.configs query param is present
@@ -8063,34 +7791,6 @@ type VerificationMailgunConfigs struct {
 
 type VerificationOura struct {
 	Configs *VerificationOuraConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationOura) Type() string {
-	return v.type_
-}
-
-func (v *VerificationOura) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationOura
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationOura(value)
-	v.type_ = "oura"
-	return nil
-}
-
-func (v *VerificationOura) MarshalJSON() ([]byte, error) {
-	type embed VerificationOura
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "oura",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Oura. Only included if the ?include=verification.configs query param is present
@@ -8100,34 +7800,6 @@ type VerificationOuraConfigs struct {
 
 type VerificationPipedrive struct {
 	Configs *VerificationPipedriveConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationPipedrive) Type() string {
-	return v.type_
-}
-
-func (v *VerificationPipedrive) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationPipedrive
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationPipedrive(value)
-	v.type_ = "pipedrive"
-	return nil
-}
-
-func (v *VerificationPipedrive) MarshalJSON() ([]byte, error) {
-	type embed VerificationPipedrive
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "pipedrive",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Pipedrive. Only included if the ?include=verification.configs query param is present
@@ -8138,34 +7810,6 @@ type VerificationPipedriveConfigs struct {
 
 type VerificationPostmark struct {
 	Configs *VerificationPostmarkConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationPostmark) Type() string {
-	return v.type_
-}
-
-func (v *VerificationPostmark) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationPostmark
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationPostmark(value)
-	v.type_ = "postmark"
-	return nil
-}
-
-func (v *VerificationPostmark) MarshalJSON() ([]byte, error) {
-	type embed VerificationPostmark
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "postmark",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Postmark. Only included if the ?include=verification.configs query param is present
@@ -8175,34 +7819,6 @@ type VerificationPostmarkConfigs struct {
 
 type VerificationPropertyFinder struct {
 	Configs *VerificationPropertyFinderConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationPropertyFinder) Type() string {
-	return v.type_
-}
-
-func (v *VerificationPropertyFinder) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationPropertyFinder
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationPropertyFinder(value)
-	v.type_ = "property-finder"
-	return nil
-}
-
-func (v *VerificationPropertyFinder) MarshalJSON() ([]byte, error) {
-	type embed VerificationPropertyFinder
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "property-finder",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Property Finder. Only included if the ?include=verification.configs query param is present
@@ -8212,34 +7828,6 @@ type VerificationPropertyFinderConfigs struct {
 
 type VerificationRecharge struct {
 	Configs *VerificationRechargeConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationRecharge) Type() string {
-	return v.type_
-}
-
-func (v *VerificationRecharge) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationRecharge
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationRecharge(value)
-	v.type_ = "recharge"
-	return nil
-}
-
-func (v *VerificationRecharge) MarshalJSON() ([]byte, error) {
-	type embed VerificationRecharge
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "recharge",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Recharge. Only included if the ?include=verification.configs query param is present
@@ -8274,34 +7862,6 @@ func (v VerificationRechargeConfigsEncoding) Ptr() *VerificationRechargeConfigsE
 
 type VerificationSendGrid struct {
 	Configs *VerificationSendGridConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationSendGrid) Type() string {
-	return v.type_
-}
-
-func (v *VerificationSendGrid) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationSendGrid
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationSendGrid(value)
-	v.type_ = "sendgrid"
-	return nil
-}
-
-func (v *VerificationSendGrid) MarshalJSON() ([]byte, error) {
-	type embed VerificationSendGrid
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "sendgrid",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for SendGrid. Only included if the ?include=verification.configs query param is present
@@ -8311,34 +7871,6 @@ type VerificationSendGridConfigs struct {
 
 type VerificationShopify struct {
 	Configs *VerificationShopifyConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationShopify) Type() string {
-	return v.type_
-}
-
-func (v *VerificationShopify) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationShopify
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationShopify(value)
-	v.type_ = "shopify"
-	return nil
-}
-
-func (v *VerificationShopify) MarshalJSON() ([]byte, error) {
-	type embed VerificationShopify
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "shopify",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Shopify. Only included if the ?include=verification.configs query param is present
@@ -8375,34 +7907,6 @@ func (v VerificationShopifyConfigsRateLimitPeriod) Ptr() *VerificationShopifyCon
 
 type VerificationStripe struct {
 	Configs *VerificationStripeConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationStripe) Type() string {
-	return v.type_
-}
-
-func (v *VerificationStripe) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationStripe
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationStripe(value)
-	v.type_ = "stripe"
-	return nil
-}
-
-func (v *VerificationStripe) MarshalJSON() ([]byte, error) {
-	type embed VerificationStripe
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "stripe",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Stripe. Only included if the ?include=verification.configs query param is present
@@ -8412,34 +7916,6 @@ type VerificationStripeConfigs struct {
 
 type VerificationSvix struct {
 	Configs *VerificationSvixConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationSvix) Type() string {
-	return v.type_
-}
-
-func (v *VerificationSvix) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationSvix
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationSvix(value)
-	v.type_ = "svix"
-	return nil
-}
-
-func (v *VerificationSvix) MarshalJSON() ([]byte, error) {
-	type embed VerificationSvix
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "svix",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Svix. Only included if the ?include=verification.configs query param is present
@@ -8449,34 +7925,6 @@ type VerificationSvixConfigs struct {
 
 type VerificationSynctera struct {
 	Configs *VerificationSyncteraConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationSynctera) Type() string {
-	return v.type_
-}
-
-func (v *VerificationSynctera) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationSynctera
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationSynctera(value)
-	v.type_ = "synctera"
-	return nil
-}
-
-func (v *VerificationSynctera) MarshalJSON() ([]byte, error) {
-	type embed VerificationSynctera
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "synctera",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Synctera. Only included if the ?include=verification.configs query param is present
@@ -8486,34 +7934,6 @@ type VerificationSyncteraConfigs struct {
 
 type VerificationTwitter struct {
 	Configs *VerificationTwitterConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationTwitter) Type() string {
-	return v.type_
-}
-
-func (v *VerificationTwitter) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationTwitter
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationTwitter(value)
-	v.type_ = "twitter"
-	return nil
-}
-
-func (v *VerificationTwitter) MarshalJSON() ([]byte, error) {
-	type embed VerificationTwitter
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "twitter",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Twitter. Only included if the ?include=verification.configs query param is present
@@ -8523,34 +7943,6 @@ type VerificationTwitterConfigs struct {
 
 type VerificationTypeform struct {
 	Configs *VerificationTypeformConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationTypeform) Type() string {
-	return v.type_
-}
-
-func (v *VerificationTypeform) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationTypeform
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationTypeform(value)
-	v.type_ = "typeform"
-	return nil
-}
-
-func (v *VerificationTypeform) MarshalJSON() ([]byte, error) {
-	type embed VerificationTypeform
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "typeform",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Typeform. Only included if the ?include=verification.configs query param is present
@@ -8560,34 +7952,6 @@ type VerificationTypeformConfigs struct {
 
 type VerificationWooCommerce struct {
 	Configs *VerificationWooCommerceConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationWooCommerce) Type() string {
-	return v.type_
-}
-
-func (v *VerificationWooCommerce) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationWooCommerce
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationWooCommerce(value)
-	v.type_ = "woocommerce"
-	return nil
-}
-
-func (v *VerificationWooCommerce) MarshalJSON() ([]byte, error) {
-	type embed VerificationWooCommerce
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "woocommerce",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for WooCommerce. Only included if the ?include=verification.configs query param is present
@@ -8597,34 +7961,6 @@ type VerificationWooCommerceConfigs struct {
 
 type VerificationWorkOs struct {
 	Configs *VerificationWorkOsConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationWorkOs) Type() string {
-	return v.type_
-}
-
-func (v *VerificationWorkOs) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationWorkOs
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationWorkOs(value)
-	v.type_ = "workos"
-	return nil
-}
-
-func (v *VerificationWorkOs) MarshalJSON() ([]byte, error) {
-	type embed VerificationWorkOs
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "workos",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for WorkOS. Only included if the ?include=verification.configs query param is present
@@ -8634,34 +7970,6 @@ type VerificationWorkOsConfigs struct {
 
 type VerificationXero struct {
 	Configs *VerificationXeroConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationXero) Type() string {
-	return v.type_
-}
-
-func (v *VerificationXero) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationXero
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationXero(value)
-	v.type_ = "xero"
-	return nil
-}
-
-func (v *VerificationXero) MarshalJSON() ([]byte, error) {
-	type embed VerificationXero
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "xero",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Xero. Only included if the ?include=verification.configs query param is present
@@ -8671,34 +7979,6 @@ type VerificationXeroConfigs struct {
 
 type VerificationZoom struct {
 	Configs *VerificationZoomConfigs `json:"configs,omitempty"`
-	type_   string
-}
-
-func (v *VerificationZoom) Type() string {
-	return v.type_
-}
-
-func (v *VerificationZoom) UnmarshalJSON(data []byte) error {
-	type unmarshaler VerificationZoom
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VerificationZoom(value)
-	v.type_ = "zoom"
-	return nil
-}
-
-func (v *VerificationZoom) MarshalJSON() ([]byte, error) {
-	type embed VerificationZoom
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*v),
-		Type:  "zoom",
-	}
-	return json.Marshal(marshaler)
 }
 
 // The verification configs for Zoom. Only included if the ?include=verification.configs query param is present
