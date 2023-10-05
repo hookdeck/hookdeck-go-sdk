@@ -117,7 +117,7 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.ConnectionList
 		c.httpClient,
 		endpointURL,
 		http.MethodGet,
-		request,
+		nil,
 		&response,
 		false,
 		c.header,

@@ -102,7 +102,7 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.IssueTriggerLi
 		c.httpClient,
 		endpointURL,
 		http.MethodGet,
-		request,
+		nil,
 		&response,
 		false,
 		c.header,

@@ -95,7 +95,7 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.AttemptListReq
 		c.httpClient,
 		endpointURL,
 		http.MethodGet,
-		request,
+		nil,
 		&response,
 		false,
 		c.header,

@@ -159,7 +159,7 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.EventListReque
 		c.httpClient,
 		endpointURL,
 		http.MethodGet,
-		request,
+		nil,
 		&response,
 		false,
 		c.header,
