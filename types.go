@@ -2765,52 +2765,52 @@ func (f *FilterRule) MarshalJSON() ([]byte, error) {
 
 // JSON using our filter syntax to filter on request headers
 type FilterRuleProperty struct {
-	typeName                 string
-	StringOptional           *string
-	DoubleOptional           *float64
-	BooleanOptional          *bool
-	StringUnknownMapOptional map[string]interface{}
+	typeName string
+	String   *string
+	Number   *float64
+	Boolean  *bool
+	JSON     map[string]interface{}
 }
 
-func NewFilterRulePropertyFromStringOptional(value *string) *FilterRuleProperty {
-	return &FilterRuleProperty{typeName: "stringOptional", StringOptional: value}
+func NewFilterRulePropertyFromString(value *string) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "string", String: value}
 }
 
-func NewFilterRulePropertyFromDoubleOptional(value *float64) *FilterRuleProperty {
-	return &FilterRuleProperty{typeName: "doubleOptional", DoubleOptional: value}
+func NewFilterRulePropertyFromNumber(value *float64) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "number", Number: value}
 }
 
-func NewFilterRulePropertyFromBooleanOptional(value *bool) *FilterRuleProperty {
-	return &FilterRuleProperty{typeName: "booleanOptional", BooleanOptional: value}
+func NewFilterRulePropertyFromBoolean(value *bool) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "boolean", Boolean: value}
 }
 
-func NewFilterRulePropertyFromStringUnknownMapOptional(value map[string]interface{}) *FilterRuleProperty {
-	return &FilterRuleProperty{typeName: "stringUnknownMapOptional", StringUnknownMapOptional: value}
+func NewFilterRulePropertyFromJSON(value map[string]interface{}) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "json", JSON: value}
 }
 
 func (f *FilterRuleProperty) UnmarshalJSON(data []byte) error {
-	var valueStringOptional *string
-	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		f.typeName = "stringOptional"
-		f.StringOptional = valueStringOptional
+	var valueString *string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		f.typeName = "string"
+		f.String = valueString
 		return nil
 	}
-	var valueDoubleOptional *float64
-	if err := json.Unmarshal(data, &valueDoubleOptional); err == nil {
-		f.typeName = "doubleOptional"
-		f.DoubleOptional = valueDoubleOptional
+	var valueNumber *float64
+	if err := json.Unmarshal(data, &valueNumber); err == nil {
+		f.typeName = "number"
+		f.Number = valueNumber
 		return nil
 	}
-	var valueBooleanOptional *bool
-	if err := json.Unmarshal(data, &valueBooleanOptional); err == nil {
-		f.typeName = "booleanOptional"
-		f.BooleanOptional = valueBooleanOptional
+	var valueBoolean *bool
+	if err := json.Unmarshal(data, &valueBoolean); err == nil {
+		f.typeName = "boolean"
+		f.Boolean = valueBoolean
 		return nil
 	}
-	var valueStringUnknownMapOptional map[string]interface{}
-	if err := json.Unmarshal(data, &valueStringUnknownMapOptional); err == nil {
-		f.typeName = "stringUnknownMapOptional"
-		f.StringUnknownMapOptional = valueStringUnknownMapOptional
+	var valueJSON map[string]interface{}
+	if err := json.Unmarshal(data, &valueJSON); err == nil {
+		f.typeName = "json"
+		f.JSON = valueJSON
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
@@ -2820,36 +2820,36 @@ func (f FilterRuleProperty) MarshalJSON() ([]byte, error) {
 	switch f.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "stringOptional":
-		return json.Marshal(f.StringOptional)
-	case "doubleOptional":
-		return json.Marshal(f.DoubleOptional)
-	case "booleanOptional":
-		return json.Marshal(f.BooleanOptional)
-	case "stringUnknownMapOptional":
-		return json.Marshal(f.StringUnknownMapOptional)
+	case "string":
+		return json.Marshal(f.String)
+	case "number":
+		return json.Marshal(f.Number)
+	case "boolean":
+		return json.Marshal(f.Boolean)
+	case "json":
+		return json.Marshal(f.JSON)
 	}
 }
 
 type FilterRulePropertyVisitor interface {
-	VisitStringOptional(*string) error
-	VisitDoubleOptional(*float64) error
-	VisitBooleanOptional(*bool) error
-	VisitStringUnknownMapOptional(map[string]interface{}) error
+	VisitString(*string) error
+	VisitNumber(*float64) error
+	VisitBoolean(*bool) error
+	VisitJSON(map[string]interface{}) error
 }
 
 func (f *FilterRuleProperty) Accept(visitor FilterRulePropertyVisitor) error {
 	switch f.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "stringOptional":
-		return visitor.VisitStringOptional(f.StringOptional)
-	case "doubleOptional":
-		return visitor.VisitDoubleOptional(f.DoubleOptional)
-	case "booleanOptional":
-		return visitor.VisitBooleanOptional(f.BooleanOptional)
-	case "stringUnknownMapOptional":
-		return visitor.VisitStringUnknownMapOptional(f.StringUnknownMapOptional)
+	case "string":
+		return visitor.VisitString(f.String)
+	case "number":
+		return visitor.VisitNumber(f.Number)
+	case "boolean":
+		return visitor.VisitBoolean(f.Boolean)
+	case "json":
+		return visitor.VisitJSON(f.JSON)
 	}
 }
 
