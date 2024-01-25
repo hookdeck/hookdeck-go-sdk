@@ -3,45 +3,25 @@
 package client
 
 import (
-	attempt "github.com/hookdeck/hookdeck-go-sdk/attempt"
-	bookmark "github.com/hookdeck/hookdeck-go-sdk/bookmark"
-	connection "github.com/hookdeck/hookdeck-go-sdk/connection"
+	cluster "github.com/hookdeck/hookdeck-go-sdk/cluster"
+	collections "github.com/hookdeck/hookdeck-go-sdk/collections"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
-	customdomain "github.com/hookdeck/hookdeck-go-sdk/customdomain"
-	destination "github.com/hookdeck/hookdeck-go-sdk/destination"
-	event "github.com/hookdeck/hookdeck-go-sdk/event"
-	eventbulkretry "github.com/hookdeck/hookdeck-go-sdk/eventbulkretry"
-	ignoredeventbulkretry "github.com/hookdeck/hookdeck-go-sdk/ignoredeventbulkretry"
-	issue "github.com/hookdeck/hookdeck-go-sdk/issue"
-	issuetrigger "github.com/hookdeck/hookdeck-go-sdk/issuetrigger"
-	notification "github.com/hookdeck/hookdeck-go-sdk/notification"
-	request "github.com/hookdeck/hookdeck-go-sdk/request"
-	requestbulkretry "github.com/hookdeck/hookdeck-go-sdk/requestbulkretry"
-	source "github.com/hookdeck/hookdeck-go-sdk/source"
-	transformation "github.com/hookdeck/hookdeck-go-sdk/transformation"
+	points "github.com/hookdeck/hookdeck-go-sdk/points"
+	service "github.com/hookdeck/hookdeck-go-sdk/service"
+	snapshots "github.com/hookdeck/hookdeck-go-sdk/snapshots"
 	http "net/http"
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 
-	IssueTrigger          *issuetrigger.Client
-	Attempt               *attempt.Client
-	Bookmark              *bookmark.Client
-	Destination           *destination.Client
-	EventBulkRetry        *eventbulkretry.Client
-	Event                 *event.Client
-	IgnoredEventBulkRetry *ignoredeventbulkretry.Client
-	Issue                 *issue.Client
-	Request               *request.Client
-	RequestBulkRetry      *requestbulkretry.Client
-	Source                *source.Client
-	Notification          *notification.Client
-	CustomDomain          *customdomain.Client
-	Transformation        *transformation.Client
-	Connection            *connection.Client
+	Collections *collections.Client
+	Service     *service.Client
+	Cluster     *cluster.Client
+	Snapshots   *snapshots.Client
+	Points      *points.Client
 }
 
 func NewClient(opts ...core.ClientOption) *Client {
@@ -50,23 +30,13 @@ func NewClient(opts ...core.ClientOption) *Client {
 		opt(options)
 	}
 	return &Client{
-		baseURL:               options.BaseURL,
-		httpClient:            options.HTTPClient,
-		header:                options.ToHeader(),
-		IssueTrigger:          issuetrigger.NewClient(opts...),
-		Attempt:               attempt.NewClient(opts...),
-		Bookmark:              bookmark.NewClient(opts...),
-		Destination:           destination.NewClient(opts...),
-		EventBulkRetry:        eventbulkretry.NewClient(opts...),
-		Event:                 event.NewClient(opts...),
-		IgnoredEventBulkRetry: ignoredeventbulkretry.NewClient(opts...),
-		Issue:                 issue.NewClient(opts...),
-		Request:               request.NewClient(opts...),
-		RequestBulkRetry:      requestbulkretry.NewClient(opts...),
-		Source:                source.NewClient(opts...),
-		Notification:          notification.NewClient(opts...),
-		CustomDomain:          customdomain.NewClient(opts...),
-		Transformation:        transformation.NewClient(opts...),
-		Connection:            connection.NewClient(opts...),
+		baseURL:     options.BaseURL,
+		caller:      core.NewCaller(options.HTTPClient),
+		header:      options.ToHeader(),
+		Collections: collections.NewClient(opts...),
+		Service:     service.NewClient(opts...),
+		Cluster:     cluster.NewClient(opts...),
+		Snapshots:   snapshots.NewClient(opts...),
+		Points:      points.NewClient(opts...),
 	}
 }
