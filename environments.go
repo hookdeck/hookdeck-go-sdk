@@ -9,5 +9,5 @@ package api
 var Environments = struct {
 	Default string
 }{
-	Default: "http://localhost:6333",
+	Default: "https://api.hookdeck.com",
 }

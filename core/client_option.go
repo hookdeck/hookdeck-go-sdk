@@ -3,7 +3,6 @@
 package core
 
 import (
-	fmt "fmt"
 	http "net/http"
 )
 
@@ -17,7 +16,7 @@ type ClientOptions struct {
 	BaseURL    string
 	HTTPClient HTTPClient
 	HTTPHeader http.Header
-	ApiKey     string
+	Token      string
 }
 
 // NewClientOptions returns a new *ClientOptions value.
@@ -34,7 +33,9 @@ func NewClientOptions() *ClientOptions {
 // on every request.
 func (c *ClientOptions) ToHeader() http.Header {
 	header := c.cloneHeader()
-	header.Set("api-key", fmt.Sprintf("%v", c.ApiKey))
+	if c.Token != "" {
+		header.Set("Authorization", "Bearer "+c.Token)
+	}
 	return header
 }
 
@@ -42,6 +43,6 @@ func (c *ClientOptions) cloneHeader() http.Header {
 	headers := c.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/hookdeck/hookdeck-go-sdk")
-	headers.Set("X-Fern-SDK-Version", "v0.0.35")
+	headers.Set("X-Fern-SDK-Version", "v0.0.36")
 	return headers
 }

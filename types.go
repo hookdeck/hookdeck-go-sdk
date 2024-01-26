@@ -5,4405 +5,1829 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
 )
 
-type AbortTransferOperation struct {
-	AbortTransfer *MoveShard `json:"abort_transfer,omitempty"`
-
-	_rawJSON json.RawMessage
+type AddCustomHostname struct {
+	// The custom hostname to attach to the workspace
+	Hostname string `json:"hostname"`
 }
 
-func (a *AbortTransferOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler AbortTransferOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
+// Error response model
+type ApiErrorResponse struct {
+	// Error code
+	Code string `json:"code"`
+	// Status code
+	Status float64 `json:"status"`
+	// Error description
+	Message string                `json:"message"`
+	Data    *ApiErrorResponseData `json:"data,omitempty"`
+}
+
+type ApiErrorResponseData struct {
+}
+
+type ApiKeyIntegrationConfigs struct {
+	HeaderKey string `json:"header_key"`
+	ApiKey    string `json:"api_key"`
+}
+
+type AttachedIntegrationToSource struct {
+	Success bool `json:"success"`
+}
+
+// Error code of the delivery attempt
+type AttemptErrorCodes string
+
+const (
+	AttemptErrorCodesCancelled                AttemptErrorCodes = "CANCELLED"
+	AttemptErrorCodesTimeout                  AttemptErrorCodes = "TIMEOUT"
+	AttemptErrorCodesNotFound                 AttemptErrorCodes = "NOT_FOUND"
+	AttemptErrorCodesConnectionRefused        AttemptErrorCodes = "CONNECTION_REFUSED"
+	AttemptErrorCodesConnectionReset          AttemptErrorCodes = "CONNECTION_RESET"
+	AttemptErrorCodesMissingUrl               AttemptErrorCodes = "MISSING_URL"
+	AttemptErrorCodesCli                      AttemptErrorCodes = "CLI"
+	AttemptErrorCodesCliUnavailable           AttemptErrorCodes = "CLI_UNAVAILABLE"
+	AttemptErrorCodesSelfSignedCert           AttemptErrorCodes = "SELF_SIGNED_CERT"
+	AttemptErrorCodesErrTlsCertAltnameInvalid AttemptErrorCodes = "ERR_TLS_CERT_ALTNAME_INVALID"
+	AttemptErrorCodesErrSslWrongVersionNumber AttemptErrorCodes = "ERR_SSL_WRONG_VERSION_NUMBER"
+	AttemptErrorCodesSslErrorCaUnknown        AttemptErrorCodes = "SSL_ERROR_CA_UNKNOWN"
+	AttemptErrorCodesTtlExpired               AttemptErrorCodes = "TTL_EXPIRED"
+	AttemptErrorCodesDataArchived             AttemptErrorCodes = "DATA_ARCHIVED"
+	AttemptErrorCodesSslCertExpired           AttemptErrorCodes = "SSL_CERT_EXPIRED"
+	AttemptErrorCodesBulkRetryCancelled       AttemptErrorCodes = "BULK_RETRY_CANCELLED"
+	AttemptErrorCodesDnsLookupFailed          AttemptErrorCodes = "DNS_LOOKUP_FAILED"
+	AttemptErrorCodesHostUnreachable          AttemptErrorCodes = "HOST_UNREACHABLE"
+	AttemptErrorCodesProtocolError            AttemptErrorCodes = "PROTOCOL_ERROR"
+	AttemptErrorCodesSocketClosed             AttemptErrorCodes = "SOCKET_CLOSED"
+	AttemptErrorCodesOauth2HandshakeFailed    AttemptErrorCodes = "OAUTH2_HANDSHAKE_FAILED"
+	AttemptErrorCodesUnknown                  AttemptErrorCodes = "UNKNOWN"
+)
+
+func NewAttemptErrorCodesFromString(s string) (AttemptErrorCodes, error) {
+	switch s {
+	case "CANCELLED":
+		return AttemptErrorCodesCancelled, nil
+	case "TIMEOUT":
+		return AttemptErrorCodesTimeout, nil
+	case "NOT_FOUND":
+		return AttemptErrorCodesNotFound, nil
+	case "CONNECTION_REFUSED":
+		return AttemptErrorCodesConnectionRefused, nil
+	case "CONNECTION_RESET":
+		return AttemptErrorCodesConnectionReset, nil
+	case "MISSING_URL":
+		return AttemptErrorCodesMissingUrl, nil
+	case "CLI":
+		return AttemptErrorCodesCli, nil
+	case "CLI_UNAVAILABLE":
+		return AttemptErrorCodesCliUnavailable, nil
+	case "SELF_SIGNED_CERT":
+		return AttemptErrorCodesSelfSignedCert, nil
+	case "ERR_TLS_CERT_ALTNAME_INVALID":
+		return AttemptErrorCodesErrTlsCertAltnameInvalid, nil
+	case "ERR_SSL_WRONG_VERSION_NUMBER":
+		return AttemptErrorCodesErrSslWrongVersionNumber, nil
+	case "SSL_ERROR_CA_UNKNOWN":
+		return AttemptErrorCodesSslErrorCaUnknown, nil
+	case "TTL_EXPIRED":
+		return AttemptErrorCodesTtlExpired, nil
+	case "DATA_ARCHIVED":
+		return AttemptErrorCodesDataArchived, nil
+	case "SSL_CERT_EXPIRED":
+		return AttemptErrorCodesSslCertExpired, nil
+	case "BULK_RETRY_CANCELLED":
+		return AttemptErrorCodesBulkRetryCancelled, nil
+	case "DNS_LOOKUP_FAILED":
+		return AttemptErrorCodesDnsLookupFailed, nil
+	case "HOST_UNREACHABLE":
+		return AttemptErrorCodesHostUnreachable, nil
+	case "PROTOCOL_ERROR":
+		return AttemptErrorCodesProtocolError, nil
+	case "SOCKET_CLOSED":
+		return AttemptErrorCodesSocketClosed, nil
+	case "OAUTH2_HANDSHAKE_FAILED":
+		return AttemptErrorCodesOauth2HandshakeFailed, nil
+	case "UNKNOWN":
+		return AttemptErrorCodesUnknown, nil
 	}
-	*a = AbortTransferOperation(value)
-	a._rawJSON = json.RawMessage(data)
-	return nil
+	var t AttemptErrorCodes
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (a *AbortTransferOperation) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
-			return value
-		}
+func (a AttemptErrorCodes) Ptr() *AttemptErrorCodes {
+	return &a
+}
+
+type AttemptState string
+
+const (
+	AttemptStateDelivering AttemptState = "DELIVERING"
+	AttemptStateQueued     AttemptState = "QUEUED"
+	AttemptStatePending    AttemptState = "PENDING"
+	AttemptStateCompleted  AttemptState = "COMPLETED"
+	AttemptStateHold       AttemptState = "HOLD"
+)
+
+func NewAttemptStateFromString(s string) (AttemptState, error) {
+	switch s {
+	case "DELIVERING":
+		return AttemptStateDelivering, nil
+	case "QUEUED":
+		return AttemptStateQueued, nil
+	case "PENDING":
+		return AttemptStatePending, nil
+	case "COMPLETED":
+		return AttemptStateCompleted, nil
+	case "HOLD":
+		return AttemptStateHold, nil
 	}
-	if value, err := core.StringifyJSON(a); err == nil {
-		return value
+	var t AttemptState
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (a AttemptState) Ptr() *AttemptState {
+	return &a
+}
+
+// Attempt status
+type AttemptStatus string
+
+const (
+	AttemptStatusQueued     AttemptStatus = "QUEUED"
+	AttemptStatusFailed     AttemptStatus = "FAILED"
+	AttemptStatusSuccessful AttemptStatus = "SUCCESSFUL"
+	AttemptStatusHold       AttemptStatus = "HOLD"
+)
+
+func NewAttemptStatusFromString(s string) (AttemptStatus, error) {
+	switch s {
+	case "QUEUED":
+		return AttemptStatusQueued, nil
+	case "FAILED":
+		return AttemptStatusFailed, nil
+	case "SUCCESSFUL":
+		return AttemptStatusSuccessful, nil
+	case "HOLD":
+		return AttemptStatusHold, nil
 	}
-	return fmt.Sprintf("%#v", a)
+	var t AttemptStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type AliasDescription struct {
-	AliasName      string `json:"alias_name"`
-	CollectionName string `json:"collection_name"`
-
-	_rawJSON json.RawMessage
+func (a AttemptStatus) Ptr() *AttemptStatus {
+	return &a
 }
 
-func (a *AliasDescription) UnmarshalJSON(data []byte) error {
-	type unmarshaler AliasDescription
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
+// How the attempt was triggered
+type AttemptTrigger string
+
+const (
+	AttemptTriggerInitial   AttemptTrigger = "INITIAL"
+	AttemptTriggerManual    AttemptTrigger = "MANUAL"
+	AttemptTriggerBulkRetry AttemptTrigger = "BULK_RETRY"
+	AttemptTriggerUnpause   AttemptTrigger = "UNPAUSE"
+	AttemptTriggerAutomatic AttemptTrigger = "AUTOMATIC"
+)
+
+func NewAttemptTriggerFromString(s string) (AttemptTrigger, error) {
+	switch s {
+	case "INITIAL":
+		return AttemptTriggerInitial, nil
+	case "MANUAL":
+		return AttemptTriggerManual, nil
+	case "BULK_RETRY":
+		return AttemptTriggerBulkRetry, nil
+	case "UNPAUSE":
+		return AttemptTriggerUnpause, nil
+	case "AUTOMATIC":
+		return AttemptTriggerAutomatic, nil
 	}
-	*a = AliasDescription(value)
-	a._rawJSON = json.RawMessage(data)
-	return nil
+	var t AttemptTrigger
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (a *AliasDescription) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
+func (a AttemptTrigger) Ptr() *AttemptTrigger {
+	return &a
 }
 
-// Group of all the possible operations related to collection aliases
-type AliasOperations struct {
-	typeName             string
-	CreateAliasOperation *CreateAliasOperation
-	DeleteAliasOperation *DeleteAliasOperation
-	RenameAliasOperation *RenameAliasOperation
+// API Key
+type AuthApiKey struct {
+	Config *DestinationAuthMethodApiKeyConfig `json:"config,omitempty"`
 }
 
-func NewAliasOperationsFromCreateAliasOperation(value *CreateAliasOperation) *AliasOperations {
-	return &AliasOperations{typeName: "createAliasOperation", CreateAliasOperation: value}
+// Basic Auth
+type AuthBasicAuth struct {
+	Config *DestinationAuthMethodBasicAuthConfig `json:"config,omitempty"`
 }
 
-func NewAliasOperationsFromDeleteAliasOperation(value *DeleteAliasOperation) *AliasOperations {
-	return &AliasOperations{typeName: "deleteAliasOperation", DeleteAliasOperation: value}
+// Bearer Token
+type AuthBearerToken struct {
+	Config *DestinationAuthMethodBearerTokenConfig `json:"config,omitempty"`
 }
 
-func NewAliasOperationsFromRenameAliasOperation(value *RenameAliasOperation) *AliasOperations {
-	return &AliasOperations{typeName: "renameAliasOperation", RenameAliasOperation: value}
+// Custom Signature
+type AuthCustomSignature struct {
+	Config *DestinationAuthMethodCustomSignatureConfig `json:"config,omitempty"`
 }
 
-func (a *AliasOperations) UnmarshalJSON(data []byte) error {
-	valueCreateAliasOperation := new(CreateAliasOperation)
-	if err := json.Unmarshal(data, &valueCreateAliasOperation); err == nil {
-		a.typeName = "createAliasOperation"
-		a.CreateAliasOperation = valueCreateAliasOperation
+// Hookdeck Signature
+type AuthHookdeckSignature struct {
+	Config *DestinationAuthMethodSignatureConfig `json:"config,omitempty"`
+}
+
+// OAuth2 Authorization Code
+type AuthOAuth2AuthorizationCode struct {
+	Config *DestinationAuthMethodOAuth2AuthorizationCodeConfig `json:"config,omitempty"`
+}
+
+// OAuth2 Client Credentials
+type AuthOAuth2ClientCredentials struct {
+	Config *DestinationAuthMethodOAuth2ClientCredentialsConfig `json:"config,omitempty"`
+}
+
+type BasicAuthIntegrationConfigs struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
+type BatchOperation struct {
+	// ID of the bulk retry
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string `json:"team_id"`
+	// Query object to filter records
+	Query *BatchOperationQuery `json:"query,omitempty"`
+	// Date the bulk retry was created
+	CreatedAt time.Time `json:"created_at"`
+	// Last time the bulk retry was updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the bulk retry was cancelled
+	CancelledAt *time.Time `json:"cancelled_at,omitempty"`
+	// Date the bulk retry was completed
+	CompletedAt *time.Time `json:"completed_at,omitempty"`
+	// Number of batches required to complete the bulk retry
+	EstimatedBatch *int `json:"estimated_batch,omitempty"`
+	// Number of estimated events to be retried
+	EstimatedCount *int `json:"estimated_count,omitempty"`
+	// Number of batches currently processed
+	ProcessedBatch *int `json:"processed_batch,omitempty"`
+	// Number of events that were successfully delivered
+	CompletedCount *int `json:"completed_count,omitempty"`
+	// Indicates if the bulk retry is currently in progress
+	InProgress bool `json:"in_progress"`
+	// Progression of the batch operations, values 0 - 1
+	Progress *float64 `json:"progress,omitempty"`
+	// Number of events that failed to be delivered
+	FailedCount *int     `json:"failed_count,omitempty"`
+	Number      *float64 `json:"number,omitempty"`
+}
+
+type BatchOperationPaginatedResult struct {
+	Pagination *SeekPagination   `json:"pagination,omitempty"`
+	Count      *int              `json:"count,omitempty"`
+	Models     []*BatchOperation `json:"models,omitempty"`
+}
+
+// Query object to filter records
+type BatchOperationQuery struct {
+	typeName         string
+	StringUnknownMap map[string]interface{}
+	StringOptional   *string
+}
+
+func NewBatchOperationQueryFromStringUnknownMap(value map[string]interface{}) *BatchOperationQuery {
+	return &BatchOperationQuery{typeName: "stringUnknownMap", StringUnknownMap: value}
+}
+
+func NewBatchOperationQueryFromStringOptional(value *string) *BatchOperationQuery {
+	return &BatchOperationQuery{typeName: "stringOptional", StringOptional: value}
+}
+
+func (b *BatchOperationQuery) UnmarshalJSON(data []byte) error {
+	var valueStringUnknownMap map[string]interface{}
+	if err := json.Unmarshal(data, &valueStringUnknownMap); err == nil {
+		b.typeName = "stringUnknownMap"
+		b.StringUnknownMap = valueStringUnknownMap
 		return nil
 	}
-	valueDeleteAliasOperation := new(DeleteAliasOperation)
-	if err := json.Unmarshal(data, &valueDeleteAliasOperation); err == nil {
-		a.typeName = "deleteAliasOperation"
-		a.DeleteAliasOperation = valueDeleteAliasOperation
-		return nil
-	}
-	valueRenameAliasOperation := new(RenameAliasOperation)
-	if err := json.Unmarshal(data, &valueRenameAliasOperation); err == nil {
-		a.typeName = "renameAliasOperation"
-		a.RenameAliasOperation = valueRenameAliasOperation
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
-}
-
-func (a AliasOperations) MarshalJSON() ([]byte, error) {
-	switch a.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", a.typeName, a)
-	case "createAliasOperation":
-		return json.Marshal(a.CreateAliasOperation)
-	case "deleteAliasOperation":
-		return json.Marshal(a.DeleteAliasOperation)
-	case "renameAliasOperation":
-		return json.Marshal(a.RenameAliasOperation)
-	}
-}
-
-type AliasOperationsVisitor interface {
-	VisitCreateAliasOperation(*CreateAliasOperation) error
-	VisitDeleteAliasOperation(*DeleteAliasOperation) error
-	VisitRenameAliasOperation(*RenameAliasOperation) error
-}
-
-func (a *AliasOperations) Accept(visitor AliasOperationsVisitor) error {
-	switch a.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", a.typeName, a)
-	case "createAliasOperation":
-		return visitor.VisitCreateAliasOperation(a.CreateAliasOperation)
-	case "deleteAliasOperation":
-		return visitor.VisitDeleteAliasOperation(a.DeleteAliasOperation)
-	case "renameAliasOperation":
-		return visitor.VisitRenameAliasOperation(a.RenameAliasOperation)
-	}
-}
-
-type AnyVariants struct {
-	typeName    string
-	StringList  []string
-	IntegerList []int
-}
-
-func NewAnyVariantsFromStringList(value []string) *AnyVariants {
-	return &AnyVariants{typeName: "stringList", StringList: value}
-}
-
-func NewAnyVariantsFromIntegerList(value []int) *AnyVariants {
-	return &AnyVariants{typeName: "integerList", IntegerList: value}
-}
-
-func (a *AnyVariants) UnmarshalJSON(data []byte) error {
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		a.typeName = "stringList"
-		a.StringList = valueStringList
-		return nil
-	}
-	var valueIntegerList []int
-	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
-		a.typeName = "integerList"
-		a.IntegerList = valueIntegerList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
-}
-
-func (a AnyVariants) MarshalJSON() ([]byte, error) {
-	switch a.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", a.typeName, a)
-	case "stringList":
-		return json.Marshal(a.StringList)
-	case "integerList":
-		return json.Marshal(a.IntegerList)
-	}
-}
-
-type AnyVariantsVisitor interface {
-	VisitStringList([]string) error
-	VisitIntegerList([]int) error
-}
-
-func (a *AnyVariants) Accept(visitor AnyVariantsVisitor) error {
-	switch a.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", a.typeName, a)
-	case "stringList":
-		return visitor.VisitStringList(a.StringList)
-	case "integerList":
-		return visitor.VisitIntegerList(a.IntegerList)
-	}
-}
-
-type AppBuildTelemetry struct {
-	Name     string                     `json:"name"`
-	Version  string                     `json:"version"`
-	Features *AppBuildTelemetryFeatures `json:"features,omitempty"`
-	System   *AppBuildTelemetrySystem   `json:"system,omitempty"`
-	Startup  time.Time                  `json:"startup"`
-
-	_rawJSON json.RawMessage
-}
-
-func (a *AppBuildTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler AppBuildTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = AppBuildTelemetry(value)
-	a._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *AppBuildTelemetry) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-type AppBuildTelemetryFeatures struct {
-	typeName             string
-	AppFeaturesTelemetry *AppFeaturesTelemetry
-	Unknown              interface{}
-}
-
-func NewAppBuildTelemetryFeaturesFromAppFeaturesTelemetry(value *AppFeaturesTelemetry) *AppBuildTelemetryFeatures {
-	return &AppBuildTelemetryFeatures{typeName: "appFeaturesTelemetry", AppFeaturesTelemetry: value}
-}
-
-func NewAppBuildTelemetryFeaturesFromUnknown(value interface{}) *AppBuildTelemetryFeatures {
-	return &AppBuildTelemetryFeatures{typeName: "unknown", Unknown: value}
-}
-
-func (a *AppBuildTelemetryFeatures) UnmarshalJSON(data []byte) error {
-	valueAppFeaturesTelemetry := new(AppFeaturesTelemetry)
-	if err := json.Unmarshal(data, &valueAppFeaturesTelemetry); err == nil {
-		a.typeName = "appFeaturesTelemetry"
-		a.AppFeaturesTelemetry = valueAppFeaturesTelemetry
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		a.typeName = "unknown"
-		a.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
-}
-
-func (a AppBuildTelemetryFeatures) MarshalJSON() ([]byte, error) {
-	switch a.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", a.typeName, a)
-	case "appFeaturesTelemetry":
-		return json.Marshal(a.AppFeaturesTelemetry)
-	case "unknown":
-		return json.Marshal(a.Unknown)
-	}
-}
-
-type AppBuildTelemetryFeaturesVisitor interface {
-	VisitAppFeaturesTelemetry(*AppFeaturesTelemetry) error
-	VisitUnknown(interface{}) error
-}
-
-func (a *AppBuildTelemetryFeatures) Accept(visitor AppBuildTelemetryFeaturesVisitor) error {
-	switch a.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", a.typeName, a)
-	case "appFeaturesTelemetry":
-		return visitor.VisitAppFeaturesTelemetry(a.AppFeaturesTelemetry)
-	case "unknown":
-		return visitor.VisitUnknown(a.Unknown)
-	}
-}
-
-type AppBuildTelemetrySystem struct {
-	typeName                    string
-	RunningEnvironmentTelemetry *RunningEnvironmentTelemetry
-	Unknown                     interface{}
-}
-
-func NewAppBuildTelemetrySystemFromRunningEnvironmentTelemetry(value *RunningEnvironmentTelemetry) *AppBuildTelemetrySystem {
-	return &AppBuildTelemetrySystem{typeName: "runningEnvironmentTelemetry", RunningEnvironmentTelemetry: value}
-}
-
-func NewAppBuildTelemetrySystemFromUnknown(value interface{}) *AppBuildTelemetrySystem {
-	return &AppBuildTelemetrySystem{typeName: "unknown", Unknown: value}
-}
-
-func (a *AppBuildTelemetrySystem) UnmarshalJSON(data []byte) error {
-	valueRunningEnvironmentTelemetry := new(RunningEnvironmentTelemetry)
-	if err := json.Unmarshal(data, &valueRunningEnvironmentTelemetry); err == nil {
-		a.typeName = "runningEnvironmentTelemetry"
-		a.RunningEnvironmentTelemetry = valueRunningEnvironmentTelemetry
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		a.typeName = "unknown"
-		a.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, a)
-}
-
-func (a AppBuildTelemetrySystem) MarshalJSON() ([]byte, error) {
-	switch a.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", a.typeName, a)
-	case "runningEnvironmentTelemetry":
-		return json.Marshal(a.RunningEnvironmentTelemetry)
-	case "unknown":
-		return json.Marshal(a.Unknown)
-	}
-}
-
-type AppBuildTelemetrySystemVisitor interface {
-	VisitRunningEnvironmentTelemetry(*RunningEnvironmentTelemetry) error
-	VisitUnknown(interface{}) error
-}
-
-func (a *AppBuildTelemetrySystem) Accept(visitor AppBuildTelemetrySystemVisitor) error {
-	switch a.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", a.typeName, a)
-	case "runningEnvironmentTelemetry":
-		return visitor.VisitRunningEnvironmentTelemetry(a.RunningEnvironmentTelemetry)
-	case "unknown":
-		return visitor.VisitUnknown(a.Unknown)
-	}
-}
-
-type AppFeaturesTelemetry struct {
-	Debug               bool `json:"debug"`
-	WebFeature          bool `json:"web_feature"`
-	ServiceDebugFeature bool `json:"service_debug_feature"`
-	RecoveryMode        bool `json:"recovery_mode"`
-
-	_rawJSON json.RawMessage
-}
-
-func (a *AppFeaturesTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler AppFeaturesTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*a = AppFeaturesTelemetry(value)
-	a._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (a *AppFeaturesTelemetry) String() string {
-	if len(a._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(a); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", a)
-}
-
-type Batch struct {
-	Ids      []*ExtendedPointId   `json:"ids,omitempty"`
-	Vectors  *BatchVectorStruct   `json:"vectors,omitempty"`
-	Payloads []*BatchPayloadsItem `json:"payloads,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (b *Batch) UnmarshalJSON(data []byte) error {
-	type unmarshaler Batch
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*b = Batch(value)
-	b._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (b *Batch) String() string {
-	if len(b._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(b); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", b)
-}
-
-type BatchPayloadsItem struct {
-	typeName string
-	Payload  Payload
-	Unknown  interface{}
-}
-
-func NewBatchPayloadsItemFromPayload(value Payload) *BatchPayloadsItem {
-	return &BatchPayloadsItem{typeName: "payload", Payload: value}
-}
-
-func NewBatchPayloadsItemFromUnknown(value interface{}) *BatchPayloadsItem {
-	return &BatchPayloadsItem{typeName: "unknown", Unknown: value}
-}
-
-func (b *BatchPayloadsItem) UnmarshalJSON(data []byte) error {
-	var valuePayload Payload
-	if err := json.Unmarshal(data, &valuePayload); err == nil {
-		b.typeName = "payload"
-		b.Payload = valuePayload
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		b.typeName = "unknown"
-		b.Unknown = valueUnknown
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		b.typeName = "stringOptional"
+		b.StringOptional = valueStringOptional
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, b)
 }
 
-func (b BatchPayloadsItem) MarshalJSON() ([]byte, error) {
+func (b BatchOperationQuery) MarshalJSON() ([]byte, error) {
 	switch b.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", b.typeName, b)
-	case "payload":
-		return json.Marshal(b.Payload)
-	case "unknown":
-		return json.Marshal(b.Unknown)
+	case "stringUnknownMap":
+		return json.Marshal(b.StringUnknownMap)
+	case "stringOptional":
+		return json.Marshal(b.StringOptional)
 	}
 }
 
-type BatchPayloadsItemVisitor interface {
-	VisitPayload(Payload) error
-	VisitUnknown(interface{}) error
+type BatchOperationQueryVisitor interface {
+	VisitStringUnknownMap(map[string]interface{}) error
+	VisitStringOptional(*string) error
 }
 
-func (b *BatchPayloadsItem) Accept(visitor BatchPayloadsItemVisitor) error {
+func (b *BatchOperationQuery) Accept(visitor BatchOperationQueryVisitor) error {
 	switch b.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", b.typeName, b)
-	case "payload":
-		return visitor.VisitPayload(b.Payload)
-	case "unknown":
-		return visitor.VisitUnknown(b.Unknown)
+	case "stringUnknownMap":
+		return visitor.VisitStringUnknownMap(b.StringUnknownMap)
+	case "stringOptional":
+		return visitor.VisitStringOptional(b.StringOptional)
 	}
 }
 
-type BatchVectorStruct struct {
-	typeName            string
-	DoubleListList      [][]float64
-	StringVectorListMap map[string][]*Vector
+type Bookmark struct {
+	// ID of the bookmark
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string `json:"team_id"`
+	// ID of the associated connection
+	WebhookId string `json:"webhook_id"`
+	// ID of the bookmarked event data
+	EventDataId string `json:"event_data_id"`
+	// Descriptive name of the bookmark
+	Label string `json:"label"`
+	// Alternate alias for the bookmark
+	Alias *string         `json:"alias,omitempty"`
+	Data  *ShortEventData `json:"data,omitempty"`
+	// Date the bookmark was last manually triggered
+	LastUsedAt *time.Time `json:"last_used_at,omitempty"`
+	// Date the bookmark was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the bookmark was created
+	CreatedAt time.Time `json:"created_at"`
 }
 
-func NewBatchVectorStructFromDoubleListList(value [][]float64) *BatchVectorStruct {
-	return &BatchVectorStruct{typeName: "doubleListList", DoubleListList: value}
+type BookmarkPaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*Bookmark     `json:"models,omitempty"`
 }
 
-func NewBatchVectorStructFromStringVectorListMap(value map[string][]*Vector) *BatchVectorStruct {
-	return &BatchVectorStruct{typeName: "stringVectorListMap", StringVectorListMap: value}
+type Connection struct {
+	// ID of the connection
+	Id string `json:"id"`
+	// Unique name of the connection for this source
+	Name *string `json:"name,omitempty"`
+	// Full name of the connection concatenated from source, connection and desitnation name
+	FullName *string `json:"full_name,omitempty"`
+	// Description of the connection
+	Description *string `json:"description,omitempty"`
+	// ID of the workspace
+	TeamId      string       `json:"team_id"`
+	Destination *Destination `json:"destination,omitempty"`
+	Source      *Source      `json:"source,omitempty"`
+	// Array of rules configured on the connection
+	Rules []*Rule `json:"rules,omitempty"`
+	// Date the connection was archived
+	ArchivedAt *time.Time `json:"archived_at,omitempty"`
+	// Date the connection was paused
+	PausedAt *time.Time `json:"paused_at,omitempty"`
+	// Date the connection was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the connection was created
+	CreatedAt time.Time `json:"created_at"`
 }
 
-func (b *BatchVectorStruct) UnmarshalJSON(data []byte) error {
-	var valueDoubleListList [][]float64
-	if err := json.Unmarshal(data, &valueDoubleListList); err == nil {
-		b.typeName = "doubleListList"
-		b.DoubleListList = valueDoubleListList
-		return nil
+type ConnectionPaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*Connection   `json:"models,omitempty"`
+}
+
+type ConsoleLine struct {
+	Type    ConsoleLineType `json:"type,omitempty"`
+	Message string          `json:"message"`
+}
+
+type ConsoleLineType string
+
+const (
+	ConsoleLineTypeError ConsoleLineType = "error"
+	ConsoleLineTypeLog   ConsoleLineType = "log"
+	ConsoleLineTypeWarn  ConsoleLineType = "warn"
+	ConsoleLineTypeInfo  ConsoleLineType = "info"
+	ConsoleLineTypeDebug ConsoleLineType = "debug"
+)
+
+func NewConsoleLineTypeFromString(s string) (ConsoleLineType, error) {
+	switch s {
+	case "error":
+		return ConsoleLineTypeError, nil
+	case "log":
+		return ConsoleLineTypeLog, nil
+	case "warn":
+		return ConsoleLineTypeWarn, nil
+	case "info":
+		return ConsoleLineTypeInfo, nil
+	case "debug":
+		return ConsoleLineTypeDebug, nil
 	}
-	var valueStringVectorListMap map[string][]*Vector
-	if err := json.Unmarshal(data, &valueStringVectorListMap); err == nil {
-		b.typeName = "stringVectorListMap"
-		b.StringVectorListMap = valueStringVectorListMap
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, b)
+	var t ConsoleLineType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (b BatchVectorStruct) MarshalJSON() ([]byte, error) {
-	switch b.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", b.typeName, b)
-	case "doubleListList":
-		return json.Marshal(b.DoubleListList)
-	case "stringVectorListMap":
-		return json.Marshal(b.StringVectorListMap)
-	}
+func (c ConsoleLineType) Ptr() *ConsoleLineType {
+	return &c
 }
 
-type BatchVectorStructVisitor interface {
-	VisitDoubleListList([][]float64) error
-	VisitStringVectorListMap(map[string][]*Vector) error
+type DelayRule struct {
+	// Delay to introduce in MS
+	Delay int `json:"delay"`
+	type_ string
 }
 
-func (b *BatchVectorStruct) Accept(visitor BatchVectorStructVisitor) error {
-	switch b.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", b.typeName, b)
-	case "doubleListList":
-		return visitor.VisitDoubleListList(b.DoubleListList)
-	case "stringVectorListMap":
-		return visitor.VisitStringVectorListMap(b.StringVectorListMap)
-	}
+func (d *DelayRule) Type() string {
+	return d.type_
 }
 
-type BinaryQuantization struct {
-	Binary *BinaryQuantizationConfig `json:"binary,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (b *BinaryQuantization) UnmarshalJSON(data []byte) error {
-	type unmarshaler BinaryQuantization
+func (d *DelayRule) UnmarshalJSON(data []byte) error {
+	type unmarshaler DelayRule
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*b = BinaryQuantization(value)
-	b._rawJSON = json.RawMessage(data)
+	*d = DelayRule(value)
+	d.type_ = "delay"
 	return nil
 }
 
-func (b *BinaryQuantization) String() string {
-	if len(b._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
-			return value
-		}
+func (d *DelayRule) MarshalJSON() ([]byte, error) {
+	type embed DelayRule
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*d),
+		Type:  "delay",
 	}
-	if value, err := core.StringifyJSON(b); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", b)
-}
-
-type BinaryQuantizationConfig struct {
-	AlwaysRam *bool `json:"always_ram,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (b *BinaryQuantizationConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler BinaryQuantizationConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*b = BinaryQuantizationConfig(value)
-	b._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (b *BinaryQuantizationConfig) String() string {
-	if len(b._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(b); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", b)
-}
-
-type ClearPayloadOperation struct {
-	ClearPayload *PointsSelector `json:"clear_payload,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ClearPayloadOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClearPayloadOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClearPayloadOperation(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClearPayloadOperation) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ClusterConfigTelemetry struct {
-	GrpcTimeoutMs int                       `json:"grpc_timeout_ms"`
-	P2P           *P2PConfigTelemetry       `json:"p2p,omitempty"`
-	Consensus     *ConsensusConfigTelemetry `json:"consensus,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ClusterConfigTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClusterConfigTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClusterConfigTelemetry(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClusterConfigTelemetry) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ClusterOperations struct {
-	typeName                   string
-	MoveShardOperation         *MoveShardOperation
-	ReplicateShardOperation    *ReplicateShardOperation
-	AbortTransferOperation     *AbortTransferOperation
-	DropReplicaOperation       *DropReplicaOperation
-	CreateShardingKeyOperation *CreateShardingKeyOperation
-	DropShardingKeyOperation   *DropShardingKeyOperation
-}
-
-func NewClusterOperationsFromMoveShardOperation(value *MoveShardOperation) *ClusterOperations {
-	return &ClusterOperations{typeName: "moveShardOperation", MoveShardOperation: value}
-}
-
-func NewClusterOperationsFromReplicateShardOperation(value *ReplicateShardOperation) *ClusterOperations {
-	return &ClusterOperations{typeName: "replicateShardOperation", ReplicateShardOperation: value}
-}
-
-func NewClusterOperationsFromAbortTransferOperation(value *AbortTransferOperation) *ClusterOperations {
-	return &ClusterOperations{typeName: "abortTransferOperation", AbortTransferOperation: value}
-}
-
-func NewClusterOperationsFromDropReplicaOperation(value *DropReplicaOperation) *ClusterOperations {
-	return &ClusterOperations{typeName: "dropReplicaOperation", DropReplicaOperation: value}
-}
-
-func NewClusterOperationsFromCreateShardingKeyOperation(value *CreateShardingKeyOperation) *ClusterOperations {
-	return &ClusterOperations{typeName: "createShardingKeyOperation", CreateShardingKeyOperation: value}
-}
-
-func NewClusterOperationsFromDropShardingKeyOperation(value *DropShardingKeyOperation) *ClusterOperations {
-	return &ClusterOperations{typeName: "dropShardingKeyOperation", DropShardingKeyOperation: value}
-}
-
-func (c *ClusterOperations) UnmarshalJSON(data []byte) error {
-	valueMoveShardOperation := new(MoveShardOperation)
-	if err := json.Unmarshal(data, &valueMoveShardOperation); err == nil {
-		c.typeName = "moveShardOperation"
-		c.MoveShardOperation = valueMoveShardOperation
-		return nil
-	}
-	valueReplicateShardOperation := new(ReplicateShardOperation)
-	if err := json.Unmarshal(data, &valueReplicateShardOperation); err == nil {
-		c.typeName = "replicateShardOperation"
-		c.ReplicateShardOperation = valueReplicateShardOperation
-		return nil
-	}
-	valueAbortTransferOperation := new(AbortTransferOperation)
-	if err := json.Unmarshal(data, &valueAbortTransferOperation); err == nil {
-		c.typeName = "abortTransferOperation"
-		c.AbortTransferOperation = valueAbortTransferOperation
-		return nil
-	}
-	valueDropReplicaOperation := new(DropReplicaOperation)
-	if err := json.Unmarshal(data, &valueDropReplicaOperation); err == nil {
-		c.typeName = "dropReplicaOperation"
-		c.DropReplicaOperation = valueDropReplicaOperation
-		return nil
-	}
-	valueCreateShardingKeyOperation := new(CreateShardingKeyOperation)
-	if err := json.Unmarshal(data, &valueCreateShardingKeyOperation); err == nil {
-		c.typeName = "createShardingKeyOperation"
-		c.CreateShardingKeyOperation = valueCreateShardingKeyOperation
-		return nil
-	}
-	valueDropShardingKeyOperation := new(DropShardingKeyOperation)
-	if err := json.Unmarshal(data, &valueDropShardingKeyOperation); err == nil {
-		c.typeName = "dropShardingKeyOperation"
-		c.DropShardingKeyOperation = valueDropShardingKeyOperation
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c ClusterOperations) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "moveShardOperation":
-		return json.Marshal(c.MoveShardOperation)
-	case "replicateShardOperation":
-		return json.Marshal(c.ReplicateShardOperation)
-	case "abortTransferOperation":
-		return json.Marshal(c.AbortTransferOperation)
-	case "dropReplicaOperation":
-		return json.Marshal(c.DropReplicaOperation)
-	case "createShardingKeyOperation":
-		return json.Marshal(c.CreateShardingKeyOperation)
-	case "dropShardingKeyOperation":
-		return json.Marshal(c.DropShardingKeyOperation)
-	}
-}
-
-type ClusterOperationsVisitor interface {
-	VisitMoveShardOperation(*MoveShardOperation) error
-	VisitReplicateShardOperation(*ReplicateShardOperation) error
-	VisitAbortTransferOperation(*AbortTransferOperation) error
-	VisitDropReplicaOperation(*DropReplicaOperation) error
-	VisitCreateShardingKeyOperation(*CreateShardingKeyOperation) error
-	VisitDropShardingKeyOperation(*DropShardingKeyOperation) error
-}
-
-func (c *ClusterOperations) Accept(visitor ClusterOperationsVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "moveShardOperation":
-		return visitor.VisitMoveShardOperation(c.MoveShardOperation)
-	case "replicateShardOperation":
-		return visitor.VisitReplicateShardOperation(c.ReplicateShardOperation)
-	case "abortTransferOperation":
-		return visitor.VisitAbortTransferOperation(c.AbortTransferOperation)
-	case "dropReplicaOperation":
-		return visitor.VisitDropReplicaOperation(c.DropReplicaOperation)
-	case "createShardingKeyOperation":
-		return visitor.VisitCreateShardingKeyOperation(c.CreateShardingKeyOperation)
-	case "dropShardingKeyOperation":
-		return visitor.VisitDropShardingKeyOperation(c.DropShardingKeyOperation)
-	}
-}
-
-// Information about current cluster status and structure
-type ClusterStatus struct {
-	Status   string
-	Disabled *ClusterStatusDisabled
-	// Description of enabled cluster
-	Enabled *ClusterStatusEnabled
-}
-
-func NewClusterStatusFromDisabled(value *ClusterStatusDisabled) *ClusterStatus {
-	return &ClusterStatus{Status: "disabled", Disabled: value}
-}
-
-func NewClusterStatusFromEnabled(value *ClusterStatusEnabled) *ClusterStatus {
-	return &ClusterStatus{Status: "enabled", Enabled: value}
-}
-
-func (c *ClusterStatus) UnmarshalJSON(data []byte) error {
-	var unmarshaler struct {
-		Status string `json:"status"`
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	c.Status = unmarshaler.Status
-	switch unmarshaler.Status {
-	case "disabled":
-		value := new(ClusterStatusDisabled)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		c.Disabled = value
-	case "enabled":
-		value := new(ClusterStatusEnabled)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		c.Enabled = value
-	}
-	return nil
-}
-
-func (c ClusterStatus) MarshalJSON() ([]byte, error) {
-	switch c.Status {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.Status, c)
-	case "disabled":
-		var marshaler = struct {
-			Status string `json:"status"`
-			*ClusterStatusDisabled
-		}{
-			Status:                c.Status,
-			ClusterStatusDisabled: c.Disabled,
-		}
-		return json.Marshal(marshaler)
-	case "enabled":
-		var marshaler = struct {
-			Status string `json:"status"`
-			*ClusterStatusEnabled
-		}{
-			Status:               c.Status,
-			ClusterStatusEnabled: c.Enabled,
-		}
-		return json.Marshal(marshaler)
-	}
-}
-
-type ClusterStatusVisitor interface {
-	VisitDisabled(*ClusterStatusDisabled) error
-	VisitEnabled(*ClusterStatusEnabled) error
-}
-
-func (c *ClusterStatus) Accept(visitor ClusterStatusVisitor) error {
-	switch c.Status {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.Status, c)
-	case "disabled":
-		return visitor.VisitDisabled(c.Disabled)
-	case "enabled":
-		return visitor.VisitEnabled(c.Enabled)
-	}
-}
-
-type ClusterStatusDisabled struct {
-	_rawJSON json.RawMessage
-}
-
-func (c *ClusterStatusDisabled) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClusterStatusDisabled
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClusterStatusDisabled(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClusterStatusDisabled) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-// Description of enabled cluster
-type ClusterStatusEnabled struct {
-	// ID of this peer
-	PeerId int `json:"peer_id"`
-	// Peers composition of the cluster with main information
-	Peers                 map[string]*PeerInfo   `json:"peers,omitempty"`
-	RaftInfo              *RaftInfo              `json:"raft_info,omitempty"`
-	ConsensusThreadStatus *ConsensusThreadStatus `json:"consensus_thread_status,omitempty"`
-	// Consequent failures of message send operations in consensus by peer address. On the first success to send to that peer - entry is removed from this hashmap.
-	MessageSendFailures map[string]*MessageSendErrors `json:"message_send_failures,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ClusterStatusEnabled) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClusterStatusEnabled
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClusterStatusEnabled(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClusterStatusEnabled) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ClusterStatusTelemetry struct {
-	NumberOfPeers         int                         `json:"number_of_peers"`
-	Term                  int                         `json:"term"`
-	Commit                int                         `json:"commit"`
-	PendingOperations     int                         `json:"pending_operations"`
-	Role                  *ClusterStatusTelemetryRole `json:"role,omitempty"`
-	IsVoter               bool                        `json:"is_voter"`
-	PeerId                *int                        `json:"peer_id,omitempty"`
-	ConsensusThreadStatus *ConsensusThreadStatus      `json:"consensus_thread_status,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ClusterStatusTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClusterStatusTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClusterStatusTelemetry(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClusterStatusTelemetry) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ClusterStatusTelemetryRole struct {
-	typeName  string
-	StateRole StateRole
-	Unknown   interface{}
-}
-
-func NewClusterStatusTelemetryRoleFromStateRole(value StateRole) *ClusterStatusTelemetryRole {
-	return &ClusterStatusTelemetryRole{typeName: "stateRole", StateRole: value}
-}
-
-func NewClusterStatusTelemetryRoleFromUnknown(value interface{}) *ClusterStatusTelemetryRole {
-	return &ClusterStatusTelemetryRole{typeName: "unknown", Unknown: value}
-}
-
-func (c *ClusterStatusTelemetryRole) UnmarshalJSON(data []byte) error {
-	var valueStateRole StateRole
-	if err := json.Unmarshal(data, &valueStateRole); err == nil {
-		c.typeName = "stateRole"
-		c.StateRole = valueStateRole
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		c.typeName = "unknown"
-		c.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c ClusterStatusTelemetryRole) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "stateRole":
-		return json.Marshal(c.StateRole)
-	case "unknown":
-		return json.Marshal(c.Unknown)
-	}
-}
-
-type ClusterStatusTelemetryRoleVisitor interface {
-	VisitStateRole(StateRole) error
-	VisitUnknown(interface{}) error
-}
-
-func (c *ClusterStatusTelemetryRole) Accept(visitor ClusterStatusTelemetryRoleVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "stateRole":
-		return visitor.VisitStateRole(c.StateRole)
-	case "unknown":
-		return visitor.VisitUnknown(c.Unknown)
-	}
-}
-
-type ClusterTelemetry struct {
-	Enabled bool                    `json:"enabled"`
-	Status  *ClusterTelemetryStatus `json:"status,omitempty"`
-	Config  *ClusterTelemetryConfig `json:"config,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ClusterTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler ClusterTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ClusterTelemetry(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ClusterTelemetry) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ClusterTelemetryConfig struct {
-	typeName               string
-	ClusterConfigTelemetry *ClusterConfigTelemetry
-	Unknown                interface{}
-}
-
-func NewClusterTelemetryConfigFromClusterConfigTelemetry(value *ClusterConfigTelemetry) *ClusterTelemetryConfig {
-	return &ClusterTelemetryConfig{typeName: "clusterConfigTelemetry", ClusterConfigTelemetry: value}
-}
-
-func NewClusterTelemetryConfigFromUnknown(value interface{}) *ClusterTelemetryConfig {
-	return &ClusterTelemetryConfig{typeName: "unknown", Unknown: value}
-}
-
-func (c *ClusterTelemetryConfig) UnmarshalJSON(data []byte) error {
-	valueClusterConfigTelemetry := new(ClusterConfigTelemetry)
-	if err := json.Unmarshal(data, &valueClusterConfigTelemetry); err == nil {
-		c.typeName = "clusterConfigTelemetry"
-		c.ClusterConfigTelemetry = valueClusterConfigTelemetry
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		c.typeName = "unknown"
-		c.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c ClusterTelemetryConfig) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "clusterConfigTelemetry":
-		return json.Marshal(c.ClusterConfigTelemetry)
-	case "unknown":
-		return json.Marshal(c.Unknown)
-	}
-}
-
-type ClusterTelemetryConfigVisitor interface {
-	VisitClusterConfigTelemetry(*ClusterConfigTelemetry) error
-	VisitUnknown(interface{}) error
-}
-
-func (c *ClusterTelemetryConfig) Accept(visitor ClusterTelemetryConfigVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "clusterConfigTelemetry":
-		return visitor.VisitClusterConfigTelemetry(c.ClusterConfigTelemetry)
-	case "unknown":
-		return visitor.VisitUnknown(c.Unknown)
-	}
-}
-
-type ClusterTelemetryStatus struct {
-	typeName               string
-	ClusterStatusTelemetry *ClusterStatusTelemetry
-	Unknown                interface{}
-}
-
-func NewClusterTelemetryStatusFromClusterStatusTelemetry(value *ClusterStatusTelemetry) *ClusterTelemetryStatus {
-	return &ClusterTelemetryStatus{typeName: "clusterStatusTelemetry", ClusterStatusTelemetry: value}
-}
-
-func NewClusterTelemetryStatusFromUnknown(value interface{}) *ClusterTelemetryStatus {
-	return &ClusterTelemetryStatus{typeName: "unknown", Unknown: value}
-}
-
-func (c *ClusterTelemetryStatus) UnmarshalJSON(data []byte) error {
-	valueClusterStatusTelemetry := new(ClusterStatusTelemetry)
-	if err := json.Unmarshal(data, &valueClusterStatusTelemetry); err == nil {
-		c.typeName = "clusterStatusTelemetry"
-		c.ClusterStatusTelemetry = valueClusterStatusTelemetry
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		c.typeName = "unknown"
-		c.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c ClusterTelemetryStatus) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "clusterStatusTelemetry":
-		return json.Marshal(c.ClusterStatusTelemetry)
-	case "unknown":
-		return json.Marshal(c.Unknown)
-	}
-}
-
-type ClusterTelemetryStatusVisitor interface {
-	VisitClusterStatusTelemetry(*ClusterStatusTelemetry) error
-	VisitUnknown(interface{}) error
-}
-
-func (c *ClusterTelemetryStatus) Accept(visitor ClusterTelemetryStatusVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "clusterStatusTelemetry":
-		return visitor.VisitClusterStatusTelemetry(c.ClusterStatusTelemetry)
-	case "unknown":
-		return visitor.VisitUnknown(c.Unknown)
-	}
-}
-
-// Current clustering distribution for the collection
-type CollectionClusterInfo struct {
-	// ID of this peer
-	PeerId int `json:"peer_id"`
-	// Total number of shards
-	ShardCount int `json:"shard_count"`
-	// Local shards
-	LocalShards []*LocalShardInfo `json:"local_shards,omitempty"`
-	// Remote shards
-	RemoteShards []*RemoteShardInfo `json:"remote_shards,omitempty"`
-	// Shard transfers
-	ShardTransfers []*ShardTransferInfo `json:"shard_transfers,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionClusterInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionClusterInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionClusterInfo(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionClusterInfo) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CollectionConfig struct {
-	Params             *CollectionParams                   `json:"params,omitempty"`
-	HnswConfig         *HnswConfig                         `json:"hnsw_config,omitempty"`
-	OptimizerConfig    *OptimizersConfig                   `json:"optimizer_config,omitempty"`
-	WalConfig          *WalConfig                          `json:"wal_config,omitempty"`
-	QuantizationConfig *CollectionConfigQuantizationConfig `json:"quantization_config,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionConfig(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionConfig) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CollectionConfigQuantizationConfig struct {
-	typeName           string
-	QuantizationConfig *QuantizationConfig
-	Unknown            interface{}
-}
-
-func NewCollectionConfigQuantizationConfigFromQuantizationConfig(value *QuantizationConfig) *CollectionConfigQuantizationConfig {
-	return &CollectionConfigQuantizationConfig{typeName: "quantizationConfig", QuantizationConfig: value}
-}
-
-func NewCollectionConfigQuantizationConfigFromUnknown(value interface{}) *CollectionConfigQuantizationConfig {
-	return &CollectionConfigQuantizationConfig{typeName: "unknown", Unknown: value}
-}
-
-func (c *CollectionConfigQuantizationConfig) UnmarshalJSON(data []byte) error {
-	valueQuantizationConfig := new(QuantizationConfig)
-	if err := json.Unmarshal(data, &valueQuantizationConfig); err == nil {
-		c.typeName = "quantizationConfig"
-		c.QuantizationConfig = valueQuantizationConfig
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		c.typeName = "unknown"
-		c.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CollectionConfigQuantizationConfig) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "quantizationConfig":
-		return json.Marshal(c.QuantizationConfig)
-	case "unknown":
-		return json.Marshal(c.Unknown)
-	}
-}
-
-type CollectionConfigQuantizationConfigVisitor interface {
-	VisitQuantizationConfig(*QuantizationConfig) error
-	VisitUnknown(interface{}) error
-}
-
-func (c *CollectionConfigQuantizationConfig) Accept(visitor CollectionConfigQuantizationConfigVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "quantizationConfig":
-		return visitor.VisitQuantizationConfig(c.QuantizationConfig)
-	case "unknown":
-		return visitor.VisitUnknown(c.Unknown)
-	}
-}
-
-type CollectionDescription struct {
+	return json.Marshal(marshaler)
+}
+
+type DeleteCustomDomainSchema struct {
+	// The custom hostname ID
+	Id string `json:"id"`
+}
+
+type DeletedBookmarkResponse struct {
+	// Bookmark ID
+	Id string `json:"id"`
+}
+
+type DeletedIntegration struct {
+	Id string `json:"id"`
+}
+
+type DeletedIssueTriggerResponse struct {
+	Id string `json:"id"`
+}
+
+// Delivery issue
+type DeliveryIssue struct {
+	// Issue ID
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string      `json:"team_id"`
+	Status IssueStatus `json:"status,omitempty"`
+	// ISO timestamp for when the issue was last opened
+	OpenedAt time.Time `json:"opened_at"`
+	// ISO timestamp for when the issue was first opened
+	FirstSeenAt time.Time `json:"first_seen_at"`
+	// ISO timestamp for when the issue last occured
+	LastSeenAt time.Time `json:"last_seen_at"`
+	// ID of the team member who last updated the issue status
+	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
+	// ISO timestamp for when the issue was dismissed
+	DismissedAt    *time.Time `json:"dismissed_at,omitempty"`
+	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty"`
+	MergedWith     *string    `json:"merged_with,omitempty"`
+	// ISO timestamp for when the issue was last updated
+	UpdatedAt string `json:"updated_at"`
+	// ISO timestamp for when the issue was created
+	CreatedAt       string                        `json:"created_at"`
+	AggregationKeys *DeliveryIssueAggregationKeys `json:"aggregation_keys,omitempty"`
+	Reference       *DeliveryIssueReference       `json:"reference,omitempty"`
+}
+
+// Keys used as the aggregation keys a 'delivery' type issue
+type DeliveryIssueAggregationKeys struct {
+	WebhookId      []string            `json:"webhook_id,omitempty"`
+	ResponseStatus []float64           `json:"response_status,omitempty"`
+	ErrorCode      []AttemptErrorCodes `json:"error_code,omitempty"`
+}
+
+// Delivery issue data
+type DeliveryIssueData struct {
+	TriggerEvent   *Event        `json:"trigger_event,omitempty"`
+	TriggerAttempt *EventAttempt `json:"trigger_attempt,omitempty"`
+}
+
+// Reference to the event and attempt an issue is being created for.
+type DeliveryIssueReference struct {
+	EventId   string `json:"event_id"`
+	AttemptId string `json:"attempt_id"`
+}
+
+// Delivery issue
+type DeliveryIssueWithData struct {
+	// Issue ID
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string      `json:"team_id"`
+	Status IssueStatus `json:"status,omitempty"`
+	// ISO timestamp for when the issue was last opened
+	OpenedAt time.Time `json:"opened_at"`
+	// ISO timestamp for when the issue was first opened
+	FirstSeenAt time.Time `json:"first_seen_at"`
+	// ISO timestamp for when the issue last occured
+	LastSeenAt time.Time `json:"last_seen_at"`
+	// ID of the team member who last updated the issue status
+	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
+	// ISO timestamp for when the issue was dismissed
+	DismissedAt    *time.Time `json:"dismissed_at,omitempty"`
+	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty"`
+	MergedWith     *string    `json:"merged_with,omitempty"`
+	// ISO timestamp for when the issue was last updated
+	UpdatedAt string `json:"updated_at"`
+	// ISO timestamp for when the issue was created
+	CreatedAt       string                        `json:"created_at"`
+	AggregationKeys *DeliveryIssueAggregationKeys `json:"aggregation_keys,omitempty"`
+	Reference       *DeliveryIssueReference       `json:"reference,omitempty"`
+	Data            *DeliveryIssueData            `json:"data,omitempty"`
+}
+
+// Associated [Destination](#destination-object) object
+type Destination struct {
+	// ID of the destination
+	Id string `json:"id"`
+	// A unique, human-friendly name for the destination
 	Name string `json:"name"`
-
-	_rawJSON json.RawMessage
+	// Description of the destination
+	Description *string `json:"description,omitempty"`
+	// ID of the workspace
+	TeamId                 string `json:"team_id"`
+	PathForwardingDisabled *bool  `json:"path_forwarding_disabled,omitempty"`
+	// HTTP endpoint of the destination
+	Url *string `json:"url,omitempty"`
+	// Path for the CLI destination
+	CliPath *string `json:"cli_path,omitempty"`
+	// Limit event attempts to receive per period. Max value is workspace plan's max attempts thoughput.
+	RateLimit       *int                         `json:"rate_limit,omitempty"`
+	RateLimitPeriod *DestinationRateLimitPeriod  `json:"rate_limit_period,omitempty"`
+	HttpMethod      *DestinationHttpMethod       `json:"http_method,omitempty"`
+	AuthMethod      *DestinationAuthMethodConfig `json:"auth_method,omitempty"`
+	// Date the destination was archived
+	ArchivedAt *time.Time `json:"archived_at,omitempty"`
+	// Date the destination was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the destination was created
+	CreatedAt time.Time `json:"created_at"`
 }
 
-func (c *CollectionDescription) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionDescription
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionDescription(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
+// API key config for the destination's auth method
+type DestinationAuthMethodApiKeyConfig struct {
+	// Key for the API key auth
+	Key string `json:"key"`
+	// API key for the API key auth
+	ApiKey string `json:"api_key"`
+	// Whether the API key should be sent as a header or a query parameter
+	To *DestinationAuthMethodApiKeyConfigTo `json:"to,omitempty"`
 }
 
-func (c *CollectionDescription) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-// Current statistics and configuration of the collection
-type CollectionInfo struct {
-	Status          CollectionStatus  `json:"status,omitempty"`
-	OptimizerStatus *OptimizersStatus `json:"optimizer_status,omitempty"`
-	// Approximate number of vectors in collection. All vectors in collection are available for querying. Calculated as `points_count x vectors_per_point`. Where `vectors_per_point` is a number of named vectors in schema.
-	VectorsCount *int `json:"vectors_count,omitempty"`
-	// Approximate number of indexed vectors in the collection. Indexed vectors in large segments are faster to query, as it is stored in a specialized vector index.
-	IndexedVectorsCount *int `json:"indexed_vectors_count,omitempty"`
-	// Approximate number of points (vectors + payloads) in collection. Each point could be accessed by unique id.
-	PointsCount *int `json:"points_count,omitempty"`
-	// Number of segments in collection. Each segment has independent vector as payload indexes
-	SegmentsCount int               `json:"segments_count"`
-	Config        *CollectionConfig `json:"config,omitempty"`
-	// Types of stored payload
-	PayloadSchema map[string]*PayloadIndexInfo `json:"payload_schema,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionInfo(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionInfo) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CollectionParams struct {
-	Vectors *VectorsConfig `json:"vectors,omitempty"`
-	// Number of shards the collection has
-	ShardNumber *int `json:"shard_number,omitempty"`
-	// Sharding method Default is Auto - points are distributed across all available shards Custom - points are distributed across shards according to shard key
-	ShardingMethod *CollectionParamsShardingMethod `json:"sharding_method,omitempty"`
-	// Number of replicas for each shard
-	ReplicationFactor *int `json:"replication_factor,omitempty"`
-	// Defines how many replicas should apply the operation for us to consider it successful. Increasing this number will make the collection more resilient to inconsistencies, but will also make it fail if not enough replicas are available. Does not have any performance impact.
-	WriteConsistencyFactor *int `json:"write_consistency_factor,omitempty"`
-	// Defines how many additional replicas should be processing read request at the same time. Default value is Auto, which means that fan-out will be determined automatically based on the busyness of the local replica. Having more than 0 might be useful to smooth latency spikes of individual nodes.
-	ReadFanOutFactor *int `json:"read_fan_out_factor,omitempty"`
-	// If true - point's payload will not be stored in memory. It will be read from the disk every time it is requested. This setting saves RAM by (slightly) increasing the response time. Note: those payload values that are involved in filtering and are indexed - remain in RAM.
-	OnDiskPayload *bool `json:"on_disk_payload,omitempty"`
-	// Configuration of the sparse vector storage
-	SparseVectors map[string]*SparseVectorParams `json:"sparse_vectors,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionParams) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionParams
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionParams(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionParams) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CollectionParamsDiff struct {
-	// Number of replicas for each shard
-	ReplicationFactor *int `json:"replication_factor,omitempty"`
-	// Minimal number successful responses from replicas to consider operation successful
-	WriteConsistencyFactor *int `json:"write_consistency_factor,omitempty"`
-	// Fan-out every read request to these many additional remote nodes (and return first available response)
-	ReadFanOutFactor *int `json:"read_fan_out_factor,omitempty"`
-	// If true - point's payload will not be stored in memory. It will be read from the disk every time it is requested. This setting saves RAM by (slightly) increasing the response time. Note: those payload values that are involved in filtering and are indexed - remain in RAM.
-	OnDiskPayload *bool `json:"on_disk_payload,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionParamsDiff) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionParamsDiff
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionParamsDiff(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionParamsDiff) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-// Sharding method Default is Auto - points are distributed across all available shards Custom - points are distributed across shards according to shard key
-type CollectionParamsShardingMethod struct {
-	typeName       string
-	ShardingMethod ShardingMethod
-	Unknown        interface{}
-}
-
-func NewCollectionParamsShardingMethodFromShardingMethod(value ShardingMethod) *CollectionParamsShardingMethod {
-	return &CollectionParamsShardingMethod{typeName: "shardingMethod", ShardingMethod: value}
-}
-
-func NewCollectionParamsShardingMethodFromUnknown(value interface{}) *CollectionParamsShardingMethod {
-	return &CollectionParamsShardingMethod{typeName: "unknown", Unknown: value}
-}
-
-func (c *CollectionParamsShardingMethod) UnmarshalJSON(data []byte) error {
-	var valueShardingMethod ShardingMethod
-	if err := json.Unmarshal(data, &valueShardingMethod); err == nil {
-		c.typeName = "shardingMethod"
-		c.ShardingMethod = valueShardingMethod
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		c.typeName = "unknown"
-		c.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CollectionParamsShardingMethod) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "shardingMethod":
-		return json.Marshal(c.ShardingMethod)
-	case "unknown":
-		return json.Marshal(c.Unknown)
-	}
-}
-
-type CollectionParamsShardingMethodVisitor interface {
-	VisitShardingMethod(ShardingMethod) error
-	VisitUnknown(interface{}) error
-}
-
-func (c *CollectionParamsShardingMethod) Accept(visitor CollectionParamsShardingMethodVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "shardingMethod":
-		return visitor.VisitShardingMethod(c.ShardingMethod)
-	case "unknown":
-		return visitor.VisitUnknown(c.Unknown)
-	}
-}
-
-// Current state of the collection. `Green` - all good. `Yellow` - optimization is running, `Red` - some operations failed and was not recovered
-type CollectionStatus string
+// Whether the API key should be sent as a header or a query parameter
+type DestinationAuthMethodApiKeyConfigTo string
 
 const (
-	CollectionStatusGreen  CollectionStatus = "green"
-	CollectionStatusYellow CollectionStatus = "yellow"
-	CollectionStatusRed    CollectionStatus = "red"
+	DestinationAuthMethodApiKeyConfigToHeader DestinationAuthMethodApiKeyConfigTo = "header"
+	DestinationAuthMethodApiKeyConfigToQuery  DestinationAuthMethodApiKeyConfigTo = "query"
 )
 
-func NewCollectionStatusFromString(s string) (CollectionStatus, error) {
+func NewDestinationAuthMethodApiKeyConfigToFromString(s string) (DestinationAuthMethodApiKeyConfigTo, error) {
 	switch s {
-	case "green":
-		return CollectionStatusGreen, nil
-	case "yellow":
-		return CollectionStatusYellow, nil
-	case "red":
-		return CollectionStatusRed, nil
+	case "header":
+		return DestinationAuthMethodApiKeyConfigToHeader, nil
+	case "query":
+		return DestinationAuthMethodApiKeyConfigToQuery, nil
 	}
-	var t CollectionStatus
+	var t DestinationAuthMethodApiKeyConfigTo
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (c CollectionStatus) Ptr() *CollectionStatus {
-	return &c
-}
-
-type CollectionTelemetry struct {
-	Id         string                 `json:"id"`
-	InitTimeMs int                    `json:"init_time_ms"`
-	Config     *CollectionConfig      `json:"config,omitempty"`
-	Shards     []*ReplicaSetTelemetry `json:"shards,omitempty"`
-	Transfers  []*ShardTransferInfo   `json:"transfers,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionTelemetry(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionTelemetry) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CollectionTelemetryEnum struct {
-	typeName                       string
-	CollectionTelemetry            *CollectionTelemetry
-	CollectionsAggregatedTelemetry *CollectionsAggregatedTelemetry
-}
-
-func NewCollectionTelemetryEnumFromCollectionTelemetry(value *CollectionTelemetry) *CollectionTelemetryEnum {
-	return &CollectionTelemetryEnum{typeName: "collectionTelemetry", CollectionTelemetry: value}
-}
-
-func NewCollectionTelemetryEnumFromCollectionsAggregatedTelemetry(value *CollectionsAggregatedTelemetry) *CollectionTelemetryEnum {
-	return &CollectionTelemetryEnum{typeName: "collectionsAggregatedTelemetry", CollectionsAggregatedTelemetry: value}
-}
-
-func (c *CollectionTelemetryEnum) UnmarshalJSON(data []byte) error {
-	valueCollectionTelemetry := new(CollectionTelemetry)
-	if err := json.Unmarshal(data, &valueCollectionTelemetry); err == nil {
-		c.typeName = "collectionTelemetry"
-		c.CollectionTelemetry = valueCollectionTelemetry
-		return nil
-	}
-	valueCollectionsAggregatedTelemetry := new(CollectionsAggregatedTelemetry)
-	if err := json.Unmarshal(data, &valueCollectionsAggregatedTelemetry); err == nil {
-		c.typeName = "collectionsAggregatedTelemetry"
-		c.CollectionsAggregatedTelemetry = valueCollectionsAggregatedTelemetry
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c CollectionTelemetryEnum) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "collectionTelemetry":
-		return json.Marshal(c.CollectionTelemetry)
-	case "collectionsAggregatedTelemetry":
-		return json.Marshal(c.CollectionsAggregatedTelemetry)
-	}
-}
-
-type CollectionTelemetryEnumVisitor interface {
-	VisitCollectionTelemetry(*CollectionTelemetry) error
-	VisitCollectionsAggregatedTelemetry(*CollectionsAggregatedTelemetry) error
-}
-
-func (c *CollectionTelemetryEnum) Accept(visitor CollectionTelemetryEnumVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "collectionTelemetry":
-		return visitor.VisitCollectionTelemetry(c.CollectionTelemetry)
-	case "collectionsAggregatedTelemetry":
-		return visitor.VisitCollectionsAggregatedTelemetry(c.CollectionsAggregatedTelemetry)
-	}
-}
-
-type CollectionsAggregatedTelemetry struct {
-	Vectors          int               `json:"vectors"`
-	OptimizersStatus *OptimizersStatus `json:"optimizers_status,omitempty"`
-	Params           *CollectionParams `json:"params,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionsAggregatedTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionsAggregatedTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionsAggregatedTelemetry(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionsAggregatedTelemetry) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CollectionsAliasesResponse struct {
-	Aliases []*AliasDescription `json:"aliases,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionsAliasesResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionsAliasesResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionsAliasesResponse(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionsAliasesResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CollectionsResponse struct {
-	Collections []*CollectionDescription `json:"collections,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionsResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionsResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionsResponse(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionsResponse) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CollectionsTelemetry struct {
-	NumberOfCollections int                        `json:"number_of_collections"`
-	Collections         []*CollectionTelemetryEnum `json:"collections,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CollectionsTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler CollectionsTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CollectionsTelemetry(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CollectionsTelemetry) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CompressionRatio string
-
-const (
-	CompressionRatioX4  CompressionRatio = "x4"
-	CompressionRatioX8  CompressionRatio = "x8"
-	CompressionRatioX16 CompressionRatio = "x16"
-	CompressionRatioX32 CompressionRatio = "x32"
-	CompressionRatioX64 CompressionRatio = "x64"
-)
-
-func NewCompressionRatioFromString(s string) (CompressionRatio, error) {
-	switch s {
-	case "x4":
-		return CompressionRatioX4, nil
-	case "x8":
-		return CompressionRatioX8, nil
-	case "x16":
-		return CompressionRatioX16, nil
-	case "x32":
-		return CompressionRatioX32, nil
-	case "x64":
-		return CompressionRatioX64, nil
-	}
-	var t CompressionRatio
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (c CompressionRatio) Ptr() *CompressionRatio {
-	return &c
-}
-
-type Condition struct {
-	typeName         string
-	FieldCondition   *FieldCondition
-	IsEmptyCondition *IsEmptyCondition
-	IsNullCondition  *IsNullCondition
-	HasIdCondition   *HasIdCondition
-	NestedCondition  *NestedCondition
-	Filter           *Filter
-}
-
-func NewConditionFromFieldCondition(value *FieldCondition) *Condition {
-	return &Condition{typeName: "fieldCondition", FieldCondition: value}
-}
-
-func NewConditionFromIsEmptyCondition(value *IsEmptyCondition) *Condition {
-	return &Condition{typeName: "isEmptyCondition", IsEmptyCondition: value}
-}
-
-func NewConditionFromIsNullCondition(value *IsNullCondition) *Condition {
-	return &Condition{typeName: "isNullCondition", IsNullCondition: value}
-}
-
-func NewConditionFromHasIdCondition(value *HasIdCondition) *Condition {
-	return &Condition{typeName: "hasIdCondition", HasIdCondition: value}
-}
-
-func NewConditionFromNestedCondition(value *NestedCondition) *Condition {
-	return &Condition{typeName: "nestedCondition", NestedCondition: value}
-}
-
-func NewConditionFromFilter(value *Filter) *Condition {
-	return &Condition{typeName: "filter", Filter: value}
-}
-
-func (c *Condition) UnmarshalJSON(data []byte) error {
-	valueFieldCondition := new(FieldCondition)
-	if err := json.Unmarshal(data, &valueFieldCondition); err == nil {
-		c.typeName = "fieldCondition"
-		c.FieldCondition = valueFieldCondition
-		return nil
-	}
-	valueIsEmptyCondition := new(IsEmptyCondition)
-	if err := json.Unmarshal(data, &valueIsEmptyCondition); err == nil {
-		c.typeName = "isEmptyCondition"
-		c.IsEmptyCondition = valueIsEmptyCondition
-		return nil
-	}
-	valueIsNullCondition := new(IsNullCondition)
-	if err := json.Unmarshal(data, &valueIsNullCondition); err == nil {
-		c.typeName = "isNullCondition"
-		c.IsNullCondition = valueIsNullCondition
-		return nil
-	}
-	valueHasIdCondition := new(HasIdCondition)
-	if err := json.Unmarshal(data, &valueHasIdCondition); err == nil {
-		c.typeName = "hasIdCondition"
-		c.HasIdCondition = valueHasIdCondition
-		return nil
-	}
-	valueNestedCondition := new(NestedCondition)
-	if err := json.Unmarshal(data, &valueNestedCondition); err == nil {
-		c.typeName = "nestedCondition"
-		c.NestedCondition = valueNestedCondition
-		return nil
-	}
-	valueFilter := new(Filter)
-	if err := json.Unmarshal(data, &valueFilter); err == nil {
-		c.typeName = "filter"
-		c.Filter = valueFilter
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, c)
-}
-
-func (c Condition) MarshalJSON() ([]byte, error) {
-	switch c.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "fieldCondition":
-		return json.Marshal(c.FieldCondition)
-	case "isEmptyCondition":
-		return json.Marshal(c.IsEmptyCondition)
-	case "isNullCondition":
-		return json.Marshal(c.IsNullCondition)
-	case "hasIdCondition":
-		return json.Marshal(c.HasIdCondition)
-	case "nestedCondition":
-		return json.Marshal(c.NestedCondition)
-	case "filter":
-		return json.Marshal(c.Filter)
-	}
-}
-
-type ConditionVisitor interface {
-	VisitFieldCondition(*FieldCondition) error
-	VisitIsEmptyCondition(*IsEmptyCondition) error
-	VisitIsNullCondition(*IsNullCondition) error
-	VisitHasIdCondition(*HasIdCondition) error
-	VisitNestedCondition(*NestedCondition) error
-	VisitFilter(*Filter) error
-}
-
-func (c *Condition) Accept(visitor ConditionVisitor) error {
-	switch c.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.typeName, c)
-	case "fieldCondition":
-		return visitor.VisitFieldCondition(c.FieldCondition)
-	case "isEmptyCondition":
-		return visitor.VisitIsEmptyCondition(c.IsEmptyCondition)
-	case "isNullCondition":
-		return visitor.VisitIsNullCondition(c.IsNullCondition)
-	case "hasIdCondition":
-		return visitor.VisitHasIdCondition(c.HasIdCondition)
-	case "nestedCondition":
-		return visitor.VisitNestedCondition(c.NestedCondition)
-	case "filter":
-		return visitor.VisitFilter(c.Filter)
-	}
-}
-
-type ConsensusConfigTelemetry struct {
-	MaxMessageQueueSize int `json:"max_message_queue_size"`
-	TickPeriodMs        int `json:"tick_period_ms"`
-	BootstrapTimeoutSec int `json:"bootstrap_timeout_sec"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ConsensusConfigTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler ConsensusConfigTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ConsensusConfigTelemetry(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ConsensusConfigTelemetry) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-// Information about current consensus thread status
-type ConsensusThreadStatus struct {
-	ConsensusThreadStatus string
-	Working               *ConsensusThreadStatusWorking
-	Stopped               *ConsensusThreadStatusStopped
-	StoppedWithErr        *ConsensusThreadStatusStoppedWithErr
-}
-
-func NewConsensusThreadStatusFromWorking(value *ConsensusThreadStatusWorking) *ConsensusThreadStatus {
-	return &ConsensusThreadStatus{ConsensusThreadStatus: "working", Working: value}
-}
-
-func NewConsensusThreadStatusFromStopped(value *ConsensusThreadStatusStopped) *ConsensusThreadStatus {
-	return &ConsensusThreadStatus{ConsensusThreadStatus: "stopped", Stopped: value}
-}
-
-func NewConsensusThreadStatusFromStoppedWithErr(value *ConsensusThreadStatusStoppedWithErr) *ConsensusThreadStatus {
-	return &ConsensusThreadStatus{ConsensusThreadStatus: "stopped_with_err", StoppedWithErr: value}
-}
-
-func (c *ConsensusThreadStatus) UnmarshalJSON(data []byte) error {
-	var unmarshaler struct {
-		ConsensusThreadStatus string `json:"consensus_thread_status"`
-	}
-	if err := json.Unmarshal(data, &unmarshaler); err != nil {
-		return err
-	}
-	c.ConsensusThreadStatus = unmarshaler.ConsensusThreadStatus
-	switch unmarshaler.ConsensusThreadStatus {
-	case "working":
-		value := new(ConsensusThreadStatusWorking)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		c.Working = value
-	case "stopped":
-		value := new(ConsensusThreadStatusStopped)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		c.Stopped = value
-	case "stopped_with_err":
-		value := new(ConsensusThreadStatusStoppedWithErr)
-		if err := json.Unmarshal(data, &value); err != nil {
-			return err
-		}
-		c.StoppedWithErr = value
-	}
-	return nil
-}
-
-func (c ConsensusThreadStatus) MarshalJSON() ([]byte, error) {
-	switch c.ConsensusThreadStatus {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", c.ConsensusThreadStatus, c)
-	case "working":
-		var marshaler = struct {
-			ConsensusThreadStatus string `json:"consensus_thread_status"`
-			*ConsensusThreadStatusWorking
-		}{
-			ConsensusThreadStatus:        c.ConsensusThreadStatus,
-			ConsensusThreadStatusWorking: c.Working,
-		}
-		return json.Marshal(marshaler)
-	case "stopped":
-		var marshaler = struct {
-			ConsensusThreadStatus string `json:"consensus_thread_status"`
-			*ConsensusThreadStatusStopped
-		}{
-			ConsensusThreadStatus:        c.ConsensusThreadStatus,
-			ConsensusThreadStatusStopped: c.Stopped,
-		}
-		return json.Marshal(marshaler)
-	case "stopped_with_err":
-		var marshaler = struct {
-			ConsensusThreadStatus string `json:"consensus_thread_status"`
-			*ConsensusThreadStatusStoppedWithErr
-		}{
-			ConsensusThreadStatus:               c.ConsensusThreadStatus,
-			ConsensusThreadStatusStoppedWithErr: c.StoppedWithErr,
-		}
-		return json.Marshal(marshaler)
-	}
-}
-
-type ConsensusThreadStatusVisitor interface {
-	VisitWorking(*ConsensusThreadStatusWorking) error
-	VisitStopped(*ConsensusThreadStatusStopped) error
-	VisitStoppedWithErr(*ConsensusThreadStatusStoppedWithErr) error
-}
-
-func (c *ConsensusThreadStatus) Accept(visitor ConsensusThreadStatusVisitor) error {
-	switch c.ConsensusThreadStatus {
-	default:
-		return fmt.Errorf("invalid type %s in %T", c.ConsensusThreadStatus, c)
-	case "working":
-		return visitor.VisitWorking(c.Working)
-	case "stopped":
-		return visitor.VisitStopped(c.Stopped)
-	case "stopped_with_err":
-		return visitor.VisitStoppedWithErr(c.StoppedWithErr)
-	}
-}
-
-type ConsensusThreadStatusStopped struct {
-	_rawJSON json.RawMessage
-}
-
-func (c *ConsensusThreadStatusStopped) UnmarshalJSON(data []byte) error {
-	type unmarshaler ConsensusThreadStatusStopped
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ConsensusThreadStatusStopped(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ConsensusThreadStatusStopped) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ConsensusThreadStatusStoppedWithErr struct {
-	Err string `json:"err"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ConsensusThreadStatusStoppedWithErr) UnmarshalJSON(data []byte) error {
-	type unmarshaler ConsensusThreadStatusStoppedWithErr
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ConsensusThreadStatusStoppedWithErr(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ConsensusThreadStatusStoppedWithErr) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ConsensusThreadStatusWorking struct {
-	LastUpdate time.Time `json:"last_update"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ConsensusThreadStatusWorking) UnmarshalJSON(data []byte) error {
-	type unmarshaler ConsensusThreadStatusWorking
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ConsensusThreadStatusWorking(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ConsensusThreadStatusWorking) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type ContextExamplePair struct {
-	Positive *RecommendExample `json:"positive,omitempty"`
-	Negative *RecommendExample `json:"negative,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *ContextExamplePair) UnmarshalJSON(data []byte) error {
-	type unmarshaler ContextExamplePair
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = ContextExamplePair(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *ContextExamplePair) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CountResult struct {
-	// Number of points which satisfy the conditions
-	Count int `json:"count"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CountResult) UnmarshalJSON(data []byte) error {
-	type unmarshaler CountResult
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CountResult(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CountResult) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-// Create alternative name for a collection. Collection will be available under both names for search, retrieve,
-type CreateAlias struct {
-	CollectionName string `json:"collection_name"`
-	AliasName      string `json:"alias_name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CreateAlias) UnmarshalJSON(data []byte) error {
-	type unmarshaler CreateAlias
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CreateAlias(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CreateAlias) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CreateAliasOperation struct {
-	CreateAlias *CreateAlias `json:"create_alias,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CreateAliasOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler CreateAliasOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CreateAliasOperation(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CreateAliasOperation) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CreateShardingKey struct {
-	ShardKey *ShardKey `json:"shard_key,omitempty"`
-	// How many shards to create for this key If not specified, will use the default value from config
-	ShardsNumber *int `json:"shards_number,omitempty"`
-	// How many replicas to create for each shard If not specified, will use the default value from config
-	ReplicationFactor *int `json:"replication_factor,omitempty"`
-	// Placement of shards for this key List of peer ids, that can be used to place shards for this key If not specified, will be randomly placed among all peers
-	Placement []int `json:"placement,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CreateShardingKey) UnmarshalJSON(data []byte) error {
-	type unmarshaler CreateShardingKey
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CreateShardingKey(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CreateShardingKey) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-type CreateShardingKeyOperation struct {
-	CreateShardingKey *CreateShardingKey `json:"create_sharding_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (c *CreateShardingKeyOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler CreateShardingKeyOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*c = CreateShardingKeyOperation(value)
-	c._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (c *CreateShardingKeyOperation) String() string {
-	if len(c._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(c); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", c)
-}
-
-// Delete alias if exists
-type DeleteAlias struct {
-	AliasName string `json:"alias_name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DeleteAlias) UnmarshalJSON(data []byte) error {
-	type unmarshaler DeleteAlias
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DeleteAlias(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DeleteAlias) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-// Delete alias if exists
-type DeleteAliasOperation struct {
-	DeleteAlias *DeleteAlias `json:"delete_alias,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DeleteAliasOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler DeleteAliasOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DeleteAliasOperation(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DeleteAliasOperation) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-type DeleteOperation struct {
-	Delete *PointsSelector `json:"delete,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DeleteOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler DeleteOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DeleteOperation(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DeleteOperation) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-// This data structure is used in API interface and applied across multiple shards
-type DeletePayload struct {
-	// List of payload keys to remove from payload
-	Keys []string `json:"keys,omitempty"`
-	// Deletes values from each point in this list
-	Points []*ExtendedPointId `json:"points,omitempty"`
-	// Deletes values from points that satisfy this filter condition
-	Filter   *DeletePayloadFilter   `json:"filter,omitempty"`
-	ShardKey *DeletePayloadShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DeletePayload) UnmarshalJSON(data []byte) error {
-	type unmarshaler DeletePayload
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DeletePayload(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DeletePayload) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-// Deletes values from points that satisfy this filter condition
-type DeletePayloadFilter struct {
-	typeName string
-	Filter   *Filter
-	Unknown  interface{}
-}
-
-func NewDeletePayloadFilterFromFilter(value *Filter) *DeletePayloadFilter {
-	return &DeletePayloadFilter{typeName: "filter", Filter: value}
-}
-
-func NewDeletePayloadFilterFromUnknown(value interface{}) *DeletePayloadFilter {
-	return &DeletePayloadFilter{typeName: "unknown", Unknown: value}
-}
-
-func (d *DeletePayloadFilter) UnmarshalJSON(data []byte) error {
-	valueFilter := new(Filter)
-	if err := json.Unmarshal(data, &valueFilter); err == nil {
-		d.typeName = "filter"
-		d.Filter = valueFilter
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DeletePayloadFilter) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "filter":
-		return json.Marshal(d.Filter)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DeletePayloadFilterVisitor interface {
-	VisitFilter(*Filter) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DeletePayloadFilter) Accept(visitor DeletePayloadFilterVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "filter":
-		return visitor.VisitFilter(d.Filter)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-type DeletePayloadOperation struct {
-	DeletePayload *DeletePayload `json:"delete_payload,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DeletePayloadOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler DeletePayloadOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DeletePayloadOperation(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DeletePayloadOperation) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-type DeletePayloadShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewDeletePayloadShardKeyFromShardKeySelector(value *ShardKeySelector) *DeletePayloadShardKey {
-	return &DeletePayloadShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewDeletePayloadShardKeyFromUnknown(value interface{}) *DeletePayloadShardKey {
-	return &DeletePayloadShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (d *DeletePayloadShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		d.typeName = "shardKeySelector"
-		d.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DeletePayloadShardKey) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "shardKeySelector":
-		return json.Marshal(d.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DeletePayloadShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DeletePayloadShardKey) Accept(visitor DeletePayloadShardKeyVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(d.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-type DeleteVectors struct {
-	// Deletes values from each point in this list
-	Points []*ExtendedPointId `json:"points,omitempty"`
-	// Deletes values from points that satisfy this filter condition
-	Filter *DeleteVectorsFilter `json:"filter,omitempty"`
-	// Vector names
-	Vector   []string               `json:"vector,omitempty"`
-	ShardKey *DeleteVectorsShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DeleteVectors) UnmarshalJSON(data []byte) error {
-	type unmarshaler DeleteVectors
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DeleteVectors(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DeleteVectors) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-// Deletes values from points that satisfy this filter condition
-type DeleteVectorsFilter struct {
-	typeName string
-	Filter   *Filter
-	Unknown  interface{}
-}
-
-func NewDeleteVectorsFilterFromFilter(value *Filter) *DeleteVectorsFilter {
-	return &DeleteVectorsFilter{typeName: "filter", Filter: value}
-}
-
-func NewDeleteVectorsFilterFromUnknown(value interface{}) *DeleteVectorsFilter {
-	return &DeleteVectorsFilter{typeName: "unknown", Unknown: value}
-}
-
-func (d *DeleteVectorsFilter) UnmarshalJSON(data []byte) error {
-	valueFilter := new(Filter)
-	if err := json.Unmarshal(data, &valueFilter); err == nil {
-		d.typeName = "filter"
-		d.Filter = valueFilter
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DeleteVectorsFilter) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "filter":
-		return json.Marshal(d.Filter)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DeleteVectorsFilterVisitor interface {
-	VisitFilter(*Filter) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DeleteVectorsFilter) Accept(visitor DeleteVectorsFilterVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "filter":
-		return visitor.VisitFilter(d.Filter)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-type DeleteVectorsOperation struct {
-	DeleteVectors *DeleteVectors `json:"delete_vectors,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DeleteVectorsOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler DeleteVectorsOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DeleteVectorsOperation(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DeleteVectorsOperation) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-type DeleteVectorsShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewDeleteVectorsShardKeyFromShardKeySelector(value *ShardKeySelector) *DeleteVectorsShardKey {
-	return &DeleteVectorsShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewDeleteVectorsShardKeyFromUnknown(value interface{}) *DeleteVectorsShardKey {
-	return &DeleteVectorsShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (d *DeleteVectorsShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		d.typeName = "shardKeySelector"
-		d.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DeleteVectorsShardKey) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "shardKeySelector":
-		return json.Marshal(d.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DeleteVectorsShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DeleteVectorsShardKey) Accept(visitor DeleteVectorsShardKeyVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(d.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-type Disabled = string
-
-// Use context and a target to find the most similar points, constrained by the context.
-type DiscoverRequest struct {
-	// Specify in which shards to look for the points, if not specified - look in all shards
-	ShardKey *DiscoverRequestShardKey `json:"shard_key,omitempty"`
-	// Look for vectors closest to this.
-	//
-	// When using the target (with or without context), the integer part of the score represents the rank with respect to the context, while the decimal part of the score relates to the distance to the target.
-	Target *DiscoverRequestTarget `json:"target,omitempty"`
-	// Pairs of { positive, negative } examples to constrain the search.
-	//
-	// When using only the context (without a target), a special search - called context search - is performed where pairs of points are used to generate a loss that guides the search towards the zone where most positive examples overlap. This means that the score minimizes the scenario of finding a point closer to a negative than to a positive part of a pair.
-	//
-	// Since the score of a context relates to loss, the maximum score a point can get is 0.0, and it becomes normal that many points can have a score of 0.0.
-	//
-	// For discovery search (when including a target), the context part of the score for each pair is calculated +1 if the point is closer to a positive than to a negative part of a pair, and -1 otherwise.
-	Context []*ContextExamplePair `json:"context,omitempty"`
-	// Look only for points which satisfies this conditions
-	Filter *DiscoverRequestFilter `json:"filter,omitempty"`
-	// Additional search params
-	Params *DiscoverRequestParams `json:"params,omitempty"`
-	// Max number of result to return
-	Limit int `json:"limit"`
-	// Offset of the first result to return. May be used to paginate results. Note: large offset values may cause performance issues.
-	Offset *int `json:"offset,omitempty"`
-	// Select which payload to return with the response. Default: None
-	WithPayload *DiscoverRequestWithPayload `json:"with_payload,omitempty"`
-	// Whether to return the point vector with the result?
-	WithVector *DiscoverRequestWithVector `json:"with_vector,omitempty"`
-	// Define which vector to use for recommendation, if not specified - try to use default vector
-	Using *DiscoverRequestUsing `json:"using,omitempty"`
-	// The location used to lookup vectors. If not specified - use current collection. Note: the other collection should have the same vector size as the current collection
-	LookupFrom *DiscoverRequestLookupFrom `json:"lookup_from,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DiscoverRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler DiscoverRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DiscoverRequest(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DiscoverRequest) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-// Look only for points which satisfies this conditions
-type DiscoverRequestFilter struct {
-	typeName string
-	Filter   *Filter
-	Unknown  interface{}
-}
-
-func NewDiscoverRequestFilterFromFilter(value *Filter) *DiscoverRequestFilter {
-	return &DiscoverRequestFilter{typeName: "filter", Filter: value}
-}
-
-func NewDiscoverRequestFilterFromUnknown(value interface{}) *DiscoverRequestFilter {
-	return &DiscoverRequestFilter{typeName: "unknown", Unknown: value}
-}
-
-func (d *DiscoverRequestFilter) UnmarshalJSON(data []byte) error {
-	valueFilter := new(Filter)
-	if err := json.Unmarshal(data, &valueFilter); err == nil {
-		d.typeName = "filter"
-		d.Filter = valueFilter
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DiscoverRequestFilter) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "filter":
-		return json.Marshal(d.Filter)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DiscoverRequestFilterVisitor interface {
-	VisitFilter(*Filter) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DiscoverRequestFilter) Accept(visitor DiscoverRequestFilterVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "filter":
-		return visitor.VisitFilter(d.Filter)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-// The location used to lookup vectors. If not specified - use current collection. Note: the other collection should have the same vector size as the current collection
-type DiscoverRequestLookupFrom struct {
-	typeName       string
-	LookupLocation *LookupLocation
-	Unknown        interface{}
-}
-
-func NewDiscoverRequestLookupFromFromLookupLocation(value *LookupLocation) *DiscoverRequestLookupFrom {
-	return &DiscoverRequestLookupFrom{typeName: "lookupLocation", LookupLocation: value}
-}
-
-func NewDiscoverRequestLookupFromFromUnknown(value interface{}) *DiscoverRequestLookupFrom {
-	return &DiscoverRequestLookupFrom{typeName: "unknown", Unknown: value}
-}
-
-func (d *DiscoverRequestLookupFrom) UnmarshalJSON(data []byte) error {
-	valueLookupLocation := new(LookupLocation)
-	if err := json.Unmarshal(data, &valueLookupLocation); err == nil {
-		d.typeName = "lookupLocation"
-		d.LookupLocation = valueLookupLocation
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DiscoverRequestLookupFrom) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "lookupLocation":
-		return json.Marshal(d.LookupLocation)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DiscoverRequestLookupFromVisitor interface {
-	VisitLookupLocation(*LookupLocation) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DiscoverRequestLookupFrom) Accept(visitor DiscoverRequestLookupFromVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "lookupLocation":
-		return visitor.VisitLookupLocation(d.LookupLocation)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-// Additional search params
-type DiscoverRequestParams struct {
-	typeName     string
-	SearchParams *SearchParams
-	Unknown      interface{}
-}
-
-func NewDiscoverRequestParamsFromSearchParams(value *SearchParams) *DiscoverRequestParams {
-	return &DiscoverRequestParams{typeName: "searchParams", SearchParams: value}
-}
-
-func NewDiscoverRequestParamsFromUnknown(value interface{}) *DiscoverRequestParams {
-	return &DiscoverRequestParams{typeName: "unknown", Unknown: value}
-}
-
-func (d *DiscoverRequestParams) UnmarshalJSON(data []byte) error {
-	valueSearchParams := new(SearchParams)
-	if err := json.Unmarshal(data, &valueSearchParams); err == nil {
-		d.typeName = "searchParams"
-		d.SearchParams = valueSearchParams
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DiscoverRequestParams) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "searchParams":
-		return json.Marshal(d.SearchParams)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DiscoverRequestParamsVisitor interface {
-	VisitSearchParams(*SearchParams) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DiscoverRequestParams) Accept(visitor DiscoverRequestParamsVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "searchParams":
-		return visitor.VisitSearchParams(d.SearchParams)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-// Specify in which shards to look for the points, if not specified - look in all shards
-type DiscoverRequestShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewDiscoverRequestShardKeyFromShardKeySelector(value *ShardKeySelector) *DiscoverRequestShardKey {
-	return &DiscoverRequestShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewDiscoverRequestShardKeyFromUnknown(value interface{}) *DiscoverRequestShardKey {
-	return &DiscoverRequestShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (d *DiscoverRequestShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		d.typeName = "shardKeySelector"
-		d.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DiscoverRequestShardKey) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "shardKeySelector":
-		return json.Marshal(d.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DiscoverRequestShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DiscoverRequestShardKey) Accept(visitor DiscoverRequestShardKeyVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(d.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-// Look for vectors closest to this.
-//
-// When using the target (with or without context), the integer part of the score represents the rank with respect to the context, while the decimal part of the score relates to the distance to the target.
-type DiscoverRequestTarget struct {
-	typeName         string
-	RecommendExample *RecommendExample
-	Unknown          interface{}
-}
-
-func NewDiscoverRequestTargetFromRecommendExample(value *RecommendExample) *DiscoverRequestTarget {
-	return &DiscoverRequestTarget{typeName: "recommendExample", RecommendExample: value}
-}
-
-func NewDiscoverRequestTargetFromUnknown(value interface{}) *DiscoverRequestTarget {
-	return &DiscoverRequestTarget{typeName: "unknown", Unknown: value}
-}
-
-func (d *DiscoverRequestTarget) UnmarshalJSON(data []byte) error {
-	valueRecommendExample := new(RecommendExample)
-	if err := json.Unmarshal(data, &valueRecommendExample); err == nil {
-		d.typeName = "recommendExample"
-		d.RecommendExample = valueRecommendExample
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DiscoverRequestTarget) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "recommendExample":
-		return json.Marshal(d.RecommendExample)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DiscoverRequestTargetVisitor interface {
-	VisitRecommendExample(*RecommendExample) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DiscoverRequestTarget) Accept(visitor DiscoverRequestTargetVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "recommendExample":
-		return visitor.VisitRecommendExample(d.RecommendExample)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-// Define which vector to use for recommendation, if not specified - try to use default vector
-type DiscoverRequestUsing struct {
-	typeName    string
-	UsingVector UsingVector
-	Unknown     interface{}
-}
-
-func NewDiscoverRequestUsingFromUsingVector(value UsingVector) *DiscoverRequestUsing {
-	return &DiscoverRequestUsing{typeName: "usingVector", UsingVector: value}
-}
-
-func NewDiscoverRequestUsingFromUnknown(value interface{}) *DiscoverRequestUsing {
-	return &DiscoverRequestUsing{typeName: "unknown", Unknown: value}
-}
-
-func (d *DiscoverRequestUsing) UnmarshalJSON(data []byte) error {
-	var valueUsingVector UsingVector
-	if err := json.Unmarshal(data, &valueUsingVector); err == nil {
-		d.typeName = "usingVector"
-		d.UsingVector = valueUsingVector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DiscoverRequestUsing) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "usingVector":
-		return json.Marshal(d.UsingVector)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DiscoverRequestUsingVisitor interface {
-	VisitUsingVector(UsingVector) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DiscoverRequestUsing) Accept(visitor DiscoverRequestUsingVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "usingVector":
-		return visitor.VisitUsingVector(d.UsingVector)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-// Select which payload to return with the response. Default: None
-type DiscoverRequestWithPayload struct {
-	typeName             string
-	WithPayloadInterface *WithPayloadInterface
-	Unknown              interface{}
-}
-
-func NewDiscoverRequestWithPayloadFromWithPayloadInterface(value *WithPayloadInterface) *DiscoverRequestWithPayload {
-	return &DiscoverRequestWithPayload{typeName: "withPayloadInterface", WithPayloadInterface: value}
-}
-
-func NewDiscoverRequestWithPayloadFromUnknown(value interface{}) *DiscoverRequestWithPayload {
-	return &DiscoverRequestWithPayload{typeName: "unknown", Unknown: value}
-}
-
-func (d *DiscoverRequestWithPayload) UnmarshalJSON(data []byte) error {
-	valueWithPayloadInterface := new(WithPayloadInterface)
-	if err := json.Unmarshal(data, &valueWithPayloadInterface); err == nil {
-		d.typeName = "withPayloadInterface"
-		d.WithPayloadInterface = valueWithPayloadInterface
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DiscoverRequestWithPayload) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "withPayloadInterface":
-		return json.Marshal(d.WithPayloadInterface)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DiscoverRequestWithPayloadVisitor interface {
-	VisitWithPayloadInterface(*WithPayloadInterface) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DiscoverRequestWithPayload) Accept(visitor DiscoverRequestWithPayloadVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "withPayloadInterface":
-		return visitor.VisitWithPayloadInterface(d.WithPayloadInterface)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-// Whether to return the point vector with the result?
-type DiscoverRequestWithVector struct {
-	typeName   string
-	WithVector *WithVector
-	Unknown    interface{}
-}
-
-func NewDiscoverRequestWithVectorFromWithVector(value *WithVector) *DiscoverRequestWithVector {
-	return &DiscoverRequestWithVector{typeName: "withVector", WithVector: value}
-}
-
-func NewDiscoverRequestWithVectorFromUnknown(value interface{}) *DiscoverRequestWithVector {
-	return &DiscoverRequestWithVector{typeName: "unknown", Unknown: value}
-}
-
-func (d *DiscoverRequestWithVector) UnmarshalJSON(data []byte) error {
-	valueWithVector := new(WithVector)
-	if err := json.Unmarshal(data, &valueWithVector); err == nil {
-		d.typeName = "withVector"
-		d.WithVector = valueWithVector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		d.typeName = "unknown"
-		d.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, d)
-}
-
-func (d DiscoverRequestWithVector) MarshalJSON() ([]byte, error) {
-	switch d.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "withVector":
-		return json.Marshal(d.WithVector)
-	case "unknown":
-		return json.Marshal(d.Unknown)
-	}
-}
-
-type DiscoverRequestWithVectorVisitor interface {
-	VisitWithVector(*WithVector) error
-	VisitUnknown(interface{}) error
-}
-
-func (d *DiscoverRequestWithVector) Accept(visitor DiscoverRequestWithVectorVisitor) error {
-	switch d.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", d.typeName, d)
-	case "withVector":
-		return visitor.VisitWithVector(d.WithVector)
-	case "unknown":
-		return visitor.VisitUnknown(d.Unknown)
-	}
-}
-
-// Type of internal tags, build from payload Distance function types used to compare vectors
-type Distance string
-
-const (
-	DistanceCosine    Distance = "Cosine"
-	DistanceEuclid    Distance = "Euclid"
-	DistanceDot       Distance = "Dot"
-	DistanceManhattan Distance = "Manhattan"
-)
-
-func NewDistanceFromString(s string) (Distance, error) {
-	switch s {
-	case "Cosine":
-		return DistanceCosine, nil
-	case "Euclid":
-		return DistanceEuclid, nil
-	case "Dot":
-		return DistanceDot, nil
-	case "Manhattan":
-		return DistanceManhattan, nil
-	}
-	var t Distance
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (d Distance) Ptr() *Distance {
+func (d DestinationAuthMethodApiKeyConfigTo) Ptr() *DestinationAuthMethodApiKeyConfigTo {
 	return &d
 }
 
-type DropReplicaOperation struct {
-	DropReplica *Replica `json:"drop_replica,omitempty"`
-
-	_rawJSON json.RawMessage
+// Basic auth config for the destination's auth method
+type DestinationAuthMethodBasicAuthConfig struct {
+	// Username for basic auth
+	Username string `json:"username"`
+	// Password for basic auth
+	Password string `json:"password"`
 }
 
-func (d *DropReplicaOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler DropReplicaOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+// Bearer token config for the destination's auth method
+type DestinationAuthMethodBearerTokenConfig struct {
+	// Token for the bearer token auth
+	Token string `json:"token"`
+}
+
+// Config for the destination's auth method
+type DestinationAuthMethodConfig struct {
+	Type                    string
+	HookdeckSignature       *AuthHookdeckSignature
+	BasicAuth               *AuthBasicAuth
+	ApiKey                  *AuthApiKey
+	BearerToken             *AuthBearerToken
+	Oauth2ClientCredentials *AuthOAuth2ClientCredentials
+	Oauth2AuthorizationCode *AuthOAuth2AuthorizationCode
+	CustomSignature         *AuthCustomSignature
+}
+
+func NewDestinationAuthMethodConfigFromHookdeckSignature(value *AuthHookdeckSignature) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "HOOKDECK_SIGNATURE", HookdeckSignature: value}
+}
+
+func NewDestinationAuthMethodConfigFromBasicAuth(value *AuthBasicAuth) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "BASIC_AUTH", BasicAuth: value}
+}
+
+func NewDestinationAuthMethodConfigFromApiKey(value *AuthApiKey) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "API_KEY", ApiKey: value}
+}
+
+func NewDestinationAuthMethodConfigFromBearerToken(value *AuthBearerToken) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "BEARER_TOKEN", BearerToken: value}
+}
+
+func NewDestinationAuthMethodConfigFromOauth2ClientCredentials(value *AuthOAuth2ClientCredentials) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "OAUTH2_CLIENT_CREDENTIALS", Oauth2ClientCredentials: value}
+}
+
+func NewDestinationAuthMethodConfigFromOauth2AuthorizationCode(value *AuthOAuth2AuthorizationCode) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "OAUTH2_AUTHORIZATION_CODE", Oauth2AuthorizationCode: value}
+}
+
+func NewDestinationAuthMethodConfigFromCustomSignature(value *AuthCustomSignature) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "CUSTOM_SIGNATURE", CustomSignature: value}
+}
+
+func (d *DestinationAuthMethodConfig) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*d = DropReplicaOperation(value)
-	d._rawJSON = json.RawMessage(data)
+	d.Type = unmarshaler.Type
+	switch unmarshaler.Type {
+	case "HOOKDECK_SIGNATURE":
+		value := new(AuthHookdeckSignature)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.HookdeckSignature = value
+	case "BASIC_AUTH":
+		value := new(AuthBasicAuth)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.BasicAuth = value
+	case "API_KEY":
+		value := new(AuthApiKey)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.ApiKey = value
+	case "BEARER_TOKEN":
+		value := new(AuthBearerToken)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.BearerToken = value
+	case "OAUTH2_CLIENT_CREDENTIALS":
+		value := new(AuthOAuth2ClientCredentials)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.Oauth2ClientCredentials = value
+	case "OAUTH2_AUTHORIZATION_CODE":
+		value := new(AuthOAuth2AuthorizationCode)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.Oauth2AuthorizationCode = value
+	case "CUSTOM_SIGNATURE":
+		value := new(AuthCustomSignature)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.CustomSignature = value
+	}
 	return nil
 }
 
-func (d *DropReplicaOperation) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
+func (d DestinationAuthMethodConfig) MarshalJSON() ([]byte, error) {
+	switch d.Type {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", d.Type, d)
+	case "HOOKDECK_SIGNATURE":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthHookdeckSignature
+		}{
+			Type:                  d.Type,
+			AuthHookdeckSignature: d.HookdeckSignature,
 		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-type DropShardingKey struct {
-	ShardKey *ShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DropShardingKey) UnmarshalJSON(data []byte) error {
-	type unmarshaler DropShardingKey
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DropShardingKey(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DropShardingKey) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
+		return json.Marshal(marshaler)
+	case "BASIC_AUTH":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthBasicAuth
+		}{
+			Type:          d.Type,
+			AuthBasicAuth: d.BasicAuth,
 		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-type DropShardingKeyOperation struct {
-	DropShardingKey *DropShardingKey `json:"drop_sharding_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (d *DropShardingKeyOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler DropShardingKeyOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DropShardingKeyOperation(value)
-	d._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (d *DropShardingKeyOperation) String() string {
-	if len(d._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
-			return value
+		return json.Marshal(marshaler)
+	case "API_KEY":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthApiKey
+		}{
+			Type:       d.Type,
+			AuthApiKey: d.ApiKey,
 		}
-	}
-	if value, err := core.StringifyJSON(d); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", d)
-}
-
-type ErrorResponse struct {
-	// Time spent to process this request
-	Time   *float64               `json:"time,omitempty"`
-	Status *ErrorResponseStatus   `json:"status,omitempty"`
-	Result map[string]interface{} `json:"result,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (e *ErrorResponse) UnmarshalJSON(data []byte) error {
-	type unmarshaler ErrorResponse
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*e = ErrorResponse(value)
-	e._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (e *ErrorResponse) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
-			return value
+		return json.Marshal(marshaler)
+	case "BEARER_TOKEN":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthBearerToken
+		}{
+			Type:            d.Type,
+			AuthBearerToken: d.BearerToken,
 		}
-	}
-	if value, err := core.StringifyJSON(e); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", e)
-}
-
-type ErrorResponseStatus struct {
-	// Description of the occurred error.
-	Error *string `json:"error,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (e *ErrorResponseStatus) UnmarshalJSON(data []byte) error {
-	type unmarshaler ErrorResponseStatus
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*e = ErrorResponseStatus(value)
-	e._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (e *ErrorResponseStatus) String() string {
-	if len(e._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
-			return value
+		return json.Marshal(marshaler)
+	case "OAUTH2_CLIENT_CREDENTIALS":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthOAuth2ClientCredentials
+		}{
+			Type:                        d.Type,
+			AuthOAuth2ClientCredentials: d.Oauth2ClientCredentials,
 		}
+		return json.Marshal(marshaler)
+	case "OAUTH2_AUTHORIZATION_CODE":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthOAuth2AuthorizationCode
+		}{
+			Type:                        d.Type,
+			AuthOAuth2AuthorizationCode: d.Oauth2AuthorizationCode,
+		}
+		return json.Marshal(marshaler)
+	case "CUSTOM_SIGNATURE":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthCustomSignature
+		}{
+			Type:                d.Type,
+			AuthCustomSignature: d.CustomSignature,
+		}
+		return json.Marshal(marshaler)
 	}
-	if value, err := core.StringifyJSON(e); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", e)
 }
 
-// Type, used for specifying point ID in user interface
-type ExtendedPointId struct {
+type DestinationAuthMethodConfigVisitor interface {
+	VisitHookdeckSignature(*AuthHookdeckSignature) error
+	VisitBasicAuth(*AuthBasicAuth) error
+	VisitApiKey(*AuthApiKey) error
+	VisitBearerToken(*AuthBearerToken) error
+	VisitOauth2ClientCredentials(*AuthOAuth2ClientCredentials) error
+	VisitOauth2AuthorizationCode(*AuthOAuth2AuthorizationCode) error
+	VisitCustomSignature(*AuthCustomSignature) error
+}
+
+func (d *DestinationAuthMethodConfig) Accept(visitor DestinationAuthMethodConfigVisitor) error {
+	switch d.Type {
+	default:
+		return fmt.Errorf("invalid type %s in %T", d.Type, d)
+	case "HOOKDECK_SIGNATURE":
+		return visitor.VisitHookdeckSignature(d.HookdeckSignature)
+	case "BASIC_AUTH":
+		return visitor.VisitBasicAuth(d.BasicAuth)
+	case "API_KEY":
+		return visitor.VisitApiKey(d.ApiKey)
+	case "BEARER_TOKEN":
+		return visitor.VisitBearerToken(d.BearerToken)
+	case "OAUTH2_CLIENT_CREDENTIALS":
+		return visitor.VisitOauth2ClientCredentials(d.Oauth2ClientCredentials)
+	case "OAUTH2_AUTHORIZATION_CODE":
+		return visitor.VisitOauth2AuthorizationCode(d.Oauth2AuthorizationCode)
+	case "CUSTOM_SIGNATURE":
+		return visitor.VisitCustomSignature(d.CustomSignature)
+	}
+}
+
+// Custom signature config for the destination's auth method
+type DestinationAuthMethodCustomSignatureConfig struct {
+	// Key for the custom signature auth
+	Key string `json:"key"`
+	// Signing secret for the custom signature auth. If left empty a secret will be generated for you.
+	SigningSecret *string `json:"signing_secret,omitempty"`
+}
+
+// OAuth2 Authorization Code config for the destination's auth method
+type DestinationAuthMethodOAuth2AuthorizationCodeConfig struct {
+	// Client id in the auth server
+	ClientId string `json:"client_id"`
+	// Client secret in the auth server
+	ClientSecret string `json:"client_secret"`
+	// Refresh token already returned by the auth server
+	RefreshToken string `json:"refresh_token"`
+	// Scope to access
+	Scope *string `json:"scope,omitempty"`
+	// URL of the auth server
+	AuthServer string `json:"auth_server"`
+}
+
+// OAuth2 Client Credentials config for the destination's auth method
+type DestinationAuthMethodOAuth2ClientCredentialsConfig struct {
+	// Client id in the auth server
+	ClientId string `json:"client_id"`
+	// Client secret in the auth server
+	ClientSecret string `json:"client_secret"`
+	// Scope to access
+	Scope *string `json:"scope,omitempty"`
+	// URL of the auth server
+	AuthServer string `json:"auth_server"`
+}
+
+// Empty config for the destination's auth method
+type DestinationAuthMethodSignatureConfig struct {
+}
+
+// HTTP method used on requests sent to the destination, overrides the method used on requests sent to the source.
+type DestinationHttpMethod string
+
+const (
+	DestinationHttpMethodGet    DestinationHttpMethod = "GET"
+	DestinationHttpMethodPost   DestinationHttpMethod = "POST"
+	DestinationHttpMethodPut    DestinationHttpMethod = "PUT"
+	DestinationHttpMethodPatch  DestinationHttpMethod = "PATCH"
+	DestinationHttpMethodDelete DestinationHttpMethod = "DELETE"
+)
+
+func NewDestinationHttpMethodFromString(s string) (DestinationHttpMethod, error) {
+	switch s {
+	case "GET":
+		return DestinationHttpMethodGet, nil
+	case "POST":
+		return DestinationHttpMethodPost, nil
+	case "PUT":
+		return DestinationHttpMethodPut, nil
+	case "PATCH":
+		return DestinationHttpMethodPatch, nil
+	case "DELETE":
+		return DestinationHttpMethodDelete, nil
+	}
+	var t DestinationHttpMethod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationHttpMethod) Ptr() *DestinationHttpMethod {
+	return &d
+}
+
+type DestinationPaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*Destination  `json:"models,omitempty"`
+}
+
+// Period to rate limit attempts
+type DestinationRateLimitPeriod string
+
+const (
+	DestinationRateLimitPeriodSecond     DestinationRateLimitPeriod = "second"
+	DestinationRateLimitPeriodMinute     DestinationRateLimitPeriod = "minute"
+	DestinationRateLimitPeriodHour       DestinationRateLimitPeriod = "hour"
+	DestinationRateLimitPeriodConcurrent DestinationRateLimitPeriod = "concurrent"
+)
+
+func NewDestinationRateLimitPeriodFromString(s string) (DestinationRateLimitPeriod, error) {
+	switch s {
+	case "second":
+		return DestinationRateLimitPeriodSecond, nil
+	case "minute":
+		return DestinationRateLimitPeriodMinute, nil
+	case "hour":
+		return DestinationRateLimitPeriodHour, nil
+	case "concurrent":
+		return DestinationRateLimitPeriodConcurrent, nil
+	}
+	var t DestinationRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationRateLimitPeriod) Ptr() *DestinationRateLimitPeriod {
+	return &d
+}
+
+type DetachedIntegrationFromSource struct {
+}
+
+type Event struct {
+	// ID of the event
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string `json:"team_id"`
+	// ID of the associated connection
+	WebhookId string `json:"webhook_id"`
+	// ID of the associated source
+	SourceId string `json:"source_id"`
+	// ID of the associated destination
+	DestinationId string `json:"destination_id"`
+	// ID of the event data
+	EventDataId string `json:"event_data_id"`
+	// ID of the request that created the event
+	RequestId string `json:"request_id"`
+	// Number of delivery attempts made
+	Attempts int `json:"attempts"`
+	// Date of the most recently attempted retry
+	LastAttemptAt *time.Time `json:"last_attempt_at,omitempty"`
+	// Date of the next scheduled retry
+	NextAttemptAt *time.Time `json:"next_attempt_at,omitempty"`
+	// Event status
+	ResponseStatus *int               `json:"response_status,omitempty"`
+	ErrorCode      *AttemptErrorCodes `json:"error_code,omitempty"`
+	Status         EventStatus        `json:"status,omitempty"`
+	// Date of the latest successful attempt
+	SuccessfulAt *time.Time `json:"successful_at,omitempty"`
+	// ID of the CLI the event is sent to
+	CliId *string `json:"cli_id,omitempty"`
+	// Date the event was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the event was created
+	CreatedAt time.Time       `json:"created_at"`
+	Data      *ShortEventData `json:"data,omitempty"`
+}
+
+type EventArray = []*Event
+
+type EventAttempt struct {
+	// Attempt ID
+	Id string `json:"id"`
+	// Team ID
+	TeamId string `json:"team_id"`
+	// Event ID
+	EventId string `json:"event_id"`
+	// Attempt's HTTP response code
+	ResponseStatus *int `json:"response_status,omitempty"`
+	// Sequential number of attempts (up to and including this one) made for the associated event
+	AttemptNumber *int               `json:"attempt_number,omitempty"`
+	Trigger       *AttemptTrigger    `json:"trigger,omitempty"`
+	ErrorCode     *AttemptErrorCodes `json:"error_code,omitempty"`
+	Body          *EventAttemptBody  `json:"body,omitempty"`
+	// URL of the destination where delivery was attempted
+	RequestedUrl *string `json:"requested_url,omitempty"`
+	// HTTP method used to deliver the attempt
+	HttpMethod *EventAttemptHttpMethod `json:"http_method,omitempty"`
+	// ID of associated bulk retry
+	BulkRetryId *string       `json:"bulk_retry_id,omitempty"`
+	Status      AttemptStatus `json:"status,omitempty"`
+	// Date the attempt was successful
+	SuccessfulAt *time.Time `json:"successful_at,omitempty"`
+	// Date the attempt was delivered
+	DeliveredAt *time.Time `json:"delivered_at,omitempty"`
+	// Date the destination responded to this attempt
+	RespondedAt *time.Time `json:"responded_at,omitempty"`
+	// Time elapsed between attempt initiation and final delivery (in ms)
+	DeliveryLatency *int `json:"delivery_latency,omitempty"`
+	// Time elapsed between attempt initiation and a response from the destination (in ms)
+	ResponseLatency *int `json:"response_latency,omitempty"`
+	// Date the attempt was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the attempt was created
+	CreatedAt     time.Time     `json:"created_at"`
+	State         *AttemptState `json:"state,omitempty"`
+	DestinationId *string       `json:"destination_id,omitempty"`
+}
+
+type EventAttemptBody struct {
 	typeName string
-	Integer  int
-	String   string
+	// Response body from the destination
+	EventAttemptBodyZeroOptional *EventAttemptBodyZero
+	// Response body from the destination
+	StringOptional *string
 }
 
-func NewExtendedPointIdFromInteger(value int) *ExtendedPointId {
-	return &ExtendedPointId{typeName: "integer", Integer: value}
+func NewEventAttemptBodyFromEventAttemptBodyZeroOptional(value *EventAttemptBodyZero) *EventAttemptBody {
+	return &EventAttemptBody{typeName: "eventAttemptBodyZeroOptional", EventAttemptBodyZeroOptional: value}
 }
 
-func NewExtendedPointIdFromString(value string) *ExtendedPointId {
-	return &ExtendedPointId{typeName: "string", String: value}
+func NewEventAttemptBodyFromStringOptional(value *string) *EventAttemptBody {
+	return &EventAttemptBody{typeName: "stringOptional", StringOptional: value}
 }
 
-func (e *ExtendedPointId) UnmarshalJSON(data []byte) error {
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		e.typeName = "integer"
-		e.Integer = valueInteger
+func (e *EventAttemptBody) UnmarshalJSON(data []byte) error {
+	var valueEventAttemptBodyZeroOptional *EventAttemptBodyZero
+	if err := json.Unmarshal(data, &valueEventAttemptBodyZeroOptional); err == nil {
+		e.typeName = "eventAttemptBodyZeroOptional"
+		e.EventAttemptBodyZeroOptional = valueEventAttemptBodyZeroOptional
 		return nil
 	}
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
-		e.String = valueString
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		e.typeName = "stringOptional"
+		e.StringOptional = valueStringOptional
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
 }
 
-func (e ExtendedPointId) MarshalJSON() ([]byte, error) {
+func (e EventAttemptBody) MarshalJSON() ([]byte, error) {
 	switch e.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "integer":
-		return json.Marshal(e.Integer)
-	case "string":
-		return json.Marshal(e.String)
+	case "eventAttemptBodyZeroOptional":
+		return json.Marshal(e.EventAttemptBodyZeroOptional)
+	case "stringOptional":
+		return json.Marshal(e.StringOptional)
 	}
 }
 
-type ExtendedPointIdVisitor interface {
-	VisitInteger(int) error
-	VisitString(string) error
+type EventAttemptBodyVisitor interface {
+	VisitEventAttemptBodyZeroOptional(*EventAttemptBodyZero) error
+	VisitStringOptional(*string) error
 }
 
-func (e *ExtendedPointId) Accept(visitor ExtendedPointIdVisitor) error {
+func (e *EventAttemptBody) Accept(visitor EventAttemptBodyVisitor) error {
 	switch e.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "integer":
-		return visitor.VisitInteger(e.Integer)
-	case "string":
-		return visitor.VisitString(e.String)
+	case "eventAttemptBodyZeroOptional":
+		return visitor.VisitEventAttemptBodyZeroOptional(e.EventAttemptBodyZeroOptional)
+	case "stringOptional":
+		return visitor.VisitStringOptional(e.StringOptional)
 	}
 }
 
-// All possible payload filtering conditions
-type FieldCondition struct {
-	// Payload key
-	Key string `json:"key"`
-	// Check if point has field with a given value
-	Match *FieldConditionMatch `json:"match,omitempty"`
-	// Check if points value lies in a given range
-	Range *FieldConditionRange `json:"range,omitempty"`
-	// Check if points geo location lies in a given area
-	GeoBoundingBox *FieldConditionGeoBoundingBox `json:"geo_bounding_box,omitempty"`
-	// Check if geo point is within a given radius
-	GeoRadius *FieldConditionGeoRadius `json:"geo_radius,omitempty"`
-	// Check if geo point is within a given polygon
-	GeoPolygon *FieldConditionGeoPolygon `json:"geo_polygon,omitempty"`
-	// Check number of values of the field
-	ValuesCount *FieldConditionValuesCount `json:"values_count,omitempty"`
-
-	_rawJSON json.RawMessage
+// Response body from the destination
+type EventAttemptBodyZero struct {
 }
 
-func (f *FieldCondition) UnmarshalJSON(data []byte) error {
-	type unmarshaler FieldCondition
+// HTTP method used to deliver the attempt
+type EventAttemptHttpMethod string
+
+const (
+	EventAttemptHttpMethodGet    EventAttemptHttpMethod = "GET"
+	EventAttemptHttpMethodPost   EventAttemptHttpMethod = "POST"
+	EventAttemptHttpMethodPut    EventAttemptHttpMethod = "PUT"
+	EventAttemptHttpMethodPatch  EventAttemptHttpMethod = "PATCH"
+	EventAttemptHttpMethodDelete EventAttemptHttpMethod = "DELETE"
+)
+
+func NewEventAttemptHttpMethodFromString(s string) (EventAttemptHttpMethod, error) {
+	switch s {
+	case "GET":
+		return EventAttemptHttpMethodGet, nil
+	case "POST":
+		return EventAttemptHttpMethodPost, nil
+	case "PUT":
+		return EventAttemptHttpMethodPut, nil
+	case "PATCH":
+		return EventAttemptHttpMethodPatch, nil
+	case "DELETE":
+		return EventAttemptHttpMethodDelete, nil
+	}
+	var t EventAttemptHttpMethod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventAttemptHttpMethod) Ptr() *EventAttemptHttpMethod {
+	return &e
+}
+
+type EventAttemptPaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*EventAttempt `json:"models,omitempty"`
+}
+
+type EventPaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*Event        `json:"models,omitempty"`
+}
+
+type EventStatus string
+
+const (
+	EventStatusScheduled  EventStatus = "SCHEDULED"
+	EventStatusQueued     EventStatus = "QUEUED"
+	EventStatusHold       EventStatus = "HOLD"
+	EventStatusSuccessful EventStatus = "SUCCESSFUL"
+	EventStatusFailed     EventStatus = "FAILED"
+)
+
+func NewEventStatusFromString(s string) (EventStatus, error) {
+	switch s {
+	case "SCHEDULED":
+		return EventStatusScheduled, nil
+	case "QUEUED":
+		return EventStatusQueued, nil
+	case "HOLD":
+		return EventStatusHold, nil
+	case "SUCCESSFUL":
+		return EventStatusSuccessful, nil
+	case "FAILED":
+		return EventStatusFailed, nil
+	}
+	var t EventStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (e EventStatus) Ptr() *EventStatus {
+	return &e
+}
+
+type FilterRule struct {
+	Headers *FilterRuleProperty `json:"headers,omitempty"`
+	Body    *FilterRuleProperty `json:"body,omitempty"`
+	Query   *FilterRuleProperty `json:"query,omitempty"`
+	Path    *FilterRuleProperty `json:"path,omitempty"`
+	type_   string
+}
+
+func (f *FilterRule) Type() string {
+	return f.type_
+}
+
+func (f *FilterRule) UnmarshalJSON(data []byte) error {
+	type unmarshaler FilterRule
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*f = FieldCondition(value)
-	f._rawJSON = json.RawMessage(data)
+	*f = FilterRule(value)
+	f.type_ = "filter"
 	return nil
 }
 
-func (f *FieldCondition) String() string {
-	if len(f._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(f._rawJSON); err == nil {
-			return value
-		}
+func (f *FilterRule) MarshalJSON() ([]byte, error) {
+	type embed FilterRule
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*f),
+		Type:  "filter",
 	}
-	if value, err := core.StringifyJSON(f); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", f)
+	return json.Marshal(marshaler)
 }
 
-// Check if points geo location lies in a given area
-type FieldConditionGeoBoundingBox struct {
-	typeName       string
-	GeoBoundingBox *GeoBoundingBox
-	Unknown        interface{}
+// JSON using our filter syntax to filter on request headers
+type FilterRuleProperty struct {
+	typeName                 string
+	StringOptional           *string
+	DoubleOptional           *float64
+	BooleanOptional          *bool
+	StringUnknownMapOptional map[string]interface{}
 }
 
-func NewFieldConditionGeoBoundingBoxFromGeoBoundingBox(value *GeoBoundingBox) *FieldConditionGeoBoundingBox {
-	return &FieldConditionGeoBoundingBox{typeName: "geoBoundingBox", GeoBoundingBox: value}
+func NewFilterRulePropertyFromStringOptional(value *string) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "stringOptional", StringOptional: value}
 }
 
-func NewFieldConditionGeoBoundingBoxFromUnknown(value interface{}) *FieldConditionGeoBoundingBox {
-	return &FieldConditionGeoBoundingBox{typeName: "unknown", Unknown: value}
+func NewFilterRulePropertyFromDoubleOptional(value *float64) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "doubleOptional", DoubleOptional: value}
 }
 
-func (f *FieldConditionGeoBoundingBox) UnmarshalJSON(data []byte) error {
-	valueGeoBoundingBox := new(GeoBoundingBox)
-	if err := json.Unmarshal(data, &valueGeoBoundingBox); err == nil {
-		f.typeName = "geoBoundingBox"
-		f.GeoBoundingBox = valueGeoBoundingBox
+func NewFilterRulePropertyFromBooleanOptional(value *bool) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "booleanOptional", BooleanOptional: value}
+}
+
+func NewFilterRulePropertyFromStringUnknownMapOptional(value map[string]interface{}) *FilterRuleProperty {
+	return &FilterRuleProperty{typeName: "stringUnknownMapOptional", StringUnknownMapOptional: value}
+}
+
+func (f *FilterRuleProperty) UnmarshalJSON(data []byte) error {
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		f.typeName = "stringOptional"
+		f.StringOptional = valueStringOptional
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		f.typeName = "unknown"
-		f.Unknown = valueUnknown
+	var valueDoubleOptional *float64
+	if err := json.Unmarshal(data, &valueDoubleOptional); err == nil {
+		f.typeName = "doubleOptional"
+		f.DoubleOptional = valueDoubleOptional
+		return nil
+	}
+	var valueBooleanOptional *bool
+	if err := json.Unmarshal(data, &valueBooleanOptional); err == nil {
+		f.typeName = "booleanOptional"
+		f.BooleanOptional = valueBooleanOptional
+		return nil
+	}
+	var valueStringUnknownMapOptional map[string]interface{}
+	if err := json.Unmarshal(data, &valueStringUnknownMapOptional); err == nil {
+		f.typeName = "stringUnknownMapOptional"
+		f.StringUnknownMapOptional = valueStringUnknownMapOptional
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
 }
 
-func (f FieldConditionGeoBoundingBox) MarshalJSON() ([]byte, error) {
+func (f FilterRuleProperty) MarshalJSON() ([]byte, error) {
 	switch f.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "geoBoundingBox":
-		return json.Marshal(f.GeoBoundingBox)
-	case "unknown":
-		return json.Marshal(f.Unknown)
+	case "stringOptional":
+		return json.Marshal(f.StringOptional)
+	case "doubleOptional":
+		return json.Marshal(f.DoubleOptional)
+	case "booleanOptional":
+		return json.Marshal(f.BooleanOptional)
+	case "stringUnknownMapOptional":
+		return json.Marshal(f.StringUnknownMapOptional)
 	}
 }
 
-type FieldConditionGeoBoundingBoxVisitor interface {
-	VisitGeoBoundingBox(*GeoBoundingBox) error
-	VisitUnknown(interface{}) error
+type FilterRulePropertyVisitor interface {
+	VisitStringOptional(*string) error
+	VisitDoubleOptional(*float64) error
+	VisitBooleanOptional(*bool) error
+	VisitStringUnknownMapOptional(map[string]interface{}) error
 }
 
-func (f *FieldConditionGeoBoundingBox) Accept(visitor FieldConditionGeoBoundingBoxVisitor) error {
+func (f *FilterRuleProperty) Accept(visitor FilterRulePropertyVisitor) error {
 	switch f.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "geoBoundingBox":
-		return visitor.VisitGeoBoundingBox(f.GeoBoundingBox)
-	case "unknown":
-		return visitor.VisitUnknown(f.Unknown)
+	case "stringOptional":
+		return visitor.VisitStringOptional(f.StringOptional)
+	case "doubleOptional":
+		return visitor.VisitDoubleOptional(f.DoubleOptional)
+	case "booleanOptional":
+		return visitor.VisitBooleanOptional(f.BooleanOptional)
+	case "stringUnknownMapOptional":
+		return visitor.VisitStringUnknownMapOptional(f.StringUnknownMapOptional)
 	}
 }
 
-// Check if geo point is within a given polygon
-type FieldConditionGeoPolygon struct {
-	typeName   string
-	GeoPolygon *GeoPolygon
-	Unknown    interface{}
+type FilteredMeta string
+
+const (
+	FilteredMetaBody    FilteredMeta = "body"
+	FilteredMetaHeaders FilteredMeta = "headers"
+	FilteredMetaPath    FilteredMeta = "path"
+	FilteredMetaQuery   FilteredMeta = "query"
+)
+
+func NewFilteredMetaFromString(s string) (FilteredMeta, error) {
+	switch s {
+	case "body":
+		return FilteredMetaBody, nil
+	case "headers":
+		return FilteredMetaHeaders, nil
+	case "path":
+		return FilteredMetaPath, nil
+	case "query":
+		return FilteredMetaQuery, nil
+	}
+	var t FilteredMeta
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func NewFieldConditionGeoPolygonFromGeoPolygon(value *GeoPolygon) *FieldConditionGeoPolygon {
-	return &FieldConditionGeoPolygon{typeName: "geoPolygon", GeoPolygon: value}
+func (f FilteredMeta) Ptr() *FilteredMeta {
+	return &f
 }
 
-func NewFieldConditionGeoPolygonFromUnknown(value interface{}) *FieldConditionGeoPolygon {
-	return &FieldConditionGeoPolygon{typeName: "unknown", Unknown: value}
+type HandledApiKeyIntegrationConfigs struct {
+	ApiKey string `json:"api_key"`
 }
 
-func (f *FieldConditionGeoPolygon) UnmarshalJSON(data []byte) error {
-	valueGeoPolygon := new(GeoPolygon)
-	if err := json.Unmarshal(data, &valueGeoPolygon); err == nil {
-		f.typeName = "geoPolygon"
-		f.GeoPolygon = valueGeoPolygon
+type HandledHmacConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type HmacAlgorithms string
+
+const (
+	HmacAlgorithmsMd5    HmacAlgorithms = "md5"
+	HmacAlgorithmsSha1   HmacAlgorithms = "sha1"
+	HmacAlgorithmsSha256 HmacAlgorithms = "sha256"
+	HmacAlgorithmsSha512 HmacAlgorithms = "sha512"
+)
+
+func NewHmacAlgorithmsFromString(s string) (HmacAlgorithms, error) {
+	switch s {
+	case "md5":
+		return HmacAlgorithmsMd5, nil
+	case "sha1":
+		return HmacAlgorithmsSha1, nil
+	case "sha256":
+		return HmacAlgorithmsSha256, nil
+	case "sha512":
+		return HmacAlgorithmsSha512, nil
+	}
+	var t HmacAlgorithms
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (h HmacAlgorithms) Ptr() *HmacAlgorithms {
+	return &h
+}
+
+type HmacIntegrationConfigs struct {
+	WebhookSecretKey string                         `json:"webhook_secret_key"`
+	Algorithm        HmacAlgorithms                 `json:"algorithm,omitempty"`
+	HeaderKey        string                         `json:"header_key"`
+	Encoding         HmacIntegrationConfigsEncoding `json:"encoding,omitempty"`
+}
+
+type HmacIntegrationConfigsEncoding string
+
+const (
+	HmacIntegrationConfigsEncodingBase64 HmacIntegrationConfigsEncoding = "base64"
+	HmacIntegrationConfigsEncodingHex    HmacIntegrationConfigsEncoding = "hex"
+)
+
+func NewHmacIntegrationConfigsEncodingFromString(s string) (HmacIntegrationConfigsEncoding, error) {
+	switch s {
+	case "base64":
+		return HmacIntegrationConfigsEncodingBase64, nil
+	case "hex":
+		return HmacIntegrationConfigsEncodingHex, nil
+	}
+	var t HmacIntegrationConfigsEncoding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (h HmacIntegrationConfigsEncoding) Ptr() *HmacIntegrationConfigsEncoding {
+	return &h
+}
+
+type IgnoredEvent struct {
+	Id        string            `json:"id"`
+	TeamId    string            `json:"team_id"`
+	WebhookId string            `json:"webhook_id"`
+	Cause     IgnoredEventCause `json:"cause,omitempty"`
+	RequestId string            `json:"request_id"`
+	Meta      *IgnoredEventMeta `json:"meta,omitempty"`
+	UpdatedAt time.Time         `json:"updated_at"`
+	CreatedAt time.Time         `json:"created_at"`
+}
+
+type IgnoredEventCause string
+
+const (
+	IgnoredEventCauseArchived             IgnoredEventCause = "ARCHIVED"
+	IgnoredEventCauseFiltered             IgnoredEventCause = "FILTERED"
+	IgnoredEventCauseTransformationFailed IgnoredEventCause = "TRANSFORMATION_FAILED"
+	IgnoredEventCauseCliDisconnected      IgnoredEventCause = "CLI_DISCONNECTED"
+)
+
+func NewIgnoredEventCauseFromString(s string) (IgnoredEventCause, error) {
+	switch s {
+	case "ARCHIVED":
+		return IgnoredEventCauseArchived, nil
+	case "FILTERED":
+		return IgnoredEventCauseFiltered, nil
+	case "TRANSFORMATION_FAILED":
+		return IgnoredEventCauseTransformationFailed, nil
+	case "CLI_DISCONNECTED":
+		return IgnoredEventCauseCliDisconnected, nil
+	}
+	var t IgnoredEventCause
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IgnoredEventCause) Ptr() *IgnoredEventCause {
+	return &i
+}
+
+type IgnoredEventMeta struct {
+	typeName                 string
+	FilteredMeta             FilteredMeta
+	TransformationFailedMeta *TransformationFailedMeta
+}
+
+func NewIgnoredEventMetaFromFilteredMeta(value FilteredMeta) *IgnoredEventMeta {
+	return &IgnoredEventMeta{typeName: "filteredMeta", FilteredMeta: value}
+}
+
+func NewIgnoredEventMetaFromTransformationFailedMeta(value *TransformationFailedMeta) *IgnoredEventMeta {
+	return &IgnoredEventMeta{typeName: "transformationFailedMeta", TransformationFailedMeta: value}
+}
+
+func (i *IgnoredEventMeta) UnmarshalJSON(data []byte) error {
+	var valueFilteredMeta FilteredMeta
+	if err := json.Unmarshal(data, &valueFilteredMeta); err == nil {
+		i.typeName = "filteredMeta"
+		i.FilteredMeta = valueFilteredMeta
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		f.typeName = "unknown"
-		f.Unknown = valueUnknown
+	valueTransformationFailedMeta := new(TransformationFailedMeta)
+	if err := json.Unmarshal(data, &valueTransformationFailedMeta); err == nil {
+		i.typeName = "transformationFailedMeta"
+		i.TransformationFailedMeta = valueTransformationFailedMeta
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
 }
 
-func (f FieldConditionGeoPolygon) MarshalJSON() ([]byte, error) {
-	switch f.typeName {
+func (i IgnoredEventMeta) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "geoPolygon":
-		return json.Marshal(f.GeoPolygon)
-	case "unknown":
-		return json.Marshal(f.Unknown)
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "filteredMeta":
+		return json.Marshal(i.FilteredMeta)
+	case "transformationFailedMeta":
+		return json.Marshal(i.TransformationFailedMeta)
 	}
 }
 
-type FieldConditionGeoPolygonVisitor interface {
-	VisitGeoPolygon(*GeoPolygon) error
-	VisitUnknown(interface{}) error
+type IgnoredEventMetaVisitor interface {
+	VisitFilteredMeta(FilteredMeta) error
+	VisitTransformationFailedMeta(*TransformationFailedMeta) error
 }
 
-func (f *FieldConditionGeoPolygon) Accept(visitor FieldConditionGeoPolygonVisitor) error {
-	switch f.typeName {
+func (i *IgnoredEventMeta) Accept(visitor IgnoredEventMetaVisitor) error {
+	switch i.typeName {
 	default:
-		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "geoPolygon":
-		return visitor.VisitGeoPolygon(f.GeoPolygon)
-	case "unknown":
-		return visitor.VisitUnknown(f.Unknown)
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "filteredMeta":
+		return visitor.VisitFilteredMeta(i.FilteredMeta)
+	case "transformationFailedMeta":
+		return visitor.VisitTransformationFailedMeta(i.TransformationFailedMeta)
 	}
 }
 
-// Check if geo point is within a given radius
-type FieldConditionGeoRadius struct {
-	typeName  string
-	GeoRadius *GeoRadius
-	Unknown   interface{}
+type IgnoredEventPaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*IgnoredEvent `json:"models,omitempty"`
 }
 
-func NewFieldConditionGeoRadiusFromGeoRadius(value *GeoRadius) *FieldConditionGeoRadius {
-	return &FieldConditionGeoRadius{typeName: "geoRadius", GeoRadius: value}
+type Integration struct {
+	// ID of the integration
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string `json:"team_id"`
+	// Label of the integration
+	Label    string              `json:"label"`
+	Provider IntegrationProvider `json:"provider,omitempty"`
+	// List of features to enable (see features list below)
+	Features []IntegrationFeature `json:"features,omitempty"`
+	// Decrypted Key/Value object of the associated configuration for that provider
+	Configs *IntegrationConfigs `json:"configs,omitempty"`
+	// List of source IDs the integration is attached to
+	Sources []string `json:"sources,omitempty"`
+	// Date the integration was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the integration was created
+	CreatedAt time.Time `json:"created_at"`
 }
 
-func NewFieldConditionGeoRadiusFromUnknown(value interface{}) *FieldConditionGeoRadius {
-	return &FieldConditionGeoRadius{typeName: "unknown", Unknown: value}
+// Decrypted Key/Value object of the associated configuration for that provider
+type IntegrationConfigs struct {
+	typeName                        string
+	HmacIntegrationConfigs          *HmacIntegrationConfigs
+	ApiKeyIntegrationConfigs        *ApiKeyIntegrationConfigs
+	HandledApiKeyIntegrationConfigs *HandledApiKeyIntegrationConfigs
+	HandledHmacConfigs              *HandledHmacConfigs
+	BasicAuthIntegrationConfigs     *BasicAuthIntegrationConfigs
+	ShopifyIntegrationConfigs       *ShopifyIntegrationConfigs
+	IntegrationConfigsSix           *IntegrationConfigsSix
 }
 
-func (f *FieldConditionGeoRadius) UnmarshalJSON(data []byte) error {
-	valueGeoRadius := new(GeoRadius)
-	if err := json.Unmarshal(data, &valueGeoRadius); err == nil {
-		f.typeName = "geoRadius"
-		f.GeoRadius = valueGeoRadius
+func NewIntegrationConfigsFromHmacIntegrationConfigs(value *HmacIntegrationConfigs) *IntegrationConfigs {
+	return &IntegrationConfigs{typeName: "hmacIntegrationConfigs", HmacIntegrationConfigs: value}
+}
+
+func NewIntegrationConfigsFromApiKeyIntegrationConfigs(value *ApiKeyIntegrationConfigs) *IntegrationConfigs {
+	return &IntegrationConfigs{typeName: "apiKeyIntegrationConfigs", ApiKeyIntegrationConfigs: value}
+}
+
+func NewIntegrationConfigsFromHandledApiKeyIntegrationConfigs(value *HandledApiKeyIntegrationConfigs) *IntegrationConfigs {
+	return &IntegrationConfigs{typeName: "handledApiKeyIntegrationConfigs", HandledApiKeyIntegrationConfigs: value}
+}
+
+func NewIntegrationConfigsFromHandledHmacConfigs(value *HandledHmacConfigs) *IntegrationConfigs {
+	return &IntegrationConfigs{typeName: "handledHmacConfigs", HandledHmacConfigs: value}
+}
+
+func NewIntegrationConfigsFromBasicAuthIntegrationConfigs(value *BasicAuthIntegrationConfigs) *IntegrationConfigs {
+	return &IntegrationConfigs{typeName: "basicAuthIntegrationConfigs", BasicAuthIntegrationConfigs: value}
+}
+
+func NewIntegrationConfigsFromShopifyIntegrationConfigs(value *ShopifyIntegrationConfigs) *IntegrationConfigs {
+	return &IntegrationConfigs{typeName: "shopifyIntegrationConfigs", ShopifyIntegrationConfigs: value}
+}
+
+func NewIntegrationConfigsFromIntegrationConfigsSix(value *IntegrationConfigsSix) *IntegrationConfigs {
+	return &IntegrationConfigs{typeName: "integrationConfigsSix", IntegrationConfigsSix: value}
+}
+
+func (i *IntegrationConfigs) UnmarshalJSON(data []byte) error {
+	valueHmacIntegrationConfigs := new(HmacIntegrationConfigs)
+	if err := json.Unmarshal(data, &valueHmacIntegrationConfigs); err == nil {
+		i.typeName = "hmacIntegrationConfigs"
+		i.HmacIntegrationConfigs = valueHmacIntegrationConfigs
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		f.typeName = "unknown"
-		f.Unknown = valueUnknown
+	valueApiKeyIntegrationConfigs := new(ApiKeyIntegrationConfigs)
+	if err := json.Unmarshal(data, &valueApiKeyIntegrationConfigs); err == nil {
+		i.typeName = "apiKeyIntegrationConfigs"
+		i.ApiKeyIntegrationConfigs = valueApiKeyIntegrationConfigs
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
-}
-
-func (f FieldConditionGeoRadius) MarshalJSON() ([]byte, error) {
-	switch f.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "geoRadius":
-		return json.Marshal(f.GeoRadius)
-	case "unknown":
-		return json.Marshal(f.Unknown)
-	}
-}
-
-type FieldConditionGeoRadiusVisitor interface {
-	VisitGeoRadius(*GeoRadius) error
-	VisitUnknown(interface{}) error
-}
-
-func (f *FieldConditionGeoRadius) Accept(visitor FieldConditionGeoRadiusVisitor) error {
-	switch f.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "geoRadius":
-		return visitor.VisitGeoRadius(f.GeoRadius)
-	case "unknown":
-		return visitor.VisitUnknown(f.Unknown)
-	}
-}
-
-// Check if point has field with a given value
-type FieldConditionMatch struct {
-	typeName string
-	Match    *Match
-	Unknown  interface{}
-}
-
-func NewFieldConditionMatchFromMatch(value *Match) *FieldConditionMatch {
-	return &FieldConditionMatch{typeName: "match", Match: value}
-}
-
-func NewFieldConditionMatchFromUnknown(value interface{}) *FieldConditionMatch {
-	return &FieldConditionMatch{typeName: "unknown", Unknown: value}
-}
-
-func (f *FieldConditionMatch) UnmarshalJSON(data []byte) error {
-	valueMatch := new(Match)
-	if err := json.Unmarshal(data, &valueMatch); err == nil {
-		f.typeName = "match"
-		f.Match = valueMatch
+	valueHandledApiKeyIntegrationConfigs := new(HandledApiKeyIntegrationConfigs)
+	if err := json.Unmarshal(data, &valueHandledApiKeyIntegrationConfigs); err == nil {
+		i.typeName = "handledApiKeyIntegrationConfigs"
+		i.HandledApiKeyIntegrationConfigs = valueHandledApiKeyIntegrationConfigs
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		f.typeName = "unknown"
-		f.Unknown = valueUnknown
+	valueHandledHmacConfigs := new(HandledHmacConfigs)
+	if err := json.Unmarshal(data, &valueHandledHmacConfigs); err == nil {
+		i.typeName = "handledHmacConfigs"
+		i.HandledHmacConfigs = valueHandledHmacConfigs
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
-}
-
-func (f FieldConditionMatch) MarshalJSON() ([]byte, error) {
-	switch f.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "match":
-		return json.Marshal(f.Match)
-	case "unknown":
-		return json.Marshal(f.Unknown)
-	}
-}
-
-type FieldConditionMatchVisitor interface {
-	VisitMatch(*Match) error
-	VisitUnknown(interface{}) error
-}
-
-func (f *FieldConditionMatch) Accept(visitor FieldConditionMatchVisitor) error {
-	switch f.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "match":
-		return visitor.VisitMatch(f.Match)
-	case "unknown":
-		return visitor.VisitUnknown(f.Unknown)
-	}
-}
-
-// Check if points value lies in a given range
-type FieldConditionRange struct {
-	typeName string
-	Range    *Range
-	Unknown  interface{}
-}
-
-func NewFieldConditionRangeFromRange(value *Range) *FieldConditionRange {
-	return &FieldConditionRange{typeName: "range", Range: value}
-}
-
-func NewFieldConditionRangeFromUnknown(value interface{}) *FieldConditionRange {
-	return &FieldConditionRange{typeName: "unknown", Unknown: value}
-}
-
-func (f *FieldConditionRange) UnmarshalJSON(data []byte) error {
-	valueRange := new(Range)
-	if err := json.Unmarshal(data, &valueRange); err == nil {
-		f.typeName = "range"
-		f.Range = valueRange
+	valueBasicAuthIntegrationConfigs := new(BasicAuthIntegrationConfigs)
+	if err := json.Unmarshal(data, &valueBasicAuthIntegrationConfigs); err == nil {
+		i.typeName = "basicAuthIntegrationConfigs"
+		i.BasicAuthIntegrationConfigs = valueBasicAuthIntegrationConfigs
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		f.typeName = "unknown"
-		f.Unknown = valueUnknown
+	valueShopifyIntegrationConfigs := new(ShopifyIntegrationConfigs)
+	if err := json.Unmarshal(data, &valueShopifyIntegrationConfigs); err == nil {
+		i.typeName = "shopifyIntegrationConfigs"
+		i.ShopifyIntegrationConfigs = valueShopifyIntegrationConfigs
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
-}
-
-func (f FieldConditionRange) MarshalJSON() ([]byte, error) {
-	switch f.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "range":
-		return json.Marshal(f.Range)
-	case "unknown":
-		return json.Marshal(f.Unknown)
-	}
-}
-
-type FieldConditionRangeVisitor interface {
-	VisitRange(*Range) error
-	VisitUnknown(interface{}) error
-}
-
-func (f *FieldConditionRange) Accept(visitor FieldConditionRangeVisitor) error {
-	switch f.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "range":
-		return visitor.VisitRange(f.Range)
-	case "unknown":
-		return visitor.VisitUnknown(f.Unknown)
-	}
-}
-
-// Check number of values of the field
-type FieldConditionValuesCount struct {
-	typeName    string
-	ValuesCount *ValuesCount
-	Unknown     interface{}
-}
-
-func NewFieldConditionValuesCountFromValuesCount(value *ValuesCount) *FieldConditionValuesCount {
-	return &FieldConditionValuesCount{typeName: "valuesCount", ValuesCount: value}
-}
-
-func NewFieldConditionValuesCountFromUnknown(value interface{}) *FieldConditionValuesCount {
-	return &FieldConditionValuesCount{typeName: "unknown", Unknown: value}
-}
-
-func (f *FieldConditionValuesCount) UnmarshalJSON(data []byte) error {
-	valueValuesCount := new(ValuesCount)
-	if err := json.Unmarshal(data, &valueValuesCount); err == nil {
-		f.typeName = "valuesCount"
-		f.ValuesCount = valueValuesCount
+	valueIntegrationConfigsSix := new(IntegrationConfigsSix)
+	if err := json.Unmarshal(data, &valueIntegrationConfigsSix); err == nil {
+		i.typeName = "integrationConfigsSix"
+		i.IntegrationConfigsSix = valueIntegrationConfigsSix
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		f.typeName = "unknown"
-		f.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
 }
 
-func (f FieldConditionValuesCount) MarshalJSON() ([]byte, error) {
-	switch f.typeName {
+func (i IntegrationConfigs) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "valuesCount":
-		return json.Marshal(f.ValuesCount)
-	case "unknown":
-		return json.Marshal(f.Unknown)
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "hmacIntegrationConfigs":
+		return json.Marshal(i.HmacIntegrationConfigs)
+	case "apiKeyIntegrationConfigs":
+		return json.Marshal(i.ApiKeyIntegrationConfigs)
+	case "handledApiKeyIntegrationConfigs":
+		return json.Marshal(i.HandledApiKeyIntegrationConfigs)
+	case "handledHmacConfigs":
+		return json.Marshal(i.HandledHmacConfigs)
+	case "basicAuthIntegrationConfigs":
+		return json.Marshal(i.BasicAuthIntegrationConfigs)
+	case "shopifyIntegrationConfigs":
+		return json.Marshal(i.ShopifyIntegrationConfigs)
+	case "integrationConfigsSix":
+		return json.Marshal(i.IntegrationConfigsSix)
 	}
 }
 
-type FieldConditionValuesCountVisitor interface {
-	VisitValuesCount(*ValuesCount) error
-	VisitUnknown(interface{}) error
+type IntegrationConfigsVisitor interface {
+	VisitHmacIntegrationConfigs(*HmacIntegrationConfigs) error
+	VisitApiKeyIntegrationConfigs(*ApiKeyIntegrationConfigs) error
+	VisitHandledApiKeyIntegrationConfigs(*HandledApiKeyIntegrationConfigs) error
+	VisitHandledHmacConfigs(*HandledHmacConfigs) error
+	VisitBasicAuthIntegrationConfigs(*BasicAuthIntegrationConfigs) error
+	VisitShopifyIntegrationConfigs(*ShopifyIntegrationConfigs) error
+	VisitIntegrationConfigsSix(*IntegrationConfigsSix) error
 }
 
-func (f *FieldConditionValuesCount) Accept(visitor FieldConditionValuesCountVisitor) error {
-	switch f.typeName {
+func (i *IntegrationConfigs) Accept(visitor IntegrationConfigsVisitor) error {
+	switch i.typeName {
 	default:
-		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "valuesCount":
-		return visitor.VisitValuesCount(f.ValuesCount)
-	case "unknown":
-		return visitor.VisitUnknown(f.Unknown)
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "hmacIntegrationConfigs":
+		return visitor.VisitHmacIntegrationConfigs(i.HmacIntegrationConfigs)
+	case "apiKeyIntegrationConfigs":
+		return visitor.VisitApiKeyIntegrationConfigs(i.ApiKeyIntegrationConfigs)
+	case "handledApiKeyIntegrationConfigs":
+		return visitor.VisitHandledApiKeyIntegrationConfigs(i.HandledApiKeyIntegrationConfigs)
+	case "handledHmacConfigs":
+		return visitor.VisitHandledHmacConfigs(i.HandledHmacConfigs)
+	case "basicAuthIntegrationConfigs":
+		return visitor.VisitBasicAuthIntegrationConfigs(i.BasicAuthIntegrationConfigs)
+	case "shopifyIntegrationConfigs":
+		return visitor.VisitShopifyIntegrationConfigs(i.ShopifyIntegrationConfigs)
+	case "integrationConfigsSix":
+		return visitor.VisitIntegrationConfigsSix(i.IntegrationConfigsSix)
 	}
 }
 
-type Filter struct {
-	// At least one of those conditions should match
-	Should []*Condition `json:"should,omitempty"`
-	// All conditions must match
-	Must []*Condition `json:"must,omitempty"`
-	// All conditions must NOT match
-	MustNot []*Condition `json:"must_not,omitempty"`
-
-	_rawJSON json.RawMessage
+type IntegrationConfigsSix struct {
 }
 
-func (f *Filter) UnmarshalJSON(data []byte) error {
-	type unmarshaler Filter
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
+type IntegrationFeature string
+
+const (
+	IntegrationFeatureVerification IntegrationFeature = "VERIFICATION"
+	IntegrationFeatureHandshake    IntegrationFeature = "HANDSHAKE"
+	IntegrationFeaturePolling      IntegrationFeature = "POLLING"
+)
+
+func NewIntegrationFeatureFromString(s string) (IntegrationFeature, error) {
+	switch s {
+	case "VERIFICATION":
+		return IntegrationFeatureVerification, nil
+	case "HANDSHAKE":
+		return IntegrationFeatureHandshake, nil
+	case "POLLING":
+		return IntegrationFeaturePolling, nil
 	}
-	*f = Filter(value)
-	f._rawJSON = json.RawMessage(data)
-	return nil
+	var t IntegrationFeature
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (f *Filter) String() string {
-	if len(f._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(f._rawJSON); err == nil {
-			return value
-		}
+func (i IntegrationFeature) Ptr() *IntegrationFeature {
+	return &i
+}
+
+type IntegrationPaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*Integration  `json:"models,omitempty"`
+}
+
+type IntegrationProvider string
+
+const (
+	IntegrationProviderHmac           IntegrationProvider = "hmac"
+	IntegrationProviderBasicAuth      IntegrationProvider = "basic_auth"
+	IntegrationProviderApiKey         IntegrationProvider = "api_key"
+	IntegrationProviderCloudsignal    IntegrationProvider = "cloudsignal"
+	IntegrationProviderCourier        IntegrationProvider = "courier"
+	IntegrationProviderTwitter        IntegrationProvider = "twitter"
+	IntegrationProviderStripe         IntegrationProvider = "stripe"
+	IntegrationProviderRecharge       IntegrationProvider = "recharge"
+	IntegrationProviderTwilio         IntegrationProvider = "twilio"
+	IntegrationProviderGithub         IntegrationProvider = "github"
+	IntegrationProviderShopify        IntegrationProvider = "shopify"
+	IntegrationProviderPostmark       IntegrationProvider = "postmark"
+	IntegrationProviderTypeform       IntegrationProvider = "typeform"
+	IntegrationProviderXero           IntegrationProvider = "xero"
+	IntegrationProviderSvix           IntegrationProvider = "svix"
+	IntegrationProviderZoom           IntegrationProvider = "zoom"
+	IntegrationProviderAkeneo         IntegrationProvider = "akeneo"
+	IntegrationProviderAdyen          IntegrationProvider = "adyen"
+	IntegrationProviderGitlab         IntegrationProvider = "gitlab"
+	IntegrationProviderPropertyFinder IntegrationProvider = "property-finder"
+	IntegrationProviderWoocommerce    IntegrationProvider = "woocommerce"
+	IntegrationProviderOura           IntegrationProvider = "oura"
+	IntegrationProviderCommercelayer  IntegrationProvider = "commercelayer"
+	IntegrationProviderHubspot        IntegrationProvider = "hubspot"
+	IntegrationProviderMailgun        IntegrationProvider = "mailgun"
+	IntegrationProviderPersona        IntegrationProvider = "persona"
+	IntegrationProviderPipedrive      IntegrationProvider = "pipedrive"
+	IntegrationProviderSendgrid       IntegrationProvider = "sendgrid"
+	IntegrationProviderWorkos         IntegrationProvider = "workos"
+	IntegrationProviderSynctera       IntegrationProvider = "synctera"
+	IntegrationProviderAwsSns         IntegrationProvider = "aws_sns"
+	IntegrationProviderThreeDEye      IntegrationProvider = "three_d_eye"
+	IntegrationProviderTwitch         IntegrationProvider = "twitch"
+	IntegrationProviderFavro          IntegrationProvider = "favro"
+	IntegrationProviderWix            IntegrationProvider = "wix"
+	IntegrationProviderNmi            IntegrationProvider = "nmi"
+	IntegrationProviderRepay          IntegrationProvider = "repay"
+	IntegrationProviderSquare         IntegrationProvider = "square"
+	IntegrationProviderSolidgate      IntegrationProvider = "solidgate"
+	IntegrationProviderTrello         IntegrationProvider = "trello"
+	IntegrationProviderSanity         IntegrationProvider = "sanity"
+)
+
+func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
+	switch s {
+	case "hmac":
+		return IntegrationProviderHmac, nil
+	case "basic_auth":
+		return IntegrationProviderBasicAuth, nil
+	case "api_key":
+		return IntegrationProviderApiKey, nil
+	case "cloudsignal":
+		return IntegrationProviderCloudsignal, nil
+	case "courier":
+		return IntegrationProviderCourier, nil
+	case "twitter":
+		return IntegrationProviderTwitter, nil
+	case "stripe":
+		return IntegrationProviderStripe, nil
+	case "recharge":
+		return IntegrationProviderRecharge, nil
+	case "twilio":
+		return IntegrationProviderTwilio, nil
+	case "github":
+		return IntegrationProviderGithub, nil
+	case "shopify":
+		return IntegrationProviderShopify, nil
+	case "postmark":
+		return IntegrationProviderPostmark, nil
+	case "typeform":
+		return IntegrationProviderTypeform, nil
+	case "xero":
+		return IntegrationProviderXero, nil
+	case "svix":
+		return IntegrationProviderSvix, nil
+	case "zoom":
+		return IntegrationProviderZoom, nil
+	case "akeneo":
+		return IntegrationProviderAkeneo, nil
+	case "adyen":
+		return IntegrationProviderAdyen, nil
+	case "gitlab":
+		return IntegrationProviderGitlab, nil
+	case "property-finder":
+		return IntegrationProviderPropertyFinder, nil
+	case "woocommerce":
+		return IntegrationProviderWoocommerce, nil
+	case "oura":
+		return IntegrationProviderOura, nil
+	case "commercelayer":
+		return IntegrationProviderCommercelayer, nil
+	case "hubspot":
+		return IntegrationProviderHubspot, nil
+	case "mailgun":
+		return IntegrationProviderMailgun, nil
+	case "persona":
+		return IntegrationProviderPersona, nil
+	case "pipedrive":
+		return IntegrationProviderPipedrive, nil
+	case "sendgrid":
+		return IntegrationProviderSendgrid, nil
+	case "workos":
+		return IntegrationProviderWorkos, nil
+	case "synctera":
+		return IntegrationProviderSynctera, nil
+	case "aws_sns":
+		return IntegrationProviderAwsSns, nil
+	case "three_d_eye":
+		return IntegrationProviderThreeDEye, nil
+	case "twitch":
+		return IntegrationProviderTwitch, nil
+	case "favro":
+		return IntegrationProviderFavro, nil
+	case "wix":
+		return IntegrationProviderWix, nil
+	case "nmi":
+		return IntegrationProviderNmi, nil
+	case "repay":
+		return IntegrationProviderRepay, nil
+	case "square":
+		return IntegrationProviderSquare, nil
+	case "solidgate":
+		return IntegrationProviderSolidgate, nil
+	case "trello":
+		return IntegrationProviderTrello, nil
+	case "sanity":
+		return IntegrationProviderSanity, nil
 	}
-	if value, err := core.StringifyJSON(f); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", f)
+	var t IntegrationProvider
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-type FilterSelector struct {
-	Filter   *Filter                 `json:"filter,omitempty"`
-	ShardKey *FilterSelectorShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
+func (i IntegrationProvider) Ptr() *IntegrationProvider {
+	return &i
 }
 
-func (f *FilterSelector) UnmarshalJSON(data []byte) error {
-	type unmarshaler FilterSelector
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*f = FilterSelector(value)
-	f._rawJSON = json.RawMessage(data)
-	return nil
+// Issue
+type Issue struct {
+	Type           string
+	Delivery       *DeliveryIssue
+	Transformation *TransformationIssue
 }
 
-func (f *FilterSelector) String() string {
-	if len(f._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(f._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(f); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", f)
+func NewIssueFromDelivery(value *DeliveryIssue) *Issue {
+	return &Issue{Type: "delivery", Delivery: value}
 }
 
-type FilterSelectorShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
+func NewIssueFromTransformation(value *TransformationIssue) *Issue {
+	return &Issue{Type: "transformation", Transformation: value}
 }
 
-func NewFilterSelectorShardKeyFromShardKeySelector(value *ShardKeySelector) *FilterSelectorShardKey {
-	return &FilterSelectorShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewFilterSelectorShardKeyFromUnknown(value interface{}) *FilterSelectorShardKey {
-	return &FilterSelectorShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (f *FilterSelectorShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		f.typeName = "shardKeySelector"
-		f.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		f.typeName = "unknown"
-		f.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, f)
-}
-
-func (f FilterSelectorShardKey) MarshalJSON() ([]byte, error) {
-	switch f.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "shardKeySelector":
-		return json.Marshal(f.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(f.Unknown)
-	}
-}
-
-type FilterSelectorShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (f *FilterSelectorShardKey) Accept(visitor FilterSelectorShardKeyVisitor) error {
-	switch f.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(f.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(f.Unknown)
-	}
-}
-
-// Geo filter request
-//
-// Matches coordinates inside the rectangle, described by coordinates of lop-left and bottom-right edges
-type GeoBoundingBox struct {
-	TopLeft     *GeoPoint `json:"top_left,omitempty"`
-	BottomRight *GeoPoint `json:"bottom_right,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (g *GeoBoundingBox) UnmarshalJSON(data []byte) error {
-	type unmarshaler GeoBoundingBox
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GeoBoundingBox(value)
-	g._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GeoBoundingBox) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-// Ordered sequence of GeoPoints representing the line
-type GeoLineString struct {
-	Points []*GeoPoint `json:"points,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (g *GeoLineString) UnmarshalJSON(data []byte) error {
-	type unmarshaler GeoLineString
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GeoLineString(value)
-	g._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GeoLineString) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-// Geo point payload schema
-type GeoPoint struct {
-	Lon float64 `json:"lon"`
-	Lat float64 `json:"lat"`
-
-	_rawJSON json.RawMessage
-}
-
-func (g *GeoPoint) UnmarshalJSON(data []byte) error {
-	type unmarshaler GeoPoint
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GeoPoint(value)
-	g._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GeoPoint) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-// Geo filter request
-//
-// Matches coordinates inside the polygon, defined by `exterior` and `interiors`
-type GeoPolygon struct {
-	Exterior *GeoLineString `json:"exterior,omitempty"`
-	// Interior lines (if present) bound holes within the surface each GeoLineString must consist of a minimum of 4 points, and the first and last points must be the same.
-	Interiors []*GeoLineString `json:"interiors,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (g *GeoPolygon) UnmarshalJSON(data []byte) error {
-	type unmarshaler GeoPolygon
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GeoPolygon(value)
-	g._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GeoPolygon) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-// Geo filter request
-//
-// Matches coordinates inside the circle of `radius` and center with coordinates `center`
-type GeoRadius struct {
-	Center *GeoPoint `json:"center,omitempty"`
-	// Radius of the area in meters
-	Radius float64 `json:"radius"`
-
-	_rawJSON json.RawMessage
-}
-
-func (g *GeoRadius) UnmarshalJSON(data []byte) error {
-	type unmarshaler GeoRadius
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GeoRadius(value)
-	g._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GeoRadius) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-// Value of the group_by key, shared across all the hits in the group
-type GroupId struct {
-	typeName string
-	String   string
-	Integer  int
-}
-
-func NewGroupIdFromString(value string) *GroupId {
-	return &GroupId{typeName: "string", String: value}
-}
-
-func NewGroupIdFromInteger(value int) *GroupId {
-	return &GroupId{typeName: "integer", Integer: value}
-}
-
-func (g *GroupId) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		g.typeName = "string"
-		g.String = valueString
-		return nil
-	}
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		g.typeName = "integer"
-		g.Integer = valueInteger
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, g)
-}
-
-func (g GroupId) MarshalJSON() ([]byte, error) {
-	switch g.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", g.typeName, g)
-	case "string":
-		return json.Marshal(g.String)
-	case "integer":
-		return json.Marshal(g.Integer)
-	}
-}
-
-type GroupIdVisitor interface {
-	VisitString(string) error
-	VisitInteger(int) error
-}
-
-func (g *GroupId) Accept(visitor GroupIdVisitor) error {
-	switch g.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", g.typeName, g)
-	case "string":
-		return visitor.VisitString(g.String)
-	case "integer":
-		return visitor.VisitInteger(g.Integer)
-	}
-}
-
-type GroupsResult struct {
-	Groups []*PointGroup `json:"groups,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (g *GroupsResult) UnmarshalJSON(data []byte) error {
-	type unmarshaler GroupsResult
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GroupsResult(value)
-	g._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GroupsResult) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-type GrpcTelemetry struct {
-	Responses map[string]*OperationDurationStatistics `json:"responses,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (g *GrpcTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler GrpcTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*g = GrpcTelemetry(value)
-	g._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (g *GrpcTelemetry) String() string {
-	if len(g._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(g._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(g); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", g)
-}
-
-// ID-based filtering condition
-type HasIdCondition struct {
-	HasId []*ExtendedPointId `json:"has_id,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (h *HasIdCondition) UnmarshalJSON(data []byte) error {
-	type unmarshaler HasIdCondition
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*h = HasIdCondition(value)
-	h._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (h *HasIdCondition) String() string {
-	if len(h._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(h._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(h); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", h)
-}
-
-// Config of HNSW index
-type HnswConfig struct {
-	// Number of edges per node in the index graph. Larger the value - more accurate the search, more space required.
-	M int `json:"m"`
-	// Number of neighbours to consider during the index building. Larger the value - more accurate the search, more time required to build index.
-	EfConstruct int `json:"ef_construct"`
-	// Minimal size (in KiloBytes) of vectors for additional payload-based indexing. If payload chunk is smaller than `full_scan_threshold_kb` additional indexing won't be used - in this case full-scan search should be preferred by query planner and additional indexing is not required. Note: 1Kb = 1 vector of size 256
-	FullScanThreshold int `json:"full_scan_threshold"`
-	// Number of parallel threads used for background index building. If 0 - auto selection.
-	MaxIndexingThreads *int `json:"max_indexing_threads,omitempty"`
-	// Store HNSW index on disk. If set to false, index will be stored in RAM. Default: false
-	OnDisk *bool `json:"on_disk,omitempty"`
-	// Custom M param for hnsw graph built for payload index. If not set, default M will be used.
-	PayloadM *int `json:"payload_m,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (h *HnswConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler HnswConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*h = HnswConfig(value)
-	h._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (h *HnswConfig) String() string {
-	if len(h._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(h._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(h); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", h)
-}
-
-type HnswConfigDiff struct {
-	// Number of edges per node in the index graph. Larger the value - more accurate the search, more space required.
-	M *int `json:"m,omitempty"`
-	// Number of neighbours to consider during the index building. Larger the value - more accurate the search, more time required to build the index.
-	EfConstruct *int `json:"ef_construct,omitempty"`
-	// Minimal size (in kilobytes) of vectors for additional payload-based indexing. If payload chunk is smaller than `full_scan_threshold_kb` additional indexing won't be used - in this case full-scan search should be preferred by query planner and additional indexing is not required. Note: 1Kb = 1 vector of size 256
-	FullScanThreshold *int `json:"full_scan_threshold,omitempty"`
-	// Number of parallel threads used for background index building. If 0 - auto selection.
-	MaxIndexingThreads *int `json:"max_indexing_threads,omitempty"`
-	// Store HNSW index on disk. If set to false, the index will be stored in RAM. Default: false
-	OnDisk *bool `json:"on_disk,omitempty"`
-	// Custom M param for additional payload-aware HNSW links. If not set, default M will be used.
-	PayloadM *int `json:"payload_m,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (h *HnswConfigDiff) UnmarshalJSON(data []byte) error {
-	type unmarshaler HnswConfigDiff
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*h = HnswConfigDiff(value)
-	h._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (h *HnswConfigDiff) String() string {
-	if len(h._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(h._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(h); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", h)
-}
-
-// Vector index configuration
-type Indexes struct {
-	Type string
-	// Do not use any index, scan whole vector collection during search. Guarantee 100% precision, but may be time consuming on large collections.
-	Plain *IndexesPlain
-	// Use filterable HNSW index for approximate search. Is very fast even on a very huge collections, but require additional space to store index and additional time to build it.
-	Hnsw *IndexesHnsw
-}
-
-func NewIndexesFromPlain(value *IndexesPlain) *Indexes {
-	return &Indexes{Type: "plain", Plain: value}
-}
-
-func NewIndexesFromHnsw(value *IndexesHnsw) *Indexes {
-	return &Indexes{Type: "hnsw", Hnsw: value}
-}
-
-func (i *Indexes) UnmarshalJSON(data []byte) error {
+func (i *Issue) UnmarshalJSON(data []byte) error {
 	var unmarshaler struct {
 		Type string `json:"type"`
 	}
@@ -4412,7839 +1836,5488 @@ func (i *Indexes) UnmarshalJSON(data []byte) error {
 	}
 	i.Type = unmarshaler.Type
 	switch unmarshaler.Type {
-	case "plain":
-		value := new(IndexesPlain)
+	case "delivery":
+		value := new(DeliveryIssue)
 		if err := json.Unmarshal(data, &value); err != nil {
 			return err
 		}
-		i.Plain = value
-	case "hnsw":
-		value := new(IndexesHnsw)
+		i.Delivery = value
+	case "transformation":
+		value := new(TransformationIssue)
 		if err := json.Unmarshal(data, &value); err != nil {
 			return err
 		}
-		i.Hnsw = value
+		i.Transformation = value
 	}
 	return nil
 }
 
-func (i Indexes) MarshalJSON() ([]byte, error) {
+func (i Issue) MarshalJSON() ([]byte, error) {
 	switch i.Type {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", i.Type, i)
-	case "plain":
+	case "delivery":
 		var marshaler = struct {
 			Type string `json:"type"`
-			*IndexesPlain
+			*DeliveryIssue
 		}{
-			Type:         i.Type,
-			IndexesPlain: i.Plain,
+			Type:          i.Type,
+			DeliveryIssue: i.Delivery,
 		}
 		return json.Marshal(marshaler)
-	case "hnsw":
+	case "transformation":
 		var marshaler = struct {
 			Type string `json:"type"`
-			*IndexesHnsw
+			*TransformationIssue
 		}{
-			Type:        i.Type,
-			IndexesHnsw: i.Hnsw,
+			Type:                i.Type,
+			TransformationIssue: i.Transformation,
 		}
 		return json.Marshal(marshaler)
 	}
 }
 
-type IndexesVisitor interface {
-	VisitPlain(*IndexesPlain) error
-	VisitHnsw(*IndexesHnsw) error
+type IssueVisitor interface {
+	VisitDelivery(*DeliveryIssue) error
+	VisitTransformation(*TransformationIssue) error
 }
 
-func (i *Indexes) Accept(visitor IndexesVisitor) error {
+func (i *Issue) Accept(visitor IssueVisitor) error {
 	switch i.Type {
 	default:
 		return fmt.Errorf("invalid type %s in %T", i.Type, i)
-	case "plain":
-		return visitor.VisitPlain(i.Plain)
-	case "hnsw":
-		return visitor.VisitHnsw(i.Hnsw)
+	case "delivery":
+		return visitor.VisitDelivery(i.Delivery)
+	case "transformation":
+		return visitor.VisitTransformation(i.Transformation)
 	}
 }
 
-// Use filterable HNSW index for approximate search. Is very fast even on a very huge collections, but require additional space to store index and additional time to build it.
-type IndexesHnsw struct {
-	Options *HnswConfig `json:"options,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (i *IndexesHnsw) UnmarshalJSON(data []byte) error {
-	type unmarshaler IndexesHnsw
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*i = IndexesHnsw(value)
-	i._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (i *IndexesHnsw) String() string {
-	if len(i._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(i); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", i)
-}
-
-// Do not use any index, scan whole vector collection during search. Guarantee 100% precision, but may be time consuming on large collections.
-type IndexesPlain struct {
-	Options map[string]interface{} `json:"options,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (i *IndexesPlain) UnmarshalJSON(data []byte) error {
-	type unmarshaler IndexesPlain
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*i = IndexesPlain(value)
-	i._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (i *IndexesPlain) String() string {
-	if len(i._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(i); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", i)
-}
-
-// Operation for creating new collection and (optionally) specify index params
-type InitFrom struct {
-	Collection string `json:"collection"`
-
-	_rawJSON json.RawMessage
-}
-
-func (i *InitFrom) UnmarshalJSON(data []byte) error {
-	type unmarshaler InitFrom
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*i = InitFrom(value)
-	i._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (i *InitFrom) String() string {
-	if len(i._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(i); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", i)
-}
-
-// Select points with empty payload for a specified field
-type IsEmptyCondition struct {
-	IsEmpty *PayloadField `json:"is_empty,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (i *IsEmptyCondition) UnmarshalJSON(data []byte) error {
-	type unmarshaler IsEmptyCondition
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*i = IsEmptyCondition(value)
-	i._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (i *IsEmptyCondition) String() string {
-	if len(i._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(i); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", i)
-}
-
-// Select points with null payload for a specified field
-type IsNullCondition struct {
-	IsNull *PayloadField `json:"is_null,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (i *IsNullCondition) UnmarshalJSON(data []byte) error {
-	type unmarshaler IsNullCondition
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*i = IsNullCondition(value)
-	i._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (i *IsNullCondition) String() string {
-	if len(i._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(i); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", i)
-}
-
-type LocalShardInfo struct {
-	// Local shard id
-	ShardId int `json:"shard_id"`
-	// User-defined sharding key
-	ShardKey *LocalShardInfoShardKey `json:"shard_key,omitempty"`
-	// Number of points in the shard
-	PointsCount int          `json:"points_count"`
-	State       ReplicaState `json:"state,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (l *LocalShardInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler LocalShardInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*l = LocalShardInfo(value)
-	l._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (l *LocalShardInfo) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(l); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", l)
-}
-
-// User-defined sharding key
-type LocalShardInfoShardKey struct {
-	typeName string
-	ShardKey *ShardKey
-	Unknown  interface{}
-}
-
-func NewLocalShardInfoShardKeyFromShardKey(value *ShardKey) *LocalShardInfoShardKey {
-	return &LocalShardInfoShardKey{typeName: "shardKey", ShardKey: value}
-}
-
-func NewLocalShardInfoShardKeyFromUnknown(value interface{}) *LocalShardInfoShardKey {
-	return &LocalShardInfoShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (l *LocalShardInfoShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKey := new(ShardKey)
-	if err := json.Unmarshal(data, &valueShardKey); err == nil {
-		l.typeName = "shardKey"
-		l.ShardKey = valueShardKey
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		l.typeName = "unknown"
-		l.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LocalShardInfoShardKey) MarshalJSON() ([]byte, error) {
-	switch l.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", l.typeName, l)
-	case "shardKey":
-		return json.Marshal(l.ShardKey)
-	case "unknown":
-		return json.Marshal(l.Unknown)
-	}
-}
-
-type LocalShardInfoShardKeyVisitor interface {
-	VisitShardKey(*ShardKey) error
-	VisitUnknown(interface{}) error
-}
-
-func (l *LocalShardInfoShardKey) Accept(visitor LocalShardInfoShardKeyVisitor) error {
-	switch l.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", l.typeName, l)
-	case "shardKey":
-		return visitor.VisitShardKey(l.ShardKey)
-	case "unknown":
-		return visitor.VisitUnknown(l.Unknown)
-	}
-}
-
-type LocalShardTelemetry struct {
-	VariantName   *string             `json:"variant_name,omitempty"`
-	Segments      []*SegmentTelemetry `json:"segments,omitempty"`
-	Optimizations *OptimizerTelemetry `json:"optimizations,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (l *LocalShardTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler LocalShardTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*l = LocalShardTelemetry(value)
-	l._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (l *LocalShardTelemetry) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(l); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", l)
-}
-
-type LocksOption struct {
-	ErrorMessage *string `json:"error_message,omitempty"`
-	Write        bool    `json:"write"`
-
-	_rawJSON json.RawMessage
-}
-
-func (l *LocksOption) UnmarshalJSON(data []byte) error {
-	type unmarshaler LocksOption
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*l = LocksOption(value)
-	l._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (l *LocksOption) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(l); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", l)
-}
-
-// Defines a location to use for looking up the vector. Specifies collection and vector field name.
-type LookupLocation struct {
-	// Name of the collection used for lookup
-	Collection string `json:"collection"`
-	// Optional name of the vector field within the collection. If not provided, the default vector field will be used.
-	Vector *string `json:"vector,omitempty"`
-	// Specify in which shards to look for the points, if not specified - look in all shards
-	ShardKey *LookupLocationShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (l *LookupLocation) UnmarshalJSON(data []byte) error {
-	type unmarshaler LookupLocation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*l = LookupLocation(value)
-	l._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (l *LookupLocation) String() string {
-	if len(l._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(l); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", l)
-}
-
-// Specify in which shards to look for the points, if not specified - look in all shards
-type LookupLocationShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewLookupLocationShardKeyFromShardKeySelector(value *ShardKeySelector) *LookupLocationShardKey {
-	return &LookupLocationShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewLookupLocationShardKeyFromUnknown(value interface{}) *LookupLocationShardKey {
-	return &LookupLocationShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (l *LookupLocationShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		l.typeName = "shardKeySelector"
-		l.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		l.typeName = "unknown"
-		l.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, l)
-}
-
-func (l LookupLocationShardKey) MarshalJSON() ([]byte, error) {
-	switch l.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", l.typeName, l)
-	case "shardKeySelector":
-		return json.Marshal(l.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(l.Unknown)
-	}
-}
-
-type LookupLocationShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (l *LookupLocationShardKey) Accept(visitor LookupLocationShardKeyVisitor) error {
-	switch l.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", l.typeName, l)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(l.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(l.Unknown)
-	}
-}
-
-// Match filter request
-type Match struct {
-	typeName    string
-	MatchValue  *MatchValue
-	MatchText   *MatchText
-	MatchAny    *MatchAny
-	MatchExcept *MatchExcept
-}
-
-func NewMatchFromMatchValue(value *MatchValue) *Match {
-	return &Match{typeName: "matchValue", MatchValue: value}
-}
-
-func NewMatchFromMatchText(value *MatchText) *Match {
-	return &Match{typeName: "matchText", MatchText: value}
-}
-
-func NewMatchFromMatchAny(value *MatchAny) *Match {
-	return &Match{typeName: "matchAny", MatchAny: value}
-}
-
-func NewMatchFromMatchExcept(value *MatchExcept) *Match {
-	return &Match{typeName: "matchExcept", MatchExcept: value}
-}
-
-func (m *Match) UnmarshalJSON(data []byte) error {
-	valueMatchValue := new(MatchValue)
-	if err := json.Unmarshal(data, &valueMatchValue); err == nil {
-		m.typeName = "matchValue"
-		m.MatchValue = valueMatchValue
-		return nil
-	}
-	valueMatchText := new(MatchText)
-	if err := json.Unmarshal(data, &valueMatchText); err == nil {
-		m.typeName = "matchText"
-		m.MatchText = valueMatchText
-		return nil
-	}
-	valueMatchAny := new(MatchAny)
-	if err := json.Unmarshal(data, &valueMatchAny); err == nil {
-		m.typeName = "matchAny"
-		m.MatchAny = valueMatchAny
-		return nil
-	}
-	valueMatchExcept := new(MatchExcept)
-	if err := json.Unmarshal(data, &valueMatchExcept); err == nil {
-		m.typeName = "matchExcept"
-		m.MatchExcept = valueMatchExcept
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, m)
-}
-
-func (m Match) MarshalJSON() ([]byte, error) {
-	switch m.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", m.typeName, m)
-	case "matchValue":
-		return json.Marshal(m.MatchValue)
-	case "matchText":
-		return json.Marshal(m.MatchText)
-	case "matchAny":
-		return json.Marshal(m.MatchAny)
-	case "matchExcept":
-		return json.Marshal(m.MatchExcept)
-	}
-}
-
-type MatchVisitor interface {
-	VisitMatchValue(*MatchValue) error
-	VisitMatchText(*MatchText) error
-	VisitMatchAny(*MatchAny) error
-	VisitMatchExcept(*MatchExcept) error
-}
-
-func (m *Match) Accept(visitor MatchVisitor) error {
-	switch m.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", m.typeName, m)
-	case "matchValue":
-		return visitor.VisitMatchValue(m.MatchValue)
-	case "matchText":
-		return visitor.VisitMatchText(m.MatchText)
-	case "matchAny":
-		return visitor.VisitMatchAny(m.MatchAny)
-	case "matchExcept":
-		return visitor.VisitMatchExcept(m.MatchExcept)
-	}
-}
-
-// Exact match on any of the given values
-type MatchAny struct {
-	Any *AnyVariants `json:"any,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (m *MatchAny) UnmarshalJSON(data []byte) error {
-	type unmarshaler MatchAny
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MatchAny(value)
-	m._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MatchAny) String() string {
-	if len(m._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(m._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-// Should have at least one value not matching the any given values
-type MatchExcept struct {
-	Except *AnyVariants `json:"except,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (m *MatchExcept) UnmarshalJSON(data []byte) error {
-	type unmarshaler MatchExcept
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MatchExcept(value)
-	m._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MatchExcept) String() string {
-	if len(m._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(m._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-// Full-text match of the strings.
-type MatchText struct {
-	Text string `json:"text"`
-
-	_rawJSON json.RawMessage
-}
-
-func (m *MatchText) UnmarshalJSON(data []byte) error {
-	type unmarshaler MatchText
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MatchText(value)
-	m._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MatchText) String() string {
-	if len(m._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(m._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-// Exact match of the given value
-type MatchValue struct {
-	Value *ValueVariants `json:"value,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (m *MatchValue) UnmarshalJSON(data []byte) error {
-	type unmarshaler MatchValue
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MatchValue(value)
-	m._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MatchValue) String() string {
-	if len(m._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(m._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-// Message send failures for a particular peer
-type MessageSendErrors struct {
-	Count       int     `json:"count"`
-	LatestError *string `json:"latest_error,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (m *MessageSendErrors) UnmarshalJSON(data []byte) error {
-	type unmarshaler MessageSendErrors
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MessageSendErrors(value)
-	m._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MessageSendErrors) String() string {
-	if len(m._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(m._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-type MoveShard struct {
-	ShardId    int `json:"shard_id"`
-	ToPeerId   int `json:"to_peer_id"`
-	FromPeerId int `json:"from_peer_id"`
-	// Method for transferring the shard from one node to another
-	Method *MoveShardMethod `json:"method,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (m *MoveShard) UnmarshalJSON(data []byte) error {
-	type unmarshaler MoveShard
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MoveShard(value)
-	m._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MoveShard) String() string {
-	if len(m._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(m._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-// Method for transferring the shard from one node to another
-type MoveShardMethod struct {
-	typeName            string
-	ShardTransferMethod ShardTransferMethod
-	Unknown             interface{}
-}
-
-func NewMoveShardMethodFromShardTransferMethod(value ShardTransferMethod) *MoveShardMethod {
-	return &MoveShardMethod{typeName: "shardTransferMethod", ShardTransferMethod: value}
-}
-
-func NewMoveShardMethodFromUnknown(value interface{}) *MoveShardMethod {
-	return &MoveShardMethod{typeName: "unknown", Unknown: value}
-}
-
-func (m *MoveShardMethod) UnmarshalJSON(data []byte) error {
-	var valueShardTransferMethod ShardTransferMethod
-	if err := json.Unmarshal(data, &valueShardTransferMethod); err == nil {
-		m.typeName = "shardTransferMethod"
-		m.ShardTransferMethod = valueShardTransferMethod
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		m.typeName = "unknown"
-		m.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, m)
-}
-
-func (m MoveShardMethod) MarshalJSON() ([]byte, error) {
-	switch m.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", m.typeName, m)
-	case "shardTransferMethod":
-		return json.Marshal(m.ShardTransferMethod)
-	case "unknown":
-		return json.Marshal(m.Unknown)
-	}
-}
-
-type MoveShardMethodVisitor interface {
-	VisitShardTransferMethod(ShardTransferMethod) error
-	VisitUnknown(interface{}) error
-}
-
-func (m *MoveShardMethod) Accept(visitor MoveShardMethodVisitor) error {
-	switch m.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", m.typeName, m)
-	case "shardTransferMethod":
-		return visitor.VisitShardTransferMethod(m.ShardTransferMethod)
-	case "unknown":
-		return visitor.VisitUnknown(m.Unknown)
-	}
-}
-
-type MoveShardOperation struct {
-	MoveShard *MoveShard `json:"move_shard,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (m *MoveShardOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler MoveShardOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*m = MoveShardOperation(value)
-	m._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (m *MoveShardOperation) String() string {
-	if len(m._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(m._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(m); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", m)
-}
-
-// Sparse vector data with name
-type NamedSparseVector struct {
-	// Name of vector data
-	Name   string        `json:"name"`
-	Vector *SparseVector `json:"vector,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (n *NamedSparseVector) UnmarshalJSON(data []byte) error {
-	type unmarshaler NamedSparseVector
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*n = NamedSparseVector(value)
-	n._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (n *NamedSparseVector) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(n); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", n)
-}
-
-// Vector data with name
-type NamedVector struct {
-	// Name of vector data
-	Name string `json:"name"`
-	// Vector data
-	Vector []float64 `json:"vector,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (n *NamedVector) UnmarshalJSON(data []byte) error {
-	type unmarshaler NamedVector
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*n = NamedVector(value)
-	n._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (n *NamedVector) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(n); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", n)
-}
-
-// Vector data separator for named and unnamed modes Unnamed mode:
-//
-// { "vector": [1.0, 2.0, 3.0] }
-//
-// or named mode:
-//
-// { "vector": { "vector": [1.0, 2.0, 3.0], "name": "image-embeddings" } }
-type NamedVectorStruct struct {
-	typeName          string
-	DoubleList        []float64
-	NamedVector       *NamedVector
-	NamedSparseVector *NamedSparseVector
-}
-
-func NewNamedVectorStructFromDoubleList(value []float64) *NamedVectorStruct {
-	return &NamedVectorStruct{typeName: "doubleList", DoubleList: value}
-}
-
-func NewNamedVectorStructFromNamedVector(value *NamedVector) *NamedVectorStruct {
-	return &NamedVectorStruct{typeName: "namedVector", NamedVector: value}
-}
-
-func NewNamedVectorStructFromNamedSparseVector(value *NamedSparseVector) *NamedVectorStruct {
-	return &NamedVectorStruct{typeName: "namedSparseVector", NamedSparseVector: value}
-}
-
-func (n *NamedVectorStruct) UnmarshalJSON(data []byte) error {
-	var valueDoubleList []float64
-	if err := json.Unmarshal(data, &valueDoubleList); err == nil {
-		n.typeName = "doubleList"
-		n.DoubleList = valueDoubleList
-		return nil
-	}
-	valueNamedVector := new(NamedVector)
-	if err := json.Unmarshal(data, &valueNamedVector); err == nil {
-		n.typeName = "namedVector"
-		n.NamedVector = valueNamedVector
-		return nil
-	}
-	valueNamedSparseVector := new(NamedSparseVector)
-	if err := json.Unmarshal(data, &valueNamedSparseVector); err == nil {
-		n.typeName = "namedSparseVector"
-		n.NamedSparseVector = valueNamedSparseVector
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, n)
-}
-
-func (n NamedVectorStruct) MarshalJSON() ([]byte, error) {
-	switch n.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", n.typeName, n)
-	case "doubleList":
-		return json.Marshal(n.DoubleList)
-	case "namedVector":
-		return json.Marshal(n.NamedVector)
-	case "namedSparseVector":
-		return json.Marshal(n.NamedSparseVector)
-	}
-}
-
-type NamedVectorStructVisitor interface {
-	VisitDoubleList([]float64) error
-	VisitNamedVector(*NamedVector) error
-	VisitNamedSparseVector(*NamedSparseVector) error
-}
-
-func (n *NamedVectorStruct) Accept(visitor NamedVectorStructVisitor) error {
-	switch n.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", n.typeName, n)
-	case "doubleList":
-		return visitor.VisitDoubleList(n.DoubleList)
-	case "namedVector":
-		return visitor.VisitNamedVector(n.NamedVector)
-	case "namedSparseVector":
-		return visitor.VisitNamedSparseVector(n.NamedSparseVector)
-	}
-}
-
-// Select points with payload for a specified nested field
-type Nested struct {
-	Key    string  `json:"key"`
-	Filter *Filter `json:"filter,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (n *Nested) UnmarshalJSON(data []byte) error {
-	type unmarshaler Nested
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*n = Nested(value)
-	n._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (n *Nested) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(n); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", n)
-}
-
-type NestedCondition struct {
-	Nested *Nested `json:"nested,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (n *NestedCondition) UnmarshalJSON(data []byte) error {
-	type unmarshaler NestedCondition
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*n = NestedCondition(value)
-	n._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (n *NestedCondition) String() string {
-	if len(n._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(n._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(n); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", n)
-}
-
-type OperationDurationStatistics struct {
-	Count             int        `json:"count"`
-	FailCount         *int       `json:"fail_count,omitempty"`
-	AvgDurationMicros *float64   `json:"avg_duration_micros,omitempty"`
-	MinDurationMicros *float64   `json:"min_duration_micros,omitempty"`
-	MaxDurationMicros *float64   `json:"max_duration_micros,omitempty"`
-	LastResponded     *time.Time `json:"last_responded,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (o *OperationDurationStatistics) UnmarshalJSON(data []byte) error {
-	type unmarshaler OperationDurationStatistics
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*o = OperationDurationStatistics(value)
-	o._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (o *OperationDurationStatistics) String() string {
-	if len(o._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(o._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(o); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", o)
-}
-
-type OptimizerTelemetry struct {
-	Status        *OptimizersStatus            `json:"status,omitempty"`
-	Optimizations *OperationDurationStatistics `json:"optimizations,omitempty"`
-	Log           []*TrackerTelemetry          `json:"log,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (o *OptimizerTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler OptimizerTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*o = OptimizerTelemetry(value)
-	o._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (o *OptimizerTelemetry) String() string {
-	if len(o._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(o._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(o); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", o)
-}
-
-type OptimizersConfig struct {
-	// The minimal fraction of deleted vectors in a segment, required to perform segment optimization
-	DeletedThreshold float64 `json:"deleted_threshold"`
-	// The minimal number of vectors in a segment, required to perform segment optimization
-	VacuumMinVectorNumber int `json:"vacuum_min_vector_number"`
-	// Target amount of segments optimizer will try to keep. Real amount of segments may vary depending on multiple parameters: - Amount of stored points - Current write RPS
-	//
-	// It is recommended to select default number of segments as a factor of the number of search threads, so that each segment would be handled evenly by one of the threads. If `default_segment_number = 0`, will be automatically selected by the number of available CPUs.
-	DefaultSegmentNumber int `json:"default_segment_number"`
-	// Do not create segments larger this size (in kilobytes). Large segments might require disproportionately long indexation times, therefore it makes sense to limit the size of segments.
-	//
-	// If indexing speed is more important - make this parameter lower. If search speed is more important - make this parameter higher. Note: 1Kb = 1 vector of size 256 If not set, will be automatically selected considering the number of available CPUs.
-	MaxSegmentSize *int `json:"max_segment_size,omitempty"`
-	// Maximum size (in kilobytes) of vectors to store in-memory per segment. Segments larger than this threshold will be stored as read-only memmaped file.
-	//
-	// Memmap storage is disabled by default, to enable it, set this threshold to a reasonable value.
-	//
-	// To disable memmap storage, set this to `0`. Internally it will use the largest threshold possible.
-	//
-	// Note: 1Kb = 1 vector of size 256
-	MemmapThreshold *int `json:"memmap_threshold,omitempty"`
-	// Maximum size (in kilobytes) of vectors allowed for plain index, exceeding this threshold will enable vector indexing
-	//
-	// Default value is 20,000, based on <https://github.com/google-research/google-research/blob/master/scann/docs/algorithms.md>.
-	//
-	// To disable vector indexing, set to `0`.
-	//
-	// Note: 1kB = 1 vector of size 256.
-	IndexingThreshold *int `json:"indexing_threshold,omitempty"`
-	// Minimum interval between forced flushes.
-	FlushIntervalSec int `json:"flush_interval_sec"`
-	// Maximum available threads for optimization workers
-	MaxOptimizationThreads int `json:"max_optimization_threads"`
-
-	_rawJSON json.RawMessage
-}
-
-func (o *OptimizersConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler OptimizersConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*o = OptimizersConfig(value)
-	o._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (o *OptimizersConfig) String() string {
-	if len(o._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(o._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(o); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", o)
-}
-
-type OptimizersConfigDiff struct {
-	// The minimal fraction of deleted vectors in a segment, required to perform segment optimization
-	DeletedThreshold *float64 `json:"deleted_threshold,omitempty"`
-	// The minimal number of vectors in a segment, required to perform segment optimization
-	VacuumMinVectorNumber *int `json:"vacuum_min_vector_number,omitempty"`
-	// Target amount of segments optimizer will try to keep. Real amount of segments may vary depending on multiple parameters: - Amount of stored points - Current write RPS
-	//
-	// It is recommended to select default number of segments as a factor of the number of search threads, so that each segment would be handled evenly by one of the threads If `default_segment_number = 0`, will be automatically selected by the number of available CPUs
-	DefaultSegmentNumber *int `json:"default_segment_number,omitempty"`
-	// Do not create segments larger this size (in kilobytes). Large segments might require disproportionately long indexation times, therefore it makes sense to limit the size of segments.
-	//
-	// If indexation speed have more priority for your - make this parameter lower. If search speed is more important - make this parameter higher. Note: 1Kb = 1 vector of size 256
-	MaxSegmentSize *int `json:"max_segment_size,omitempty"`
-	// Maximum size (in kilobytes) of vectors to store in-memory per segment. Segments larger than this threshold will be stored as read-only memmaped file.
-	//
-	// Memmap storage is disabled by default, to enable it, set this threshold to a reasonable value.
-	//
-	// To disable memmap storage, set this to `0`.
-	//
-	// Note: 1Kb = 1 vector of size 256
-	MemmapThreshold *int `json:"memmap_threshold,omitempty"`
-	// Maximum size (in kilobytes) of vectors allowed for plain index, exceeding this threshold will enable vector indexing
-	//
-	// Default value is 20,000, based on <https://github.com/google-research/google-research/blob/master/scann/docs/algorithms.md>.
-	//
-	// To disable vector indexing, set to `0`.
-	//
-	// Note: 1kB = 1 vector of size 256.
-	IndexingThreshold *int `json:"indexing_threshold,omitempty"`
-	// Minimum interval between forced flushes.
-	FlushIntervalSec *int `json:"flush_interval_sec,omitempty"`
-	// Maximum available threads for optimization workers
-	MaxOptimizationThreads *int `json:"max_optimization_threads,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (o *OptimizersConfigDiff) UnmarshalJSON(data []byte) error {
-	type unmarshaler OptimizersConfigDiff
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*o = OptimizersConfigDiff(value)
-	o._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (o *OptimizersConfigDiff) String() string {
-	if len(o._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(o._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(o); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", o)
-}
-
-// Current state of the collection
-type OptimizersStatus struct {
-	typeName      string
-	stringLiteral string
-	// Something wrong happened with optimizers
-	OptimizersStatusError *OptimizersStatusError
-}
-
-func NewOptimizersStatusWithStringLiteral() *OptimizersStatus {
-	return &OptimizersStatus{typeName: "stringLiteral", stringLiteral: "ok"}
+type IssueCount struct {
+	// Number of issues
+	Count int `json:"count"`
 }
-
-func NewOptimizersStatusFromOptimizersStatusError(value *OptimizersStatusError) *OptimizersStatus {
-	return &OptimizersStatus{typeName: "optimizersStatusError", OptimizersStatusError: value}
-}
-
-func (o *OptimizersStatus) StringLiteral() string {
-	return o.stringLiteral
-}
-
-func (o *OptimizersStatus) UnmarshalJSON(data []byte) error {
-	var valueStringLiteral string
-	if err := json.Unmarshal(data, &valueStringLiteral); err == nil {
-		if valueStringLiteral == "ok" {
-			o.typeName = "stringLiteral"
-			o.stringLiteral = valueStringLiteral
-			return nil
-		}
-	}
-	valueOptimizersStatusError := new(OptimizersStatusError)
-	if err := json.Unmarshal(data, &valueOptimizersStatusError); err == nil {
-		o.typeName = "optimizersStatusError"
-		o.OptimizersStatusError = valueOptimizersStatusError
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, o)
-}
-
-func (o OptimizersStatus) MarshalJSON() ([]byte, error) {
-	switch o.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", o.typeName, o)
-	case "stringLiteral":
-		return json.Marshal("ok")
-	case "optimizersStatusError":
-		return json.Marshal(o.OptimizersStatusError)
-	}
-}
-
-type OptimizersStatusVisitor interface {
-	VisitStringLiteral(string) error
-	VisitOptimizersStatusError(*OptimizersStatusError) error
-}
-
-func (o *OptimizersStatus) Accept(visitor OptimizersStatusVisitor) error {
-	switch o.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", o.typeName, o)
-	case "stringLiteral":
-		return visitor.VisitStringLiteral(o.stringLiteral)
-	case "optimizersStatusError":
-		return visitor.VisitOptimizersStatusError(o.OptimizersStatusError)
-	}
-}
-
-// Something wrong happened with optimizers
-type OptimizersStatusError struct {
-	Error string `json:"error"`
-
-	_rawJSON json.RawMessage
-}
-
-func (o *OptimizersStatusError) UnmarshalJSON(data []byte) error {
-	type unmarshaler OptimizersStatusError
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*o = OptimizersStatusError(value)
-	o._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (o *OptimizersStatusError) String() string {
-	if len(o._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(o._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(o); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", o)
-}
-
-type OverwritePayloadOperation struct {
-	OverwritePayload *SetPayload `json:"overwrite_payload,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (o *OverwritePayloadOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler OverwritePayloadOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*o = OverwritePayloadOperation(value)
-	o._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (o *OverwritePayloadOperation) String() string {
-	if len(o._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(o._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(o); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", o)
-}
-
-type P2PConfigTelemetry struct {
-	ConnectionPoolSize int `json:"connection_pool_size"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *P2PConfigTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler P2PConfigTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = P2PConfigTelemetry(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *P2PConfigTelemetry) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type Payload = map[string]interface{}
-
-// Payload field
-type PayloadField struct {
-	// Payload field name
-	Key string `json:"key"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PayloadField) UnmarshalJSON(data []byte) error {
-	type unmarshaler PayloadField
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PayloadField(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PayloadField) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PayloadFieldSchema struct {
-	typeName            string
-	PayloadSchemaType   PayloadSchemaType
-	PayloadSchemaParams PayloadSchemaParams
-}
-
-func NewPayloadFieldSchemaFromPayloadSchemaType(value PayloadSchemaType) *PayloadFieldSchema {
-	return &PayloadFieldSchema{typeName: "payloadSchemaType", PayloadSchemaType: value}
-}
-
-func NewPayloadFieldSchemaFromPayloadSchemaParams(value PayloadSchemaParams) *PayloadFieldSchema {
-	return &PayloadFieldSchema{typeName: "payloadSchemaParams", PayloadSchemaParams: value}
-}
-
-func (p *PayloadFieldSchema) UnmarshalJSON(data []byte) error {
-	var valuePayloadSchemaType PayloadSchemaType
-	if err := json.Unmarshal(data, &valuePayloadSchemaType); err == nil {
-		p.typeName = "payloadSchemaType"
-		p.PayloadSchemaType = valuePayloadSchemaType
-		return nil
-	}
-	var valuePayloadSchemaParams PayloadSchemaParams
-	if err := json.Unmarshal(data, &valuePayloadSchemaParams); err == nil {
-		p.typeName = "payloadSchemaParams"
-		p.PayloadSchemaParams = valuePayloadSchemaParams
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PayloadFieldSchema) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "payloadSchemaType":
-		return json.Marshal(p.PayloadSchemaType)
-	case "payloadSchemaParams":
-		return json.Marshal(p.PayloadSchemaParams)
-	}
-}
-
-type PayloadFieldSchemaVisitor interface {
-	VisitPayloadSchemaType(PayloadSchemaType) error
-	VisitPayloadSchemaParams(PayloadSchemaParams) error
-}
-
-func (p *PayloadFieldSchema) Accept(visitor PayloadFieldSchemaVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "payloadSchemaType":
-		return visitor.VisitPayloadSchemaType(p.PayloadSchemaType)
-	case "payloadSchemaParams":
-		return visitor.VisitPayloadSchemaParams(p.PayloadSchemaParams)
-	}
-}
-
-// Display payload field type & index information
-type PayloadIndexInfo struct {
-	DataType PayloadSchemaType       `json:"data_type,omitempty"`
-	Params   *PayloadIndexInfoParams `json:"params,omitempty"`
-	// Number of points indexed with this index
-	Points int `json:"points"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PayloadIndexInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler PayloadIndexInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PayloadIndexInfo(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PayloadIndexInfo) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PayloadIndexInfoParams struct {
-	typeName            string
-	PayloadSchemaParams PayloadSchemaParams
-	Unknown             interface{}
-}
-
-func NewPayloadIndexInfoParamsFromPayloadSchemaParams(value PayloadSchemaParams) *PayloadIndexInfoParams {
-	return &PayloadIndexInfoParams{typeName: "payloadSchemaParams", PayloadSchemaParams: value}
-}
-
-func NewPayloadIndexInfoParamsFromUnknown(value interface{}) *PayloadIndexInfoParams {
-	return &PayloadIndexInfoParams{typeName: "unknown", Unknown: value}
-}
-
-func (p *PayloadIndexInfoParams) UnmarshalJSON(data []byte) error {
-	var valuePayloadSchemaParams PayloadSchemaParams
-	if err := json.Unmarshal(data, &valuePayloadSchemaParams); err == nil {
-		p.typeName = "payloadSchemaParams"
-		p.PayloadSchemaParams = valuePayloadSchemaParams
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		p.typeName = "unknown"
-		p.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PayloadIndexInfoParams) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "payloadSchemaParams":
-		return json.Marshal(p.PayloadSchemaParams)
-	case "unknown":
-		return json.Marshal(p.Unknown)
-	}
-}
-
-type PayloadIndexInfoParamsVisitor interface {
-	VisitPayloadSchemaParams(PayloadSchemaParams) error
-	VisitUnknown(interface{}) error
-}
-
-func (p *PayloadIndexInfoParams) Accept(visitor PayloadIndexInfoParamsVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "payloadSchemaParams":
-		return visitor.VisitPayloadSchemaParams(p.PayloadSchemaParams)
-	case "unknown":
-		return visitor.VisitUnknown(p.Unknown)
-	}
-}
-
-type PayloadIndexTelemetry struct {
-	FieldName           *string `json:"field_name,omitempty"`
-	PointsValuesCount   int     `json:"points_values_count"`
-	PointsCount         int     `json:"points_count"`
-	HistogramBucketSize *int    `json:"histogram_bucket_size,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PayloadIndexTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler PayloadIndexTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PayloadIndexTelemetry(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PayloadIndexTelemetry) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-// Payload type with parameters
-type PayloadSchemaParams = *TextIndexParams
 
-// All possible names of payload types
-type PayloadSchemaType string
+// Issue status
+type IssueStatus string
 
 const (
-	PayloadSchemaTypeKeyword PayloadSchemaType = "keyword"
-	PayloadSchemaTypeInteger PayloadSchemaType = "integer"
-	PayloadSchemaTypeFloat   PayloadSchemaType = "float"
-	PayloadSchemaTypeGeo     PayloadSchemaType = "geo"
-	PayloadSchemaTypeText    PayloadSchemaType = "text"
-	PayloadSchemaTypeBool    PayloadSchemaType = "bool"
+	IssueStatusOpened       IssueStatus = "OPENED"
+	IssueStatusIgnored      IssueStatus = "IGNORED"
+	IssueStatusAcknowledged IssueStatus = "ACKNOWLEDGED"
+	IssueStatusResolved     IssueStatus = "RESOLVED"
 )
 
-func NewPayloadSchemaTypeFromString(s string) (PayloadSchemaType, error) {
+func NewIssueStatusFromString(s string) (IssueStatus, error) {
 	switch s {
-	case "keyword":
-		return PayloadSchemaTypeKeyword, nil
-	case "integer":
-		return PayloadSchemaTypeInteger, nil
-	case "float":
-		return PayloadSchemaTypeFloat, nil
-	case "geo":
-		return PayloadSchemaTypeGeo, nil
-	case "text":
-		return PayloadSchemaTypeText, nil
-	case "bool":
-		return PayloadSchemaTypeBool, nil
+	case "OPENED":
+		return IssueStatusOpened, nil
+	case "IGNORED":
+		return IssueStatusIgnored, nil
+	case "ACKNOWLEDGED":
+		return IssueStatusAcknowledged, nil
+	case "RESOLVED":
+		return IssueStatusResolved, nil
 	}
-	var t PayloadSchemaType
+	var t IssueStatus
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (p PayloadSchemaType) Ptr() *PayloadSchemaType {
-	return &p
+func (i IssueStatus) Ptr() *IssueStatus {
+	return &i
 }
 
-// Specifies how to treat payload selector
-type PayloadSelector struct {
-	typeName               string
-	PayloadSelectorInclude *PayloadSelectorInclude
-	PayloadSelectorExclude *PayloadSelectorExclude
+type IssueTrigger struct {
+	// ID of the issue trigger
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId *string `json:"team_id,omitempty"`
+	// Optional unique name to use as reference when using the API
+	Name     *string                `json:"name,omitempty"`
+	Type     IssueType              `json:"type,omitempty"`
+	Configs  *IssueTriggerReference `json:"configs,omitempty"`
+	Channels *IssueTriggerChannels  `json:"channels,omitempty"`
+	// ISO timestamp for when the issue trigger was disabled
+	DisabledAt *time.Time `json:"disabled_at,omitempty"`
+	// ISO timestamp for when the issue trigger was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// ISO timestamp for when the issue trigger was created
+	CreatedAt time.Time `json:"created_at"`
+	// ISO timestamp for when the issue trigger was deleted
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 }
 
-func NewPayloadSelectorFromPayloadSelectorInclude(value *PayloadSelectorInclude) *PayloadSelector {
-	return &PayloadSelector{typeName: "payloadSelectorInclude", PayloadSelectorInclude: value}
+// Configurations for a 'Backpressure' issue trigger
+type IssueTriggerBackpressureConfigs struct {
+	Delay IssueTriggerBackpressureDelay `json:"delay"`
+	// A pattern to match on the destination name or array of destination IDs. Use `*` as wildcard.
+	Destinations *IssueTriggerBackpressureConfigsDestinations `json:"destinations,omitempty"`
 }
 
-func NewPayloadSelectorFromPayloadSelectorExclude(value *PayloadSelectorExclude) *PayloadSelector {
-	return &PayloadSelector{typeName: "payloadSelectorExclude", PayloadSelectorExclude: value}
+// A pattern to match on the destination name or array of destination IDs. Use `*` as wildcard.
+type IssueTriggerBackpressureConfigsDestinations struct {
+	typeName   string
+	String     string
+	StringList []string
 }
 
-func (p *PayloadSelector) UnmarshalJSON(data []byte) error {
-	valuePayloadSelectorInclude := new(PayloadSelectorInclude)
-	if err := json.Unmarshal(data, &valuePayloadSelectorInclude); err == nil {
-		p.typeName = "payloadSelectorInclude"
-		p.PayloadSelectorInclude = valuePayloadSelectorInclude
+func NewIssueTriggerBackpressureConfigsDestinationsFromString(value string) *IssueTriggerBackpressureConfigsDestinations {
+	return &IssueTriggerBackpressureConfigsDestinations{typeName: "string", String: value}
+}
+
+func NewIssueTriggerBackpressureConfigsDestinationsFromStringList(value []string) *IssueTriggerBackpressureConfigsDestinations {
+	return &IssueTriggerBackpressureConfigsDestinations{typeName: "stringList", StringList: value}
+}
+
+func (i *IssueTriggerBackpressureConfigsDestinations) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		i.typeName = "string"
+		i.String = valueString
 		return nil
 	}
-	valuePayloadSelectorExclude := new(PayloadSelectorExclude)
-	if err := json.Unmarshal(data, &valuePayloadSelectorExclude); err == nil {
-		p.typeName = "payloadSelectorExclude"
-		p.PayloadSelectorExclude = valuePayloadSelectorExclude
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typeName = "stringList"
+		i.StringList = valueStringList
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
 }
 
-func (p PayloadSelector) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
+func (i IssueTriggerBackpressureConfigsDestinations) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "payloadSelectorInclude":
-		return json.Marshal(p.PayloadSelectorInclude)
-	case "payloadSelectorExclude":
-		return json.Marshal(p.PayloadSelectorExclude)
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return json.Marshal(i.String)
+	case "stringList":
+		return json.Marshal(i.StringList)
 	}
 }
 
-type PayloadSelectorVisitor interface {
-	VisitPayloadSelectorInclude(*PayloadSelectorInclude) error
-	VisitPayloadSelectorExclude(*PayloadSelectorExclude) error
+type IssueTriggerBackpressureConfigsDestinationsVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
 }
 
-func (p *PayloadSelector) Accept(visitor PayloadSelectorVisitor) error {
-	switch p.typeName {
+func (i *IssueTriggerBackpressureConfigsDestinations) Accept(visitor IssueTriggerBackpressureConfigsDestinationsVisitor) error {
+	switch i.typeName {
 	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "payloadSelectorInclude":
-		return visitor.VisitPayloadSelectorInclude(p.PayloadSelectorInclude)
-	case "payloadSelectorExclude":
-		return visitor.VisitPayloadSelectorExclude(p.PayloadSelectorExclude)
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return visitor.VisitString(i.String)
+	case "stringList":
+		return visitor.VisitStringList(i.StringList)
 	}
 }
 
-type PayloadSelectorExclude struct {
-	// Exclude this fields from returning payload
-	Exclude []string `json:"exclude,omitempty"`
+// The minimum delay (backpressure) to open the issue for min of 1 minute (60000) and max of 1 day (86400000)
+type IssueTriggerBackpressureDelay = int
 
-	_rawJSON json.RawMessage
+// Notification channels object for the specific channel type
+type IssueTriggerChannels struct {
+	Slack    *IssueTriggerSlackChannel       `json:"slack,omitempty"`
+	Opsgenie *IssueTriggerIntegrationChannel `json:"opsgenie,omitempty"`
+	Email    *IssueTriggerEmailChannel       `json:"email,omitempty"`
 }
 
-func (p *PayloadSelectorExclude) UnmarshalJSON(data []byte) error {
-	type unmarshaler PayloadSelectorExclude
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
+// Configurations for a 'delivery' issue trigger
+type IssueTriggerDeliveryConfigs struct {
+	Strategy IssueTriggerStrategy `json:"strategy,omitempty"`
+	// A pattern to match on the connection name or array of connection IDs. Use `*` as wildcard.
+	Connections *IssueTriggerDeliveryConfigsConnections `json:"connections,omitempty"`
+}
+
+// A pattern to match on the connection name or array of connection IDs. Use `*` as wildcard.
+type IssueTriggerDeliveryConfigsConnections struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewIssueTriggerDeliveryConfigsConnectionsFromString(value string) *IssueTriggerDeliveryConfigsConnections {
+	return &IssueTriggerDeliveryConfigsConnections{typeName: "string", String: value}
+}
+
+func NewIssueTriggerDeliveryConfigsConnectionsFromStringList(value []string) *IssueTriggerDeliveryConfigsConnections {
+	return &IssueTriggerDeliveryConfigsConnections{typeName: "stringList", StringList: value}
+}
+
+func (i *IssueTriggerDeliveryConfigsConnections) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		i.typeName = "string"
+		i.String = valueString
+		return nil
 	}
-	*p = PayloadSelectorExclude(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PayloadSelectorExclude) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typeName = "stringList"
+		i.StringList = valueStringList
+		return nil
 	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IssueTriggerDeliveryConfigsConnections) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return json.Marshal(i.String)
+	case "stringList":
+		return json.Marshal(i.StringList)
 	}
-	return fmt.Sprintf("%#v", p)
 }
 
-type PayloadSelectorInclude struct {
-	// Only include this payload keys
-	Include []string `json:"include,omitempty"`
-
-	_rawJSON json.RawMessage
+type IssueTriggerDeliveryConfigsConnectionsVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
 }
 
-func (p *PayloadSelectorInclude) UnmarshalJSON(data []byte) error {
-	type unmarshaler PayloadSelectorInclude
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
+func (i *IssueTriggerDeliveryConfigsConnections) Accept(visitor IssueTriggerDeliveryConfigsConnectionsVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return visitor.VisitString(i.String)
+	case "stringList":
+		return visitor.VisitStringList(i.StringList)
 	}
-	*p = PayloadSelectorInclude(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
 }
 
-func (p *PayloadSelectorInclude) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
+// Email channel for an issue trigger
+type IssueTriggerEmailChannel struct {
+}
+
+// Integration channel for an issue trigger
+type IssueTriggerIntegrationChannel struct {
+}
+
+type IssueTriggerPaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*IssueTrigger `json:"models,omitempty"`
+}
+
+// Configuration object for the specific issue type selected
+type IssueTriggerReference struct {
+	typeName                          string
+	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
+	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
+	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
+}
+
+func NewIssueTriggerReferenceFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *IssueTriggerReference {
+	return &IssueTriggerReference{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
+}
+
+func NewIssueTriggerReferenceFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *IssueTriggerReference {
+	return &IssueTriggerReference{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
+}
+
+func NewIssueTriggerReferenceFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *IssueTriggerReference {
+	return &IssueTriggerReference{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
+}
+
+func (i *IssueTriggerReference) UnmarshalJSON(data []byte) error {
+	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
+		i.typeName = "issueTriggerDeliveryConfigs"
+		i.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
+		return nil
 	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
+	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
+		i.typeName = "issueTriggerTransformationConfigs"
+		i.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
+		return nil
 	}
-	return fmt.Sprintf("%#v", p)
+	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
+	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
+		i.typeName = "issueTriggerBackpressureConfigs"
+		i.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
 }
 
-// Type of payload storage
-type PayloadStorageType struct {
-	Type     string
-	InMemory *PayloadStorageTypeInMemory
-	OnDisk   *PayloadStorageTypeOnDisk
+func (i IssueTriggerReference) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "issueTriggerDeliveryConfigs":
+		return json.Marshal(i.IssueTriggerDeliveryConfigs)
+	case "issueTriggerTransformationConfigs":
+		return json.Marshal(i.IssueTriggerTransformationConfigs)
+	case "issueTriggerBackpressureConfigs":
+		return json.Marshal(i.IssueTriggerBackpressureConfigs)
+	}
 }
 
-func NewPayloadStorageTypeFromInMemory(value *PayloadStorageTypeInMemory) *PayloadStorageType {
-	return &PayloadStorageType{Type: "in_memory", InMemory: value}
+type IssueTriggerReferenceVisitor interface {
+	VisitIssueTriggerDeliveryConfigs(*IssueTriggerDeliveryConfigs) error
+	VisitIssueTriggerTransformationConfigs(*IssueTriggerTransformationConfigs) error
+	VisitIssueTriggerBackpressureConfigs(*IssueTriggerBackpressureConfigs) error
 }
 
-func NewPayloadStorageTypeFromOnDisk(value *PayloadStorageTypeOnDisk) *PayloadStorageType {
-	return &PayloadStorageType{Type: "on_disk", OnDisk: value}
+func (i *IssueTriggerReference) Accept(visitor IssueTriggerReferenceVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "issueTriggerDeliveryConfigs":
+		return visitor.VisitIssueTriggerDeliveryConfigs(i.IssueTriggerDeliveryConfigs)
+	case "issueTriggerTransformationConfigs":
+		return visitor.VisitIssueTriggerTransformationConfigs(i.IssueTriggerTransformationConfigs)
+	case "issueTriggerBackpressureConfigs":
+		return visitor.VisitIssueTriggerBackpressureConfigs(i.IssueTriggerBackpressureConfigs)
+	}
 }
 
-func (p *PayloadStorageType) UnmarshalJSON(data []byte) error {
+// Slack channel for an issue trigger
+type IssueTriggerSlackChannel struct {
+	// Channel name
+	ChannelName string `json:"channel_name"`
+}
+
+// The strategy uses to open the issue
+type IssueTriggerStrategy string
+
+const (
+	IssueTriggerStrategyFirstAttempt IssueTriggerStrategy = "first_attempt"
+	IssueTriggerStrategyFinalAttempt IssueTriggerStrategy = "final_attempt"
+)
+
+func NewIssueTriggerStrategyFromString(s string) (IssueTriggerStrategy, error) {
+	switch s {
+	case "first_attempt":
+		return IssueTriggerStrategyFirstAttempt, nil
+	case "final_attempt":
+		return IssueTriggerStrategyFinalAttempt, nil
+	}
+	var t IssueTriggerStrategy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueTriggerStrategy) Ptr() *IssueTriggerStrategy {
+	return &i
+}
+
+// Configurations for a 'Transformation' issue trigger
+type IssueTriggerTransformationConfigs struct {
+	LogLevel TransformationExecutionLogLevel `json:"log_level,omitempty"`
+	// A pattern to match on the transformation name or array of transformation IDs. Use `*` as wildcard.
+	Transformations *IssueTriggerTransformationConfigsTransformations `json:"transformations,omitempty"`
+}
+
+// A pattern to match on the transformation name or array of transformation IDs. Use `*` as wildcard.
+type IssueTriggerTransformationConfigsTransformations struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewIssueTriggerTransformationConfigsTransformationsFromString(value string) *IssueTriggerTransformationConfigsTransformations {
+	return &IssueTriggerTransformationConfigsTransformations{typeName: "string", String: value}
+}
+
+func NewIssueTriggerTransformationConfigsTransformationsFromStringList(value []string) *IssueTriggerTransformationConfigsTransformations {
+	return &IssueTriggerTransformationConfigsTransformations{typeName: "stringList", StringList: value}
+}
+
+func (i *IssueTriggerTransformationConfigsTransformations) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		i.typeName = "string"
+		i.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typeName = "stringList"
+		i.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IssueTriggerTransformationConfigsTransformations) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return json.Marshal(i.String)
+	case "stringList":
+		return json.Marshal(i.StringList)
+	}
+}
+
+type IssueTriggerTransformationConfigsTransformationsVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (i *IssueTriggerTransformationConfigsTransformations) Accept(visitor IssueTriggerTransformationConfigsTransformationsVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return visitor.VisitString(i.String)
+	case "stringList":
+		return visitor.VisitStringList(i.StringList)
+	}
+}
+
+// Issue type
+type IssueType string
+
+const (
+	IssueTypeDelivery       IssueType = "delivery"
+	IssueTypeTransformation IssueType = "transformation"
+	IssueTypeBackpressure   IssueType = "backpressure"
+)
+
+func NewIssueTypeFromString(s string) (IssueType, error) {
+	switch s {
+	case "delivery":
+		return IssueTypeDelivery, nil
+	case "transformation":
+		return IssueTypeTransformation, nil
+	case "backpressure":
+		return IssueTypeBackpressure, nil
+	}
+	var t IssueType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (i IssueType) Ptr() *IssueType {
+	return &i
+}
+
+type IssueWithData struct {
+	Type           string
+	Delivery       *DeliveryIssueWithData
+	Transformation *TransformationIssueWithData
+}
+
+func NewIssueWithDataFromDelivery(value *DeliveryIssueWithData) *IssueWithData {
+	return &IssueWithData{Type: "delivery", Delivery: value}
+}
+
+func NewIssueWithDataFromTransformation(value *TransformationIssueWithData) *IssueWithData {
+	return &IssueWithData{Type: "transformation", Transformation: value}
+}
+
+func (i *IssueWithData) UnmarshalJSON(data []byte) error {
 	var unmarshaler struct {
 		Type string `json:"type"`
 	}
 	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	p.Type = unmarshaler.Type
+	i.Type = unmarshaler.Type
 	switch unmarshaler.Type {
-	case "in_memory":
-		value := new(PayloadStorageTypeInMemory)
+	case "delivery":
+		value := new(DeliveryIssueWithData)
 		if err := json.Unmarshal(data, &value); err != nil {
 			return err
 		}
-		p.InMemory = value
-	case "on_disk":
-		value := new(PayloadStorageTypeOnDisk)
+		i.Delivery = value
+	case "transformation":
+		value := new(TransformationIssueWithData)
 		if err := json.Unmarshal(data, &value); err != nil {
 			return err
 		}
-		p.OnDisk = value
+		i.Transformation = value
 	}
 	return nil
 }
 
-func (p PayloadStorageType) MarshalJSON() ([]byte, error) {
-	switch p.Type {
+func (i IssueWithData) MarshalJSON() ([]byte, error) {
+	switch i.Type {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.Type, p)
-	case "in_memory":
+		return nil, fmt.Errorf("invalid type %s in %T", i.Type, i)
+	case "delivery":
 		var marshaler = struct {
 			Type string `json:"type"`
-			*PayloadStorageTypeInMemory
+			*DeliveryIssueWithData
 		}{
-			Type:                       p.Type,
-			PayloadStorageTypeInMemory: p.InMemory,
+			Type:                  i.Type,
+			DeliveryIssueWithData: i.Delivery,
 		}
 		return json.Marshal(marshaler)
-	case "on_disk":
+	case "transformation":
 		var marshaler = struct {
 			Type string `json:"type"`
-			*PayloadStorageTypeOnDisk
+			*TransformationIssueWithData
 		}{
-			Type:                     p.Type,
-			PayloadStorageTypeOnDisk: p.OnDisk,
+			Type:                        i.Type,
+			TransformationIssueWithData: i.Transformation,
 		}
 		return json.Marshal(marshaler)
 	}
 }
 
-type PayloadStorageTypeVisitor interface {
-	VisitInMemory(*PayloadStorageTypeInMemory) error
-	VisitOnDisk(*PayloadStorageTypeOnDisk) error
+type IssueWithDataVisitor interface {
+	VisitDelivery(*DeliveryIssueWithData) error
+	VisitTransformation(*TransformationIssueWithData) error
 }
 
-func (p *PayloadStorageType) Accept(visitor PayloadStorageTypeVisitor) error {
-	switch p.Type {
+func (i *IssueWithData) Accept(visitor IssueWithDataVisitor) error {
+	switch i.Type {
 	default:
-		return fmt.Errorf("invalid type %s in %T", p.Type, p)
-	case "in_memory":
-		return visitor.VisitInMemory(p.InMemory)
-	case "on_disk":
-		return visitor.VisitOnDisk(p.OnDisk)
+		return fmt.Errorf("invalid type %s in %T", i.Type, i)
+	case "delivery":
+		return visitor.VisitDelivery(i.Delivery)
+	case "transformation":
+		return visitor.VisitTransformation(i.Transformation)
 	}
 }
 
-type PayloadStorageTypeInMemory struct {
-	_rawJSON json.RawMessage
+type IssueWithDataPaginatedResult struct {
+	Pagination *SeekPagination  `json:"pagination,omitempty"`
+	Count      *int             `json:"count,omitempty"`
+	Models     []*IssueWithData `json:"models,omitempty"`
 }
 
-func (p *PayloadStorageTypeInMemory) UnmarshalJSON(data []byte) error {
-	type unmarshaler PayloadStorageTypeInMemory
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PayloadStorageTypeInMemory(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PayloadStorageTypeInMemory) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PayloadStorageTypeOnDisk struct {
-	_rawJSON json.RawMessage
-}
-
-func (p *PayloadStorageTypeOnDisk) UnmarshalJSON(data []byte) error {
-	type unmarshaler PayloadStorageTypeOnDisk
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PayloadStorageTypeOnDisk(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PayloadStorageTypeOnDisk) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-// Information of a peer in the cluster
-type PeerInfo struct {
-	Uri string `json:"uri"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PeerInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler PeerInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PeerInfo(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PeerInfo) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PointGroup struct {
-	// Scored points that have the same value of the group_by key
-	Hits []*ScoredPoint `json:"hits,omitempty"`
-	Id   *GroupId       `json:"id,omitempty"`
-	// Record that has been looked up using the group id
-	Lookup *PointGroupLookup `json:"lookup,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PointGroup) UnmarshalJSON(data []byte) error {
-	type unmarshaler PointGroup
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PointGroup(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PointGroup) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-// Record that has been looked up using the group id
-type PointGroupLookup struct {
-	typeName string
-	Record   *Record
-	Unknown  interface{}
-}
-
-func NewPointGroupLookupFromRecord(value *Record) *PointGroupLookup {
-	return &PointGroupLookup{typeName: "record", Record: value}
-}
-
-func NewPointGroupLookupFromUnknown(value interface{}) *PointGroupLookup {
-	return &PointGroupLookup{typeName: "unknown", Unknown: value}
-}
-
-func (p *PointGroupLookup) UnmarshalJSON(data []byte) error {
-	valueRecord := new(Record)
-	if err := json.Unmarshal(data, &valueRecord); err == nil {
-		p.typeName = "record"
-		p.Record = valueRecord
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		p.typeName = "unknown"
-		p.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PointGroupLookup) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "record":
-		return json.Marshal(p.Record)
-	case "unknown":
-		return json.Marshal(p.Unknown)
-	}
-}
-
-type PointGroupLookupVisitor interface {
-	VisitRecord(*Record) error
-	VisitUnknown(interface{}) error
-}
-
-func (p *PointGroupLookup) Accept(visitor PointGroupLookupVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "record":
-		return visitor.VisitRecord(p.Record)
-	case "unknown":
-		return visitor.VisitUnknown(p.Unknown)
-	}
-}
-
-type PointIdsList struct {
-	Points   []*ExtendedPointId    `json:"points,omitempty"`
-	ShardKey *PointIdsListShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PointIdsList) UnmarshalJSON(data []byte) error {
-	type unmarshaler PointIdsList
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PointIdsList(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PointIdsList) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PointIdsListShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewPointIdsListShardKeyFromShardKeySelector(value *ShardKeySelector) *PointIdsListShardKey {
-	return &PointIdsListShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewPointIdsListShardKeyFromUnknown(value interface{}) *PointIdsListShardKey {
-	return &PointIdsListShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (p *PointIdsListShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		p.typeName = "shardKeySelector"
-		p.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		p.typeName = "unknown"
-		p.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PointIdsListShardKey) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "shardKeySelector":
-		return json.Marshal(p.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(p.Unknown)
-	}
-}
-
-type PointIdsListShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (p *PointIdsListShardKey) Accept(visitor PointIdsListShardKeyVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(p.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(p.Unknown)
-	}
-}
-
-type PointInsertOperations struct {
-	typeName    string
-	PointsBatch *PointsBatch
-	PointsList  *PointsList
-}
-
-func NewPointInsertOperationsFromPointsBatch(value *PointsBatch) *PointInsertOperations {
-	return &PointInsertOperations{typeName: "pointsBatch", PointsBatch: value}
-}
-
-func NewPointInsertOperationsFromPointsList(value *PointsList) *PointInsertOperations {
-	return &PointInsertOperations{typeName: "pointsList", PointsList: value}
-}
-
-func (p *PointInsertOperations) UnmarshalJSON(data []byte) error {
-	valuePointsBatch := new(PointsBatch)
-	if err := json.Unmarshal(data, &valuePointsBatch); err == nil {
-		p.typeName = "pointsBatch"
-		p.PointsBatch = valuePointsBatch
-		return nil
-	}
-	valuePointsList := new(PointsList)
-	if err := json.Unmarshal(data, &valuePointsList); err == nil {
-		p.typeName = "pointsList"
-		p.PointsList = valuePointsList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PointInsertOperations) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "pointsBatch":
-		return json.Marshal(p.PointsBatch)
-	case "pointsList":
-		return json.Marshal(p.PointsList)
-	}
-}
-
-type PointInsertOperationsVisitor interface {
-	VisitPointsBatch(*PointsBatch) error
-	VisitPointsList(*PointsList) error
-}
-
-func (p *PointInsertOperations) Accept(visitor PointInsertOperationsVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "pointsBatch":
-		return visitor.VisitPointsBatch(p.PointsBatch)
-	case "pointsList":
-		return visitor.VisitPointsList(p.PointsList)
-	}
-}
-
-type PointStruct struct {
-	Id     *ExtendedPointId `json:"id,omitempty"`
-	Vector *VectorStruct    `json:"vector,omitempty"`
-	// Payload values (optional)
-	Payload *PointStructPayload `json:"payload,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PointStruct) UnmarshalJSON(data []byte) error {
-	type unmarshaler PointStruct
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PointStruct(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PointStruct) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-// Payload values (optional)
-type PointStructPayload struct {
-	typeName string
-	Payload  Payload
-	Unknown  interface{}
-}
-
-func NewPointStructPayloadFromPayload(value Payload) *PointStructPayload {
-	return &PointStructPayload{typeName: "payload", Payload: value}
-}
-
-func NewPointStructPayloadFromUnknown(value interface{}) *PointStructPayload {
-	return &PointStructPayload{typeName: "unknown", Unknown: value}
-}
-
-func (p *PointStructPayload) UnmarshalJSON(data []byte) error {
-	var valuePayload Payload
-	if err := json.Unmarshal(data, &valuePayload); err == nil {
-		p.typeName = "payload"
-		p.Payload = valuePayload
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		p.typeName = "unknown"
-		p.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PointStructPayload) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "payload":
-		return json.Marshal(p.Payload)
-	case "unknown":
-		return json.Marshal(p.Unknown)
-	}
-}
-
-type PointStructPayloadVisitor interface {
-	VisitPayload(Payload) error
-	VisitUnknown(interface{}) error
-}
-
-func (p *PointStructPayload) Accept(visitor PointStructPayloadVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "payload":
-		return visitor.VisitPayload(p.Payload)
-	case "unknown":
-		return visitor.VisitUnknown(p.Unknown)
-	}
-}
-
-type PointVectors struct {
-	Id     *ExtendedPointId `json:"id,omitempty"`
-	Vector *VectorStruct    `json:"vector,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PointVectors) UnmarshalJSON(data []byte) error {
-	type unmarshaler PointVectors
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PointVectors(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PointVectors) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PointsBatch struct {
-	Batch    *Batch               `json:"batch,omitempty"`
-	ShardKey *PointsBatchShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PointsBatch) UnmarshalJSON(data []byte) error {
-	type unmarshaler PointsBatch
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PointsBatch(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PointsBatch) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PointsBatchShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewPointsBatchShardKeyFromShardKeySelector(value *ShardKeySelector) *PointsBatchShardKey {
-	return &PointsBatchShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewPointsBatchShardKeyFromUnknown(value interface{}) *PointsBatchShardKey {
-	return &PointsBatchShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (p *PointsBatchShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		p.typeName = "shardKeySelector"
-		p.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		p.typeName = "unknown"
-		p.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PointsBatchShardKey) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "shardKeySelector":
-		return json.Marshal(p.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(p.Unknown)
-	}
-}
-
-type PointsBatchShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (p *PointsBatchShardKey) Accept(visitor PointsBatchShardKeyVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(p.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(p.Unknown)
-	}
-}
+type ListCustomDomainSchema = []*ListCustomDomainSchemaItem
 
-type PointsList struct {
-	Points   []*PointStruct      `json:"points,omitempty"`
-	ShardKey *PointsListShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *PointsList) UnmarshalJSON(data []byte) error {
-	type unmarshaler PointsList
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = PointsList(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *PointsList) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type PointsListShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewPointsListShardKeyFromShardKeySelector(value *ShardKeySelector) *PointsListShardKey {
-	return &PointsListShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewPointsListShardKeyFromUnknown(value interface{}) *PointsListShardKey {
-	return &PointsListShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (p *PointsListShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		p.typeName = "shardKeySelector"
-		p.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		p.typeName = "unknown"
-		p.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PointsListShardKey) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "shardKeySelector":
-		return json.Marshal(p.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(p.Unknown)
-	}
-}
-
-type PointsListShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (p *PointsListShardKey) Accept(visitor PointsListShardKeyVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(p.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(p.Unknown)
-	}
-}
-
-type PointsSelector struct {
-	typeName       string
-	PointIdsList   *PointIdsList
-	FilterSelector *FilterSelector
-}
-
-func NewPointsSelectorFromPointIdsList(value *PointIdsList) *PointsSelector {
-	return &PointsSelector{typeName: "pointIdsList", PointIdsList: value}
-}
-
-func NewPointsSelectorFromFilterSelector(value *FilterSelector) *PointsSelector {
-	return &PointsSelector{typeName: "filterSelector", FilterSelector: value}
-}
-
-func (p *PointsSelector) UnmarshalJSON(data []byte) error {
-	valuePointIdsList := new(PointIdsList)
-	if err := json.Unmarshal(data, &valuePointIdsList); err == nil {
-		p.typeName = "pointIdsList"
-		p.PointIdsList = valuePointIdsList
-		return nil
-	}
-	valueFilterSelector := new(FilterSelector)
-	if err := json.Unmarshal(data, &valueFilterSelector); err == nil {
-		p.typeName = "filterSelector"
-		p.FilterSelector = valueFilterSelector
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, p)
-}
-
-func (p PointsSelector) MarshalJSON() ([]byte, error) {
-	switch p.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "pointIdsList":
-		return json.Marshal(p.PointIdsList)
-	case "filterSelector":
-		return json.Marshal(p.FilterSelector)
-	}
-}
-
-type PointsSelectorVisitor interface {
-	VisitPointIdsList(*PointIdsList) error
-	VisitFilterSelector(*FilterSelector) error
-}
-
-func (p *PointsSelector) Accept(visitor PointsSelectorVisitor) error {
-	switch p.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", p.typeName, p)
-	case "pointIdsList":
-		return visitor.VisitPointIdsList(p.PointIdsList)
-	case "filterSelector":
-		return visitor.VisitFilterSelector(p.FilterSelector)
-	}
-}
-
-type ProductQuantization struct {
-	Product *ProductQuantizationConfig `json:"product,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *ProductQuantization) UnmarshalJSON(data []byte) error {
-	type unmarshaler ProductQuantization
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = ProductQuantization(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *ProductQuantization) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type ProductQuantizationConfig struct {
-	Compression CompressionRatio `json:"compression,omitempty"`
-	AlwaysRam   *bool            `json:"always_ram,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (p *ProductQuantizationConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler ProductQuantizationConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*p = ProductQuantizationConfig(value)
-	p._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (p *ProductQuantizationConfig) String() string {
-	if len(p._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(p._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(p); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", p)
-}
-
-type QuantizationConfig struct {
-	typeName            string
-	ScalarQuantization  *ScalarQuantization
-	ProductQuantization *ProductQuantization
-	BinaryQuantization  *BinaryQuantization
-}
-
-func NewQuantizationConfigFromScalarQuantization(value *ScalarQuantization) *QuantizationConfig {
-	return &QuantizationConfig{typeName: "scalarQuantization", ScalarQuantization: value}
-}
-
-func NewQuantizationConfigFromProductQuantization(value *ProductQuantization) *QuantizationConfig {
-	return &QuantizationConfig{typeName: "productQuantization", ProductQuantization: value}
-}
-
-func NewQuantizationConfigFromBinaryQuantization(value *BinaryQuantization) *QuantizationConfig {
-	return &QuantizationConfig{typeName: "binaryQuantization", BinaryQuantization: value}
-}
-
-func (q *QuantizationConfig) UnmarshalJSON(data []byte) error {
-	valueScalarQuantization := new(ScalarQuantization)
-	if err := json.Unmarshal(data, &valueScalarQuantization); err == nil {
-		q.typeName = "scalarQuantization"
-		q.ScalarQuantization = valueScalarQuantization
-		return nil
-	}
-	valueProductQuantization := new(ProductQuantization)
-	if err := json.Unmarshal(data, &valueProductQuantization); err == nil {
-		q.typeName = "productQuantization"
-		q.ProductQuantization = valueProductQuantization
-		return nil
-	}
-	valueBinaryQuantization := new(BinaryQuantization)
-	if err := json.Unmarshal(data, &valueBinaryQuantization); err == nil {
-		q.typeName = "binaryQuantization"
-		q.BinaryQuantization = valueBinaryQuantization
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, q)
-}
-
-func (q QuantizationConfig) MarshalJSON() ([]byte, error) {
-	switch q.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", q.typeName, q)
-	case "scalarQuantization":
-		return json.Marshal(q.ScalarQuantization)
-	case "productQuantization":
-		return json.Marshal(q.ProductQuantization)
-	case "binaryQuantization":
-		return json.Marshal(q.BinaryQuantization)
-	}
-}
-
-type QuantizationConfigVisitor interface {
-	VisitScalarQuantization(*ScalarQuantization) error
-	VisitProductQuantization(*ProductQuantization) error
-	VisitBinaryQuantization(*BinaryQuantization) error
+type ListCustomDomainSchemaItem struct {
+	Id                    *string                                          `json:"id,omitempty"`
+	Hostname              *string                                          `json:"hostname,omitempty"`
+	Status                *string                                          `json:"status,omitempty"`
+	Ssl                   *ListCustomDomainSchemaItemSsl                   `json:"ssl,omitempty"`
+	VerificationErrors    []string                                         `json:"verification_errors,omitempty"`
+	OwnershipVerification *ListCustomDomainSchemaItemOwnershipVerification `json:"ownership_verification,omitempty"`
+	CreatedAt             *string                                          `json:"created_at,omitempty"`
 }
 
-func (q *QuantizationConfig) Accept(visitor QuantizationConfigVisitor) error {
-	switch q.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", q.typeName, q)
-	case "scalarQuantization":
-		return visitor.VisitScalarQuantization(q.ScalarQuantization)
-	case "productQuantization":
-		return visitor.VisitProductQuantization(q.ProductQuantization)
-	case "binaryQuantization":
-		return visitor.VisitBinaryQuantization(q.BinaryQuantization)
-	}
-}
-
-type QuantizationConfigDiff struct {
-	typeName            string
-	ScalarQuantization  *ScalarQuantization
-	ProductQuantization *ProductQuantization
-	BinaryQuantization  *BinaryQuantization
-	Disabled            Disabled
-}
-
-func NewQuantizationConfigDiffFromScalarQuantization(value *ScalarQuantization) *QuantizationConfigDiff {
-	return &QuantizationConfigDiff{typeName: "scalarQuantization", ScalarQuantization: value}
-}
-
-func NewQuantizationConfigDiffFromProductQuantization(value *ProductQuantization) *QuantizationConfigDiff {
-	return &QuantizationConfigDiff{typeName: "productQuantization", ProductQuantization: value}
-}
-
-func NewQuantizationConfigDiffFromBinaryQuantization(value *BinaryQuantization) *QuantizationConfigDiff {
-	return &QuantizationConfigDiff{typeName: "binaryQuantization", BinaryQuantization: value}
-}
-
-func NewQuantizationConfigDiffFromDisabled(value Disabled) *QuantizationConfigDiff {
-	return &QuantizationConfigDiff{typeName: "disabled", Disabled: value}
-}
-
-func (q *QuantizationConfigDiff) UnmarshalJSON(data []byte) error {
-	valueScalarQuantization := new(ScalarQuantization)
-	if err := json.Unmarshal(data, &valueScalarQuantization); err == nil {
-		q.typeName = "scalarQuantization"
-		q.ScalarQuantization = valueScalarQuantization
-		return nil
-	}
-	valueProductQuantization := new(ProductQuantization)
-	if err := json.Unmarshal(data, &valueProductQuantization); err == nil {
-		q.typeName = "productQuantization"
-		q.ProductQuantization = valueProductQuantization
-		return nil
-	}
-	valueBinaryQuantization := new(BinaryQuantization)
-	if err := json.Unmarshal(data, &valueBinaryQuantization); err == nil {
-		q.typeName = "binaryQuantization"
-		q.BinaryQuantization = valueBinaryQuantization
-		return nil
-	}
-	var valueDisabled Disabled
-	if err := json.Unmarshal(data, &valueDisabled); err == nil {
-		q.typeName = "disabled"
-		q.Disabled = valueDisabled
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, q)
-}
-
-func (q QuantizationConfigDiff) MarshalJSON() ([]byte, error) {
-	switch q.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", q.typeName, q)
-	case "scalarQuantization":
-		return json.Marshal(q.ScalarQuantization)
-	case "productQuantization":
-		return json.Marshal(q.ProductQuantization)
-	case "binaryQuantization":
-		return json.Marshal(q.BinaryQuantization)
-	case "disabled":
-		return json.Marshal(q.Disabled)
-	}
-}
-
-type QuantizationConfigDiffVisitor interface {
-	VisitScalarQuantization(*ScalarQuantization) error
-	VisitProductQuantization(*ProductQuantization) error
-	VisitBinaryQuantization(*BinaryQuantization) error
-	VisitDisabled(Disabled) error
-}
-
-func (q *QuantizationConfigDiff) Accept(visitor QuantizationConfigDiffVisitor) error {
-	switch q.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", q.typeName, q)
-	case "scalarQuantization":
-		return visitor.VisitScalarQuantization(q.ScalarQuantization)
-	case "productQuantization":
-		return visitor.VisitProductQuantization(q.ProductQuantization)
-	case "binaryQuantization":
-		return visitor.VisitBinaryQuantization(q.BinaryQuantization)
-	case "disabled":
-		return visitor.VisitDisabled(q.Disabled)
-	}
-}
-
-// Additional parameters of the search
-type QuantizationSearchParams struct {
-	// If true, quantized vectors are ignored. Default is false.
-	Ignore *bool `json:"ignore,omitempty"`
-	// If true, use original vectors to re-score top-k results. Might require more time in case if original vectors are stored on disk. If not set, qdrant decides automatically apply rescoring or not.
-	Rescore *bool `json:"rescore,omitempty"`
-	// Oversampling factor for quantization. Default is 1.0.
-	//
-	// Defines how many extra vectors should be pre-selected using quantized index, and then re-scored using original vectors.
-	//
-	// For example, if `oversampling` is 2.4 and `limit` is 100, then 240 vectors will be pre-selected using quantized index, and then top-100 will be returned after re-scoring.
-	Oversampling *float64 `json:"oversampling,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (q *QuantizationSearchParams) UnmarshalJSON(data []byte) error {
-	type unmarshaler QuantizationSearchParams
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*q = QuantizationSearchParams(value)
-	q._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (q *QuantizationSearchParams) String() string {
-	if len(q._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(q._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(q); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", q)
-}
-
-// Summary information about the current raft state
-type RaftInfo struct {
-	// Raft divides time into terms of arbitrary length, each beginning with an election. If a candidate wins the election, it remains the leader for the rest of the term. The term number increases monotonically. Each server stores the current term number which is also exchanged in every communication.
-	Term int `json:"term"`
-	// The index of the latest committed (finalized) operation that this peer is aware of.
-	Commit int `json:"commit"`
-	// Number of consensus operations pending to be applied on this peer
-	PendingOperations int `json:"pending_operations"`
-	// Leader of the current term
-	Leader *int `json:"leader,omitempty"`
-	// Role of this peer in the current term
-	Role *RaftInfoRole `json:"role,omitempty"`
-	// Is this peer a voter or a learner
-	IsVoter bool `json:"is_voter"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *RaftInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler RaftInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = RaftInfo(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
+type ListCustomDomainSchemaItemOwnershipVerification struct {
+	Type  *string `json:"type,omitempty"`
+	Name  *string `json:"name,omitempty"`
+	Value *string `json:"value,omitempty"`
 }
 
-func (r *RaftInfo) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-// Role of this peer in the current term
-type RaftInfoRole struct {
-	typeName  string
-	StateRole StateRole
-	Unknown   interface{}
-}
-
-func NewRaftInfoRoleFromStateRole(value StateRole) *RaftInfoRole {
-	return &RaftInfoRole{typeName: "stateRole", StateRole: value}
-}
-
-func NewRaftInfoRoleFromUnknown(value interface{}) *RaftInfoRole {
-	return &RaftInfoRole{typeName: "unknown", Unknown: value}
-}
-
-func (r *RaftInfoRole) UnmarshalJSON(data []byte) error {
-	var valueStateRole StateRole
-	if err := json.Unmarshal(data, &valueStateRole); err == nil {
-		r.typeName = "stateRole"
-		r.StateRole = valueStateRole
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RaftInfoRole) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "stateRole":
-		return json.Marshal(r.StateRole)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RaftInfoRoleVisitor interface {
-	VisitStateRole(StateRole) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RaftInfoRole) Accept(visitor RaftInfoRoleVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "stateRole":
-		return visitor.VisitStateRole(r.StateRole)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// Range filter request
-type Range struct {
-	// point.key < range.lt
-	Lt *float64 `json:"lt,omitempty"`
-	// point.key > range.gt
-	Gt *float64 `json:"gt,omitempty"`
-	// point.key >= range.gte
-	Gte *float64 `json:"gte,omitempty"`
-	// point.key <= range.lte
-	Lte *float64 `json:"lte,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *Range) UnmarshalJSON(data []byte) error {
-	type unmarshaler Range
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = Range(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *Range) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-// Read consistency parameter
-//
-// # Defines how many replicas should be queried to get the result
-//
-// - `N` - send N random request and return points, which present on all of them
-//
-// - `majority` - send N/2+1 random request and return points, which present on all of them
-//
-// - `quorum` - send requests to all nodes and return points which present on majority of them
-//
-// - `all` - send requests to all nodes and return points which present on all of them
-//
-// Default value is `Factor(1)`
-type ReadConsistency struct {
-	typeName            string
-	Integer             int
-	ReadConsistencyType ReadConsistencyType
-}
-
-func NewReadConsistencyFromInteger(value int) *ReadConsistency {
-	return &ReadConsistency{typeName: "integer", Integer: value}
-}
-
-func NewReadConsistencyFromReadConsistencyType(value ReadConsistencyType) *ReadConsistency {
-	return &ReadConsistency{typeName: "readConsistencyType", ReadConsistencyType: value}
+type ListCustomDomainSchemaItemSsl struct {
+	Id                   *string                                                  `json:"id,omitempty"`
+	Type                 *string                                                  `json:"type,omitempty"`
+	Method               *string                                                  `json:"method,omitempty"`
+	Status               *string                                                  `json:"status,omitempty"`
+	TxtName              *string                                                  `json:"txt_name,omitempty"`
+	TxtValue             *string                                                  `json:"txt_value,omitempty"`
+	ValidationRecords    []*ListCustomDomainSchemaItemSslValidationRecordsItem    `json:"validation_records,omitempty"`
+	DcvDelegationRecords []*ListCustomDomainSchemaItemSslDcvDelegationRecordsItem `json:"dcv_delegation_records,omitempty"`
+	Settings             *ListCustomDomainSchemaItemSslSettings                   `json:"settings,omitempty"`
+	BundleMethod         *string                                                  `json:"bundle_method,omitempty"`
+	Wildcard             *bool                                                    `json:"wildcard,omitempty"`
+	CertificateAuthority *string                                                  `json:"certificate_authority,omitempty"`
 }
 
-func (r *ReadConsistency) UnmarshalJSON(data []byte) error {
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		r.typeName = "integer"
-		r.Integer = valueInteger
-		return nil
-	}
-	var valueReadConsistencyType ReadConsistencyType
-	if err := json.Unmarshal(data, &valueReadConsistencyType); err == nil {
-		r.typeName = "readConsistencyType"
-		r.ReadConsistencyType = valueReadConsistencyType
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r ReadConsistency) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "integer":
-		return json.Marshal(r.Integer)
-	case "readConsistencyType":
-		return json.Marshal(r.ReadConsistencyType)
-	}
+type ListCustomDomainSchemaItemSslDcvDelegationRecordsItem struct {
+	Cname       *string `json:"cname,omitempty"`
+	CnameTarget *string `json:"cname_target,omitempty"`
 }
 
-type ReadConsistencyVisitor interface {
-	VisitInteger(int) error
-	VisitReadConsistencyType(ReadConsistencyType) error
+type ListCustomDomainSchemaItemSslSettings struct {
+	MinTlsVersion *string `json:"min_tls_version,omitempty"`
 }
 
-func (r *ReadConsistency) Accept(visitor ReadConsistencyVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "integer":
-		return visitor.VisitInteger(r.Integer)
-	case "readConsistencyType":
-		return visitor.VisitReadConsistencyType(r.ReadConsistencyType)
-	}
+type ListCustomDomainSchemaItemSslValidationRecordsItem struct {
+	Status   *string `json:"status,omitempty"`
+	TxtName  *string `json:"txt_name,omitempty"`
+	TxtValue *string `json:"txt_value,omitempty"`
 }
 
-// - `majority` - send N/2+1 random request and return points, which present on all of them
-//
-// - `quorum` - send requests to all nodes and return points which present on majority of nodes
-//
-// - `all` - send requests to all nodes and return points which present on all nodes
-type ReadConsistencyType string
+type OrderByDirection string
 
 const (
-	ReadConsistencyTypeMajority ReadConsistencyType = "majority"
-	ReadConsistencyTypeQuorum   ReadConsistencyType = "quorum"
-	ReadConsistencyTypeAll      ReadConsistencyType = "all"
+	OrderByDirectionasc  OrderByDirection = "asc"
+	OrderByDirectiondesc OrderByDirection = "desc"
+	OrderByDirectionASC  OrderByDirection = "ASC"
+	OrderByDirectionDESC OrderByDirection = "DESC"
 )
 
-func NewReadConsistencyTypeFromString(s string) (ReadConsistencyType, error) {
+func NewOrderByDirectionFromString(s string) (OrderByDirection, error) {
 	switch s {
-	case "majority":
-		return ReadConsistencyTypeMajority, nil
-	case "quorum":
-		return ReadConsistencyTypeQuorum, nil
-	case "all":
-		return ReadConsistencyTypeAll, nil
+	case "asc":
+		return OrderByDirectionasc, nil
+	case "desc":
+		return OrderByDirectiondesc, nil
+	case "ASC":
+		return OrderByDirectionASC, nil
+	case "DESC":
+		return OrderByDirectionDESC, nil
 	}
-	var t ReadConsistencyType
+	var t OrderByDirection
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (r ReadConsistencyType) Ptr() *ReadConsistencyType {
+func (o OrderByDirection) Ptr() *OrderByDirection {
+	return &o
+}
+
+type RawBody struct {
+	Body string `json:"body"`
+}
+
+type Request struct {
+	// ID of the request
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string `json:"team_id"`
+	// Whether or not the request was verified when received
+	Verified *bool `json:"verified,omitempty"`
+	// ID of the request data
+	OriginalEventDataId *string               `json:"original_event_data_id,omitempty"`
+	RejectionCause      RequestRejectionCause `json:"rejection_cause,omitempty"`
+	// The priority attributed to the request when received
+	IngestPriority *RequestIngestPriority `json:"ingest_priority,omitempty"`
+	// The time the request was originally received
+	IngestedAt *time.Time `json:"ingested_at,omitempty"`
+	// ID of the associated source
+	SourceId string `json:"source_id"`
+	// The count of events created from this request (CLI events not included)
+	EventsCount *int `json:"events_count,omitempty"`
+	// The count of CLI events created from this request
+	CliEventsCount *int `json:"cli_events_count,omitempty"`
+	IgnoredCount   *int `json:"ignored_count,omitempty"`
+	// Date the event was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the event was created
+	CreatedAt time.Time       `json:"created_at"`
+	Data      *ShortEventData `json:"data,omitempty"`
+}
+
+// The priority attributed to the request when received
+type RequestIngestPriority string
+
+const (
+	RequestIngestPriorityNormal RequestIngestPriority = "NORMAL"
+	RequestIngestPriorityLow    RequestIngestPriority = "LOW"
+)
+
+func NewRequestIngestPriorityFromString(s string) (RequestIngestPriority, error) {
+	switch s {
+	case "NORMAL":
+		return RequestIngestPriorityNormal, nil
+	case "LOW":
+		return RequestIngestPriorityLow, nil
+	}
+	var t RequestIngestPriority
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestIngestPriority) Ptr() *RequestIngestPriority {
 	return &r
 }
 
-type RecommendExample struct {
-	typeName        string
-	ExtendedPointId *ExtendedPointId
-	DoubleList      []float64
-	SparseVector    *SparseVector
+type RequestPaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*Request      `json:"models,omitempty"`
 }
 
-func NewRecommendExampleFromExtendedPointId(value *ExtendedPointId) *RecommendExample {
-	return &RecommendExample{typeName: "extendedPointId", ExtendedPointId: value}
-}
+type RequestRejectionCause string
 
-func NewRecommendExampleFromDoubleList(value []float64) *RecommendExample {
-	return &RecommendExample{typeName: "doubleList", DoubleList: value}
-}
+const (
+	RequestRejectionCauseSourceArchived         RequestRejectionCause = "SOURCE_ARCHIVED"
+	RequestRejectionCauseNoWebhook              RequestRejectionCause = "NO_WEBHOOK"
+	RequestRejectionCauseVerificationFailed     RequestRejectionCause = "VERIFICATION_FAILED"
+	RequestRejectionCauseUnsupportedHttpMethod  RequestRejectionCause = "UNSUPPORTED_HTTP_METHOD"
+	RequestRejectionCauseUnsupportedContentType RequestRejectionCause = "UNSUPPORTED_CONTENT_TYPE"
+	RequestRejectionCauseUnparsableJson         RequestRejectionCause = "UNPARSABLE_JSON"
+	RequestRejectionCausePayloadTooLarge        RequestRejectionCause = "PAYLOAD_TOO_LARGE"
+	RequestRejectionCauseIngestionFatal         RequestRejectionCause = "INGESTION_FATAL"
+	RequestRejectionCauseUnknown                RequestRejectionCause = "UNKNOWN"
+)
 
-func NewRecommendExampleFromSparseVector(value *SparseVector) *RecommendExample {
-	return &RecommendExample{typeName: "sparseVector", SparseVector: value}
-}
-
-func (r *RecommendExample) UnmarshalJSON(data []byte) error {
-	valueExtendedPointId := new(ExtendedPointId)
-	if err := json.Unmarshal(data, &valueExtendedPointId); err == nil {
-		r.typeName = "extendedPointId"
-		r.ExtendedPointId = valueExtendedPointId
-		return nil
+func NewRequestRejectionCauseFromString(s string) (RequestRejectionCause, error) {
+	switch s {
+	case "SOURCE_ARCHIVED":
+		return RequestRejectionCauseSourceArchived, nil
+	case "NO_WEBHOOK":
+		return RequestRejectionCauseNoWebhook, nil
+	case "VERIFICATION_FAILED":
+		return RequestRejectionCauseVerificationFailed, nil
+	case "UNSUPPORTED_HTTP_METHOD":
+		return RequestRejectionCauseUnsupportedHttpMethod, nil
+	case "UNSUPPORTED_CONTENT_TYPE":
+		return RequestRejectionCauseUnsupportedContentType, nil
+	case "UNPARSABLE_JSON":
+		return RequestRejectionCauseUnparsableJson, nil
+	case "PAYLOAD_TOO_LARGE":
+		return RequestRejectionCausePayloadTooLarge, nil
+	case "INGESTION_FATAL":
+		return RequestRejectionCauseIngestionFatal, nil
+	case "UNKNOWN":
+		return RequestRejectionCauseUnknown, nil
 	}
-	var valueDoubleList []float64
-	if err := json.Unmarshal(data, &valueDoubleList); err == nil {
-		r.typeName = "doubleList"
-		r.DoubleList = valueDoubleList
-		return nil
-	}
-	valueSparseVector := new(SparseVector)
-	if err := json.Unmarshal(data, &valueSparseVector); err == nil {
-		r.typeName = "sparseVector"
-		r.SparseVector = valueSparseVector
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+	var t RequestRejectionCause
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (r RecommendExample) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "extendedPointId":
-		return json.Marshal(r.ExtendedPointId)
-	case "doubleList":
-		return json.Marshal(r.DoubleList)
-	case "sparseVector":
-		return json.Marshal(r.SparseVector)
-	}
+func (r RequestRejectionCause) Ptr() *RequestRejectionCause {
+	return &r
 }
 
-type RecommendExampleVisitor interface {
-	VisitExtendedPointId(*ExtendedPointId) error
-	VisitDoubleList([]float64) error
-	VisitSparseVector(*SparseVector) error
+type RetriedEvent struct {
+	Event   *Event        `json:"event,omitempty"`
+	Attempt *EventAttempt `json:"attempt,omitempty"`
 }
 
-func (r *RecommendExample) Accept(visitor RecommendExampleVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "extendedPointId":
-		return visitor.VisitExtendedPointId(r.ExtendedPointId)
-	case "doubleList":
-		return visitor.VisitDoubleList(r.DoubleList)
-	case "sparseVector":
-		return visitor.VisitSparseVector(r.SparseVector)
-	}
+type RetryRequest struct {
+	Request *Request `json:"request,omitempty"`
+	Events  []*Event `json:"events,omitempty"`
 }
 
-// Recommendation request. Provides positive and negative examples of the vectors, which can be ids of points that are already stored in the collection, raw vectors, or even ids and vectors combined.
-//
-// Service should look for the points which are closer to positive examples and at the same time further to negative examples. The concrete way of how to compare negative and positive distances is up to the `strategy` chosen.
-type RecommendRequest struct {
-	// Specify in which shards to look for the points, if not specified - look in all shards
-	ShardKey *RecommendRequestShardKey `json:"shard_key,omitempty"`
-	// Look for vectors closest to those
-	Positive []*RecommendExample `json:"positive,omitempty"`
-	// Try to avoid vectors like this
-	Negative []*RecommendExample `json:"negative,omitempty"`
-	// How to use positive and negative examples to find the results
-	Strategy *RecommendRequestStrategy `json:"strategy,omitempty"`
-	// Look only for points which satisfies this conditions
-	Filter *RecommendRequestFilter `json:"filter,omitempty"`
-	// Additional search params
-	Params *RecommendRequestParams `json:"params,omitempty"`
-	// Max number of result to return
-	Limit int `json:"limit"`
-	// Offset of the first result to return. May be used to paginate results. Note: large offset values may cause performance issues.
-	Offset *int `json:"offset,omitempty"`
-	// Select which payload to return with the response. Default: None
-	WithPayload *RecommendRequestWithPayload `json:"with_payload,omitempty"`
-	// Whether to return the point vector with the result?
-	WithVector *RecommendRequestWithVector `json:"with_vector,omitempty"`
-	// Define a minimal score threshold for the result. If defined, less similar results will not be returned. Score of the returned result might be higher or smaller than the threshold depending on the Distance function used. E.g. for cosine similarity only higher scores will be returned.
-	ScoreThreshold *float64 `json:"score_threshold,omitempty"`
-	// Define which vector to use for recommendation, if not specified - try to use default vector
-	Using *RecommendRequestUsing `json:"using,omitempty"`
-	// The location used to lookup vectors. If not specified - use current collection. Note: the other collection should have the same vector size as the current collection
-	LookupFrom *RecommendRequestLookupFrom `json:"lookup_from,omitempty"`
-
-	_rawJSON json.RawMessage
+type RetryRule struct {
+	Strategy RetryStrategy `json:"strategy,omitempty"`
+	// Time in MS between each retry
+	Interval *int `json:"interval,omitempty"`
+	// Maximum number of retries to attempt
+	Count *int `json:"count,omitempty"`
+	type_ string
 }
 
-func (r *RecommendRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler RecommendRequest
+func (r *RetryRule) Type() string {
+	return r.type_
+}
+
+func (r *RetryRule) UnmarshalJSON(data []byte) error {
+	type unmarshaler RetryRule
 	var value unmarshaler
 	if err := json.Unmarshal(data, &value); err != nil {
 		return err
 	}
-	*r = RecommendRequest(value)
-	r._rawJSON = json.RawMessage(data)
+	*r = RetryRule(value)
+	r.type_ = "retry"
 	return nil
 }
 
-func (r *RecommendRequest) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
+func (r *RetryRule) MarshalJSON() ([]byte, error) {
+	type embed RetryRule
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*r),
+		Type:  "retry",
 	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
+	return json.Marshal(marshaler)
+}
+
+// Algorithm to use when calculating delay between retries
+type RetryStrategy string
+
+const (
+	RetryStrategyLinear      RetryStrategy = "linear"
+	RetryStrategyExponential RetryStrategy = "exponential"
+)
+
+func NewRetryStrategyFromString(s string) (RetryStrategy, error) {
+	switch s {
+	case "linear":
+		return RetryStrategyLinear, nil
+	case "exponential":
+		return RetryStrategyExponential, nil
 	}
-	return fmt.Sprintf("%#v", r)
+	var t RetryStrategy
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-// Look only for points which satisfies this conditions
-type RecommendRequestFilter struct {
-	typeName string
-	Filter   *Filter
-	Unknown  interface{}
+func (r RetryStrategy) Ptr() *RetryStrategy {
+	return &r
 }
 
-func NewRecommendRequestFilterFromFilter(value *Filter) *RecommendRequestFilter {
-	return &RecommendRequestFilter{typeName: "filter", Filter: value}
+type Rule struct {
+	typeName      string
+	RetryRule     *RetryRule
+	FilterRule    *FilterRule
+	TransformRule *TransformRule
+	DelayRule     *DelayRule
 }
 
-func NewRecommendRequestFilterFromUnknown(value interface{}) *RecommendRequestFilter {
-	return &RecommendRequestFilter{typeName: "unknown", Unknown: value}
+func NewRuleFromRetryRule(value *RetryRule) *Rule {
+	return &Rule{typeName: "retryRule", RetryRule: value}
 }
 
-func (r *RecommendRequestFilter) UnmarshalJSON(data []byte) error {
-	valueFilter := new(Filter)
-	if err := json.Unmarshal(data, &valueFilter); err == nil {
-		r.typeName = "filter"
-		r.Filter = valueFilter
+func NewRuleFromFilterRule(value *FilterRule) *Rule {
+	return &Rule{typeName: "filterRule", FilterRule: value}
+}
+
+func NewRuleFromTransformRule(value *TransformRule) *Rule {
+	return &Rule{typeName: "transformRule", TransformRule: value}
+}
+
+func NewRuleFromDelayRule(value *DelayRule) *Rule {
+	return &Rule{typeName: "delayRule", DelayRule: value}
+}
+
+func (r *Rule) UnmarshalJSON(data []byte) error {
+	valueRetryRule := new(RetryRule)
+	if err := json.Unmarshal(data, &valueRetryRule); err == nil {
+		r.typeName = "retryRule"
+		r.RetryRule = valueRetryRule
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
+	valueFilterRule := new(FilterRule)
+	if err := json.Unmarshal(data, &valueFilterRule); err == nil {
+		r.typeName = "filterRule"
+		r.FilterRule = valueFilterRule
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RecommendRequestFilter) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "filter":
-		return json.Marshal(r.Filter)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RecommendRequestFilterVisitor interface {
-	VisitFilter(*Filter) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RecommendRequestFilter) Accept(visitor RecommendRequestFilterVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "filter":
-		return visitor.VisitFilter(r.Filter)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// The location used to lookup vectors. If not specified - use current collection. Note: the other collection should have the same vector size as the current collection
-type RecommendRequestLookupFrom struct {
-	typeName       string
-	LookupLocation *LookupLocation
-	Unknown        interface{}
-}
-
-func NewRecommendRequestLookupFromFromLookupLocation(value *LookupLocation) *RecommendRequestLookupFrom {
-	return &RecommendRequestLookupFrom{typeName: "lookupLocation", LookupLocation: value}
-}
-
-func NewRecommendRequestLookupFromFromUnknown(value interface{}) *RecommendRequestLookupFrom {
-	return &RecommendRequestLookupFrom{typeName: "unknown", Unknown: value}
-}
-
-func (r *RecommendRequestLookupFrom) UnmarshalJSON(data []byte) error {
-	valueLookupLocation := new(LookupLocation)
-	if err := json.Unmarshal(data, &valueLookupLocation); err == nil {
-		r.typeName = "lookupLocation"
-		r.LookupLocation = valueLookupLocation
+	valueTransformRule := new(TransformRule)
+	if err := json.Unmarshal(data, &valueTransformRule); err == nil {
+		r.typeName = "transformRule"
+		r.TransformRule = valueTransformRule
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
+	valueDelayRule := new(DelayRule)
+	if err := json.Unmarshal(data, &valueDelayRule); err == nil {
+		r.typeName = "delayRule"
+		r.DelayRule = valueDelayRule
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
 }
 
-func (r RecommendRequestLookupFrom) MarshalJSON() ([]byte, error) {
+func (r Rule) MarshalJSON() ([]byte, error) {
 	switch r.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "lookupLocation":
-		return json.Marshal(r.LookupLocation)
-	case "unknown":
-		return json.Marshal(r.Unknown)
+	case "retryRule":
+		return json.Marshal(r.RetryRule)
+	case "filterRule":
+		return json.Marshal(r.FilterRule)
+	case "transformRule":
+		return json.Marshal(r.TransformRule)
+	case "delayRule":
+		return json.Marshal(r.DelayRule)
 	}
 }
 
-type RecommendRequestLookupFromVisitor interface {
-	VisitLookupLocation(*LookupLocation) error
-	VisitUnknown(interface{}) error
+type RuleVisitor interface {
+	VisitRetryRule(*RetryRule) error
+	VisitFilterRule(*FilterRule) error
+	VisitTransformRule(*TransformRule) error
+	VisitDelayRule(*DelayRule) error
 }
 
-func (r *RecommendRequestLookupFrom) Accept(visitor RecommendRequestLookupFromVisitor) error {
+func (r *Rule) Accept(visitor RuleVisitor) error {
 	switch r.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "lookupLocation":
-		return visitor.VisitLookupLocation(r.LookupLocation)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
+	case "retryRule":
+		return visitor.VisitRetryRule(r.RetryRule)
+	case "filterRule":
+		return visitor.VisitFilterRule(r.FilterRule)
+	case "transformRule":
+		return visitor.VisitTransformRule(r.TransformRule)
+	case "delayRule":
+		return visitor.VisitDelayRule(r.DelayRule)
 	}
 }
 
-// Additional search params
-type RecommendRequestParams struct {
-	typeName     string
-	SearchParams *SearchParams
-	Unknown      interface{}
+type SeekPagination struct {
+	OrderBy *SeekPaginationOrderBy `json:"order_by,omitempty"`
+	Dir     *SeekPaginationDir     `json:"dir,omitempty"`
+	Limit   *int                   `json:"limit,omitempty"`
+	Prev    *string                `json:"prev,omitempty"`
+	Next    *string                `json:"next,omitempty"`
 }
 
-func NewRecommendRequestParamsFromSearchParams(value *SearchParams) *RecommendRequestParams {
-	return &RecommendRequestParams{typeName: "searchParams", SearchParams: value}
-}
-
-func NewRecommendRequestParamsFromUnknown(value interface{}) *RecommendRequestParams {
-	return &RecommendRequestParams{typeName: "unknown", Unknown: value}
-}
-
-func (r *RecommendRequestParams) UnmarshalJSON(data []byte) error {
-	valueSearchParams := new(SearchParams)
-	if err := json.Unmarshal(data, &valueSearchParams); err == nil {
-		r.typeName = "searchParams"
-		r.SearchParams = valueSearchParams
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RecommendRequestParams) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "searchParams":
-		return json.Marshal(r.SearchParams)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RecommendRequestParamsVisitor interface {
-	VisitSearchParams(*SearchParams) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RecommendRequestParams) Accept(visitor RecommendRequestParamsVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "searchParams":
-		return visitor.VisitSearchParams(r.SearchParams)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// Specify in which shards to look for the points, if not specified - look in all shards
-type RecommendRequestShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewRecommendRequestShardKeyFromShardKeySelector(value *ShardKeySelector) *RecommendRequestShardKey {
-	return &RecommendRequestShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewRecommendRequestShardKeyFromUnknown(value interface{}) *RecommendRequestShardKey {
-	return &RecommendRequestShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (r *RecommendRequestShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		r.typeName = "shardKeySelector"
-		r.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RecommendRequestShardKey) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "shardKeySelector":
-		return json.Marshal(r.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RecommendRequestShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RecommendRequestShardKey) Accept(visitor RecommendRequestShardKeyVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(r.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// How to use positive and negative examples to find the results
-type RecommendRequestStrategy struct {
-	typeName          string
-	RecommendStrategy RecommendStrategy
-	Unknown           interface{}
-}
-
-func NewRecommendRequestStrategyFromRecommendStrategy(value RecommendStrategy) *RecommendRequestStrategy {
-	return &RecommendRequestStrategy{typeName: "recommendStrategy", RecommendStrategy: value}
-}
-
-func NewRecommendRequestStrategyFromUnknown(value interface{}) *RecommendRequestStrategy {
-	return &RecommendRequestStrategy{typeName: "unknown", Unknown: value}
-}
-
-func (r *RecommendRequestStrategy) UnmarshalJSON(data []byte) error {
-	var valueRecommendStrategy RecommendStrategy
-	if err := json.Unmarshal(data, &valueRecommendStrategy); err == nil {
-		r.typeName = "recommendStrategy"
-		r.RecommendStrategy = valueRecommendStrategy
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RecommendRequestStrategy) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "recommendStrategy":
-		return json.Marshal(r.RecommendStrategy)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RecommendRequestStrategyVisitor interface {
-	VisitRecommendStrategy(RecommendStrategy) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RecommendRequestStrategy) Accept(visitor RecommendRequestStrategyVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "recommendStrategy":
-		return visitor.VisitRecommendStrategy(r.RecommendStrategy)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// Define which vector to use for recommendation, if not specified - try to use default vector
-type RecommendRequestUsing struct {
-	typeName    string
-	UsingVector UsingVector
-	Unknown     interface{}
-}
-
-func NewRecommendRequestUsingFromUsingVector(value UsingVector) *RecommendRequestUsing {
-	return &RecommendRequestUsing{typeName: "usingVector", UsingVector: value}
-}
-
-func NewRecommendRequestUsingFromUnknown(value interface{}) *RecommendRequestUsing {
-	return &RecommendRequestUsing{typeName: "unknown", Unknown: value}
-}
-
-func (r *RecommendRequestUsing) UnmarshalJSON(data []byte) error {
-	var valueUsingVector UsingVector
-	if err := json.Unmarshal(data, &valueUsingVector); err == nil {
-		r.typeName = "usingVector"
-		r.UsingVector = valueUsingVector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RecommendRequestUsing) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "usingVector":
-		return json.Marshal(r.UsingVector)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RecommendRequestUsingVisitor interface {
-	VisitUsingVector(UsingVector) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RecommendRequestUsing) Accept(visitor RecommendRequestUsingVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "usingVector":
-		return visitor.VisitUsingVector(r.UsingVector)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// Select which payload to return with the response. Default: None
-type RecommendRequestWithPayload struct {
+type SeekPaginationDir struct {
 	typeName             string
-	WithPayloadInterface *WithPayloadInterface
-	Unknown              interface{}
+	OrderByDirection     OrderByDirection
+	OrderByDirectionList []OrderByDirection
 }
 
-func NewRecommendRequestWithPayloadFromWithPayloadInterface(value *WithPayloadInterface) *RecommendRequestWithPayload {
-	return &RecommendRequestWithPayload{typeName: "withPayloadInterface", WithPayloadInterface: value}
+func NewSeekPaginationDirFromOrderByDirection(value OrderByDirection) *SeekPaginationDir {
+	return &SeekPaginationDir{typeName: "orderByDirection", OrderByDirection: value}
 }
 
-func NewRecommendRequestWithPayloadFromUnknown(value interface{}) *RecommendRequestWithPayload {
-	return &RecommendRequestWithPayload{typeName: "unknown", Unknown: value}
+func NewSeekPaginationDirFromOrderByDirectionList(value []OrderByDirection) *SeekPaginationDir {
+	return &SeekPaginationDir{typeName: "orderByDirectionList", OrderByDirectionList: value}
 }
 
-func (r *RecommendRequestWithPayload) UnmarshalJSON(data []byte) error {
-	valueWithPayloadInterface := new(WithPayloadInterface)
-	if err := json.Unmarshal(data, &valueWithPayloadInterface); err == nil {
-		r.typeName = "withPayloadInterface"
-		r.WithPayloadInterface = valueWithPayloadInterface
+func (s *SeekPaginationDir) UnmarshalJSON(data []byte) error {
+	var valueOrderByDirection OrderByDirection
+	if err := json.Unmarshal(data, &valueOrderByDirection); err == nil {
+		s.typeName = "orderByDirection"
+		s.OrderByDirection = valueOrderByDirection
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
+	var valueOrderByDirectionList []OrderByDirection
+	if err := json.Unmarshal(data, &valueOrderByDirectionList); err == nil {
+		s.typeName = "orderByDirectionList"
+		s.OrderByDirectionList = valueOrderByDirectionList
 		return nil
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
 }
 
-func (r RecommendRequestWithPayload) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
+func (s SeekPaginationDir) MarshalJSON() ([]byte, error) {
+	switch s.typeName {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "withPayloadInterface":
-		return json.Marshal(r.WithPayloadInterface)
-	case "unknown":
-		return json.Marshal(r.Unknown)
+		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
+	case "orderByDirection":
+		return json.Marshal(s.OrderByDirection)
+	case "orderByDirectionList":
+		return json.Marshal(s.OrderByDirectionList)
 	}
 }
 
-type RecommendRequestWithPayloadVisitor interface {
-	VisitWithPayloadInterface(*WithPayloadInterface) error
-	VisitUnknown(interface{}) error
+type SeekPaginationDirVisitor interface {
+	VisitOrderByDirection(OrderByDirection) error
+	VisitOrderByDirectionList([]OrderByDirection) error
 }
 
-func (r *RecommendRequestWithPayload) Accept(visitor RecommendRequestWithPayloadVisitor) error {
-	switch r.typeName {
+func (s *SeekPaginationDir) Accept(visitor SeekPaginationDirVisitor) error {
+	switch s.typeName {
 	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "withPayloadInterface":
-		return visitor.VisitWithPayloadInterface(r.WithPayloadInterface)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
+		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
+	case "orderByDirection":
+		return visitor.VisitOrderByDirection(s.OrderByDirection)
+	case "orderByDirectionList":
+		return visitor.VisitOrderByDirectionList(s.OrderByDirectionList)
 	}
 }
 
-// Whether to return the point vector with the result?
-type RecommendRequestWithVector struct {
+type SeekPaginationOrderBy struct {
 	typeName   string
-	WithVector *WithVector
-	Unknown    interface{}
+	String     string
+	StringList []string
 }
 
-func NewRecommendRequestWithVectorFromWithVector(value *WithVector) *RecommendRequestWithVector {
-	return &RecommendRequestWithVector{typeName: "withVector", WithVector: value}
+func NewSeekPaginationOrderByFromString(value string) *SeekPaginationOrderBy {
+	return &SeekPaginationOrderBy{typeName: "string", String: value}
 }
 
-func NewRecommendRequestWithVectorFromUnknown(value interface{}) *RecommendRequestWithVector {
-	return &RecommendRequestWithVector{typeName: "unknown", Unknown: value}
+func NewSeekPaginationOrderByFromStringList(value []string) *SeekPaginationOrderBy {
+	return &SeekPaginationOrderBy{typeName: "stringList", StringList: value}
 }
 
-func (r *RecommendRequestWithVector) UnmarshalJSON(data []byte) error {
-	valueWithVector := new(WithVector)
-	if err := json.Unmarshal(data, &valueWithVector); err == nil {
-		r.typeName = "withVector"
-		r.WithVector = valueWithVector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RecommendRequestWithVector) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "withVector":
-		return json.Marshal(r.WithVector)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RecommendRequestWithVectorVisitor interface {
-	VisitWithVector(*WithVector) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RecommendRequestWithVector) Accept(visitor RecommendRequestWithVectorVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "withVector":
-		return visitor.VisitWithVector(r.WithVector)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// How to use positive and negative examples to find the results, default is `average_vector`:
-//
-// - `average_vector` - Average positive and negative vectors and create a single query with the formula `query = avg_pos + avg_pos - avg_neg`. Then performs normal search.
-//
-// - `best_score` - Uses custom search objective. Each candidate is compared against all examples, its score is then chosen from the `max(max_pos_score, max_neg_score)`. If the `max_neg_score` is chosen then it is squared and negated, otherwise it is just the `max_pos_score`.
-type RecommendStrategy string
-
-const (
-	RecommendStrategyAverageVector RecommendStrategy = "average_vector"
-	RecommendStrategyBestScore     RecommendStrategy = "best_score"
-)
-
-func NewRecommendStrategyFromString(s string) (RecommendStrategy, error) {
-	switch s {
-	case "average_vector":
-		return RecommendStrategyAverageVector, nil
-	case "best_score":
-		return RecommendStrategyBestScore, nil
-	}
-	var t RecommendStrategy
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (r RecommendStrategy) Ptr() *RecommendStrategy {
-	return &r
-}
-
-// Point data
-type Record struct {
-	Id *ExtendedPointId `json:"id,omitempty"`
-	// Payload - values assigned to the point
-	Payload *RecordPayload `json:"payload,omitempty"`
-	// Vector of the point
-	Vector *RecordVector `json:"vector,omitempty"`
-	// Shard Key
-	ShardKey *RecordShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *Record) UnmarshalJSON(data []byte) error {
-	type unmarshaler Record
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = Record(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *Record) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-// Payload - values assigned to the point
-type RecordPayload struct {
-	typeName string
-	Payload  Payload
-	Unknown  interface{}
-}
-
-func NewRecordPayloadFromPayload(value Payload) *RecordPayload {
-	return &RecordPayload{typeName: "payload", Payload: value}
-}
-
-func NewRecordPayloadFromUnknown(value interface{}) *RecordPayload {
-	return &RecordPayload{typeName: "unknown", Unknown: value}
-}
-
-func (r *RecordPayload) UnmarshalJSON(data []byte) error {
-	var valuePayload Payload
-	if err := json.Unmarshal(data, &valuePayload); err == nil {
-		r.typeName = "payload"
-		r.Payload = valuePayload
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RecordPayload) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "payload":
-		return json.Marshal(r.Payload)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RecordPayloadVisitor interface {
-	VisitPayload(Payload) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RecordPayload) Accept(visitor RecordPayloadVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "payload":
-		return visitor.VisitPayload(r.Payload)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// Shard Key
-type RecordShardKey struct {
-	typeName string
-	ShardKey *ShardKey
-	Unknown  interface{}
-}
-
-func NewRecordShardKeyFromShardKey(value *ShardKey) *RecordShardKey {
-	return &RecordShardKey{typeName: "shardKey", ShardKey: value}
-}
-
-func NewRecordShardKeyFromUnknown(value interface{}) *RecordShardKey {
-	return &RecordShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (r *RecordShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKey := new(ShardKey)
-	if err := json.Unmarshal(data, &valueShardKey); err == nil {
-		r.typeName = "shardKey"
-		r.ShardKey = valueShardKey
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RecordShardKey) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "shardKey":
-		return json.Marshal(r.ShardKey)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RecordShardKeyVisitor interface {
-	VisitShardKey(*ShardKey) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RecordShardKey) Accept(visitor RecordShardKeyVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "shardKey":
-		return visitor.VisitShardKey(r.ShardKey)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// Vector of the point
-type RecordVector struct {
-	typeName     string
-	VectorStruct *VectorStruct
-	Unknown      interface{}
-}
-
-func NewRecordVectorFromVectorStruct(value *VectorStruct) *RecordVector {
-	return &RecordVector{typeName: "vectorStruct", VectorStruct: value}
-}
-
-func NewRecordVectorFromUnknown(value interface{}) *RecordVector {
-	return &RecordVector{typeName: "unknown", Unknown: value}
-}
-
-func (r *RecordVector) UnmarshalJSON(data []byte) error {
-	valueVectorStruct := new(VectorStruct)
-	if err := json.Unmarshal(data, &valueVectorStruct); err == nil {
-		r.typeName = "vectorStruct"
-		r.VectorStruct = valueVectorStruct
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RecordVector) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "vectorStruct":
-		return json.Marshal(r.VectorStruct)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RecordVectorVisitor interface {
-	VisitVectorStruct(*VectorStruct) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RecordVector) Accept(visitor RecordVectorVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "vectorStruct":
-		return visitor.VisitVectorStruct(r.VectorStruct)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-type RemoteShardInfo struct {
-	// Remote shard id
-	ShardId int `json:"shard_id"`
-	// User-defined sharding key
-	ShardKey *RemoteShardInfoShardKey `json:"shard_key,omitempty"`
-	// Remote peer id
-	PeerId int          `json:"peer_id"`
-	State  ReplicaState `json:"state,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *RemoteShardInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler RemoteShardInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = RemoteShardInfo(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *RemoteShardInfo) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-// User-defined sharding key
-type RemoteShardInfoShardKey struct {
-	typeName string
-	ShardKey *ShardKey
-	Unknown  interface{}
-}
-
-func NewRemoteShardInfoShardKeyFromShardKey(value *ShardKey) *RemoteShardInfoShardKey {
-	return &RemoteShardInfoShardKey{typeName: "shardKey", ShardKey: value}
-}
-
-func NewRemoteShardInfoShardKeyFromUnknown(value interface{}) *RemoteShardInfoShardKey {
-	return &RemoteShardInfoShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (r *RemoteShardInfoShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKey := new(ShardKey)
-	if err := json.Unmarshal(data, &valueShardKey); err == nil {
-		r.typeName = "shardKey"
-		r.ShardKey = valueShardKey
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r RemoteShardInfoShardKey) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "shardKey":
-		return json.Marshal(r.ShardKey)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type RemoteShardInfoShardKeyVisitor interface {
-	VisitShardKey(*ShardKey) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *RemoteShardInfoShardKey) Accept(visitor RemoteShardInfoShardKeyVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "shardKey":
-		return visitor.VisitShardKey(r.ShardKey)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-type RemoteShardTelemetry struct {
-	ShardId  int                          `json:"shard_id"`
-	PeerId   *int                         `json:"peer_id,omitempty"`
-	Searches *OperationDurationStatistics `json:"searches,omitempty"`
-	Updates  *OperationDurationStatistics `json:"updates,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *RemoteShardTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler RemoteShardTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = RemoteShardTelemetry(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *RemoteShardTelemetry) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-// Change alias to a new one
-type RenameAlias struct {
-	OldAliasName string `json:"old_alias_name"`
-	NewAliasName string `json:"new_alias_name"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *RenameAlias) UnmarshalJSON(data []byte) error {
-	type unmarshaler RenameAlias
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = RenameAlias(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *RenameAlias) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-// Change alias to a new one
-type RenameAliasOperation struct {
-	RenameAlias *RenameAlias `json:"rename_alias,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *RenameAliasOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler RenameAliasOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = RenameAliasOperation(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *RenameAliasOperation) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type Replica struct {
-	ShardId int `json:"shard_id"`
-	PeerId  int `json:"peer_id"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *Replica) UnmarshalJSON(data []byte) error {
-	type unmarshaler Replica
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = Replica(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *Replica) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type ReplicaSetTelemetry struct {
-	Id              int                       `json:"id"`
-	Local           *ReplicaSetTelemetryLocal `json:"local,omitempty"`
-	Remote          []*RemoteShardTelemetry   `json:"remote,omitempty"`
-	ReplicateStates map[string]ReplicaState   `json:"replicate_states,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *ReplicaSetTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler ReplicaSetTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = ReplicaSetTelemetry(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *ReplicaSetTelemetry) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type ReplicaSetTelemetryLocal struct {
-	typeName            string
-	LocalShardTelemetry *LocalShardTelemetry
-	Unknown             interface{}
-}
-
-func NewReplicaSetTelemetryLocalFromLocalShardTelemetry(value *LocalShardTelemetry) *ReplicaSetTelemetryLocal {
-	return &ReplicaSetTelemetryLocal{typeName: "localShardTelemetry", LocalShardTelemetry: value}
-}
-
-func NewReplicaSetTelemetryLocalFromUnknown(value interface{}) *ReplicaSetTelemetryLocal {
-	return &ReplicaSetTelemetryLocal{typeName: "unknown", Unknown: value}
-}
-
-func (r *ReplicaSetTelemetryLocal) UnmarshalJSON(data []byte) error {
-	valueLocalShardTelemetry := new(LocalShardTelemetry)
-	if err := json.Unmarshal(data, &valueLocalShardTelemetry); err == nil {
-		r.typeName = "localShardTelemetry"
-		r.LocalShardTelemetry = valueLocalShardTelemetry
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		r.typeName = "unknown"
-		r.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
-}
-
-func (r ReplicaSetTelemetryLocal) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "localShardTelemetry":
-		return json.Marshal(r.LocalShardTelemetry)
-	case "unknown":
-		return json.Marshal(r.Unknown)
-	}
-}
-
-type ReplicaSetTelemetryLocalVisitor interface {
-	VisitLocalShardTelemetry(*LocalShardTelemetry) error
-	VisitUnknown(interface{}) error
-}
-
-func (r *ReplicaSetTelemetryLocal) Accept(visitor ReplicaSetTelemetryLocalVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "localShardTelemetry":
-		return visitor.VisitLocalShardTelemetry(r.LocalShardTelemetry)
-	case "unknown":
-		return visitor.VisitUnknown(r.Unknown)
-	}
-}
-
-// State of the single shard within a replica set.
-type ReplicaState string
-
-const (
-	ReplicaStateActive          ReplicaState = "Active"
-	ReplicaStateDead            ReplicaState = "Dead"
-	ReplicaStatePartial         ReplicaState = "Partial"
-	ReplicaStateInitializing    ReplicaState = "Initializing"
-	ReplicaStateListener        ReplicaState = "Listener"
-	ReplicaStatePartialSnapshot ReplicaState = "PartialSnapshot"
-)
-
-func NewReplicaStateFromString(s string) (ReplicaState, error) {
-	switch s {
-	case "Active":
-		return ReplicaStateActive, nil
-	case "Dead":
-		return ReplicaStateDead, nil
-	case "Partial":
-		return ReplicaStatePartial, nil
-	case "Initializing":
-		return ReplicaStateInitializing, nil
-	case "Listener":
-		return ReplicaStateListener, nil
-	case "PartialSnapshot":
-		return ReplicaStatePartialSnapshot, nil
-	}
-	var t ReplicaState
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (r ReplicaState) Ptr() *ReplicaState {
-	return &r
-}
-
-type ReplicateShardOperation struct {
-	ReplicateShard *MoveShard `json:"replicate_shard,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *ReplicateShardOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler ReplicateShardOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = ReplicateShardOperation(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *ReplicateShardOperation) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type RequestsTelemetry struct {
-	Rest *WebApiTelemetry `json:"rest,omitempty"`
-	Grpc *GrpcTelemetry   `json:"grpc,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *RequestsTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler RequestsTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = RequestsTelemetry(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *RequestsTelemetry) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type RunningEnvironmentTelemetry struct {
-	Distribution        *string `json:"distribution,omitempty"`
-	DistributionVersion *string `json:"distribution_version,omitempty"`
-	IsDocker            bool    `json:"is_docker"`
-	Cores               *int    `json:"cores,omitempty"`
-	RamSize             *int    `json:"ram_size,omitempty"`
-	DiskSize            *int    `json:"disk_size,omitempty"`
-	CpuFlags            string  `json:"cpu_flags"`
-
-	_rawJSON json.RawMessage
-}
-
-func (r *RunningEnvironmentTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler RunningEnvironmentTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = RunningEnvironmentTelemetry(value)
-	r._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (r *RunningEnvironmentTelemetry) String() string {
-	if len(r._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(r); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", r)
-}
-
-type ScalarQuantization struct {
-	Scalar *ScalarQuantizationConfig `json:"scalar,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *ScalarQuantization) UnmarshalJSON(data []byte) error {
-	type unmarshaler ScalarQuantization
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = ScalarQuantization(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *ScalarQuantization) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-type ScalarQuantizationConfig struct {
-	Type ScalarType `json:"type,omitempty"`
-	// Quantile for quantization. Expected value range in [0.5, 1.0]. If not set - use the whole range of values
-	Quantile *float64 `json:"quantile,omitempty"`
-	// If true - quantized vectors always will be stored in RAM, ignoring the config of main storage
-	AlwaysRam *bool `json:"always_ram,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *ScalarQuantizationConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler ScalarQuantizationConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = ScalarQuantizationConfig(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *ScalarQuantizationConfig) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-type ScalarType = string
-
-// Search result
-type ScoredPoint struct {
-	Id *ExtendedPointId `json:"id,omitempty"`
-	// Point version
-	Version int `json:"version"`
-	// Points vector distance to the query vector
-	Score float64 `json:"score"`
-	// Payload - values assigned to the point
-	Payload *ScoredPointPayload `json:"payload,omitempty"`
-	// Vector of the point
-	Vector *ScoredPointVector `json:"vector,omitempty"`
-	// Shard Key
-	ShardKey *ScoredPointShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *ScoredPoint) UnmarshalJSON(data []byte) error {
-	type unmarshaler ScoredPoint
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = ScoredPoint(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *ScoredPoint) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Payload - values assigned to the point
-type ScoredPointPayload struct {
-	typeName string
-	Payload  Payload
-	Unknown  interface{}
-}
-
-func NewScoredPointPayloadFromPayload(value Payload) *ScoredPointPayload {
-	return &ScoredPointPayload{typeName: "payload", Payload: value}
-}
-
-func NewScoredPointPayloadFromUnknown(value interface{}) *ScoredPointPayload {
-	return &ScoredPointPayload{typeName: "unknown", Unknown: value}
-}
-
-func (s *ScoredPointPayload) UnmarshalJSON(data []byte) error {
-	var valuePayload Payload
-	if err := json.Unmarshal(data, &valuePayload); err == nil {
-		s.typeName = "payload"
-		s.Payload = valuePayload
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s ScoredPointPayload) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "payload":
-		return json.Marshal(s.Payload)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type ScoredPointPayloadVisitor interface {
-	VisitPayload(Payload) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *ScoredPointPayload) Accept(visitor ScoredPointPayloadVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "payload":
-		return visitor.VisitPayload(s.Payload)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-// Shard Key
-type ScoredPointShardKey struct {
-	typeName string
-	ShardKey *ShardKey
-	Unknown  interface{}
-}
-
-func NewScoredPointShardKeyFromShardKey(value *ShardKey) *ScoredPointShardKey {
-	return &ScoredPointShardKey{typeName: "shardKey", ShardKey: value}
-}
-
-func NewScoredPointShardKeyFromUnknown(value interface{}) *ScoredPointShardKey {
-	return &ScoredPointShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (s *ScoredPointShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKey := new(ShardKey)
-	if err := json.Unmarshal(data, &valueShardKey); err == nil {
-		s.typeName = "shardKey"
-		s.ShardKey = valueShardKey
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s ScoredPointShardKey) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardKey":
-		return json.Marshal(s.ShardKey)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type ScoredPointShardKeyVisitor interface {
-	VisitShardKey(*ShardKey) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *ScoredPointShardKey) Accept(visitor ScoredPointShardKeyVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardKey":
-		return visitor.VisitShardKey(s.ShardKey)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-// Vector of the point
-type ScoredPointVector struct {
-	typeName     string
-	VectorStruct *VectorStruct
-	Unknown      interface{}
-}
-
-func NewScoredPointVectorFromVectorStruct(value *VectorStruct) *ScoredPointVector {
-	return &ScoredPointVector{typeName: "vectorStruct", VectorStruct: value}
-}
-
-func NewScoredPointVectorFromUnknown(value interface{}) *ScoredPointVector {
-	return &ScoredPointVector{typeName: "unknown", Unknown: value}
-}
-
-func (s *ScoredPointVector) UnmarshalJSON(data []byte) error {
-	valueVectorStruct := new(VectorStruct)
-	if err := json.Unmarshal(data, &valueVectorStruct); err == nil {
-		s.typeName = "vectorStruct"
-		s.VectorStruct = valueVectorStruct
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s ScoredPointVector) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "vectorStruct":
-		return json.Marshal(s.VectorStruct)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type ScoredPointVectorVisitor interface {
-	VisitVectorStruct(*VectorStruct) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *ScoredPointVector) Accept(visitor ScoredPointVectorVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "vectorStruct":
-		return visitor.VisitVectorStruct(s.VectorStruct)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-// Result of the points read request
-type ScrollResult struct {
-	// List of retrieved points
-	Points []*Record `json:"points,omitempty"`
-	// Offset which should be used to retrieve a next page result
-	NextPageOffset *ScrollResultNextPageOffset `json:"next_page_offset,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *ScrollResult) UnmarshalJSON(data []byte) error {
-	type unmarshaler ScrollResult
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = ScrollResult(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *ScrollResult) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Offset which should be used to retrieve a next page result
-type ScrollResultNextPageOffset struct {
-	typeName        string
-	ExtendedPointId *ExtendedPointId
-	Unknown         interface{}
-}
-
-func NewScrollResultNextPageOffsetFromExtendedPointId(value *ExtendedPointId) *ScrollResultNextPageOffset {
-	return &ScrollResultNextPageOffset{typeName: "extendedPointId", ExtendedPointId: value}
-}
-
-func NewScrollResultNextPageOffsetFromUnknown(value interface{}) *ScrollResultNextPageOffset {
-	return &ScrollResultNextPageOffset{typeName: "unknown", Unknown: value}
-}
-
-func (s *ScrollResultNextPageOffset) UnmarshalJSON(data []byte) error {
-	valueExtendedPointId := new(ExtendedPointId)
-	if err := json.Unmarshal(data, &valueExtendedPointId); err == nil {
-		s.typeName = "extendedPointId"
-		s.ExtendedPointId = valueExtendedPointId
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s ScrollResultNextPageOffset) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "extendedPointId":
-		return json.Marshal(s.ExtendedPointId)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type ScrollResultNextPageOffsetVisitor interface {
-	VisitExtendedPointId(*ExtendedPointId) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *ScrollResultNextPageOffset) Accept(visitor ScrollResultNextPageOffsetVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "extendedPointId":
-		return visitor.VisitExtendedPointId(s.ExtendedPointId)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-// Additional parameters of the search
-type SearchParams struct {
-	// Params relevant to HNSW index Size of the beam in a beam-search. Larger the value - more accurate the result, more time required for search.
-	HnswEf *int `json:"hnsw_ef,omitempty"`
-	// Search without approximation. If set to true, search may run long but with exact results.
-	Exact *bool `json:"exact,omitempty"`
-	// Quantization params
-	Quantization *SearchParamsQuantization `json:"quantization,omitempty"`
-	// If enabled, the engine will only perform search among indexed or small segments. Using this option prevents slow searches in case of delayed index, but does not guarantee that all uploaded vectors will be included in search results
-	IndexedOnly *bool `json:"indexed_only,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SearchParams) UnmarshalJSON(data []byte) error {
-	type unmarshaler SearchParams
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SearchParams(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SearchParams) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Quantization params
-type SearchParamsQuantization struct {
-	typeName                 string
-	QuantizationSearchParams *QuantizationSearchParams
-	Unknown                  interface{}
-}
-
-func NewSearchParamsQuantizationFromQuantizationSearchParams(value *QuantizationSearchParams) *SearchParamsQuantization {
-	return &SearchParamsQuantization{typeName: "quantizationSearchParams", QuantizationSearchParams: value}
-}
-
-func NewSearchParamsQuantizationFromUnknown(value interface{}) *SearchParamsQuantization {
-	return &SearchParamsQuantization{typeName: "unknown", Unknown: value}
-}
-
-func (s *SearchParamsQuantization) UnmarshalJSON(data []byte) error {
-	valueQuantizationSearchParams := new(QuantizationSearchParams)
-	if err := json.Unmarshal(data, &valueQuantizationSearchParams); err == nil {
-		s.typeName = "quantizationSearchParams"
-		s.QuantizationSearchParams = valueQuantizationSearchParams
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SearchParamsQuantization) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "quantizationSearchParams":
-		return json.Marshal(s.QuantizationSearchParams)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type SearchParamsQuantizationVisitor interface {
-	VisitQuantizationSearchParams(*QuantizationSearchParams) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *SearchParamsQuantization) Accept(visitor SearchParamsQuantizationVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "quantizationSearchParams":
-		return visitor.VisitQuantizationSearchParams(s.QuantizationSearchParams)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-// Search request. Holds all conditions and parameters for the search of most similar points by vector similarity given the filtering restrictions.
-type SearchRequest struct {
-	// Specify in which shards to look for the points, if not specified - look in all shards
-	ShardKey *SearchRequestShardKey `json:"shard_key,omitempty"`
-	Vector   *NamedVectorStruct     `json:"vector,omitempty"`
-	// Look only for points which satisfies this conditions
-	Filter *SearchRequestFilter `json:"filter,omitempty"`
-	// Additional search params
-	Params *SearchRequestParams `json:"params,omitempty"`
-	// Max number of result to return
-	Limit int `json:"limit"`
-	// Offset of the first result to return. May be used to paginate results. Note: large offset values may cause performance issues.
-	Offset *int `json:"offset,omitempty"`
-	// Select which payload to return with the response. Default: None
-	WithPayload *SearchRequestWithPayload `json:"with_payload,omitempty"`
-	// Whether to return the point vector with the result?
-	WithVector *SearchRequestWithVector `json:"with_vector,omitempty"`
-	// Define a minimal score threshold for the result. If defined, less similar results will not be returned. Score of the returned result might be higher or smaller than the threshold depending on the Distance function used. E.g. for cosine similarity only higher scores will be returned.
-	ScoreThreshold *float64 `json:"score_threshold,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SearchRequest) UnmarshalJSON(data []byte) error {
-	type unmarshaler SearchRequest
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SearchRequest(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SearchRequest) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Look only for points which satisfies this conditions
-type SearchRequestFilter struct {
-	typeName string
-	Filter   *Filter
-	Unknown  interface{}
-}
-
-func NewSearchRequestFilterFromFilter(value *Filter) *SearchRequestFilter {
-	return &SearchRequestFilter{typeName: "filter", Filter: value}
-}
-
-func NewSearchRequestFilterFromUnknown(value interface{}) *SearchRequestFilter {
-	return &SearchRequestFilter{typeName: "unknown", Unknown: value}
-}
-
-func (s *SearchRequestFilter) UnmarshalJSON(data []byte) error {
-	valueFilter := new(Filter)
-	if err := json.Unmarshal(data, &valueFilter); err == nil {
-		s.typeName = "filter"
-		s.Filter = valueFilter
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SearchRequestFilter) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "filter":
-		return json.Marshal(s.Filter)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type SearchRequestFilterVisitor interface {
-	VisitFilter(*Filter) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *SearchRequestFilter) Accept(visitor SearchRequestFilterVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "filter":
-		return visitor.VisitFilter(s.Filter)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-// Additional search params
-type SearchRequestParams struct {
-	typeName     string
-	SearchParams *SearchParams
-	Unknown      interface{}
-}
-
-func NewSearchRequestParamsFromSearchParams(value *SearchParams) *SearchRequestParams {
-	return &SearchRequestParams{typeName: "searchParams", SearchParams: value}
-}
-
-func NewSearchRequestParamsFromUnknown(value interface{}) *SearchRequestParams {
-	return &SearchRequestParams{typeName: "unknown", Unknown: value}
-}
-
-func (s *SearchRequestParams) UnmarshalJSON(data []byte) error {
-	valueSearchParams := new(SearchParams)
-	if err := json.Unmarshal(data, &valueSearchParams); err == nil {
-		s.typeName = "searchParams"
-		s.SearchParams = valueSearchParams
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SearchRequestParams) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "searchParams":
-		return json.Marshal(s.SearchParams)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type SearchRequestParamsVisitor interface {
-	VisitSearchParams(*SearchParams) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *SearchRequestParams) Accept(visitor SearchRequestParamsVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "searchParams":
-		return visitor.VisitSearchParams(s.SearchParams)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-// Specify in which shards to look for the points, if not specified - look in all shards
-type SearchRequestShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewSearchRequestShardKeyFromShardKeySelector(value *ShardKeySelector) *SearchRequestShardKey {
-	return &SearchRequestShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewSearchRequestShardKeyFromUnknown(value interface{}) *SearchRequestShardKey {
-	return &SearchRequestShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (s *SearchRequestShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		s.typeName = "shardKeySelector"
-		s.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SearchRequestShardKey) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardKeySelector":
-		return json.Marshal(s.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type SearchRequestShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *SearchRequestShardKey) Accept(visitor SearchRequestShardKeyVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(s.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-// Select which payload to return with the response. Default: None
-type SearchRequestWithPayload struct {
-	typeName             string
-	WithPayloadInterface *WithPayloadInterface
-	Unknown              interface{}
-}
-
-func NewSearchRequestWithPayloadFromWithPayloadInterface(value *WithPayloadInterface) *SearchRequestWithPayload {
-	return &SearchRequestWithPayload{typeName: "withPayloadInterface", WithPayloadInterface: value}
-}
-
-func NewSearchRequestWithPayloadFromUnknown(value interface{}) *SearchRequestWithPayload {
-	return &SearchRequestWithPayload{typeName: "unknown", Unknown: value}
-}
-
-func (s *SearchRequestWithPayload) UnmarshalJSON(data []byte) error {
-	valueWithPayloadInterface := new(WithPayloadInterface)
-	if err := json.Unmarshal(data, &valueWithPayloadInterface); err == nil {
-		s.typeName = "withPayloadInterface"
-		s.WithPayloadInterface = valueWithPayloadInterface
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SearchRequestWithPayload) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "withPayloadInterface":
-		return json.Marshal(s.WithPayloadInterface)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type SearchRequestWithPayloadVisitor interface {
-	VisitWithPayloadInterface(*WithPayloadInterface) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *SearchRequestWithPayload) Accept(visitor SearchRequestWithPayloadVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "withPayloadInterface":
-		return visitor.VisitWithPayloadInterface(s.WithPayloadInterface)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-// Whether to return the point vector with the result?
-type SearchRequestWithVector struct {
-	typeName   string
-	WithVector *WithVector
-	Unknown    interface{}
-}
-
-func NewSearchRequestWithVectorFromWithVector(value *WithVector) *SearchRequestWithVector {
-	return &SearchRequestWithVector{typeName: "withVector", WithVector: value}
-}
-
-func NewSearchRequestWithVectorFromUnknown(value interface{}) *SearchRequestWithVector {
-	return &SearchRequestWithVector{typeName: "unknown", Unknown: value}
-}
-
-func (s *SearchRequestWithVector) UnmarshalJSON(data []byte) error {
-	valueWithVector := new(WithVector)
-	if err := json.Unmarshal(data, &valueWithVector); err == nil {
-		s.typeName = "withVector"
-		s.WithVector = valueWithVector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SearchRequestWithVector) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "withVector":
-		return json.Marshal(s.WithVector)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type SearchRequestWithVectorVisitor interface {
-	VisitWithVector(*WithVector) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *SearchRequestWithVector) Accept(visitor SearchRequestWithVectorVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "withVector":
-		return visitor.VisitWithVector(s.WithVector)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-type SegmentConfig struct {
-	VectorData         map[string]*VectorDataConfig       `json:"vector_data,omitempty"`
-	SparseVectorData   map[string]*SparseVectorDataConfig `json:"sparse_vector_data,omitempty"`
-	PayloadStorageType *PayloadStorageType                `json:"payload_storage_type,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SegmentConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler SegmentConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SegmentConfig(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SegmentConfig) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Aggregated information about segment
-type SegmentInfo struct {
-	SegmentType       SegmentType                  `json:"segment_type,omitempty"`
-	NumVectors        int                          `json:"num_vectors"`
-	NumPoints         int                          `json:"num_points"`
-	NumIndexedVectors int                          `json:"num_indexed_vectors"`
-	NumDeletedVectors int                          `json:"num_deleted_vectors"`
-	RamUsageBytes     int                          `json:"ram_usage_bytes"`
-	DiskUsageBytes    int                          `json:"disk_usage_bytes"`
-	IsAppendable      bool                         `json:"is_appendable"`
-	IndexSchema       map[string]*PayloadIndexInfo `json:"index_schema,omitempty"`
-	VectorData        map[string]*VectorDataInfo   `json:"vector_data,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SegmentInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler SegmentInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SegmentInfo(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SegmentInfo) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-type SegmentTelemetry struct {
-	Info                *SegmentInfo                    `json:"info,omitempty"`
-	Config              *SegmentConfig                  `json:"config,omitempty"`
-	VectorIndexSearches []*VectorIndexSearchesTelemetry `json:"vector_index_searches,omitempty"`
-	PayloadFieldIndices []*PayloadIndexTelemetry        `json:"payload_field_indices,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SegmentTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler SegmentTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SegmentTelemetry(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SegmentTelemetry) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Type of segment
-type SegmentType string
-
-const (
-	SegmentTypePlain   SegmentType = "plain"
-	SegmentTypeIndexed SegmentType = "indexed"
-	SegmentTypeSpecial SegmentType = "special"
-)
-
-func NewSegmentTypeFromString(s string) (SegmentType, error) {
-	switch s {
-	case "plain":
-		return SegmentTypePlain, nil
-	case "indexed":
-		return SegmentTypeIndexed, nil
-	case "special":
-		return SegmentTypeSpecial, nil
-	}
-	var t SegmentType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (s SegmentType) Ptr() *SegmentType {
-	return &s
-}
-
-// This data structure is used in API interface and applied across multiple shards
-type SetPayload struct {
-	Payload Payload `json:"payload,omitempty"`
-	// Assigns payload to each point in this list
-	Points []*ExtendedPointId `json:"points,omitempty"`
-	// Assigns payload to each point that satisfy this filter condition
-	Filter   *SetPayloadFilter   `json:"filter,omitempty"`
-	ShardKey *SetPayloadShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SetPayload) UnmarshalJSON(data []byte) error {
-	type unmarshaler SetPayload
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SetPayload(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SetPayload) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Assigns payload to each point that satisfy this filter condition
-type SetPayloadFilter struct {
-	typeName string
-	Filter   *Filter
-	Unknown  interface{}
-}
-
-func NewSetPayloadFilterFromFilter(value *Filter) *SetPayloadFilter {
-	return &SetPayloadFilter{typeName: "filter", Filter: value}
-}
-
-func NewSetPayloadFilterFromUnknown(value interface{}) *SetPayloadFilter {
-	return &SetPayloadFilter{typeName: "unknown", Unknown: value}
-}
-
-func (s *SetPayloadFilter) UnmarshalJSON(data []byte) error {
-	valueFilter := new(Filter)
-	if err := json.Unmarshal(data, &valueFilter); err == nil {
-		s.typeName = "filter"
-		s.Filter = valueFilter
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SetPayloadFilter) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "filter":
-		return json.Marshal(s.Filter)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type SetPayloadFilterVisitor interface {
-	VisitFilter(*Filter) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *SetPayloadFilter) Accept(visitor SetPayloadFilterVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "filter":
-		return visitor.VisitFilter(s.Filter)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-type SetPayloadOperation struct {
-	SetPayload *SetPayload `json:"set_payload,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SetPayloadOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler SetPayloadOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SetPayloadOperation(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SetPayloadOperation) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-type SetPayloadShardKey struct {
-	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
-}
-
-func NewSetPayloadShardKeyFromShardKeySelector(value *ShardKeySelector) *SetPayloadShardKey {
-	return &SetPayloadShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
-}
-
-func NewSetPayloadShardKeyFromUnknown(value interface{}) *SetPayloadShardKey {
-	return &SetPayloadShardKey{typeName: "unknown", Unknown: value}
-}
-
-func (s *SetPayloadShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		s.typeName = "shardKeySelector"
-		s.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
-}
-
-func (s SetPayloadShardKey) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardKeySelector":
-		return json.Marshal(s.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(s.Unknown)
-	}
-}
-
-type SetPayloadShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (s *SetPayloadShardKey) Accept(visitor SetPayloadShardKeyVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(s.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
-	}
-}
-
-type ShardKey struct {
-	typeName string
-	String   string
-	Integer  int
-}
-
-func NewShardKeyFromString(value string) *ShardKey {
-	return &ShardKey{typeName: "string", String: value}
-}
-
-func NewShardKeyFromInteger(value int) *ShardKey {
-	return &ShardKey{typeName: "integer", Integer: value}
-}
-
-func (s *ShardKey) UnmarshalJSON(data []byte) error {
+func (s *SeekPaginationOrderBy) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
 		s.typeName = "string"
 		s.String = valueString
 		return nil
 	}
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		s.typeName = "integer"
-		s.Integer = valueInteger
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		s.typeName = "stringList"
+		s.StringList = valueStringList
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
 }
 
-func (s ShardKey) MarshalJSON() ([]byte, error) {
+func (s SeekPaginationOrderBy) MarshalJSON() ([]byte, error) {
 	switch s.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
 	case "string":
 		return json.Marshal(s.String)
-	case "integer":
-		return json.Marshal(s.Integer)
+	case "stringList":
+		return json.Marshal(s.StringList)
 	}
 }
 
-type ShardKeyVisitor interface {
+type SeekPaginationOrderByVisitor interface {
 	VisitString(string) error
-	VisitInteger(int) error
+	VisitStringList([]string) error
 }
 
-func (s *ShardKey) Accept(visitor ShardKeyVisitor) error {
+func (s *SeekPaginationOrderBy) Accept(visitor SeekPaginationOrderByVisitor) error {
 	switch s.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
 	case "string":
 		return visitor.VisitString(s.String)
-	case "integer":
-		return visitor.VisitInteger(s.Integer)
+	case "stringList":
+		return visitor.VisitStringList(s.StringList)
 	}
 }
 
-type ShardKeySelector struct {
-	typeName     string
-	ShardKey     *ShardKey
-	ShardKeyList []*ShardKey
+type ShopifyIntegrationConfigs struct {
+	WebhookSecretKey string                                    `json:"webhook_secret_key"`
+	RateLimitPeriod  *ShopifyIntegrationConfigsRateLimitPeriod `json:"rate_limit_period,omitempty"`
+	RateLimit        *float64                                  `json:"rate_limit,omitempty"`
+	ApiKey           *string                                   `json:"api_key,omitempty"`
+	ApiSecret        *string                                   `json:"api_secret,omitempty"`
+	Shop             *string                                   `json:"shop,omitempty"`
 }
 
-func NewShardKeySelectorFromShardKey(value *ShardKey) *ShardKeySelector {
-	return &ShardKeySelector{typeName: "shardKey", ShardKey: value}
+type ShopifyIntegrationConfigsRateLimitPeriod string
+
+const (
+	ShopifyIntegrationConfigsRateLimitPeriodMinute ShopifyIntegrationConfigsRateLimitPeriod = "minute"
+	ShopifyIntegrationConfigsRateLimitPeriodSecond ShopifyIntegrationConfigsRateLimitPeriod = "second"
+)
+
+func NewShopifyIntegrationConfigsRateLimitPeriodFromString(s string) (ShopifyIntegrationConfigsRateLimitPeriod, error) {
+	switch s {
+	case "minute":
+		return ShopifyIntegrationConfigsRateLimitPeriodMinute, nil
+	case "second":
+		return ShopifyIntegrationConfigsRateLimitPeriodSecond, nil
+	}
+	var t ShopifyIntegrationConfigsRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func NewShardKeySelectorFromShardKeyList(value []*ShardKey) *ShardKeySelector {
-	return &ShardKeySelector{typeName: "shardKeyList", ShardKeyList: value}
+func (s ShopifyIntegrationConfigsRateLimitPeriod) Ptr() *ShopifyIntegrationConfigsRateLimitPeriod {
+	return &s
 }
 
-func (s *ShardKeySelector) UnmarshalJSON(data []byte) error {
-	valueShardKey := new(ShardKey)
-	if err := json.Unmarshal(data, &valueShardKey); err == nil {
-		s.typeName = "shardKey"
-		s.ShardKey = valueShardKey
+// Request data
+type ShortEventData struct {
+	// Request path
+	Path string `json:"path"`
+	// Raw query param string
+	Query *string `json:"query,omitempty"`
+	// JSON representation of query params
+	ParsedQuery *ShortEventDataParsedQuery `json:"parsed_query,omitempty"`
+	// JSON representation of the headers
+	Headers *ShortEventDataHeaders `json:"headers,omitempty"`
+	// JSON or string representation of the body
+	Body *ShortEventDataBody `json:"body,omitempty"`
+	// Whether the payload is considered large payload and not searchable
+	IsLargePayload *bool `json:"is_large_payload,omitempty"`
+}
+
+// JSON or string representation of the body
+type ShortEventDataBody struct {
+	typeName              string
+	String                string
+	ShortEventDataBodyOne *ShortEventDataBodyOne
+	UnknownList           []interface{}
+}
+
+func NewShortEventDataBodyFromString(value string) *ShortEventDataBody {
+	return &ShortEventDataBody{typeName: "string", String: value}
+}
+
+func NewShortEventDataBodyFromShortEventDataBodyOne(value *ShortEventDataBodyOne) *ShortEventDataBody {
+	return &ShortEventDataBody{typeName: "shortEventDataBodyOne", ShortEventDataBodyOne: value}
+}
+
+func NewShortEventDataBodyFromUnknownList(value []interface{}) *ShortEventDataBody {
+	return &ShortEventDataBody{typeName: "unknownList", UnknownList: value}
+}
+
+func (s *ShortEventDataBody) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		s.typeName = "string"
+		s.String = valueString
 		return nil
 	}
-	var valueShardKeyList []*ShardKey
-	if err := json.Unmarshal(data, &valueShardKeyList); err == nil {
-		s.typeName = "shardKeyList"
-		s.ShardKeyList = valueShardKeyList
+	valueShortEventDataBodyOne := new(ShortEventDataBodyOne)
+	if err := json.Unmarshal(data, &valueShortEventDataBodyOne); err == nil {
+		s.typeName = "shortEventDataBodyOne"
+		s.ShortEventDataBodyOne = valueShortEventDataBodyOne
+		return nil
+	}
+	var valueUnknownList []interface{}
+	if err := json.Unmarshal(data, &valueUnknownList); err == nil {
+		s.typeName = "unknownList"
+		s.UnknownList = valueUnknownList
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
 }
 
-func (s ShardKeySelector) MarshalJSON() ([]byte, error) {
+func (s ShortEventDataBody) MarshalJSON() ([]byte, error) {
 	switch s.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardKey":
-		return json.Marshal(s.ShardKey)
-	case "shardKeyList":
-		return json.Marshal(s.ShardKeyList)
+	case "string":
+		return json.Marshal(s.String)
+	case "shortEventDataBodyOne":
+		return json.Marshal(s.ShortEventDataBodyOne)
+	case "unknownList":
+		return json.Marshal(s.UnknownList)
 	}
 }
 
-type ShardKeySelectorVisitor interface {
-	VisitShardKey(*ShardKey) error
-	VisitShardKeyList([]*ShardKey) error
+type ShortEventDataBodyVisitor interface {
+	VisitString(string) error
+	VisitShortEventDataBodyOne(*ShortEventDataBodyOne) error
+	VisitUnknownList([]interface{}) error
 }
 
-func (s *ShardKeySelector) Accept(visitor ShardKeySelectorVisitor) error {
+func (s *ShortEventDataBody) Accept(visitor ShortEventDataBodyVisitor) error {
 	switch s.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardKey":
-		return visitor.VisitShardKey(s.ShardKey)
-	case "shardKeyList":
-		return visitor.VisitShardKeyList(s.ShardKeyList)
+	case "string":
+		return visitor.VisitString(s.String)
+	case "shortEventDataBodyOne":
+		return visitor.VisitShortEventDataBodyOne(s.ShortEventDataBodyOne)
+	case "unknownList":
+		return visitor.VisitUnknownList(s.UnknownList)
 	}
 }
 
-type ShardSnapshotLocation = string
-
-type ShardTransferInfo struct {
-	ShardId int `json:"shard_id"`
-	From    int `json:"from"`
-	To      int `json:"to"`
-	// If `true` transfer is a synchronization of a replicas If `false` transfer is a moving of a shard from one peer to another
-	Sync   bool                     `json:"sync"`
-	Method *ShardTransferInfoMethod `json:"method,omitempty"`
-
-	_rawJSON json.RawMessage
+type ShortEventDataBodyOne struct {
 }
 
-func (s *ShardTransferInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler ShardTransferInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = ShardTransferInfo(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
+// JSON representation of the headers
+type ShortEventDataHeaders struct {
+	typeName                string
+	String                  string
+	StringStringOptionalMap map[string]*string
 }
 
-func (s *ShardTransferInfo) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
+func NewShortEventDataHeadersFromString(value string) *ShortEventDataHeaders {
+	return &ShortEventDataHeaders{typeName: "string", String: value}
 }
 
-type ShardTransferInfoMethod struct {
-	typeName            string
-	ShardTransferMethod ShardTransferMethod
-	Unknown             interface{}
+func NewShortEventDataHeadersFromStringStringOptionalMap(value map[string]*string) *ShortEventDataHeaders {
+	return &ShortEventDataHeaders{typeName: "stringStringOptionalMap", StringStringOptionalMap: value}
 }
 
-func NewShardTransferInfoMethodFromShardTransferMethod(value ShardTransferMethod) *ShardTransferInfoMethod {
-	return &ShardTransferInfoMethod{typeName: "shardTransferMethod", ShardTransferMethod: value}
-}
-
-func NewShardTransferInfoMethodFromUnknown(value interface{}) *ShardTransferInfoMethod {
-	return &ShardTransferInfoMethod{typeName: "unknown", Unknown: value}
-}
-
-func (s *ShardTransferInfoMethod) UnmarshalJSON(data []byte) error {
-	var valueShardTransferMethod ShardTransferMethod
-	if err := json.Unmarshal(data, &valueShardTransferMethod); err == nil {
-		s.typeName = "shardTransferMethod"
-		s.ShardTransferMethod = valueShardTransferMethod
+func (s *ShortEventDataHeaders) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		s.typeName = "string"
+		s.String = valueString
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
+	var valueStringStringOptionalMap map[string]*string
+	if err := json.Unmarshal(data, &valueStringStringOptionalMap); err == nil {
+		s.typeName = "stringStringOptionalMap"
+		s.StringStringOptionalMap = valueStringStringOptionalMap
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
 }
 
-func (s ShardTransferInfoMethod) MarshalJSON() ([]byte, error) {
+func (s ShortEventDataHeaders) MarshalJSON() ([]byte, error) {
 	switch s.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardTransferMethod":
-		return json.Marshal(s.ShardTransferMethod)
-	case "unknown":
-		return json.Marshal(s.Unknown)
+	case "string":
+		return json.Marshal(s.String)
+	case "stringStringOptionalMap":
+		return json.Marshal(s.StringStringOptionalMap)
 	}
 }
 
-type ShardTransferInfoMethodVisitor interface {
-	VisitShardTransferMethod(ShardTransferMethod) error
-	VisitUnknown(interface{}) error
+type ShortEventDataHeadersVisitor interface {
+	VisitString(string) error
+	VisitStringStringOptionalMap(map[string]*string) error
 }
 
-func (s *ShardTransferInfoMethod) Accept(visitor ShardTransferInfoMethodVisitor) error {
+func (s *ShortEventDataHeaders) Accept(visitor ShortEventDataHeadersVisitor) error {
 	switch s.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "shardTransferMethod":
-		return visitor.VisitShardTransferMethod(s.ShardTransferMethod)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
+	case "string":
+		return visitor.VisitString(s.String)
+	case "stringStringOptionalMap":
+		return visitor.VisitStringStringOptionalMap(s.StringStringOptionalMap)
 	}
 }
 
-// Methods for transferring a shard from one node to another.
-type ShardTransferMethod string
-
-const (
-	ShardTransferMethodStreamRecords ShardTransferMethod = "stream_records"
-	ShardTransferMethodSnapshot      ShardTransferMethod = "snapshot"
-)
-
-func NewShardTransferMethodFromString(s string) (ShardTransferMethod, error) {
-	switch s {
-	case "stream_records":
-		return ShardTransferMethodStreamRecords, nil
-	case "snapshot":
-		return ShardTransferMethodSnapshot, nil
-	}
-	var t ShardTransferMethod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+// JSON representation of query params
+type ShortEventDataParsedQuery struct {
+	typeName                     string
+	StringOptional               *string
+	ShortEventDataParsedQueryOne *ShortEventDataParsedQueryOne
 }
 
-func (s ShardTransferMethod) Ptr() *ShardTransferMethod {
-	return &s
+func NewShortEventDataParsedQueryFromStringOptional(value *string) *ShortEventDataParsedQuery {
+	return &ShortEventDataParsedQuery{typeName: "stringOptional", StringOptional: value}
 }
 
-type ShardingMethod string
-
-const (
-	ShardingMethodAuto   ShardingMethod = "auto"
-	ShardingMethodCustom ShardingMethod = "custom"
-)
-
-func NewShardingMethodFromString(s string) (ShardingMethod, error) {
-	switch s {
-	case "auto":
-		return ShardingMethodAuto, nil
-	case "custom":
-		return ShardingMethodCustom, nil
-	}
-	var t ShardingMethod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+func NewShortEventDataParsedQueryFromShortEventDataParsedQueryOne(value *ShortEventDataParsedQueryOne) *ShortEventDataParsedQuery {
+	return &ShortEventDataParsedQuery{typeName: "shortEventDataParsedQueryOne", ShortEventDataParsedQueryOne: value}
 }
 
-func (s ShardingMethod) Ptr() *ShardingMethod {
-	return &s
-}
-
-type SnapshotDescription struct {
-	Name         string  `json:"name"`
-	CreationTime *string `json:"creation_time,omitempty"`
-	Size         int     `json:"size"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SnapshotDescription) UnmarshalJSON(data []byte) error {
-	type unmarshaler SnapshotDescription
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SnapshotDescription(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SnapshotDescription) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Defines source of truth for snapshot recovery: `NoSync` means - restore snapshot without _any_ additional synchronization. `Snapshot` means - prefer snapshot data over the current state. `Replica` means - prefer existing data over the snapshot.
-type SnapshotPriority string
-
-const (
-	SnapshotPriorityNoSync   SnapshotPriority = "no_sync"
-	SnapshotPrioritySnapshot SnapshotPriority = "snapshot"
-	SnapshotPriorityReplica  SnapshotPriority = "replica"
-)
-
-func NewSnapshotPriorityFromString(s string) (SnapshotPriority, error) {
-	switch s {
-	case "no_sync":
-		return SnapshotPriorityNoSync, nil
-	case "snapshot":
-		return SnapshotPrioritySnapshot, nil
-	case "replica":
-		return SnapshotPriorityReplica, nil
-	}
-	var t SnapshotPriority
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (s SnapshotPriority) Ptr() *SnapshotPriority {
-	return &s
-}
-
-// Configuration for sparse inverted index.
-type SparseIndexConfig struct {
-	// We prefer a full scan search upto (excluding) this number of vectors.
-	//
-	// Note: this is number of vectors, not KiloBytes.
-	FullScanThreshold *int            `json:"full_scan_threshold,omitempty"`
-	IndexType         SparseIndexType `json:"index_type,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SparseIndexConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler SparseIndexConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SparseIndexConfig(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SparseIndexConfig) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Configuration for sparse inverted index.
-type SparseIndexParams struct {
-	// We prefer a full scan search upto (excluding) this number of vectors.
-	//
-	// Note: this is number of vectors, not KiloBytes.
-	FullScanThreshold *int `json:"full_scan_threshold,omitempty"`
-	// Store index on disk. If set to false, the index will be stored in RAM. Default: false
-	OnDisk *bool `json:"on_disk,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SparseIndexParams) UnmarshalJSON(data []byte) error {
-	type unmarshaler SparseIndexParams
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SparseIndexParams(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SparseIndexParams) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Sparse index types
-type SparseIndexType string
-
-const (
-	SparseIndexTypeMutableRam   SparseIndexType = "MutableRam"
-	SparseIndexTypeImmutableRam SparseIndexType = "ImmutableRam"
-	SparseIndexTypeMmap         SparseIndexType = "Mmap"
-)
-
-func NewSparseIndexTypeFromString(s string) (SparseIndexType, error) {
-	switch s {
-	case "MutableRam":
-		return SparseIndexTypeMutableRam, nil
-	case "ImmutableRam":
-		return SparseIndexTypeImmutableRam, nil
-	case "Mmap":
-		return SparseIndexTypeMmap, nil
-	}
-	var t SparseIndexType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (s SparseIndexType) Ptr() *SparseIndexType {
-	return &s
-}
-
-// Sparse vector structure
-type SparseVector struct {
-	// indices must be unique
-	Indices []int `json:"indices,omitempty"`
-	// values and indices must be the same length
-	Values []float64 `json:"values,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SparseVector) UnmarshalJSON(data []byte) error {
-	type unmarshaler SparseVector
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SparseVector(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SparseVector) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Config of single sparse vector data storage
-type SparseVectorDataConfig struct {
-	Index *SparseIndexConfig `json:"index,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SparseVectorDataConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler SparseVectorDataConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SparseVectorDataConfig(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SparseVectorDataConfig) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Params of single sparse vector data storage
-type SparseVectorParams struct {
-	// Custom params for index. If none - values from collection configuration are used.
-	Index *SparseVectorParamsIndex `json:"index,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (s *SparseVectorParams) UnmarshalJSON(data []byte) error {
-	type unmarshaler SparseVectorParams
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*s = SparseVectorParams(value)
-	s._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (s *SparseVectorParams) String() string {
-	if len(s._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(s); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", s)
-}
-
-// Custom params for index. If none - values from collection configuration are used.
-type SparseVectorParamsIndex struct {
-	typeName          string
-	SparseIndexParams *SparseIndexParams
-	Unknown           interface{}
-}
-
-func NewSparseVectorParamsIndexFromSparseIndexParams(value *SparseIndexParams) *SparseVectorParamsIndex {
-	return &SparseVectorParamsIndex{typeName: "sparseIndexParams", SparseIndexParams: value}
-}
-
-func NewSparseVectorParamsIndexFromUnknown(value interface{}) *SparseVectorParamsIndex {
-	return &SparseVectorParamsIndex{typeName: "unknown", Unknown: value}
-}
-
-func (s *SparseVectorParamsIndex) UnmarshalJSON(data []byte) error {
-	valueSparseIndexParams := new(SparseIndexParams)
-	if err := json.Unmarshal(data, &valueSparseIndexParams); err == nil {
-		s.typeName = "sparseIndexParams"
-		s.SparseIndexParams = valueSparseIndexParams
+func (s *ShortEventDataParsedQuery) UnmarshalJSON(data []byte) error {
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		s.typeName = "stringOptional"
+		s.StringOptional = valueStringOptional
 		return nil
 	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		s.typeName = "unknown"
-		s.Unknown = valueUnknown
+	valueShortEventDataParsedQueryOne := new(ShortEventDataParsedQueryOne)
+	if err := json.Unmarshal(data, &valueShortEventDataParsedQueryOne); err == nil {
+		s.typeName = "shortEventDataParsedQueryOne"
+		s.ShortEventDataParsedQueryOne = valueShortEventDataParsedQueryOne
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
 }
 
-func (s SparseVectorParamsIndex) MarshalJSON() ([]byte, error) {
+func (s ShortEventDataParsedQuery) MarshalJSON() ([]byte, error) {
 	switch s.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "sparseIndexParams":
-		return json.Marshal(s.SparseIndexParams)
-	case "unknown":
-		return json.Marshal(s.Unknown)
+	case "stringOptional":
+		return json.Marshal(s.StringOptional)
+	case "shortEventDataParsedQueryOne":
+		return json.Marshal(s.ShortEventDataParsedQueryOne)
 	}
 }
 
-type SparseVectorParamsIndexVisitor interface {
-	VisitSparseIndexParams(*SparseIndexParams) error
-	VisitUnknown(interface{}) error
+type ShortEventDataParsedQueryVisitor interface {
+	VisitStringOptional(*string) error
+	VisitShortEventDataParsedQueryOne(*ShortEventDataParsedQueryOne) error
 }
 
-func (s *SparseVectorParamsIndex) Accept(visitor SparseVectorParamsIndexVisitor) error {
+func (s *ShortEventDataParsedQuery) Accept(visitor ShortEventDataParsedQueryVisitor) error {
 	switch s.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "sparseIndexParams":
-		return visitor.VisitSparseIndexParams(s.SparseIndexParams)
-	case "unknown":
-		return visitor.VisitUnknown(s.Unknown)
+	case "stringOptional":
+		return visitor.VisitStringOptional(s.StringOptional)
+	case "shortEventDataParsedQueryOne":
+		return visitor.VisitShortEventDataParsedQueryOne(s.ShortEventDataParsedQueryOne)
 	}
 }
 
-type SparseVectorsConfig = map[string]*SparseVectorParams
+type ShortEventDataParsedQueryOne struct {
+}
 
-// Role of the peer in the consensus
-type StateRole string
+// Associated [Source](#source-object) object
+type Source struct {
+	// ID of the source
+	Id string `json:"id"`
+	// Name for the source
+	Name string `json:"name"`
+	// Description of the source
+	Description *string `json:"description,omitempty"`
+	// ID of the workspace
+	TeamId string `json:"team_id"`
+	// A unique URL that must be supplied to your webhook's provider
+	Url                string                   `json:"url"`
+	Verification       *VerificationConfig      `json:"verification,omitempty"`
+	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty"`
+	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty"`
+	// Date the source was archived
+	ArchivedAt *time.Time `json:"archived_at,omitempty"`
+	// Date the source was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the source was created
+	CreatedAt time.Time `json:"created_at"`
+}
+
+// List of allowed HTTP methods. Defaults to PUT, POST, PATCH, DELETE.
+type SourceAllowedHttpMethod = []SourceAllowedHttpMethodItem
+
+type SourceAllowedHttpMethodItem string
 
 const (
-	StateRoleFollower     StateRole = "Follower"
-	StateRoleCandidate    StateRole = "Candidate"
-	StateRoleLeader       StateRole = "Leader"
-	StateRolePreCandidate StateRole = "PreCandidate"
+	SourceAllowedHttpMethodItemGet    SourceAllowedHttpMethodItem = "GET"
+	SourceAllowedHttpMethodItemPost   SourceAllowedHttpMethodItem = "POST"
+	SourceAllowedHttpMethodItemPut    SourceAllowedHttpMethodItem = "PUT"
+	SourceAllowedHttpMethodItemPatch  SourceAllowedHttpMethodItem = "PATCH"
+	SourceAllowedHttpMethodItemDelete SourceAllowedHttpMethodItem = "DELETE"
 )
 
-func NewStateRoleFromString(s string) (StateRole, error) {
+func NewSourceAllowedHttpMethodItemFromString(s string) (SourceAllowedHttpMethodItem, error) {
 	switch s {
-	case "Follower":
-		return StateRoleFollower, nil
-	case "Candidate":
-		return StateRoleCandidate, nil
-	case "Leader":
-		return StateRoleLeader, nil
-	case "PreCandidate":
-		return StateRolePreCandidate, nil
+	case "GET":
+		return SourceAllowedHttpMethodItemGet, nil
+	case "POST":
+		return SourceAllowedHttpMethodItemPost, nil
+	case "PUT":
+		return SourceAllowedHttpMethodItemPut, nil
+	case "PATCH":
+		return SourceAllowedHttpMethodItemPatch, nil
+	case "DELETE":
+		return SourceAllowedHttpMethodItemDelete, nil
 	}
-	var t StateRole
+	var t SourceAllowedHttpMethodItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (s StateRole) Ptr() *StateRole {
+func (s SourceAllowedHttpMethodItem) Ptr() *SourceAllowedHttpMethodItem {
 	return &s
 }
 
-type TelemetryData struct {
-	Id          string                `json:"id"`
-	App         *AppBuildTelemetry    `json:"app,omitempty"`
-	Collections *CollectionsTelemetry `json:"collections,omitempty"`
-	Cluster     *ClusterTelemetry     `json:"cluster,omitempty"`
-	Requests    *RequestsTelemetry    `json:"requests,omitempty"`
-
-	_rawJSON json.RawMessage
+// Custom response object
+type SourceCustomResponse struct {
+	ContentType SourceCustomResponseContentType `json:"content_type,omitempty"`
+	// Body of the custom response
+	Body string `json:"body"`
 }
 
-func (t *TelemetryData) UnmarshalJSON(data []byte) error {
-	type unmarshaler TelemetryData
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TelemetryData(value)
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TelemetryData) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type TextIndexParams struct {
-	Type        TextIndexType  `json:"type,omitempty"`
-	Tokenizer   *TokenizerType `json:"tokenizer,omitempty"`
-	MinTokenLen *int           `json:"min_token_len,omitempty"`
-	MaxTokenLen *int           `json:"max_token_len,omitempty"`
-	// If true, lowercase all tokens. Default: true
-	Lowercase *bool `json:"lowercase,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (t *TextIndexParams) UnmarshalJSON(data []byte) error {
-	type unmarshaler TextIndexParams
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TextIndexParams(value)
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TextIndexParams) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type TextIndexType = string
-
-type TokenizerType string
+// Content type of the custom response
+type SourceCustomResponseContentType string
 
 const (
-	TokenizerTypePrefix       TokenizerType = "prefix"
-	TokenizerTypeWhitespace   TokenizerType = "whitespace"
-	TokenizerTypeWord         TokenizerType = "word"
-	TokenizerTypeMultilingual TokenizerType = "multilingual"
+	SourceCustomResponseContentTypeJson SourceCustomResponseContentType = "json"
+	SourceCustomResponseContentTypeText SourceCustomResponseContentType = "text"
+	SourceCustomResponseContentTypeXml  SourceCustomResponseContentType = "xml"
 )
 
-func NewTokenizerTypeFromString(s string) (TokenizerType, error) {
+func NewSourceCustomResponseContentTypeFromString(s string) (SourceCustomResponseContentType, error) {
 	switch s {
-	case "prefix":
-		return TokenizerTypePrefix, nil
-	case "whitespace":
-		return TokenizerTypeWhitespace, nil
-	case "word":
-		return TokenizerTypeWord, nil
-	case "multilingual":
-		return TokenizerTypeMultilingual, nil
+	case "json":
+		return SourceCustomResponseContentTypeJson, nil
+	case "text":
+		return SourceCustomResponseContentTypeText, nil
+	case "xml":
+		return SourceCustomResponseContentTypeXml, nil
 	}
-	var t TokenizerType
+	var t SourceCustomResponseContentType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (t TokenizerType) Ptr() *TokenizerType {
+func (s SourceCustomResponseContentType) Ptr() *SourceCustomResponseContentType {
+	return &s
+}
+
+type SourcePaginatedResult struct {
+	Pagination *SeekPagination `json:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty"`
+	Models     []*Source       `json:"models,omitempty"`
+}
+
+type ToggleWebhookNotifications struct {
+	Enabled  bool          `json:"enabled"`
+	Topics   []TopicsValue `json:"topics,omitempty"`
+	SourceId string        `json:"source_id"`
+}
+
+// Supported topics
+type TopicsValue string
+
+const (
+	TopicsValueIssueOpened             TopicsValue = "issue.opened"
+	TopicsValueIssueUpdated            TopicsValue = "issue.updated"
+	TopicsValueDeprecatedAttemptFailed TopicsValue = "deprecated.attempt-failed"
+	TopicsValueEventSuccessful         TopicsValue = "event.successful"
+)
+
+func NewTopicsValueFromString(s string) (TopicsValue, error) {
+	switch s {
+	case "issue.opened":
+		return TopicsValueIssueOpened, nil
+	case "issue.updated":
+		return TopicsValueIssueUpdated, nil
+	case "deprecated.attempt-failed":
+		return TopicsValueDeprecatedAttemptFailed, nil
+	case "event.successful":
+		return TopicsValueEventSuccessful, nil
+	}
+	var t TopicsValue
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (t TopicsValue) Ptr() *TopicsValue {
 	return &t
 }
 
-// Represents the current state of the optimizer being tracked
-type TrackerStatus struct {
-	typeName               string
-	stringLiteral          string
-	stringLiteral          string
-	TrackerStatusCancelled *TrackerStatusCancelled
-	TrackerStatusError     *TrackerStatusError
+type TransformFull struct {
+	// ID of the attached transformation object. Optional input, always set once the rule is defined
+	TransformationId *string `json:"transformation_id,omitempty"`
+	// You can optionally define a new transformation while creating a transform rule
+	Transformation *TransformFullTransformation `json:"transformation,omitempty"`
+	type_          string
 }
 
-func NewTrackerStatusWithStringLiteral() *TrackerStatus {
-	return &TrackerStatus{typeName: "stringLiteral", stringLiteral: "optimizing"}
+func (t *TransformFull) Type() string {
+	return t.type_
 }
 
-func NewTrackerStatusWithStringLiteral() *TrackerStatus {
-	return &TrackerStatus{typeName: "stringLiteral", stringLiteral: "done"}
-}
-
-func NewTrackerStatusFromTrackerStatusCancelled(value *TrackerStatusCancelled) *TrackerStatus {
-	return &TrackerStatus{typeName: "trackerStatusCancelled", TrackerStatusCancelled: value}
-}
-
-func NewTrackerStatusFromTrackerStatusError(value *TrackerStatusError) *TrackerStatus {
-	return &TrackerStatus{typeName: "trackerStatusError", TrackerStatusError: value}
-}
-
-func (t *TrackerStatus) StringLiteral() string {
-	return t.stringLiteral
-}
-
-func (t *TrackerStatus) StringLiteral() string {
-	return t.stringLiteral
-}
-
-func (t *TrackerStatus) UnmarshalJSON(data []byte) error {
-	var valueStringLiteral string
-	if err := json.Unmarshal(data, &valueStringLiteral); err == nil {
-		if valueStringLiteral == "optimizing" {
-			t.typeName = "stringLiteral"
-			t.stringLiteral = valueStringLiteral
-			return nil
-		}
+func (t *TransformFull) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformFull
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	var valueStringLiteral string
-	if err := json.Unmarshal(data, &valueStringLiteral); err == nil {
-		if valueStringLiteral == "done" {
-			t.typeName = "stringLiteral"
-			t.stringLiteral = valueStringLiteral
-			return nil
-		}
+	*t = TransformFull(value)
+	t.type_ = "transform"
+	return nil
+}
+
+func (t *TransformFull) MarshalJSON() ([]byte, error) {
+	type embed TransformFull
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*t),
+		Type:  "transform",
 	}
-	valueTrackerStatusCancelled := new(TrackerStatusCancelled)
-	if err := json.Unmarshal(data, &valueTrackerStatusCancelled); err == nil {
-		t.typeName = "trackerStatusCancelled"
-		t.TrackerStatusCancelled = valueTrackerStatusCancelled
+	return json.Marshal(marshaler)
+}
+
+// You can optionally define a new transformation while creating a transform rule
+type TransformFullTransformation struct {
+	// The unique name of the transformation
+	Name string `json:"name"`
+	// A string representation of your JavaScript (ES6) code to run
+	Code string `json:"code"`
+	// A key-value object of environment variables to encrypt and expose to your transformation code
+	Env map[string]*string `json:"env,omitempty"`
+}
+
+type TransformReference struct {
+	// ID of the attached transformation object. Optional input, always set once the rule is defined
+	TransformationId string `json:"transformation_id"`
+	type_            string
+}
+
+func (t *TransformReference) Type() string {
+	return t.type_
+}
+
+func (t *TransformReference) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformReference
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformReference(value)
+	t.type_ = "transform"
+	return nil
+}
+
+func (t *TransformReference) MarshalJSON() ([]byte, error) {
+	type embed TransformReference
+	var marshaler = struct {
+		embed
+		Type string `json:"type"`
+	}{
+		embed: embed(*t),
+		Type:  "transform",
+	}
+	return json.Marshal(marshaler)
+}
+
+type TransformRule struct {
+	typeName           string
+	TransformReference *TransformReference
+	TransformFull      *TransformFull
+}
+
+func NewTransformRuleFromTransformReference(value *TransformReference) *TransformRule {
+	return &TransformRule{typeName: "transformReference", TransformReference: value}
+}
+
+func NewTransformRuleFromTransformFull(value *TransformFull) *TransformRule {
+	return &TransformRule{typeName: "transformFull", TransformFull: value}
+}
+
+func (t *TransformRule) UnmarshalJSON(data []byte) error {
+	valueTransformReference := new(TransformReference)
+	if err := json.Unmarshal(data, &valueTransformReference); err == nil {
+		t.typeName = "transformReference"
+		t.TransformReference = valueTransformReference
 		return nil
 	}
-	valueTrackerStatusError := new(TrackerStatusError)
-	if err := json.Unmarshal(data, &valueTrackerStatusError); err == nil {
-		t.typeName = "trackerStatusError"
-		t.TrackerStatusError = valueTrackerStatusError
+	valueTransformFull := new(TransformFull)
+	if err := json.Unmarshal(data, &valueTransformFull); err == nil {
+		t.typeName = "transformFull"
+		t.TransformFull = valueTransformFull
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
 }
 
-func (t TrackerStatus) MarshalJSON() ([]byte, error) {
+func (t TransformRule) MarshalJSON() ([]byte, error) {
 	switch t.typeName {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "stringLiteral":
-		return json.Marshal("optimizing")
-	case "stringLiteral":
-		return json.Marshal("done")
-	case "trackerStatusCancelled":
-		return json.Marshal(t.TrackerStatusCancelled)
-	case "trackerStatusError":
-		return json.Marshal(t.TrackerStatusError)
+	case "transformReference":
+		return json.Marshal(t.TransformReference)
+	case "transformFull":
+		return json.Marshal(t.TransformFull)
 	}
 }
 
-type TrackerStatusVisitor interface {
-	VisitStringLiteral(string) error
-	VisitStringLiteral(string) error
-	VisitTrackerStatusCancelled(*TrackerStatusCancelled) error
-	VisitTrackerStatusError(*TrackerStatusError) error
+type TransformRuleVisitor interface {
+	VisitTransformReference(*TransformReference) error
+	VisitTransformFull(*TransformFull) error
 }
 
-func (t *TrackerStatus) Accept(visitor TrackerStatusVisitor) error {
+func (t *TransformRule) Accept(visitor TransformRuleVisitor) error {
 	switch t.typeName {
 	default:
 		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "stringLiteral":
-		return visitor.VisitStringLiteral(t.stringLiteral)
-	case "stringLiteral":
-		return visitor.VisitStringLiteral(t.stringLiteral)
-	case "trackerStatusCancelled":
-		return visitor.VisitTrackerStatusCancelled(t.TrackerStatusCancelled)
-	case "trackerStatusError":
-		return visitor.VisitTrackerStatusError(t.TrackerStatusError)
+	case "transformReference":
+		return visitor.VisitTransformReference(t.TransformReference)
+	case "transformFull":
+		return visitor.VisitTransformFull(t.TransformFull)
 	}
 }
 
-type TrackerStatusCancelled struct {
-	Cancelled string `json:"cancelled"`
-
-	_rawJSON json.RawMessage
-}
-
-func (t *TrackerStatusCancelled) UnmarshalJSON(data []byte) error {
-	type unmarshaler TrackerStatusCancelled
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TrackerStatusCancelled(value)
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TrackerStatusCancelled) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type TrackerStatusError struct {
-	Error string `json:"error"`
-
-	_rawJSON json.RawMessage
-}
-
-func (t *TrackerStatusError) UnmarshalJSON(data []byte) error {
-	type unmarshaler TrackerStatusError
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TrackerStatusError(value)
-	t._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (t *TrackerStatusError) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-// Tracker object used in telemetry
-type TrackerTelemetry struct {
-	// Name of the optimizer
+type Transformation struct {
+	// ID of the transformation
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string `json:"team_id"`
+	// A unique, human-friendly name for the transformation
 	Name string `json:"name"`
-	// Segment IDs being optimized
-	SegmentIds []int          `json:"segment_ids,omitempty"`
-	Status     *TrackerStatus `json:"status,omitempty"`
-	// Start time of the optimizer
-	StartAt time.Time `json:"start_at"`
-	// End time of the optimizer
-	EndAt *time.Time `json:"end_at,omitempty"`
-
-	_rawJSON json.RawMessage
+	// JavaScript code to be executed
+	Code         string  `json:"code"`
+	EncryptedEnv *string `json:"encrypted_env,omitempty"`
+	Iv           *string `json:"iv,omitempty"`
+	// Key-value environment variables to be passed to the transformation
+	Env map[string]*string `json:"env,omitempty"`
+	// Date the transformation was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+	// Date the transformation was created
+	CreatedAt time.Time `json:"created_at"`
 }
 
-func (t *TrackerTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler TrackerTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*t = TrackerTelemetry(value)
-	t._rawJSON = json.RawMessage(data)
-	return nil
+type TransformationExecution struct {
+	Id                     string                          `json:"id"`
+	TransformedEventDataId string                          `json:"transformed_event_data_id"`
+	OriginalEventDataId    string                          `json:"original_event_data_id"`
+	TransformationId       string                          `json:"transformation_id"`
+	TeamId                 string                          `json:"team_id"`
+	WebhookId              string                          `json:"webhook_id"`
+	LogLevel               TransformationExecutionLogLevel `json:"log_level,omitempty"`
+	Logs                   []*ConsoleLine                  `json:"logs,omitempty"`
+	UpdatedAt              time.Time                       `json:"updated_at"`
+	CreatedAt              time.Time                       `json:"created_at"`
+	OriginalEventData      *ShortEventData                 `json:"original_event_data,omitempty"`
+	TransformedEventData   *ShortEventData                 `json:"transformed_event_data,omitempty"`
+	IssueId                *string                         `json:"issue_id,omitempty"`
 }
 
-func (t *TrackerTelemetry) String() string {
-	if len(t._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(t); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", t)
-}
-
-type UpdateOperation struct {
-	typeName                  string
-	UpsertOperation           *UpsertOperation
-	DeleteOperation           *DeleteOperation
-	SetPayloadOperation       *SetPayloadOperation
-	OverwritePayloadOperation *OverwritePayloadOperation
-	DeletePayloadOperation    *DeletePayloadOperation
-	ClearPayloadOperation     *ClearPayloadOperation
-	UpdateVectorsOperation    *UpdateVectorsOperation
-	DeleteVectorsOperation    *DeleteVectorsOperation
-}
-
-func NewUpdateOperationFromUpsertOperation(value *UpsertOperation) *UpdateOperation {
-	return &UpdateOperation{typeName: "upsertOperation", UpsertOperation: value}
-}
-
-func NewUpdateOperationFromDeleteOperation(value *DeleteOperation) *UpdateOperation {
-	return &UpdateOperation{typeName: "deleteOperation", DeleteOperation: value}
-}
-
-func NewUpdateOperationFromSetPayloadOperation(value *SetPayloadOperation) *UpdateOperation {
-	return &UpdateOperation{typeName: "setPayloadOperation", SetPayloadOperation: value}
-}
-
-func NewUpdateOperationFromOverwritePayloadOperation(value *OverwritePayloadOperation) *UpdateOperation {
-	return &UpdateOperation{typeName: "overwritePayloadOperation", OverwritePayloadOperation: value}
-}
-
-func NewUpdateOperationFromDeletePayloadOperation(value *DeletePayloadOperation) *UpdateOperation {
-	return &UpdateOperation{typeName: "deletePayloadOperation", DeletePayloadOperation: value}
-}
-
-func NewUpdateOperationFromClearPayloadOperation(value *ClearPayloadOperation) *UpdateOperation {
-	return &UpdateOperation{typeName: "clearPayloadOperation", ClearPayloadOperation: value}
-}
-
-func NewUpdateOperationFromUpdateVectorsOperation(value *UpdateVectorsOperation) *UpdateOperation {
-	return &UpdateOperation{typeName: "updateVectorsOperation", UpdateVectorsOperation: value}
-}
-
-func NewUpdateOperationFromDeleteVectorsOperation(value *DeleteVectorsOperation) *UpdateOperation {
-	return &UpdateOperation{typeName: "deleteVectorsOperation", DeleteVectorsOperation: value}
-}
-
-func (u *UpdateOperation) UnmarshalJSON(data []byte) error {
-	valueUpsertOperation := new(UpsertOperation)
-	if err := json.Unmarshal(data, &valueUpsertOperation); err == nil {
-		u.typeName = "upsertOperation"
-		u.UpsertOperation = valueUpsertOperation
-		return nil
-	}
-	valueDeleteOperation := new(DeleteOperation)
-	if err := json.Unmarshal(data, &valueDeleteOperation); err == nil {
-		u.typeName = "deleteOperation"
-		u.DeleteOperation = valueDeleteOperation
-		return nil
-	}
-	valueSetPayloadOperation := new(SetPayloadOperation)
-	if err := json.Unmarshal(data, &valueSetPayloadOperation); err == nil {
-		u.typeName = "setPayloadOperation"
-		u.SetPayloadOperation = valueSetPayloadOperation
-		return nil
-	}
-	valueOverwritePayloadOperation := new(OverwritePayloadOperation)
-	if err := json.Unmarshal(data, &valueOverwritePayloadOperation); err == nil {
-		u.typeName = "overwritePayloadOperation"
-		u.OverwritePayloadOperation = valueOverwritePayloadOperation
-		return nil
-	}
-	valueDeletePayloadOperation := new(DeletePayloadOperation)
-	if err := json.Unmarshal(data, &valueDeletePayloadOperation); err == nil {
-		u.typeName = "deletePayloadOperation"
-		u.DeletePayloadOperation = valueDeletePayloadOperation
-		return nil
-	}
-	valueClearPayloadOperation := new(ClearPayloadOperation)
-	if err := json.Unmarshal(data, &valueClearPayloadOperation); err == nil {
-		u.typeName = "clearPayloadOperation"
-		u.ClearPayloadOperation = valueClearPayloadOperation
-		return nil
-	}
-	valueUpdateVectorsOperation := new(UpdateVectorsOperation)
-	if err := json.Unmarshal(data, &valueUpdateVectorsOperation); err == nil {
-		u.typeName = "updateVectorsOperation"
-		u.UpdateVectorsOperation = valueUpdateVectorsOperation
-		return nil
-	}
-	valueDeleteVectorsOperation := new(DeleteVectorsOperation)
-	if err := json.Unmarshal(data, &valueDeleteVectorsOperation); err == nil {
-		u.typeName = "deleteVectorsOperation"
-		u.DeleteVectorsOperation = valueDeleteVectorsOperation
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, u)
-}
-
-func (u UpdateOperation) MarshalJSON() ([]byte, error) {
-	switch u.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "upsertOperation":
-		return json.Marshal(u.UpsertOperation)
-	case "deleteOperation":
-		return json.Marshal(u.DeleteOperation)
-	case "setPayloadOperation":
-		return json.Marshal(u.SetPayloadOperation)
-	case "overwritePayloadOperation":
-		return json.Marshal(u.OverwritePayloadOperation)
-	case "deletePayloadOperation":
-		return json.Marshal(u.DeletePayloadOperation)
-	case "clearPayloadOperation":
-		return json.Marshal(u.ClearPayloadOperation)
-	case "updateVectorsOperation":
-		return json.Marshal(u.UpdateVectorsOperation)
-	case "deleteVectorsOperation":
-		return json.Marshal(u.DeleteVectorsOperation)
-	}
-}
-
-type UpdateOperationVisitor interface {
-	VisitUpsertOperation(*UpsertOperation) error
-	VisitDeleteOperation(*DeleteOperation) error
-	VisitSetPayloadOperation(*SetPayloadOperation) error
-	VisitOverwritePayloadOperation(*OverwritePayloadOperation) error
-	VisitDeletePayloadOperation(*DeletePayloadOperation) error
-	VisitClearPayloadOperation(*ClearPayloadOperation) error
-	VisitUpdateVectorsOperation(*UpdateVectorsOperation) error
-	VisitDeleteVectorsOperation(*DeleteVectorsOperation) error
-}
-
-func (u *UpdateOperation) Accept(visitor UpdateOperationVisitor) error {
-	switch u.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "upsertOperation":
-		return visitor.VisitUpsertOperation(u.UpsertOperation)
-	case "deleteOperation":
-		return visitor.VisitDeleteOperation(u.DeleteOperation)
-	case "setPayloadOperation":
-		return visitor.VisitSetPayloadOperation(u.SetPayloadOperation)
-	case "overwritePayloadOperation":
-		return visitor.VisitOverwritePayloadOperation(u.OverwritePayloadOperation)
-	case "deletePayloadOperation":
-		return visitor.VisitDeletePayloadOperation(u.DeletePayloadOperation)
-	case "clearPayloadOperation":
-		return visitor.VisitClearPayloadOperation(u.ClearPayloadOperation)
-	case "updateVectorsOperation":
-		return visitor.VisitUpdateVectorsOperation(u.UpdateVectorsOperation)
-	case "deleteVectorsOperation":
-		return visitor.VisitDeleteVectorsOperation(u.DeleteVectorsOperation)
-	}
-}
-
-type UpdateResult struct {
-	// Sequential number of the operation
-	OperationId *int         `json:"operation_id,omitempty"`
-	Status      UpdateStatus `json:"status,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UpdateResult) UnmarshalJSON(data []byte) error {
-	type unmarshaler UpdateResult
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UpdateResult(value)
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UpdateResult) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-// `Acknowledged` - Request is saved to WAL and will be process in a queue. `Completed` - Request is completed, changes are actual.
-type UpdateStatus string
+// The minimum log level to open the issue on
+type TransformationExecutionLogLevel string
 
 const (
-	UpdateStatusAcknowledged UpdateStatus = "acknowledged"
-	UpdateStatusCompleted    UpdateStatus = "completed"
+	TransformationExecutionLogLevelDebug TransformationExecutionLogLevel = "debug"
+	TransformationExecutionLogLevelInfo  TransformationExecutionLogLevel = "info"
+	TransformationExecutionLogLevelWarn  TransformationExecutionLogLevel = "warn"
+	TransformationExecutionLogLevelError TransformationExecutionLogLevel = "error"
+	TransformationExecutionLogLevelFatal TransformationExecutionLogLevel = "fatal"
 )
 
-func NewUpdateStatusFromString(s string) (UpdateStatus, error) {
+func NewTransformationExecutionLogLevelFromString(s string) (TransformationExecutionLogLevel, error) {
 	switch s {
-	case "acknowledged":
-		return UpdateStatusAcknowledged, nil
-	case "completed":
-		return UpdateStatusCompleted, nil
+	case "debug":
+		return TransformationExecutionLogLevelDebug, nil
+	case "info":
+		return TransformationExecutionLogLevelInfo, nil
+	case "warn":
+		return TransformationExecutionLogLevelWarn, nil
+	case "error":
+		return TransformationExecutionLogLevelError, nil
+	case "fatal":
+		return TransformationExecutionLogLevelFatal, nil
 	}
-	var t UpdateStatus
+	var t TransformationExecutionLogLevel
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (u UpdateStatus) Ptr() *UpdateStatus {
-	return &u
+func (t TransformationExecutionLogLevel) Ptr() *TransformationExecutionLogLevel {
+	return &t
 }
 
-type UpdateVectors struct {
-	// Points with named vectors
-	Points   []*PointVectors        `json:"points,omitempty"`
-	ShardKey *UpdateVectorsShardKey `json:"shard_key,omitempty"`
-
-	_rawJSON json.RawMessage
+type TransformationExecutionPaginatedResult struct {
+	Pagination *SeekPagination            `json:"pagination,omitempty"`
+	Count      *int                       `json:"count,omitempty"`
+	Models     []*TransformationExecution `json:"models,omitempty"`
 }
 
-func (u *UpdateVectors) UnmarshalJSON(data []byte) error {
-	type unmarshaler UpdateVectors
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
+type TransformationExecutorOutput struct {
+	RequestId        *string                              `json:"request_id,omitempty"`
+	TransformationId *string                              `json:"transformation_id,omitempty"`
+	ExecutionId      *string                              `json:"execution_id,omitempty"`
+	LogLevel         TransformationExecutionLogLevel      `json:"log_level,omitempty"`
+	Request          *TransformationExecutorOutputRequest `json:"request,omitempty"`
+	Console          []*ConsoleLine                       `json:"console,omitempty"`
+}
+
+type TransformationExecutorOutputRequest struct {
+	Headers     *TransformationExecutorOutputRequestHeaders     `json:"headers,omitempty"`
+	Path        string                                          `json:"path"`
+	Query       *TransformationExecutorOutputRequestQuery       `json:"query,omitempty"`
+	ParsedQuery *TransformationExecutorOutputRequestParsedQuery `json:"parsed_query,omitempty"`
+	Body        *TransformationExecutorOutputRequestBody        `json:"body,omitempty"`
+}
+
+type TransformationExecutorOutputRequestBody struct {
+	typeName                                   string
+	StringOptional                             *string
+	TransformationExecutorOutputRequestBodyOne *TransformationExecutorOutputRequestBodyOne
+}
+
+func NewTransformationExecutorOutputRequestBodyFromStringOptional(value *string) *TransformationExecutorOutputRequestBody {
+	return &TransformationExecutorOutputRequestBody{typeName: "stringOptional", StringOptional: value}
+}
+
+func NewTransformationExecutorOutputRequestBodyFromTransformationExecutorOutputRequestBodyOne(value *TransformationExecutorOutputRequestBodyOne) *TransformationExecutorOutputRequestBody {
+	return &TransformationExecutorOutputRequestBody{typeName: "transformationExecutorOutputRequestBodyOne", TransformationExecutorOutputRequestBodyOne: value}
+}
+
+func (t *TransformationExecutorOutputRequestBody) UnmarshalJSON(data []byte) error {
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		t.typeName = "stringOptional"
+		t.StringOptional = valueStringOptional
+		return nil
 	}
-	*u = UpdateVectors(value)
-	u._rawJSON = json.RawMessage(data)
-	return nil
+	valueTransformationExecutorOutputRequestBodyOne := new(TransformationExecutorOutputRequestBodyOne)
+	if err := json.Unmarshal(data, &valueTransformationExecutorOutputRequestBodyOne); err == nil {
+		t.typeName = "transformationExecutorOutputRequestBodyOne"
+		t.TransformationExecutorOutputRequestBodyOne = valueTransformationExecutorOutputRequestBodyOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
 }
 
-func (u *UpdateVectors) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
+func (t TransformationExecutorOutputRequestBody) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "stringOptional":
+		return json.Marshal(t.StringOptional)
+	case "transformationExecutorOutputRequestBodyOne":
+		return json.Marshal(t.TransformationExecutorOutputRequestBodyOne)
 	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
 }
 
-type UpdateVectorsOperation struct {
-	UpdateVectors *UpdateVectors `json:"update_vectors,omitempty"`
-
-	_rawJSON json.RawMessage
+type TransformationExecutorOutputRequestBodyVisitor interface {
+	VisitStringOptional(*string) error
+	VisitTransformationExecutorOutputRequestBodyOne(*TransformationExecutorOutputRequestBodyOne) error
 }
 
-func (u *UpdateVectorsOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler UpdateVectorsOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
+func (t *TransformationExecutorOutputRequestBody) Accept(visitor TransformationExecutorOutputRequestBodyVisitor) error {
+	switch t.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "stringOptional":
+		return visitor.VisitStringOptional(t.StringOptional)
+	case "transformationExecutorOutputRequestBodyOne":
+		return visitor.VisitTransformationExecutorOutputRequestBodyOne(t.TransformationExecutorOutputRequestBodyOne)
 	}
-	*u = UpdateVectorsOperation(value)
-	u._rawJSON = json.RawMessage(data)
-	return nil
 }
 
-func (u *UpdateVectorsOperation) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
+type TransformationExecutorOutputRequestBodyOne struct {
 }
 
-type UpdateVectorsShardKey struct {
+type TransformationExecutorOutputRequestHeaders struct {
 	typeName         string
-	ShardKeySelector *ShardKeySelector
-	Unknown          interface{}
+	String           string
+	StringUnknownMap map[string]interface{}
 }
 
-func NewUpdateVectorsShardKeyFromShardKeySelector(value *ShardKeySelector) *UpdateVectorsShardKey {
-	return &UpdateVectorsShardKey{typeName: "shardKeySelector", ShardKeySelector: value}
+func NewTransformationExecutorOutputRequestHeadersFromString(value string) *TransformationExecutorOutputRequestHeaders {
+	return &TransformationExecutorOutputRequestHeaders{typeName: "string", String: value}
 }
 
-func NewUpdateVectorsShardKeyFromUnknown(value interface{}) *UpdateVectorsShardKey {
-	return &UpdateVectorsShardKey{typeName: "unknown", Unknown: value}
+func NewTransformationExecutorOutputRequestHeadersFromStringUnknownMap(value map[string]interface{}) *TransformationExecutorOutputRequestHeaders {
+	return &TransformationExecutorOutputRequestHeaders{typeName: "stringUnknownMap", StringUnknownMap: value}
 }
 
-func (u *UpdateVectorsShardKey) UnmarshalJSON(data []byte) error {
-	valueShardKeySelector := new(ShardKeySelector)
-	if err := json.Unmarshal(data, &valueShardKeySelector); err == nil {
-		u.typeName = "shardKeySelector"
-		u.ShardKeySelector = valueShardKeySelector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		u.typeName = "unknown"
-		u.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, u)
-}
-
-func (u UpdateVectorsShardKey) MarshalJSON() ([]byte, error) {
-	switch u.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "shardKeySelector":
-		return json.Marshal(u.ShardKeySelector)
-	case "unknown":
-		return json.Marshal(u.Unknown)
-	}
-}
-
-type UpdateVectorsShardKeyVisitor interface {
-	VisitShardKeySelector(*ShardKeySelector) error
-	VisitUnknown(interface{}) error
-}
-
-func (u *UpdateVectorsShardKey) Accept(visitor UpdateVectorsShardKeyVisitor) error {
-	switch u.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", u.typeName, u)
-	case "shardKeySelector":
-		return visitor.VisitShardKeySelector(u.ShardKeySelector)
-	case "unknown":
-		return visitor.VisitUnknown(u.Unknown)
-	}
-}
-
-type UpsertOperation struct {
-	Upsert *PointInsertOperations `json:"upsert,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (u *UpsertOperation) UnmarshalJSON(data []byte) error {
-	type unmarshaler UpsertOperation
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*u = UpsertOperation(value)
-	u._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (u *UpsertOperation) String() string {
-	if len(u._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(u._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(u); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", u)
-}
-
-type UsingVector = string
-
-type ValueVariants struct {
-	typeName string
-	String   string
-	Integer  int
-	Boolean  bool
-}
-
-func NewValueVariantsFromString(value string) *ValueVariants {
-	return &ValueVariants{typeName: "string", String: value}
-}
-
-func NewValueVariantsFromInteger(value int) *ValueVariants {
-	return &ValueVariants{typeName: "integer", Integer: value}
-}
-
-func NewValueVariantsFromBoolean(value bool) *ValueVariants {
-	return &ValueVariants{typeName: "boolean", Boolean: value}
-}
-
-func (v *ValueVariants) UnmarshalJSON(data []byte) error {
+func (t *TransformationExecutorOutputRequestHeaders) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		v.typeName = "string"
-		v.String = valueString
+		t.typeName = "string"
+		t.String = valueString
 		return nil
 	}
-	var valueInteger int
-	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		v.typeName = "integer"
-		v.Integer = valueInteger
+	var valueStringUnknownMap map[string]interface{}
+	if err := json.Unmarshal(data, &valueStringUnknownMap); err == nil {
+		t.typeName = "stringUnknownMap"
+		t.StringUnknownMap = valueStringUnknownMap
 		return nil
 	}
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		v.typeName = "boolean"
-		v.Boolean = valueBoolean
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
 }
 
-func (v ValueVariants) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
+func (t TransformationExecutorOutputRequestHeaders) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
 	case "string":
-		return json.Marshal(v.String)
-	case "integer":
-		return json.Marshal(v.Integer)
-	case "boolean":
-		return json.Marshal(v.Boolean)
+		return json.Marshal(t.String)
+	case "stringUnknownMap":
+		return json.Marshal(t.StringUnknownMap)
 	}
 }
 
-type ValueVariantsVisitor interface {
+type TransformationExecutorOutputRequestHeadersVisitor interface {
 	VisitString(string) error
-	VisitInteger(int) error
-	VisitBoolean(bool) error
+	VisitStringUnknownMap(map[string]interface{}) error
 }
 
-func (v *ValueVariants) Accept(visitor ValueVariantsVisitor) error {
-	switch v.typeName {
+func (t *TransformationExecutorOutputRequestHeaders) Accept(visitor TransformationExecutorOutputRequestHeadersVisitor) error {
+	switch t.typeName {
 	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
 	case "string":
-		return visitor.VisitString(v.String)
-	case "integer":
-		return visitor.VisitInteger(v.Integer)
-	case "boolean":
-		return visitor.VisitBoolean(v.Boolean)
+		return visitor.VisitString(t.String)
+	case "stringUnknownMap":
+		return visitor.VisitStringUnknownMap(t.StringUnknownMap)
 	}
 }
 
-// Values count filter request
-type ValuesCount struct {
-	// point.key.length() < values_count.lt
-	Lt *int `json:"lt,omitempty"`
-	// point.key.length() > values_count.gt
-	Gt *int `json:"gt,omitempty"`
-	// point.key.length() >= values_count.gte
-	Gte *int `json:"gte,omitempty"`
-	// point.key.length() <= values_count.lte
-	Lte *int `json:"lte,omitempty"`
-
-	_rawJSON json.RawMessage
+type TransformationExecutorOutputRequestParsedQuery struct {
+	typeName                                          string
+	StringOptional                                    *string
+	TransformationExecutorOutputRequestParsedQueryOne *TransformationExecutorOutputRequestParsedQueryOne
 }
 
-func (v *ValuesCount) UnmarshalJSON(data []byte) error {
-	type unmarshaler ValuesCount
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
+func NewTransformationExecutorOutputRequestParsedQueryFromStringOptional(value *string) *TransformationExecutorOutputRequestParsedQuery {
+	return &TransformationExecutorOutputRequestParsedQuery{typeName: "stringOptional", StringOptional: value}
+}
+
+func NewTransformationExecutorOutputRequestParsedQueryFromTransformationExecutorOutputRequestParsedQueryOne(value *TransformationExecutorOutputRequestParsedQueryOne) *TransformationExecutorOutputRequestParsedQuery {
+	return &TransformationExecutorOutputRequestParsedQuery{typeName: "transformationExecutorOutputRequestParsedQueryOne", TransformationExecutorOutputRequestParsedQueryOne: value}
+}
+
+func (t *TransformationExecutorOutputRequestParsedQuery) UnmarshalJSON(data []byte) error {
+	var valueStringOptional *string
+	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
+		t.typeName = "stringOptional"
+		t.StringOptional = valueStringOptional
+		return nil
+	}
+	valueTransformationExecutorOutputRequestParsedQueryOne := new(TransformationExecutorOutputRequestParsedQueryOne)
+	if err := json.Unmarshal(data, &valueTransformationExecutorOutputRequestParsedQueryOne); err == nil {
+		t.typeName = "transformationExecutorOutputRequestParsedQueryOne"
+		t.TransformationExecutorOutputRequestParsedQueryOne = valueTransformationExecutorOutputRequestParsedQueryOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t TransformationExecutorOutputRequestParsedQuery) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "stringOptional":
+		return json.Marshal(t.StringOptional)
+	case "transformationExecutorOutputRequestParsedQueryOne":
+		return json.Marshal(t.TransformationExecutorOutputRequestParsedQueryOne)
+	}
+}
+
+type TransformationExecutorOutputRequestParsedQueryVisitor interface {
+	VisitStringOptional(*string) error
+	VisitTransformationExecutorOutputRequestParsedQueryOne(*TransformationExecutorOutputRequestParsedQueryOne) error
+}
+
+func (t *TransformationExecutorOutputRequestParsedQuery) Accept(visitor TransformationExecutorOutputRequestParsedQueryVisitor) error {
+	switch t.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "stringOptional":
+		return visitor.VisitStringOptional(t.StringOptional)
+	case "transformationExecutorOutputRequestParsedQueryOne":
+		return visitor.VisitTransformationExecutorOutputRequestParsedQueryOne(t.TransformationExecutorOutputRequestParsedQueryOne)
+	}
+}
+
+type TransformationExecutorOutputRequestParsedQueryOne struct {
+}
+
+type TransformationExecutorOutputRequestQuery struct {
+	typeName                                             string
+	TransformationExecutorOutputRequestQueryZeroOptional *TransformationExecutorOutputRequestQueryZero
+	String                                               string
+}
+
+func NewTransformationExecutorOutputRequestQueryFromTransformationExecutorOutputRequestQueryZeroOptional(value *TransformationExecutorOutputRequestQueryZero) *TransformationExecutorOutputRequestQuery {
+	return &TransformationExecutorOutputRequestQuery{typeName: "transformationExecutorOutputRequestQueryZeroOptional", TransformationExecutorOutputRequestQueryZeroOptional: value}
+}
+
+func NewTransformationExecutorOutputRequestQueryFromString(value string) *TransformationExecutorOutputRequestQuery {
+	return &TransformationExecutorOutputRequestQuery{typeName: "string", String: value}
+}
+
+func (t *TransformationExecutorOutputRequestQuery) UnmarshalJSON(data []byte) error {
+	var valueTransformationExecutorOutputRequestQueryZeroOptional *TransformationExecutorOutputRequestQueryZero
+	if err := json.Unmarshal(data, &valueTransformationExecutorOutputRequestQueryZeroOptional); err == nil {
+		t.typeName = "transformationExecutorOutputRequestQueryZeroOptional"
+		t.TransformationExecutorOutputRequestQueryZeroOptional = valueTransformationExecutorOutputRequestQueryZeroOptional
+		return nil
+	}
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		t.typeName = "string"
+		t.String = valueString
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t TransformationExecutorOutputRequestQuery) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "transformationExecutorOutputRequestQueryZeroOptional":
+		return json.Marshal(t.TransformationExecutorOutputRequestQueryZeroOptional)
+	case "string":
+		return json.Marshal(t.String)
+	}
+}
+
+type TransformationExecutorOutputRequestQueryVisitor interface {
+	VisitTransformationExecutorOutputRequestQueryZeroOptional(*TransformationExecutorOutputRequestQueryZero) error
+	VisitString(string) error
+}
+
+func (t *TransformationExecutorOutputRequestQuery) Accept(visitor TransformationExecutorOutputRequestQueryVisitor) error {
+	switch t.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "transformationExecutorOutputRequestQueryZeroOptional":
+		return visitor.VisitTransformationExecutorOutputRequestQueryZeroOptional(t.TransformationExecutorOutputRequestQueryZeroOptional)
+	case "string":
+		return visitor.VisitString(t.String)
+	}
+}
+
+type TransformationExecutorOutputRequestQueryZero struct {
+}
+
+type TransformationFailedMeta struct {
+	TransformationId string `json:"transformation_id"`
+}
+
+// Transformation issue
+type TransformationIssue struct {
+	// Issue ID
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string      `json:"team_id"`
+	Status IssueStatus `json:"status,omitempty"`
+	// ISO timestamp for when the issue was last opened
+	OpenedAt time.Time `json:"opened_at"`
+	// ISO timestamp for when the issue was first opened
+	FirstSeenAt time.Time `json:"first_seen_at"`
+	// ISO timestamp for when the issue last occured
+	LastSeenAt time.Time `json:"last_seen_at"`
+	// ID of the team member who last updated the issue status
+	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
+	// ISO timestamp for when the issue was dismissed
+	DismissedAt    *time.Time `json:"dismissed_at,omitempty"`
+	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty"`
+	MergedWith     *string    `json:"merged_with,omitempty"`
+	// ISO timestamp for when the issue was last updated
+	UpdatedAt string `json:"updated_at"`
+	// ISO timestamp for when the issue was created
+	CreatedAt       string                              `json:"created_at"`
+	AggregationKeys *TransformationIssueAggregationKeys `json:"aggregation_keys,omitempty"`
+	Reference       *TransformationIssueReference       `json:"reference,omitempty"`
+}
+
+// Keys used as the aggregation keys a 'transformation' type issue
+type TransformationIssueAggregationKeys struct {
+	TransformationId []string                        `json:"transformation_id,omitempty"`
+	LogLevel         TransformationExecutionLogLevel `json:"log_level,omitempty"`
+}
+
+// Transformation issue data
+type TransformationIssueData struct {
+	TransformationExecution *TransformationExecution `json:"transformation_execution,omitempty"`
+	TriggerAttempt          *EventAttempt            `json:"trigger_attempt,omitempty"`
+}
+
+// Reference to the event request transformation an issue is being created for.
+type TransformationIssueReference struct {
+	TransformationExecutionId string `json:"transformation_execution_id"`
+	// Deprecated but still found on historical issues
+	TriggerEventRequestTransformationId *string `json:"trigger_event_request_transformation_id,omitempty"`
+}
+
+// Transformation issue
+type TransformationIssueWithData struct {
+	// Issue ID
+	Id string `json:"id"`
+	// ID of the workspace
+	TeamId string      `json:"team_id"`
+	Status IssueStatus `json:"status,omitempty"`
+	// ISO timestamp for when the issue was last opened
+	OpenedAt time.Time `json:"opened_at"`
+	// ISO timestamp for when the issue was first opened
+	FirstSeenAt time.Time `json:"first_seen_at"`
+	// ISO timestamp for when the issue last occured
+	LastSeenAt time.Time `json:"last_seen_at"`
+	// ID of the team member who last updated the issue status
+	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
+	// ISO timestamp for when the issue was dismissed
+	DismissedAt    *time.Time `json:"dismissed_at,omitempty"`
+	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty"`
+	MergedWith     *string    `json:"merged_with,omitempty"`
+	// ISO timestamp for when the issue was last updated
+	UpdatedAt string `json:"updated_at"`
+	// ISO timestamp for when the issue was created
+	CreatedAt       string                              `json:"created_at"`
+	AggregationKeys *TransformationIssueAggregationKeys `json:"aggregation_keys,omitempty"`
+	Reference       *TransformationIssueReference       `json:"reference,omitempty"`
+	Data            *TransformationIssueData            `json:"data,omitempty"`
+}
+
+type TransformationPaginatedResult struct {
+	Pagination *SeekPagination   `json:"pagination,omitempty"`
+	Count      *int              `json:"count,omitempty"`
+	Models     []*Transformation `json:"models,omitempty"`
+}
+
+type Verification3DEye struct {
+	Configs *Verification3DEyeConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for 3dEye. Only included if the ?include=verification.configs query param is present
+type Verification3DEyeConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationAdyen struct {
+	Configs *VerificationAdyenConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Adyen. Only included if the ?include=verification.configs query param is present
+type VerificationAdyenConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationAkeneo struct {
+	Configs *VerificationAkeneoConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Akeneo. Only included if the ?include=verification.configs query param is present
+type VerificationAkeneoConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationApiKey struct {
+	Configs *VerificationApiKeyConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for API Key. Only included if the ?include=verification.configs query param is present
+type VerificationApiKeyConfigs struct {
+	HeaderKey string `json:"header_key"`
+	ApiKey    string `json:"api_key"`
+}
+
+type VerificationAwssns struct {
+	Configs *VerificationAwssnsConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for AWS SNS. Only included if the ?include=verification.configs query param is present
+type VerificationAwssnsConfigs struct {
+}
+
+type VerificationBasicAuth struct {
+	Configs *VerificationBasicAuthConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Basic Auth. Only included if the ?include=verification.configs query param is present
+type VerificationBasicAuthConfigs struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
+type VerificationCloudSignal struct {
+	Configs *VerificationCloudSignalConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Cloud Signal. Only included if the ?include=verification.configs query param is present
+type VerificationCloudSignalConfigs struct {
+	ApiKey string `json:"api_key"`
+}
+
+type VerificationCommercelayer struct {
+	Configs *VerificationCommercelayerConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Commercelayer. Only included if the ?include=verification.configs query param is present
+type VerificationCommercelayerConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+// The verification configs for the specific verification type
+type VerificationConfig struct {
+	Type           string
+	Hmac           *VerificationHmac
+	BasicAuth      *VerificationBasicAuth
+	ApiKey         *VerificationApiKey
+	Cloudsignal    *VerificationCloudSignal
+	Courier        *VerificationCourier
+	Twitter        *VerificationTwitter
+	Stripe         *VerificationStripe
+	Recharge       *VerificationRecharge
+	Twilio         *VerificationTwilio
+	Github         *VerificationGitHub
+	Shopify        *VerificationShopify
+	Postmark       *VerificationPostmark
+	Typeform       *VerificationTypeform
+	Xero           *VerificationXero
+	Svix           *VerificationSvix
+	Zoom           *VerificationZoom
+	Akeneo         *VerificationAkeneo
+	Adyen          *VerificationAdyen
+	Gitlab         *VerificationGitLab
+	PropertyFinder *VerificationPropertyFinder
+	Woocommerce    *VerificationWooCommerce
+	Oura           *VerificationOura
+	Commercelayer  *VerificationCommercelayer
+	Hubspot        *VerificationHubspot
+	Mailgun        *VerificationMailgun
+	Persona        *VerificationPersona
+	Pipedrive      *VerificationPipedrive
+	Sendgrid       *VerificationSendGrid
+	Workos         *VerificationWorkOs
+	Synctera       *VerificationSynctera
+	AwsSns         *VerificationAwssns
+	ThreeDEye      *Verification3DEye
+	Twitch         *VerificationTwitch
+	Favro          *VerificationFavro
+	Wix            *VerificationWix
+	Nmi            *VerificationNmiPaymentGateway
+	Repay          *VerificationRepay
+	Square         *VerificationSquare
+	Solidgate      *VerificationSolidGate
+	Trello         *VerificationTrello
+	Sanity         *VerificationSanity
+}
+
+func NewVerificationConfigFromHmac(value *VerificationHmac) *VerificationConfig {
+	return &VerificationConfig{Type: "hmac", Hmac: value}
+}
+
+func NewVerificationConfigFromBasicAuth(value *VerificationBasicAuth) *VerificationConfig {
+	return &VerificationConfig{Type: "basic_auth", BasicAuth: value}
+}
+
+func NewVerificationConfigFromApiKey(value *VerificationApiKey) *VerificationConfig {
+	return &VerificationConfig{Type: "api_key", ApiKey: value}
+}
+
+func NewVerificationConfigFromCloudsignal(value *VerificationCloudSignal) *VerificationConfig {
+	return &VerificationConfig{Type: "cloudsignal", Cloudsignal: value}
+}
+
+func NewVerificationConfigFromCourier(value *VerificationCourier) *VerificationConfig {
+	return &VerificationConfig{Type: "courier", Courier: value}
+}
+
+func NewVerificationConfigFromTwitter(value *VerificationTwitter) *VerificationConfig {
+	return &VerificationConfig{Type: "twitter", Twitter: value}
+}
+
+func NewVerificationConfigFromStripe(value *VerificationStripe) *VerificationConfig {
+	return &VerificationConfig{Type: "stripe", Stripe: value}
+}
+
+func NewVerificationConfigFromRecharge(value *VerificationRecharge) *VerificationConfig {
+	return &VerificationConfig{Type: "recharge", Recharge: value}
+}
+
+func NewVerificationConfigFromTwilio(value *VerificationTwilio) *VerificationConfig {
+	return &VerificationConfig{Type: "twilio", Twilio: value}
+}
+
+func NewVerificationConfigFromGithub(value *VerificationGitHub) *VerificationConfig {
+	return &VerificationConfig{Type: "github", Github: value}
+}
+
+func NewVerificationConfigFromShopify(value *VerificationShopify) *VerificationConfig {
+	return &VerificationConfig{Type: "shopify", Shopify: value}
+}
+
+func NewVerificationConfigFromPostmark(value *VerificationPostmark) *VerificationConfig {
+	return &VerificationConfig{Type: "postmark", Postmark: value}
+}
+
+func NewVerificationConfigFromTypeform(value *VerificationTypeform) *VerificationConfig {
+	return &VerificationConfig{Type: "typeform", Typeform: value}
+}
+
+func NewVerificationConfigFromXero(value *VerificationXero) *VerificationConfig {
+	return &VerificationConfig{Type: "xero", Xero: value}
+}
+
+func NewVerificationConfigFromSvix(value *VerificationSvix) *VerificationConfig {
+	return &VerificationConfig{Type: "svix", Svix: value}
+}
+
+func NewVerificationConfigFromZoom(value *VerificationZoom) *VerificationConfig {
+	return &VerificationConfig{Type: "zoom", Zoom: value}
+}
+
+func NewVerificationConfigFromAkeneo(value *VerificationAkeneo) *VerificationConfig {
+	return &VerificationConfig{Type: "akeneo", Akeneo: value}
+}
+
+func NewVerificationConfigFromAdyen(value *VerificationAdyen) *VerificationConfig {
+	return &VerificationConfig{Type: "adyen", Adyen: value}
+}
+
+func NewVerificationConfigFromGitlab(value *VerificationGitLab) *VerificationConfig {
+	return &VerificationConfig{Type: "gitlab", Gitlab: value}
+}
+
+func NewVerificationConfigFromPropertyFinder(value *VerificationPropertyFinder) *VerificationConfig {
+	return &VerificationConfig{Type: "property-finder", PropertyFinder: value}
+}
+
+func NewVerificationConfigFromWoocommerce(value *VerificationWooCommerce) *VerificationConfig {
+	return &VerificationConfig{Type: "woocommerce", Woocommerce: value}
+}
+
+func NewVerificationConfigFromOura(value *VerificationOura) *VerificationConfig {
+	return &VerificationConfig{Type: "oura", Oura: value}
+}
+
+func NewVerificationConfigFromCommercelayer(value *VerificationCommercelayer) *VerificationConfig {
+	return &VerificationConfig{Type: "commercelayer", Commercelayer: value}
+}
+
+func NewVerificationConfigFromHubspot(value *VerificationHubspot) *VerificationConfig {
+	return &VerificationConfig{Type: "hubspot", Hubspot: value}
+}
+
+func NewVerificationConfigFromMailgun(value *VerificationMailgun) *VerificationConfig {
+	return &VerificationConfig{Type: "mailgun", Mailgun: value}
+}
+
+func NewVerificationConfigFromPersona(value *VerificationPersona) *VerificationConfig {
+	return &VerificationConfig{Type: "persona", Persona: value}
+}
+
+func NewVerificationConfigFromPipedrive(value *VerificationPipedrive) *VerificationConfig {
+	return &VerificationConfig{Type: "pipedrive", Pipedrive: value}
+}
+
+func NewVerificationConfigFromSendgrid(value *VerificationSendGrid) *VerificationConfig {
+	return &VerificationConfig{Type: "sendgrid", Sendgrid: value}
+}
+
+func NewVerificationConfigFromWorkos(value *VerificationWorkOs) *VerificationConfig {
+	return &VerificationConfig{Type: "workos", Workos: value}
+}
+
+func NewVerificationConfigFromSynctera(value *VerificationSynctera) *VerificationConfig {
+	return &VerificationConfig{Type: "synctera", Synctera: value}
+}
+
+func NewVerificationConfigFromAwsSns(value *VerificationAwssns) *VerificationConfig {
+	return &VerificationConfig{Type: "aws_sns", AwsSns: value}
+}
+
+func NewVerificationConfigFromThreeDEye(value *Verification3DEye) *VerificationConfig {
+	return &VerificationConfig{Type: "three_d_eye", ThreeDEye: value}
+}
+
+func NewVerificationConfigFromTwitch(value *VerificationTwitch) *VerificationConfig {
+	return &VerificationConfig{Type: "twitch", Twitch: value}
+}
+
+func NewVerificationConfigFromFavro(value *VerificationFavro) *VerificationConfig {
+	return &VerificationConfig{Type: "favro", Favro: value}
+}
+
+func NewVerificationConfigFromWix(value *VerificationWix) *VerificationConfig {
+	return &VerificationConfig{Type: "wix", Wix: value}
+}
+
+func NewVerificationConfigFromNmi(value *VerificationNmiPaymentGateway) *VerificationConfig {
+	return &VerificationConfig{Type: "nmi", Nmi: value}
+}
+
+func NewVerificationConfigFromRepay(value *VerificationRepay) *VerificationConfig {
+	return &VerificationConfig{Type: "repay", Repay: value}
+}
+
+func NewVerificationConfigFromSquare(value *VerificationSquare) *VerificationConfig {
+	return &VerificationConfig{Type: "square", Square: value}
+}
+
+func NewVerificationConfigFromSolidgate(value *VerificationSolidGate) *VerificationConfig {
+	return &VerificationConfig{Type: "solidgate", Solidgate: value}
+}
+
+func NewVerificationConfigFromTrello(value *VerificationTrello) *VerificationConfig {
+	return &VerificationConfig{Type: "trello", Trello: value}
+}
+
+func NewVerificationConfigFromSanity(value *VerificationSanity) *VerificationConfig {
+	return &VerificationConfig{Type: "sanity", Sanity: value}
+}
+
+func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
+	var unmarshaler struct {
+		Type string `json:"type"`
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
 		return err
 	}
-	*v = ValuesCount(value)
-	v._rawJSON = json.RawMessage(data)
+	v.Type = unmarshaler.Type
+	switch unmarshaler.Type {
+	case "hmac":
+		value := new(VerificationHmac)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Hmac = value
+	case "basic_auth":
+		value := new(VerificationBasicAuth)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.BasicAuth = value
+	case "api_key":
+		value := new(VerificationApiKey)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.ApiKey = value
+	case "cloudsignal":
+		value := new(VerificationCloudSignal)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Cloudsignal = value
+	case "courier":
+		value := new(VerificationCourier)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Courier = value
+	case "twitter":
+		value := new(VerificationTwitter)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Twitter = value
+	case "stripe":
+		value := new(VerificationStripe)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Stripe = value
+	case "recharge":
+		value := new(VerificationRecharge)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Recharge = value
+	case "twilio":
+		value := new(VerificationTwilio)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Twilio = value
+	case "github":
+		value := new(VerificationGitHub)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Github = value
+	case "shopify":
+		value := new(VerificationShopify)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Shopify = value
+	case "postmark":
+		value := new(VerificationPostmark)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Postmark = value
+	case "typeform":
+		value := new(VerificationTypeform)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Typeform = value
+	case "xero":
+		value := new(VerificationXero)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Xero = value
+	case "svix":
+		value := new(VerificationSvix)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Svix = value
+	case "zoom":
+		value := new(VerificationZoom)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Zoom = value
+	case "akeneo":
+		value := new(VerificationAkeneo)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Akeneo = value
+	case "adyen":
+		value := new(VerificationAdyen)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Adyen = value
+	case "gitlab":
+		value := new(VerificationGitLab)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Gitlab = value
+	case "property-finder":
+		value := new(VerificationPropertyFinder)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.PropertyFinder = value
+	case "woocommerce":
+		value := new(VerificationWooCommerce)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Woocommerce = value
+	case "oura":
+		value := new(VerificationOura)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Oura = value
+	case "commercelayer":
+		value := new(VerificationCommercelayer)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Commercelayer = value
+	case "hubspot":
+		value := new(VerificationHubspot)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Hubspot = value
+	case "mailgun":
+		value := new(VerificationMailgun)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Mailgun = value
+	case "persona":
+		value := new(VerificationPersona)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Persona = value
+	case "pipedrive":
+		value := new(VerificationPipedrive)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Pipedrive = value
+	case "sendgrid":
+		value := new(VerificationSendGrid)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Sendgrid = value
+	case "workos":
+		value := new(VerificationWorkOs)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Workos = value
+	case "synctera":
+		value := new(VerificationSynctera)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Synctera = value
+	case "aws_sns":
+		value := new(VerificationAwssns)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.AwsSns = value
+	case "three_d_eye":
+		value := new(Verification3DEye)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.ThreeDEye = value
+	case "twitch":
+		value := new(VerificationTwitch)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Twitch = value
+	case "favro":
+		value := new(VerificationFavro)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Favro = value
+	case "wix":
+		value := new(VerificationWix)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Wix = value
+	case "nmi":
+		value := new(VerificationNmiPaymentGateway)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Nmi = value
+	case "repay":
+		value := new(VerificationRepay)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Repay = value
+	case "square":
+		value := new(VerificationSquare)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Square = value
+	case "solidgate":
+		value := new(VerificationSolidGate)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Solidgate = value
+	case "trello":
+		value := new(VerificationTrello)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Trello = value
+	case "sanity":
+		value := new(VerificationSanity)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Sanity = value
+	}
 	return nil
 }
 
-func (v *ValuesCount) String() string {
-	if len(v._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
-			return value
+func (v VerificationConfig) MarshalJSON() ([]byte, error) {
+	switch v.Type {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", v.Type, v)
+	case "hmac":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationHmac
+		}{
+			Type:             v.Type,
+			VerificationHmac: v.Hmac,
 		}
-	}
-	if value, err := core.StringifyJSON(v); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", v)
-}
-
-type Vector struct {
-	typeName     string
-	DoubleList   []float64
-	SparseVector *SparseVector
-}
-
-func NewVectorFromDoubleList(value []float64) *Vector {
-	return &Vector{typeName: "doubleList", DoubleList: value}
-}
-
-func NewVectorFromSparseVector(value *SparseVector) *Vector {
-	return &Vector{typeName: "sparseVector", SparseVector: value}
-}
-
-func (v *Vector) UnmarshalJSON(data []byte) error {
-	var valueDoubleList []float64
-	if err := json.Unmarshal(data, &valueDoubleList); err == nil {
-		v.typeName = "doubleList"
-		v.DoubleList = valueDoubleList
-		return nil
-	}
-	valueSparseVector := new(SparseVector)
-	if err := json.Unmarshal(data, &valueSparseVector); err == nil {
-		v.typeName = "sparseVector"
-		v.SparseVector = valueSparseVector
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
-}
-
-func (v Vector) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "doubleList":
-		return json.Marshal(v.DoubleList)
-	case "sparseVector":
-		return json.Marshal(v.SparseVector)
-	}
-}
-
-type VectorVisitor interface {
-	VisitDoubleList([]float64) error
-	VisitSparseVector(*SparseVector) error
-}
-
-func (v *Vector) Accept(visitor VectorVisitor) error {
-	switch v.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "doubleList":
-		return visitor.VisitDoubleList(v.DoubleList)
-	case "sparseVector":
-		return visitor.VisitSparseVector(v.SparseVector)
-	}
-}
-
-// Config of single vector data storage
-type VectorDataConfig struct {
-	// Size/dimensionality of the vectors used
-	Size        int               `json:"size"`
-	Distance    Distance          `json:"distance,omitempty"`
-	StorageType VectorStorageType `json:"storage_type,omitempty"`
-	Index       *Indexes          `json:"index,omitempty"`
-	// Vector specific quantization config that overrides collection config
-	QuantizationConfig *VectorDataConfigQuantizationConfig `json:"quantization_config,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (v *VectorDataConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler VectorDataConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VectorDataConfig(value)
-	v._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (v *VectorDataConfig) String() string {
-	if len(v._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
-			return value
+		return json.Marshal(marshaler)
+	case "basic_auth":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationBasicAuth
+		}{
+			Type:                  v.Type,
+			VerificationBasicAuth: v.BasicAuth,
 		}
-	}
-	if value, err := core.StringifyJSON(v); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", v)
-}
-
-// Vector specific quantization config that overrides collection config
-type VectorDataConfigQuantizationConfig struct {
-	typeName           string
-	QuantizationConfig *QuantizationConfig
-	Unknown            interface{}
-}
-
-func NewVectorDataConfigQuantizationConfigFromQuantizationConfig(value *QuantizationConfig) *VectorDataConfigQuantizationConfig {
-	return &VectorDataConfigQuantizationConfig{typeName: "quantizationConfig", QuantizationConfig: value}
-}
-
-func NewVectorDataConfigQuantizationConfigFromUnknown(value interface{}) *VectorDataConfigQuantizationConfig {
-	return &VectorDataConfigQuantizationConfig{typeName: "unknown", Unknown: value}
-}
-
-func (v *VectorDataConfigQuantizationConfig) UnmarshalJSON(data []byte) error {
-	valueQuantizationConfig := new(QuantizationConfig)
-	if err := json.Unmarshal(data, &valueQuantizationConfig); err == nil {
-		v.typeName = "quantizationConfig"
-		v.QuantizationConfig = valueQuantizationConfig
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		v.typeName = "unknown"
-		v.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
-}
-
-func (v VectorDataConfigQuantizationConfig) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "quantizationConfig":
-		return json.Marshal(v.QuantizationConfig)
-	case "unknown":
-		return json.Marshal(v.Unknown)
-	}
-}
-
-type VectorDataConfigQuantizationConfigVisitor interface {
-	VisitQuantizationConfig(*QuantizationConfig) error
-	VisitUnknown(interface{}) error
-}
-
-func (v *VectorDataConfigQuantizationConfig) Accept(visitor VectorDataConfigQuantizationConfigVisitor) error {
-	switch v.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "quantizationConfig":
-		return visitor.VisitQuantizationConfig(v.QuantizationConfig)
-	case "unknown":
-		return visitor.VisitUnknown(v.Unknown)
-	}
-}
-
-type VectorDataInfo struct {
-	NumVectors        int `json:"num_vectors"`
-	NumIndexedVectors int `json:"num_indexed_vectors"`
-	NumDeletedVectors int `json:"num_deleted_vectors"`
-
-	_rawJSON json.RawMessage
-}
-
-func (v *VectorDataInfo) UnmarshalJSON(data []byte) error {
-	type unmarshaler VectorDataInfo
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VectorDataInfo(value)
-	v._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (v *VectorDataInfo) String() string {
-	if len(v._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
-			return value
+		return json.Marshal(marshaler)
+	case "api_key":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationApiKey
+		}{
+			Type:               v.Type,
+			VerificationApiKey: v.ApiKey,
 		}
-	}
-	if value, err := core.StringifyJSON(v); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", v)
-}
-
-type VectorIndexSearchesTelemetry struct {
-	IndexName                *string                      `json:"index_name,omitempty"`
-	UnfilteredPlain          *OperationDurationStatistics `json:"unfiltered_plain,omitempty"`
-	UnfilteredHnsw           *OperationDurationStatistics `json:"unfiltered_hnsw,omitempty"`
-	UnfilteredSparse         *OperationDurationStatistics `json:"unfiltered_sparse,omitempty"`
-	FilteredPlain            *OperationDurationStatistics `json:"filtered_plain,omitempty"`
-	FilteredSmallCardinality *OperationDurationStatistics `json:"filtered_small_cardinality,omitempty"`
-	FilteredLargeCardinality *OperationDurationStatistics `json:"filtered_large_cardinality,omitempty"`
-	FilteredExact            *OperationDurationStatistics `json:"filtered_exact,omitempty"`
-	FilteredSparse           *OperationDurationStatistics `json:"filtered_sparse,omitempty"`
-	UnfilteredExact          *OperationDurationStatistics `json:"unfiltered_exact,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (v *VectorIndexSearchesTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler VectorIndexSearchesTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VectorIndexSearchesTelemetry(value)
-	v._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (v *VectorIndexSearchesTelemetry) String() string {
-	if len(v._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
-			return value
+		return json.Marshal(marshaler)
+	case "cloudsignal":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationCloudSignal
+		}{
+			Type:                    v.Type,
+			VerificationCloudSignal: v.Cloudsignal,
 		}
-	}
-	if value, err := core.StringifyJSON(v); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", v)
-}
-
-// Params of single vector data storage
-type VectorParams struct {
-	// Size of a vectors used
-	Size     int      `json:"size"`
-	Distance Distance `json:"distance,omitempty"`
-	// Custom params for HNSW index. If none - values from collection configuration are used.
-	HnswConfig *VectorParamsHnswConfig `json:"hnsw_config,omitempty"`
-	// Custom params for quantization. If none - values from collection configuration are used.
-	QuantizationConfig *VectorParamsQuantizationConfig `json:"quantization_config,omitempty"`
-	// If true, vectors are served from disk, improving RAM usage at the cost of latency Default: false
-	OnDisk *bool `json:"on_disk,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (v *VectorParams) UnmarshalJSON(data []byte) error {
-	type unmarshaler VectorParams
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VectorParams(value)
-	v._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (v *VectorParams) String() string {
-	if len(v._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
-			return value
+		return json.Marshal(marshaler)
+	case "courier":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationCourier
+		}{
+			Type:                v.Type,
+			VerificationCourier: v.Courier,
 		}
-	}
-	if value, err := core.StringifyJSON(v); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", v)
-}
-
-type VectorParamsDiff struct {
-	// Update params for HNSW index. If empty object - it will be unset.
-	HnswConfig *VectorParamsDiffHnswConfig `json:"hnsw_config,omitempty"`
-	// Update params for quantization. If none - it is left unchanged.
-	QuantizationConfig *VectorParamsDiffQuantizationConfig `json:"quantization_config,omitempty"`
-	// If true, vectors are served from disk, improving RAM usage at the cost of latency
-	OnDisk *bool `json:"on_disk,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (v *VectorParamsDiff) UnmarshalJSON(data []byte) error {
-	type unmarshaler VectorParamsDiff
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*v = VectorParamsDiff(value)
-	v._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (v *VectorParamsDiff) String() string {
-	if len(v._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
-			return value
+		return json.Marshal(marshaler)
+	case "twitter":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationTwitter
+		}{
+			Type:                v.Type,
+			VerificationTwitter: v.Twitter,
 		}
+		return json.Marshal(marshaler)
+	case "stripe":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationStripe
+		}{
+			Type:               v.Type,
+			VerificationStripe: v.Stripe,
+		}
+		return json.Marshal(marshaler)
+	case "recharge":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationRecharge
+		}{
+			Type:                 v.Type,
+			VerificationRecharge: v.Recharge,
+		}
+		return json.Marshal(marshaler)
+	case "twilio":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationTwilio
+		}{
+			Type:               v.Type,
+			VerificationTwilio: v.Twilio,
+		}
+		return json.Marshal(marshaler)
+	case "github":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationGitHub
+		}{
+			Type:               v.Type,
+			VerificationGitHub: v.Github,
+		}
+		return json.Marshal(marshaler)
+	case "shopify":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationShopify
+		}{
+			Type:                v.Type,
+			VerificationShopify: v.Shopify,
+		}
+		return json.Marshal(marshaler)
+	case "postmark":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationPostmark
+		}{
+			Type:                 v.Type,
+			VerificationPostmark: v.Postmark,
+		}
+		return json.Marshal(marshaler)
+	case "typeform":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationTypeform
+		}{
+			Type:                 v.Type,
+			VerificationTypeform: v.Typeform,
+		}
+		return json.Marshal(marshaler)
+	case "xero":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationXero
+		}{
+			Type:             v.Type,
+			VerificationXero: v.Xero,
+		}
+		return json.Marshal(marshaler)
+	case "svix":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSvix
+		}{
+			Type:             v.Type,
+			VerificationSvix: v.Svix,
+		}
+		return json.Marshal(marshaler)
+	case "zoom":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationZoom
+		}{
+			Type:             v.Type,
+			VerificationZoom: v.Zoom,
+		}
+		return json.Marshal(marshaler)
+	case "akeneo":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationAkeneo
+		}{
+			Type:               v.Type,
+			VerificationAkeneo: v.Akeneo,
+		}
+		return json.Marshal(marshaler)
+	case "adyen":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationAdyen
+		}{
+			Type:              v.Type,
+			VerificationAdyen: v.Adyen,
+		}
+		return json.Marshal(marshaler)
+	case "gitlab":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationGitLab
+		}{
+			Type:               v.Type,
+			VerificationGitLab: v.Gitlab,
+		}
+		return json.Marshal(marshaler)
+	case "property-finder":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationPropertyFinder
+		}{
+			Type:                       v.Type,
+			VerificationPropertyFinder: v.PropertyFinder,
+		}
+		return json.Marshal(marshaler)
+	case "woocommerce":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationWooCommerce
+		}{
+			Type:                    v.Type,
+			VerificationWooCommerce: v.Woocommerce,
+		}
+		return json.Marshal(marshaler)
+	case "oura":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationOura
+		}{
+			Type:             v.Type,
+			VerificationOura: v.Oura,
+		}
+		return json.Marshal(marshaler)
+	case "commercelayer":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationCommercelayer
+		}{
+			Type:                      v.Type,
+			VerificationCommercelayer: v.Commercelayer,
+		}
+		return json.Marshal(marshaler)
+	case "hubspot":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationHubspot
+		}{
+			Type:                v.Type,
+			VerificationHubspot: v.Hubspot,
+		}
+		return json.Marshal(marshaler)
+	case "mailgun":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationMailgun
+		}{
+			Type:                v.Type,
+			VerificationMailgun: v.Mailgun,
+		}
+		return json.Marshal(marshaler)
+	case "persona":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationPersona
+		}{
+			Type:                v.Type,
+			VerificationPersona: v.Persona,
+		}
+		return json.Marshal(marshaler)
+	case "pipedrive":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationPipedrive
+		}{
+			Type:                  v.Type,
+			VerificationPipedrive: v.Pipedrive,
+		}
+		return json.Marshal(marshaler)
+	case "sendgrid":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSendGrid
+		}{
+			Type:                 v.Type,
+			VerificationSendGrid: v.Sendgrid,
+		}
+		return json.Marshal(marshaler)
+	case "workos":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationWorkOs
+		}{
+			Type:               v.Type,
+			VerificationWorkOs: v.Workos,
+		}
+		return json.Marshal(marshaler)
+	case "synctera":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSynctera
+		}{
+			Type:                 v.Type,
+			VerificationSynctera: v.Synctera,
+		}
+		return json.Marshal(marshaler)
+	case "aws_sns":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationAwssns
+		}{
+			Type:               v.Type,
+			VerificationAwssns: v.AwsSns,
+		}
+		return json.Marshal(marshaler)
+	case "three_d_eye":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*Verification3DEye
+		}{
+			Type:              v.Type,
+			Verification3DEye: v.ThreeDEye,
+		}
+		return json.Marshal(marshaler)
+	case "twitch":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationTwitch
+		}{
+			Type:               v.Type,
+			VerificationTwitch: v.Twitch,
+		}
+		return json.Marshal(marshaler)
+	case "favro":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationFavro
+		}{
+			Type:              v.Type,
+			VerificationFavro: v.Favro,
+		}
+		return json.Marshal(marshaler)
+	case "wix":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationWix
+		}{
+			Type:            v.Type,
+			VerificationWix: v.Wix,
+		}
+		return json.Marshal(marshaler)
+	case "nmi":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationNmiPaymentGateway
+		}{
+			Type:                          v.Type,
+			VerificationNmiPaymentGateway: v.Nmi,
+		}
+		return json.Marshal(marshaler)
+	case "repay":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationRepay
+		}{
+			Type:              v.Type,
+			VerificationRepay: v.Repay,
+		}
+		return json.Marshal(marshaler)
+	case "square":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSquare
+		}{
+			Type:               v.Type,
+			VerificationSquare: v.Square,
+		}
+		return json.Marshal(marshaler)
+	case "solidgate":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSolidGate
+		}{
+			Type:                  v.Type,
+			VerificationSolidGate: v.Solidgate,
+		}
+		return json.Marshal(marshaler)
+	case "trello":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationTrello
+		}{
+			Type:               v.Type,
+			VerificationTrello: v.Trello,
+		}
+		return json.Marshal(marshaler)
+	case "sanity":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSanity
+		}{
+			Type:               v.Type,
+			VerificationSanity: v.Sanity,
+		}
+		return json.Marshal(marshaler)
 	}
-	if value, err := core.StringifyJSON(v); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", v)
 }
 
-// Update params for HNSW index. If empty object - it will be unset.
-type VectorParamsDiffHnswConfig struct {
-	typeName       string
-	HnswConfigDiff *HnswConfigDiff
-	Unknown        interface{}
+type VerificationConfigVisitor interface {
+	VisitHmac(*VerificationHmac) error
+	VisitBasicAuth(*VerificationBasicAuth) error
+	VisitApiKey(*VerificationApiKey) error
+	VisitCloudsignal(*VerificationCloudSignal) error
+	VisitCourier(*VerificationCourier) error
+	VisitTwitter(*VerificationTwitter) error
+	VisitStripe(*VerificationStripe) error
+	VisitRecharge(*VerificationRecharge) error
+	VisitTwilio(*VerificationTwilio) error
+	VisitGithub(*VerificationGitHub) error
+	VisitShopify(*VerificationShopify) error
+	VisitPostmark(*VerificationPostmark) error
+	VisitTypeform(*VerificationTypeform) error
+	VisitXero(*VerificationXero) error
+	VisitSvix(*VerificationSvix) error
+	VisitZoom(*VerificationZoom) error
+	VisitAkeneo(*VerificationAkeneo) error
+	VisitAdyen(*VerificationAdyen) error
+	VisitGitlab(*VerificationGitLab) error
+	VisitPropertyFinder(*VerificationPropertyFinder) error
+	VisitWoocommerce(*VerificationWooCommerce) error
+	VisitOura(*VerificationOura) error
+	VisitCommercelayer(*VerificationCommercelayer) error
+	VisitHubspot(*VerificationHubspot) error
+	VisitMailgun(*VerificationMailgun) error
+	VisitPersona(*VerificationPersona) error
+	VisitPipedrive(*VerificationPipedrive) error
+	VisitSendgrid(*VerificationSendGrid) error
+	VisitWorkos(*VerificationWorkOs) error
+	VisitSynctera(*VerificationSynctera) error
+	VisitAwsSns(*VerificationAwssns) error
+	VisitThreeDEye(*Verification3DEye) error
+	VisitTwitch(*VerificationTwitch) error
+	VisitFavro(*VerificationFavro) error
+	VisitWix(*VerificationWix) error
+	VisitNmi(*VerificationNmiPaymentGateway) error
+	VisitRepay(*VerificationRepay) error
+	VisitSquare(*VerificationSquare) error
+	VisitSolidgate(*VerificationSolidGate) error
+	VisitTrello(*VerificationTrello) error
+	VisitSanity(*VerificationSanity) error
 }
 
-func NewVectorParamsDiffHnswConfigFromHnswConfigDiff(value *HnswConfigDiff) *VectorParamsDiffHnswConfig {
-	return &VectorParamsDiffHnswConfig{typeName: "hnswConfigDiff", HnswConfigDiff: value}
-}
-
-func NewVectorParamsDiffHnswConfigFromUnknown(value interface{}) *VectorParamsDiffHnswConfig {
-	return &VectorParamsDiffHnswConfig{typeName: "unknown", Unknown: value}
-}
-
-func (v *VectorParamsDiffHnswConfig) UnmarshalJSON(data []byte) error {
-	valueHnswConfigDiff := new(HnswConfigDiff)
-	if err := json.Unmarshal(data, &valueHnswConfigDiff); err == nil {
-		v.typeName = "hnswConfigDiff"
-		v.HnswConfigDiff = valueHnswConfigDiff
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		v.typeName = "unknown"
-		v.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
-}
-
-func (v VectorParamsDiffHnswConfig) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
+func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
+	switch v.Type {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "hnswConfigDiff":
-		return json.Marshal(v.HnswConfigDiff)
-	case "unknown":
-		return json.Marshal(v.Unknown)
+		return fmt.Errorf("invalid type %s in %T", v.Type, v)
+	case "hmac":
+		return visitor.VisitHmac(v.Hmac)
+	case "basic_auth":
+		return visitor.VisitBasicAuth(v.BasicAuth)
+	case "api_key":
+		return visitor.VisitApiKey(v.ApiKey)
+	case "cloudsignal":
+		return visitor.VisitCloudsignal(v.Cloudsignal)
+	case "courier":
+		return visitor.VisitCourier(v.Courier)
+	case "twitter":
+		return visitor.VisitTwitter(v.Twitter)
+	case "stripe":
+		return visitor.VisitStripe(v.Stripe)
+	case "recharge":
+		return visitor.VisitRecharge(v.Recharge)
+	case "twilio":
+		return visitor.VisitTwilio(v.Twilio)
+	case "github":
+		return visitor.VisitGithub(v.Github)
+	case "shopify":
+		return visitor.VisitShopify(v.Shopify)
+	case "postmark":
+		return visitor.VisitPostmark(v.Postmark)
+	case "typeform":
+		return visitor.VisitTypeform(v.Typeform)
+	case "xero":
+		return visitor.VisitXero(v.Xero)
+	case "svix":
+		return visitor.VisitSvix(v.Svix)
+	case "zoom":
+		return visitor.VisitZoom(v.Zoom)
+	case "akeneo":
+		return visitor.VisitAkeneo(v.Akeneo)
+	case "adyen":
+		return visitor.VisitAdyen(v.Adyen)
+	case "gitlab":
+		return visitor.VisitGitlab(v.Gitlab)
+	case "property-finder":
+		return visitor.VisitPropertyFinder(v.PropertyFinder)
+	case "woocommerce":
+		return visitor.VisitWoocommerce(v.Woocommerce)
+	case "oura":
+		return visitor.VisitOura(v.Oura)
+	case "commercelayer":
+		return visitor.VisitCommercelayer(v.Commercelayer)
+	case "hubspot":
+		return visitor.VisitHubspot(v.Hubspot)
+	case "mailgun":
+		return visitor.VisitMailgun(v.Mailgun)
+	case "persona":
+		return visitor.VisitPersona(v.Persona)
+	case "pipedrive":
+		return visitor.VisitPipedrive(v.Pipedrive)
+	case "sendgrid":
+		return visitor.VisitSendgrid(v.Sendgrid)
+	case "workos":
+		return visitor.VisitWorkos(v.Workos)
+	case "synctera":
+		return visitor.VisitSynctera(v.Synctera)
+	case "aws_sns":
+		return visitor.VisitAwsSns(v.AwsSns)
+	case "three_d_eye":
+		return visitor.VisitThreeDEye(v.ThreeDEye)
+	case "twitch":
+		return visitor.VisitTwitch(v.Twitch)
+	case "favro":
+		return visitor.VisitFavro(v.Favro)
+	case "wix":
+		return visitor.VisitWix(v.Wix)
+	case "nmi":
+		return visitor.VisitNmi(v.Nmi)
+	case "repay":
+		return visitor.VisitRepay(v.Repay)
+	case "square":
+		return visitor.VisitSquare(v.Square)
+	case "solidgate":
+		return visitor.VisitSolidgate(v.Solidgate)
+	case "trello":
+		return visitor.VisitTrello(v.Trello)
+	case "sanity":
+		return visitor.VisitSanity(v.Sanity)
 	}
 }
 
-type VectorParamsDiffHnswConfigVisitor interface {
-	VisitHnswConfigDiff(*HnswConfigDiff) error
-	VisitUnknown(interface{}) error
+type VerificationCourier struct {
+	Configs *VerificationCourierConfigs `json:"configs,omitempty"`
 }
 
-func (v *VectorParamsDiffHnswConfig) Accept(visitor VectorParamsDiffHnswConfigVisitor) error {
-	switch v.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "hnswConfigDiff":
-		return visitor.VisitHnswConfigDiff(v.HnswConfigDiff)
-	case "unknown":
-		return visitor.VisitUnknown(v.Unknown)
-	}
+// The verification configs for Courier. Only included if the ?include=verification.configs query param is present
+type VerificationCourierConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-// Update params for quantization. If none - it is left unchanged.
-type VectorParamsDiffQuantizationConfig struct {
-	typeName               string
-	QuantizationConfigDiff *QuantizationConfigDiff
-	Unknown                interface{}
+type VerificationFavro struct {
+	Configs *VerificationFavroConfigs `json:"configs,omitempty"`
 }
 
-func NewVectorParamsDiffQuantizationConfigFromQuantizationConfigDiff(value *QuantizationConfigDiff) *VectorParamsDiffQuantizationConfig {
-	return &VectorParamsDiffQuantizationConfig{typeName: "quantizationConfigDiff", QuantizationConfigDiff: value}
+// The verification configs for Favro. Only included if the ?include=verification.configs query param is present
+type VerificationFavroConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+	Url              string `json:"url"`
 }
 
-func NewVectorParamsDiffQuantizationConfigFromUnknown(value interface{}) *VectorParamsDiffQuantizationConfig {
-	return &VectorParamsDiffQuantizationConfig{typeName: "unknown", Unknown: value}
+type VerificationGitHub struct {
+	Configs *VerificationGitHubConfigs `json:"configs,omitempty"`
 }
 
-func (v *VectorParamsDiffQuantizationConfig) UnmarshalJSON(data []byte) error {
-	valueQuantizationConfigDiff := new(QuantizationConfigDiff)
-	if err := json.Unmarshal(data, &valueQuantizationConfigDiff); err == nil {
-		v.typeName = "quantizationConfigDiff"
-		v.QuantizationConfigDiff = valueQuantizationConfigDiff
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		v.typeName = "unknown"
-		v.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
+// The verification configs for GitHub. Only included if the ?include=verification.configs query param is present
+type VerificationGitHubConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-func (v VectorParamsDiffQuantizationConfig) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "quantizationConfigDiff":
-		return json.Marshal(v.QuantizationConfigDiff)
-	case "unknown":
-		return json.Marshal(v.Unknown)
-	}
+type VerificationGitLab struct {
+	Configs *VerificationGitLabConfigs `json:"configs,omitempty"`
 }
 
-type VectorParamsDiffQuantizationConfigVisitor interface {
-	VisitQuantizationConfigDiff(*QuantizationConfigDiff) error
-	VisitUnknown(interface{}) error
+// The verification configs for GitLab. Only included if the ?include=verification.configs query param is present
+type VerificationGitLabConfigs struct {
+	ApiKey string `json:"api_key"`
 }
 
-func (v *VectorParamsDiffQuantizationConfig) Accept(visitor VectorParamsDiffQuantizationConfigVisitor) error {
-	switch v.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "quantizationConfigDiff":
-		return visitor.VisitQuantizationConfigDiff(v.QuantizationConfigDiff)
-	case "unknown":
-		return visitor.VisitUnknown(v.Unknown)
-	}
+type VerificationHmac struct {
+	Configs *VerificationHmacConfigs `json:"configs,omitempty"`
 }
 
-// Custom params for HNSW index. If none - values from collection configuration are used.
-type VectorParamsHnswConfig struct {
-	typeName       string
-	HnswConfigDiff *HnswConfigDiff
-	Unknown        interface{}
+// The verification configs for HMAC. Only included if the ?include=verification.configs query param is present
+type VerificationHmacConfigs struct {
+	WebhookSecretKey string                          `json:"webhook_secret_key"`
+	Algorithm        HmacAlgorithms                  `json:"algorithm,omitempty"`
+	HeaderKey        string                          `json:"header_key"`
+	Encoding         VerificationHmacConfigsEncoding `json:"encoding,omitempty"`
 }
 
-func NewVectorParamsHnswConfigFromHnswConfigDiff(value *HnswConfigDiff) *VectorParamsHnswConfig {
-	return &VectorParamsHnswConfig{typeName: "hnswConfigDiff", HnswConfigDiff: value}
-}
-
-func NewVectorParamsHnswConfigFromUnknown(value interface{}) *VectorParamsHnswConfig {
-	return &VectorParamsHnswConfig{typeName: "unknown", Unknown: value}
-}
-
-func (v *VectorParamsHnswConfig) UnmarshalJSON(data []byte) error {
-	valueHnswConfigDiff := new(HnswConfigDiff)
-	if err := json.Unmarshal(data, &valueHnswConfigDiff); err == nil {
-		v.typeName = "hnswConfigDiff"
-		v.HnswConfigDiff = valueHnswConfigDiff
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		v.typeName = "unknown"
-		v.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
-}
-
-func (v VectorParamsHnswConfig) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "hnswConfigDiff":
-		return json.Marshal(v.HnswConfigDiff)
-	case "unknown":
-		return json.Marshal(v.Unknown)
-	}
-}
-
-type VectorParamsHnswConfigVisitor interface {
-	VisitHnswConfigDiff(*HnswConfigDiff) error
-	VisitUnknown(interface{}) error
-}
-
-func (v *VectorParamsHnswConfig) Accept(visitor VectorParamsHnswConfigVisitor) error {
-	switch v.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "hnswConfigDiff":
-		return visitor.VisitHnswConfigDiff(v.HnswConfigDiff)
-	case "unknown":
-		return visitor.VisitUnknown(v.Unknown)
-	}
-}
-
-// Custom params for quantization. If none - values from collection configuration are used.
-type VectorParamsQuantizationConfig struct {
-	typeName           string
-	QuantizationConfig *QuantizationConfig
-	Unknown            interface{}
-}
-
-func NewVectorParamsQuantizationConfigFromQuantizationConfig(value *QuantizationConfig) *VectorParamsQuantizationConfig {
-	return &VectorParamsQuantizationConfig{typeName: "quantizationConfig", QuantizationConfig: value}
-}
-
-func NewVectorParamsQuantizationConfigFromUnknown(value interface{}) *VectorParamsQuantizationConfig {
-	return &VectorParamsQuantizationConfig{typeName: "unknown", Unknown: value}
-}
-
-func (v *VectorParamsQuantizationConfig) UnmarshalJSON(data []byte) error {
-	valueQuantizationConfig := new(QuantizationConfig)
-	if err := json.Unmarshal(data, &valueQuantizationConfig); err == nil {
-		v.typeName = "quantizationConfig"
-		v.QuantizationConfig = valueQuantizationConfig
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		v.typeName = "unknown"
-		v.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
-}
-
-func (v VectorParamsQuantizationConfig) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "quantizationConfig":
-		return json.Marshal(v.QuantizationConfig)
-	case "unknown":
-		return json.Marshal(v.Unknown)
-	}
-}
-
-type VectorParamsQuantizationConfigVisitor interface {
-	VisitQuantizationConfig(*QuantizationConfig) error
-	VisitUnknown(interface{}) error
-}
-
-func (v *VectorParamsQuantizationConfig) Accept(visitor VectorParamsQuantizationConfigVisitor) error {
-	switch v.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "quantizationConfig":
-		return visitor.VisitQuantizationConfig(v.QuantizationConfig)
-	case "unknown":
-		return visitor.VisitUnknown(v.Unknown)
-	}
-}
-
-// Storage types for vectors
-type VectorStorageType string
+type VerificationHmacConfigsEncoding string
 
 const (
-	VectorStorageTypeMemory      VectorStorageType = "Memory"
-	VectorStorageTypeMmap        VectorStorageType = "Mmap"
-	VectorStorageTypeChunkedMmap VectorStorageType = "ChunkedMmap"
+	VerificationHmacConfigsEncodingBase64    VerificationHmacConfigsEncoding = "base64"
+	VerificationHmacConfigsEncodingBase64Url VerificationHmacConfigsEncoding = "base64url"
+	VerificationHmacConfigsEncodingHex       VerificationHmacConfigsEncoding = "hex"
 )
 
-func NewVectorStorageTypeFromString(s string) (VectorStorageType, error) {
+func NewVerificationHmacConfigsEncodingFromString(s string) (VerificationHmacConfigsEncoding, error) {
 	switch s {
-	case "Memory":
-		return VectorStorageTypeMemory, nil
-	case "Mmap":
-		return VectorStorageTypeMmap, nil
-	case "ChunkedMmap":
-		return VectorStorageTypeChunkedMmap, nil
+	case "base64":
+		return VerificationHmacConfigsEncodingBase64, nil
+	case "base64url":
+		return VerificationHmacConfigsEncodingBase64Url, nil
+	case "hex":
+		return VerificationHmacConfigsEncodingHex, nil
 	}
-	var t VectorStorageType
+	var t VerificationHmacConfigsEncoding
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (v VectorStorageType) Ptr() *VectorStorageType {
+func (v VerificationHmacConfigsEncoding) Ptr() *VerificationHmacConfigsEncoding {
 	return &v
 }
 
-// Full vector data per point separator with single and multiple vector modes
-type VectorStruct struct {
-	typeName        string
-	DoubleList      []float64
-	StringVectorMap map[string]*Vector
+type VerificationHubspot struct {
+	Configs *VerificationHubspotConfigs `json:"configs,omitempty"`
 }
 
-func NewVectorStructFromDoubleList(value []float64) *VectorStruct {
-	return &VectorStruct{typeName: "doubleList", DoubleList: value}
+// The verification configs for Hubspot. Only included if the ?include=verification.configs query param is present
+type VerificationHubspotConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-func NewVectorStructFromStringVectorMap(value map[string]*Vector) *VectorStruct {
-	return &VectorStruct{typeName: "stringVectorMap", StringVectorMap: value}
+type VerificationMailgun struct {
+	Configs *VerificationMailgunConfigs `json:"configs,omitempty"`
 }
 
-func (v *VectorStruct) UnmarshalJSON(data []byte) error {
-	var valueDoubleList []float64
-	if err := json.Unmarshal(data, &valueDoubleList); err == nil {
-		v.typeName = "doubleList"
-		v.DoubleList = valueDoubleList
-		return nil
-	}
-	var valueStringVectorMap map[string]*Vector
-	if err := json.Unmarshal(data, &valueStringVectorMap); err == nil {
-		v.typeName = "stringVectorMap"
-		v.StringVectorMap = valueStringVectorMap
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
+// The verification configs for Mailgun. Only included if the ?include=verification.configs query param is present
+type VerificationMailgunConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-func (v VectorStruct) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "doubleList":
-		return json.Marshal(v.DoubleList)
-	case "stringVectorMap":
-		return json.Marshal(v.StringVectorMap)
-	}
+type VerificationNmiPaymentGateway struct {
+	Configs *VerificationNmiPaymentGatewayConfigs `json:"configs,omitempty"`
 }
 
-type VectorStructVisitor interface {
-	VisitDoubleList([]float64) error
-	VisitStringVectorMap(map[string]*Vector) error
+// The verification configs for NMI Payment Gateway. Only included if the ?include=verification.configs query param is present
+type VerificationNmiPaymentGatewayConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-func (v *VectorStruct) Accept(visitor VectorStructVisitor) error {
-	switch v.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "doubleList":
-		return visitor.VisitDoubleList(v.DoubleList)
-	case "stringVectorMap":
-		return visitor.VisitStringVectorMap(v.StringVectorMap)
-	}
+type VerificationOura struct {
+	Configs *VerificationOuraConfigs `json:"configs,omitempty"`
 }
 
-// Vector params separator for single and multiple vector modes Single mode:
-//
-// { "size": 128, "distance": "Cosine" }
-//
-// or multiple mode:
-//
-// { "default": { "size": 128, "distance": "Cosine" } }
-type VectorsConfig struct {
-	typeName              string
-	VectorParams          *VectorParams
-	StringVectorParamsMap map[string]*VectorParams
+// The verification configs for Oura. Only included if the ?include=verification.configs query param is present
+type VerificationOuraConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-func NewVectorsConfigFromVectorParams(value *VectorParams) *VectorsConfig {
-	return &VectorsConfig{typeName: "vectorParams", VectorParams: value}
+type VerificationPersona struct {
+	Configs *VerificationPersonaConfigs `json:"configs,omitempty"`
 }
 
-func NewVectorsConfigFromStringVectorParamsMap(value map[string]*VectorParams) *VectorsConfig {
-	return &VectorsConfig{typeName: "stringVectorParamsMap", StringVectorParamsMap: value}
+// The verification configs for Persona. Only included if the ?include=verification.configs query param is present
+type VerificationPersonaConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-func (v *VectorsConfig) UnmarshalJSON(data []byte) error {
-	valueVectorParams := new(VectorParams)
-	if err := json.Unmarshal(data, &valueVectorParams); err == nil {
-		v.typeName = "vectorParams"
-		v.VectorParams = valueVectorParams
-		return nil
-	}
-	var valueStringVectorParamsMap map[string]*VectorParams
-	if err := json.Unmarshal(data, &valueStringVectorParamsMap); err == nil {
-		v.typeName = "stringVectorParamsMap"
-		v.StringVectorParamsMap = valueStringVectorParamsMap
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
+type VerificationPipedrive struct {
+	Configs *VerificationPipedriveConfigs `json:"configs,omitempty"`
 }
 
-func (v VectorsConfig) MarshalJSON() ([]byte, error) {
-	switch v.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "vectorParams":
-		return json.Marshal(v.VectorParams)
-	case "stringVectorParamsMap":
-		return json.Marshal(v.StringVectorParamsMap)
-	}
+// The verification configs for Pipedrive. Only included if the ?include=verification.configs query param is present
+type VerificationPipedriveConfigs struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
 }
 
-type VectorsConfigVisitor interface {
-	VisitVectorParams(*VectorParams) error
-	VisitStringVectorParamsMap(map[string]*VectorParams) error
+type VerificationPostmark struct {
+	Configs *VerificationPostmarkConfigs `json:"configs,omitempty"`
 }
 
-func (v *VectorsConfig) Accept(visitor VectorsConfigVisitor) error {
-	switch v.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", v.typeName, v)
-	case "vectorParams":
-		return visitor.VisitVectorParams(v.VectorParams)
-	case "stringVectorParamsMap":
-		return visitor.VisitStringVectorParamsMap(v.StringVectorParamsMap)
-	}
+// The verification configs for Postmark. Only included if the ?include=verification.configs query param is present
+type VerificationPostmarkConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-// Vector update params for multiple vectors
-//
-// { "vector_name": { "hnsw_config": { "m": 8 } } }
-type VectorsConfigDiff = map[string]*VectorParamsDiff
-
-type WalConfig struct {
-	// Size of a single WAL segment in MB
-	WalCapacityMb int `json:"wal_capacity_mb"`
-	// Number of WAL segments to create ahead of actually used ones
-	WalSegmentsAhead int `json:"wal_segments_ahead"`
-
-	_rawJSON json.RawMessage
+type VerificationPropertyFinder struct {
+	Configs *VerificationPropertyFinderConfigs `json:"configs,omitempty"`
 }
 
-func (w *WalConfig) UnmarshalJSON(data []byte) error {
-	type unmarshaler WalConfig
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*w = WalConfig(value)
-	w._rawJSON = json.RawMessage(data)
-	return nil
+// The verification configs for Property Finder. Only included if the ?include=verification.configs query param is present
+type VerificationPropertyFinderConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
-func (w *WalConfig) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(w); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", w)
+type VerificationRecharge struct {
+	Configs *VerificationRechargeConfigs `json:"configs,omitempty"`
 }
 
-type WalConfigDiff struct {
-	// Size of a single WAL segment in MB
-	WalCapacityMb *int `json:"wal_capacity_mb,omitempty"`
-	// Number of WAL segments to create ahead of actually used ones
-	WalSegmentsAhead *int `json:"wal_segments_ahead,omitempty"`
-
-	_rawJSON json.RawMessage
+// The verification configs for Recharge. Only included if the ?include=verification.configs query param is present
+type VerificationRechargeConfigs struct {
+	WebhookSecretKey string                              `json:"webhook_secret_key"`
+	Algorithm        HmacAlgorithms                      `json:"algorithm,omitempty"`
+	HeaderKey        string                              `json:"header_key"`
+	Encoding         VerificationRechargeConfigsEncoding `json:"encoding,omitempty"`
 }
 
-func (w *WalConfigDiff) UnmarshalJSON(data []byte) error {
-	type unmarshaler WalConfigDiff
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*w = WalConfigDiff(value)
-	w._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (w *WalConfigDiff) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(w); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", w)
-}
-
-type WebApiTelemetry struct {
-	Responses map[string]map[string]*OperationDurationStatistics `json:"responses,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (w *WebApiTelemetry) UnmarshalJSON(data []byte) error {
-	type unmarshaler WebApiTelemetry
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*w = WebApiTelemetry(value)
-	w._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (w *WebApiTelemetry) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(w); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", w)
-}
-
-type WithLookup struct {
-	// Name of the collection to use for points lookup
-	Collection string `json:"collection"`
-	// Options for specifying which payload to include (or not)
-	WithPayload *WithLookupWithPayload `json:"with_payload,omitempty"`
-	// Options for specifying which vectors to include (or not)
-	WithVectors *WithLookupWithVectors `json:"with_vectors,omitempty"`
-
-	_rawJSON json.RawMessage
-}
-
-func (w *WithLookup) UnmarshalJSON(data []byte) error {
-	type unmarshaler WithLookup
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*w = WithLookup(value)
-	w._rawJSON = json.RawMessage(data)
-	return nil
-}
-
-func (w *WithLookup) String() string {
-	if len(w._rawJSON) > 0 {
-		if value, err := core.StringifyJSON(w._rawJSON); err == nil {
-			return value
-		}
-	}
-	if value, err := core.StringifyJSON(w); err == nil {
-		return value
-	}
-	return fmt.Sprintf("%#v", w)
-}
-
-type WithLookupInterface struct {
-	typeName   string
-	String     string
-	WithLookup *WithLookup
-}
-
-func NewWithLookupInterfaceFromString(value string) *WithLookupInterface {
-	return &WithLookupInterface{typeName: "string", String: value}
-}
-
-func NewWithLookupInterfaceFromWithLookup(value *WithLookup) *WithLookupInterface {
-	return &WithLookupInterface{typeName: "withLookup", WithLookup: value}
-}
-
-func (w *WithLookupInterface) UnmarshalJSON(data []byte) error {
-	var valueString string
-	if err := json.Unmarshal(data, &valueString); err == nil {
-		w.typeName = "string"
-		w.String = valueString
-		return nil
-	}
-	valueWithLookup := new(WithLookup)
-	if err := json.Unmarshal(data, &valueWithLookup); err == nil {
-		w.typeName = "withLookup"
-		w.WithLookup = valueWithLookup
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, w)
-}
-
-func (w WithLookupInterface) MarshalJSON() ([]byte, error) {
-	switch w.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "string":
-		return json.Marshal(w.String)
-	case "withLookup":
-		return json.Marshal(w.WithLookup)
-	}
-}
-
-type WithLookupInterfaceVisitor interface {
-	VisitString(string) error
-	VisitWithLookup(*WithLookup) error
-}
-
-func (w *WithLookupInterface) Accept(visitor WithLookupInterfaceVisitor) error {
-	switch w.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "string":
-		return visitor.VisitString(w.String)
-	case "withLookup":
-		return visitor.VisitWithLookup(w.WithLookup)
-	}
-}
-
-// Options for specifying which payload to include (or not)
-type WithLookupWithPayload struct {
-	typeName             string
-	WithPayloadInterface *WithPayloadInterface
-	Unknown              interface{}
-}
-
-func NewWithLookupWithPayloadFromWithPayloadInterface(value *WithPayloadInterface) *WithLookupWithPayload {
-	return &WithLookupWithPayload{typeName: "withPayloadInterface", WithPayloadInterface: value}
-}
-
-func NewWithLookupWithPayloadFromUnknown(value interface{}) *WithLookupWithPayload {
-	return &WithLookupWithPayload{typeName: "unknown", Unknown: value}
-}
-
-func (w *WithLookupWithPayload) UnmarshalJSON(data []byte) error {
-	valueWithPayloadInterface := new(WithPayloadInterface)
-	if err := json.Unmarshal(data, &valueWithPayloadInterface); err == nil {
-		w.typeName = "withPayloadInterface"
-		w.WithPayloadInterface = valueWithPayloadInterface
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		w.typeName = "unknown"
-		w.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, w)
-}
-
-func (w WithLookupWithPayload) MarshalJSON() ([]byte, error) {
-	switch w.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "withPayloadInterface":
-		return json.Marshal(w.WithPayloadInterface)
-	case "unknown":
-		return json.Marshal(w.Unknown)
-	}
-}
-
-type WithLookupWithPayloadVisitor interface {
-	VisitWithPayloadInterface(*WithPayloadInterface) error
-	VisitUnknown(interface{}) error
-}
-
-func (w *WithLookupWithPayload) Accept(visitor WithLookupWithPayloadVisitor) error {
-	switch w.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "withPayloadInterface":
-		return visitor.VisitWithPayloadInterface(w.WithPayloadInterface)
-	case "unknown":
-		return visitor.VisitUnknown(w.Unknown)
-	}
-}
-
-// Options for specifying which vectors to include (or not)
-type WithLookupWithVectors struct {
-	typeName   string
-	WithVector *WithVector
-	Unknown    interface{}
-}
-
-func NewWithLookupWithVectorsFromWithVector(value *WithVector) *WithLookupWithVectors {
-	return &WithLookupWithVectors{typeName: "withVector", WithVector: value}
-}
-
-func NewWithLookupWithVectorsFromUnknown(value interface{}) *WithLookupWithVectors {
-	return &WithLookupWithVectors{typeName: "unknown", Unknown: value}
-}
-
-func (w *WithLookupWithVectors) UnmarshalJSON(data []byte) error {
-	valueWithVector := new(WithVector)
-	if err := json.Unmarshal(data, &valueWithVector); err == nil {
-		w.typeName = "withVector"
-		w.WithVector = valueWithVector
-		return nil
-	}
-	var valueUnknown interface{}
-	if err := json.Unmarshal(data, &valueUnknown); err == nil {
-		w.typeName = "unknown"
-		w.Unknown = valueUnknown
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, w)
-}
-
-func (w WithLookupWithVectors) MarshalJSON() ([]byte, error) {
-	switch w.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "withVector":
-		return json.Marshal(w.WithVector)
-	case "unknown":
-		return json.Marshal(w.Unknown)
-	}
-}
-
-type WithLookupWithVectorsVisitor interface {
-	VisitWithVector(*WithVector) error
-	VisitUnknown(interface{}) error
-}
-
-func (w *WithLookupWithVectors) Accept(visitor WithLookupWithVectorsVisitor) error {
-	switch w.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "withVector":
-		return visitor.VisitWithVector(w.WithVector)
-	case "unknown":
-		return visitor.VisitUnknown(w.Unknown)
-	}
-}
-
-// Options for specifying which payload to include or not
-type WithPayloadInterface struct {
-	typeName string
-	// If `true` - return all payload, If `false` - do not return payload
-	Boolean bool
-	// Specify which fields to return
-	StringList      []string
-	PayloadSelector *PayloadSelector
-}
-
-func NewWithPayloadInterfaceFromBoolean(value bool) *WithPayloadInterface {
-	return &WithPayloadInterface{typeName: "boolean", Boolean: value}
-}
-
-func NewWithPayloadInterfaceFromStringList(value []string) *WithPayloadInterface {
-	return &WithPayloadInterface{typeName: "stringList", StringList: value}
-}
-
-func NewWithPayloadInterfaceFromPayloadSelector(value *PayloadSelector) *WithPayloadInterface {
-	return &WithPayloadInterface{typeName: "payloadSelector", PayloadSelector: value}
-}
-
-func (w *WithPayloadInterface) UnmarshalJSON(data []byte) error {
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		w.typeName = "boolean"
-		w.Boolean = valueBoolean
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		w.typeName = "stringList"
-		w.StringList = valueStringList
-		return nil
-	}
-	valuePayloadSelector := new(PayloadSelector)
-	if err := json.Unmarshal(data, &valuePayloadSelector); err == nil {
-		w.typeName = "payloadSelector"
-		w.PayloadSelector = valuePayloadSelector
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, w)
-}
-
-func (w WithPayloadInterface) MarshalJSON() ([]byte, error) {
-	switch w.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "boolean":
-		return json.Marshal(w.Boolean)
-	case "stringList":
-		return json.Marshal(w.StringList)
-	case "payloadSelector":
-		return json.Marshal(w.PayloadSelector)
-	}
-}
-
-type WithPayloadInterfaceVisitor interface {
-	VisitBoolean(bool) error
-	VisitStringList([]string) error
-	VisitPayloadSelector(*PayloadSelector) error
-}
-
-func (w *WithPayloadInterface) Accept(visitor WithPayloadInterfaceVisitor) error {
-	switch w.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "boolean":
-		return visitor.VisitBoolean(w.Boolean)
-	case "stringList":
-		return visitor.VisitStringList(w.StringList)
-	case "payloadSelector":
-		return visitor.VisitPayloadSelector(w.PayloadSelector)
-	}
-}
-
-// Options for specifying which vector to include
-type WithVector struct {
-	typeName string
-	// If `true` - return all vector, If `false` - do not return vector
-	Boolean bool
-	// Specify which vector to return
-	StringList []string
-}
-
-func NewWithVectorFromBoolean(value bool) *WithVector {
-	return &WithVector{typeName: "boolean", Boolean: value}
-}
-
-func NewWithVectorFromStringList(value []string) *WithVector {
-	return &WithVector{typeName: "stringList", StringList: value}
-}
-
-func (w *WithVector) UnmarshalJSON(data []byte) error {
-	var valueBoolean bool
-	if err := json.Unmarshal(data, &valueBoolean); err == nil {
-		w.typeName = "boolean"
-		w.Boolean = valueBoolean
-		return nil
-	}
-	var valueStringList []string
-	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		w.typeName = "stringList"
-		w.StringList = valueStringList
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, w)
-}
-
-func (w WithVector) MarshalJSON() ([]byte, error) {
-	switch w.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "boolean":
-		return json.Marshal(w.Boolean)
-	case "stringList":
-		return json.Marshal(w.StringList)
-	}
-}
-
-type WithVectorVisitor interface {
-	VisitBoolean(bool) error
-	VisitStringList([]string) error
-}
-
-func (w *WithVector) Accept(visitor WithVectorVisitor) error {
-	switch w.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", w.typeName, w)
-	case "boolean":
-		return visitor.VisitBoolean(w.Boolean)
-	case "stringList":
-		return visitor.VisitStringList(w.StringList)
-	}
-}
-
-// Defines write ordering guarantees for collection operations
-//
-// - `weak` - write operations may be reordered, works faster, default
-//
-// - `medium` - write operations go through dynamically selected leader, may be inconsistent for a short period of time in case of leader change
-//
-// - `strong` - Write operations go through the permanent leader, consistent, but may be unavailable if leader is down
-type WriteOrdering string
+type VerificationRechargeConfigsEncoding string
 
 const (
-	WriteOrderingWeak   WriteOrdering = "weak"
-	WriteOrderingMedium WriteOrdering = "medium"
-	WriteOrderingStrong WriteOrdering = "strong"
+	VerificationRechargeConfigsEncodingBase64    VerificationRechargeConfigsEncoding = "base64"
+	VerificationRechargeConfigsEncodingBase64Url VerificationRechargeConfigsEncoding = "base64url"
+	VerificationRechargeConfigsEncodingHex       VerificationRechargeConfigsEncoding = "hex"
 )
 
-func NewWriteOrderingFromString(s string) (WriteOrdering, error) {
+func NewVerificationRechargeConfigsEncodingFromString(s string) (VerificationRechargeConfigsEncoding, error) {
 	switch s {
-	case "weak":
-		return WriteOrderingWeak, nil
-	case "medium":
-		return WriteOrderingMedium, nil
-	case "strong":
-		return WriteOrderingStrong, nil
+	case "base64":
+		return VerificationRechargeConfigsEncodingBase64, nil
+	case "base64url":
+		return VerificationRechargeConfigsEncodingBase64Url, nil
+	case "hex":
+		return VerificationRechargeConfigsEncodingHex, nil
 	}
-	var t WriteOrdering
+	var t VerificationRechargeConfigsEncoding
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (w WriteOrdering) Ptr() *WriteOrdering {
-	return &w
+func (v VerificationRechargeConfigsEncoding) Ptr() *VerificationRechargeConfigsEncoding {
+	return &v
+}
+
+type VerificationRepay struct {
+	Configs *VerificationRepayConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Repay. Only included if the ?include=verification.configs query param is present
+type VerificationRepayConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationSanity struct {
+	Configs *VerificationSanityConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Sanity. Only included if the ?include=verification.configs query param is present
+type VerificationSanityConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationSendGrid struct {
+	Configs *VerificationSendGridConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for SendGrid. Only included if the ?include=verification.configs query param is present
+type VerificationSendGridConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationShopify struct {
+	Configs *VerificationShopifyConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Shopify. Only included if the ?include=verification.configs query param is present
+type VerificationShopifyConfigs struct {
+	WebhookSecretKey string                                     `json:"webhook_secret_key"`
+	RateLimitPeriod  *VerificationShopifyConfigsRateLimitPeriod `json:"rate_limit_period,omitempty"`
+	RateLimit        *float64                                   `json:"rate_limit,omitempty"`
+	ApiKey           *string                                    `json:"api_key,omitempty"`
+	ApiSecret        *string                                    `json:"api_secret,omitempty"`
+	Shop             *string                                    `json:"shop,omitempty"`
+}
+
+type VerificationShopifyConfigsRateLimitPeriod string
+
+const (
+	VerificationShopifyConfigsRateLimitPeriodMinute VerificationShopifyConfigsRateLimitPeriod = "minute"
+	VerificationShopifyConfigsRateLimitPeriodSecond VerificationShopifyConfigsRateLimitPeriod = "second"
+)
+
+func NewVerificationShopifyConfigsRateLimitPeriodFromString(s string) (VerificationShopifyConfigsRateLimitPeriod, error) {
+	switch s {
+	case "minute":
+		return VerificationShopifyConfigsRateLimitPeriodMinute, nil
+	case "second":
+		return VerificationShopifyConfigsRateLimitPeriodSecond, nil
+	}
+	var t VerificationShopifyConfigsRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationShopifyConfigsRateLimitPeriod) Ptr() *VerificationShopifyConfigsRateLimitPeriod {
+	return &v
+}
+
+type VerificationSolidGate struct {
+	Configs *VerificationSolidGateConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for SolidGate. Only included if the ?include=verification.configs query param is present
+type VerificationSolidGateConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationSquare struct {
+	Configs *VerificationSquareConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Square. Only included if the ?include=verification.configs query param is present
+type VerificationSquareConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+	Url              string `json:"url"`
+}
+
+type VerificationStripe struct {
+	Configs *VerificationStripeConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Stripe. Only included if the ?include=verification.configs query param is present
+type VerificationStripeConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationSvix struct {
+	Configs *VerificationSvixConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Svix. Only included if the ?include=verification.configs query param is present
+type VerificationSvixConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationSynctera struct {
+	Configs *VerificationSyncteraConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Synctera. Only included if the ?include=verification.configs query param is present
+type VerificationSyncteraConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationTrello struct {
+	Configs *VerificationTrelloConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Trello. Only included if the ?include=verification.configs query param is present
+type VerificationTrelloConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+	Url              string `json:"url"`
+}
+
+type VerificationTwilio struct {
+	Configs *VerificationTwilioConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Twilio. Only included if the ?include=verification.configs query param is present
+type VerificationTwilioConfigs struct {
+	WebhookSecretKey string                            `json:"webhook_secret_key"`
+	Algorithm        HmacAlgorithms                    `json:"algorithm,omitempty"`
+	HeaderKey        string                            `json:"header_key"`
+	Encoding         VerificationTwilioConfigsEncoding `json:"encoding,omitempty"`
+}
+
+type VerificationTwilioConfigsEncoding string
+
+const (
+	VerificationTwilioConfigsEncodingBase64    VerificationTwilioConfigsEncoding = "base64"
+	VerificationTwilioConfigsEncodingBase64Url VerificationTwilioConfigsEncoding = "base64url"
+	VerificationTwilioConfigsEncodingHex       VerificationTwilioConfigsEncoding = "hex"
+)
+
+func NewVerificationTwilioConfigsEncodingFromString(s string) (VerificationTwilioConfigsEncoding, error) {
+	switch s {
+	case "base64":
+		return VerificationTwilioConfigsEncodingBase64, nil
+	case "base64url":
+		return VerificationTwilioConfigsEncodingBase64Url, nil
+	case "hex":
+		return VerificationTwilioConfigsEncodingHex, nil
+	}
+	var t VerificationTwilioConfigsEncoding
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationTwilioConfigsEncoding) Ptr() *VerificationTwilioConfigsEncoding {
+	return &v
+}
+
+type VerificationTwitch struct {
+	Configs *VerificationTwitchConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Twitch. Only included if the ?include=verification.configs query param is present
+type VerificationTwitchConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationTwitter struct {
+	Configs *VerificationTwitterConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Twitter. Only included if the ?include=verification.configs query param is present
+type VerificationTwitterConfigs struct {
+	ApiKey string `json:"api_key"`
+}
+
+type VerificationTypeform struct {
+	Configs *VerificationTypeformConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Typeform. Only included if the ?include=verification.configs query param is present
+type VerificationTypeformConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationWix struct {
+	Configs *VerificationWixConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Wix. Only included if the ?include=verification.configs query param is present
+type VerificationWixConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationWooCommerce struct {
+	Configs *VerificationWooCommerceConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for WooCommerce. Only included if the ?include=verification.configs query param is present
+type VerificationWooCommerceConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationWorkOs struct {
+	Configs *VerificationWorkOsConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for WorkOS. Only included if the ?include=verification.configs query param is present
+type VerificationWorkOsConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationXero struct {
+	Configs *VerificationXeroConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Xero. Only included if the ?include=verification.configs query param is present
+type VerificationXeroConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationZoom struct {
+	Configs *VerificationZoomConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Zoom. Only included if the ?include=verification.configs query param is present
+type VerificationZoomConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+// Period to rate limit attempts
+type ConnectionCreateRequestDestinationRateLimitPeriod string
+
+const (
+	ConnectionCreateRequestDestinationRateLimitPeriodSecond ConnectionCreateRequestDestinationRateLimitPeriod = "second"
+	ConnectionCreateRequestDestinationRateLimitPeriodMinute ConnectionCreateRequestDestinationRateLimitPeriod = "minute"
+	ConnectionCreateRequestDestinationRateLimitPeriodHour   ConnectionCreateRequestDestinationRateLimitPeriod = "hour"
+)
+
+func NewConnectionCreateRequestDestinationRateLimitPeriodFromString(s string) (ConnectionCreateRequestDestinationRateLimitPeriod, error) {
+	switch s {
+	case "second":
+		return ConnectionCreateRequestDestinationRateLimitPeriodSecond, nil
+	case "minute":
+		return ConnectionCreateRequestDestinationRateLimitPeriodMinute, nil
+	case "hour":
+		return ConnectionCreateRequestDestinationRateLimitPeriodHour, nil
+	}
+	var t ConnectionCreateRequestDestinationRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectionCreateRequestDestinationRateLimitPeriod) Ptr() *ConnectionCreateRequestDestinationRateLimitPeriod {
+	return &c
+}
+
+// Period to rate limit attempts
+type ConnectionUpsertRequestDestinationRateLimitPeriod string
+
+const (
+	ConnectionUpsertRequestDestinationRateLimitPeriodSecond ConnectionUpsertRequestDestinationRateLimitPeriod = "second"
+	ConnectionUpsertRequestDestinationRateLimitPeriodMinute ConnectionUpsertRequestDestinationRateLimitPeriod = "minute"
+	ConnectionUpsertRequestDestinationRateLimitPeriodHour   ConnectionUpsertRequestDestinationRateLimitPeriod = "hour"
+)
+
+func NewConnectionUpsertRequestDestinationRateLimitPeriodFromString(s string) (ConnectionUpsertRequestDestinationRateLimitPeriod, error) {
+	switch s {
+	case "second":
+		return ConnectionUpsertRequestDestinationRateLimitPeriodSecond, nil
+	case "minute":
+		return ConnectionUpsertRequestDestinationRateLimitPeriodMinute, nil
+	case "hour":
+		return ConnectionUpsertRequestDestinationRateLimitPeriodHour, nil
+	}
+	var t ConnectionUpsertRequestDestinationRateLimitPeriod
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (c ConnectionUpsertRequestDestinationRateLimitPeriod) Ptr() *ConnectionUpsertRequestDestinationRateLimitPeriod {
+	return &c
+}
+
+// Filter by number of attempts
+type EventBulkRetryCreateRequestQueryAttempts struct {
+	typeName                                    string
+	Integer                                     int
+	EventBulkRetryCreateRequestQueryAttemptsAll *EventBulkRetryCreateRequestQueryAttemptsAll
+}
+
+func NewEventBulkRetryCreateRequestQueryAttemptsFromInteger(value int) *EventBulkRetryCreateRequestQueryAttempts {
+	return &EventBulkRetryCreateRequestQueryAttempts{typeName: "integer", Integer: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryAttemptsFromEventBulkRetryCreateRequestQueryAttemptsAll(value *EventBulkRetryCreateRequestQueryAttemptsAll) *EventBulkRetryCreateRequestQueryAttempts {
+	return &EventBulkRetryCreateRequestQueryAttempts{typeName: "eventBulkRetryCreateRequestQueryAttemptsAll", EventBulkRetryCreateRequestQueryAttemptsAll: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryAttempts) UnmarshalJSON(data []byte) error {
+	var valueInteger int
+	if err := json.Unmarshal(data, &valueInteger); err == nil {
+		e.typeName = "integer"
+		e.Integer = valueInteger
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryAttemptsAll := new(EventBulkRetryCreateRequestQueryAttemptsAll)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryAttemptsAll); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryAttemptsAll"
+		e.EventBulkRetryCreateRequestQueryAttemptsAll = valueEventBulkRetryCreateRequestQueryAttemptsAll
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryAttempts) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "integer":
+		return json.Marshal(e.Integer)
+	case "eventBulkRetryCreateRequestQueryAttemptsAll":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryAttemptsAll)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryAttemptsVisitor interface {
+	VisitInteger(int) error
+	VisitEventBulkRetryCreateRequestQueryAttemptsAll(*EventBulkRetryCreateRequestQueryAttemptsAll) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryAttempts) Accept(visitor EventBulkRetryCreateRequestQueryAttemptsVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "integer":
+		return visitor.VisitInteger(e.Integer)
+	case "eventBulkRetryCreateRequestQueryAttemptsAll":
+		return visitor.VisitEventBulkRetryCreateRequestQueryAttemptsAll(e.EventBulkRetryCreateRequestQueryAttemptsAll)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryAttemptsAll struct {
+	Gt       *int  `json:"gt,omitempty"`
+	Gte      *int  `json:"gte,omitempty"`
+	Le       *int  `json:"le,omitempty"`
+	Lte      *int  `json:"lte,omitempty"`
+	Any      *bool `json:"any,omitempty"`
+	All      *bool `json:"all,omitempty"`
+	Contains *int  `json:"contains,omitempty"`
+}
+
+// URL Encoded string of the JSON to match to the data body
+type EventBulkRetryCreateRequestQueryBody struct {
+	typeName                                string
+	String                                  string
+	EventBulkRetryCreateRequestQueryBodyOne *EventBulkRetryCreateRequestQueryBodyOne
+}
+
+func NewEventBulkRetryCreateRequestQueryBodyFromString(value string) *EventBulkRetryCreateRequestQueryBody {
+	return &EventBulkRetryCreateRequestQueryBody{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryBodyFromEventBulkRetryCreateRequestQueryBodyOne(value *EventBulkRetryCreateRequestQueryBodyOne) *EventBulkRetryCreateRequestQueryBody {
+	return &EventBulkRetryCreateRequestQueryBody{typeName: "eventBulkRetryCreateRequestQueryBodyOne", EventBulkRetryCreateRequestQueryBodyOne: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryBody) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryBodyOne := new(EventBulkRetryCreateRequestQueryBodyOne)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryBodyOne); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryBodyOne"
+		e.EventBulkRetryCreateRequestQueryBodyOne = valueEventBulkRetryCreateRequestQueryBodyOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryBody) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "eventBulkRetryCreateRequestQueryBodyOne":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryBodyOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryBodyVisitor interface {
+	VisitString(string) error
+	VisitEventBulkRetryCreateRequestQueryBodyOne(*EventBulkRetryCreateRequestQueryBodyOne) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryBody) Accept(visitor EventBulkRetryCreateRequestQueryBodyVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "eventBulkRetryCreateRequestQueryBodyOne":
+		return visitor.VisitEventBulkRetryCreateRequestQueryBodyOne(e.EventBulkRetryCreateRequestQueryBodyOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryBodyOne struct {
+}
+
+type EventBulkRetryCreateRequestQueryBulkRetryId struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryBulkRetryIdFromString(value string) *EventBulkRetryCreateRequestQueryBulkRetryId {
+	return &EventBulkRetryCreateRequestQueryBulkRetryId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryBulkRetryIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryBulkRetryId {
+	return &EventBulkRetryCreateRequestQueryBulkRetryId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryBulkRetryId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryBulkRetryId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryBulkRetryIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryBulkRetryId) Accept(visitor EventBulkRetryCreateRequestQueryBulkRetryIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Filter by CLI IDs. `?[any]=true` operator for any CLI.
+type EventBulkRetryCreateRequestQueryCliId struct {
+	typeName                                 string
+	String                                   string
+	EventBulkRetryCreateRequestQueryCliIdAll *EventBulkRetryCreateRequestQueryCliIdAll
+	StringList                               []string
+}
+
+func NewEventBulkRetryCreateRequestQueryCliIdFromString(value string) *EventBulkRetryCreateRequestQueryCliId {
+	return &EventBulkRetryCreateRequestQueryCliId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryCliIdFromEventBulkRetryCreateRequestQueryCliIdAll(value *EventBulkRetryCreateRequestQueryCliIdAll) *EventBulkRetryCreateRequestQueryCliId {
+	return &EventBulkRetryCreateRequestQueryCliId{typeName: "eventBulkRetryCreateRequestQueryCliIdAll", EventBulkRetryCreateRequestQueryCliIdAll: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryCliIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryCliId {
+	return &EventBulkRetryCreateRequestQueryCliId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryCliIdAll := new(EventBulkRetryCreateRequestQueryCliIdAll)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryCliIdAll); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryCliIdAll"
+		e.EventBulkRetryCreateRequestQueryCliIdAll = valueEventBulkRetryCreateRequestQueryCliIdAll
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryCliId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "eventBulkRetryCreateRequestQueryCliIdAll":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryCliIdAll)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCliIdVisitor interface {
+	VisitString(string) error
+	VisitEventBulkRetryCreateRequestQueryCliIdAll(*EventBulkRetryCreateRequestQueryCliIdAll) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliId) Accept(visitor EventBulkRetryCreateRequestQueryCliIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "eventBulkRetryCreateRequestQueryCliIdAll":
+		return visitor.VisitEventBulkRetryCreateRequestQueryCliIdAll(e.EventBulkRetryCreateRequestQueryCliIdAll)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCliIdAll struct {
+	Any *bool `json:"any,omitempty"`
+	All *bool `json:"all,omitempty"`
+}
+
+type EventBulkRetryCreateRequestQueryCliUserId struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryCliUserIdFromString(value string) *EventBulkRetryCreateRequestQueryCliUserId {
+	return &EventBulkRetryCreateRequestQueryCliUserId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryCliUserIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryCliUserId {
+	return &EventBulkRetryCreateRequestQueryCliUserId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliUserId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryCliUserId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCliUserIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliUserId) Accept(visitor EventBulkRetryCreateRequestQueryCliUserIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Filter by `created_at` date using a date operator
+type EventBulkRetryCreateRequestQueryCreatedAt struct {
+	typeName                                     string
+	DateTime                                     time.Time
+	EventBulkRetryCreateRequestQueryCreatedAtAny *EventBulkRetryCreateRequestQueryCreatedAtAny
+}
+
+func NewEventBulkRetryCreateRequestQueryCreatedAtFromDateTime(value time.Time) *EventBulkRetryCreateRequestQueryCreatedAt {
+	return &EventBulkRetryCreateRequestQueryCreatedAt{typeName: "dateTime", DateTime: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryCreatedAtFromEventBulkRetryCreateRequestQueryCreatedAtAny(value *EventBulkRetryCreateRequestQueryCreatedAtAny) *EventBulkRetryCreateRequestQueryCreatedAt {
+	return &EventBulkRetryCreateRequestQueryCreatedAt{typeName: "eventBulkRetryCreateRequestQueryCreatedAtAny", EventBulkRetryCreateRequestQueryCreatedAtAny: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryCreatedAt) UnmarshalJSON(data []byte) error {
+	var valueDateTime time.Time
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		e.typeName = "dateTime"
+		e.DateTime = valueDateTime
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryCreatedAtAny := new(EventBulkRetryCreateRequestQueryCreatedAtAny)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryCreatedAtAny); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryCreatedAtAny"
+		e.EventBulkRetryCreateRequestQueryCreatedAtAny = valueEventBulkRetryCreateRequestQueryCreatedAtAny
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryCreatedAt) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return json.Marshal(e.DateTime)
+	case "eventBulkRetryCreateRequestQueryCreatedAtAny":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryCreatedAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCreatedAtVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitEventBulkRetryCreateRequestQueryCreatedAtAny(*EventBulkRetryCreateRequestQueryCreatedAtAny) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryCreatedAt) Accept(visitor EventBulkRetryCreateRequestQueryCreatedAtVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return visitor.VisitDateTime(e.DateTime)
+	case "eventBulkRetryCreateRequestQueryCreatedAtAny":
+		return visitor.VisitEventBulkRetryCreateRequestQueryCreatedAtAny(e.EventBulkRetryCreateRequestQueryCreatedAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryCreatedAtAny struct {
+	Gt  *time.Time `json:"gt,omitempty"`
+	Gte *time.Time `json:"gte,omitempty"`
+	Le  *time.Time `json:"le,omitempty"`
+	Lte *time.Time `json:"lte,omitempty"`
+	Any *bool      `json:"any,omitempty"`
+}
+
+// Filter by destination IDs
+type EventBulkRetryCreateRequestQueryDestinationId struct {
+	typeName string
+	// Destination ID
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryDestinationIdFromString(value string) *EventBulkRetryCreateRequestQueryDestinationId {
+	return &EventBulkRetryCreateRequestQueryDestinationId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryDestinationIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryDestinationId {
+	return &EventBulkRetryCreateRequestQueryDestinationId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryDestinationId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryDestinationId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryDestinationIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryDestinationId) Accept(visitor EventBulkRetryCreateRequestQueryDestinationIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Filter by error code code
+type EventBulkRetryCreateRequestQueryErrorCode struct {
+	typeName              string
+	AttemptErrorCodes     AttemptErrorCodes
+	AttemptErrorCodesList []AttemptErrorCodes
+}
+
+func NewEventBulkRetryCreateRequestQueryErrorCodeFromAttemptErrorCodes(value AttemptErrorCodes) *EventBulkRetryCreateRequestQueryErrorCode {
+	return &EventBulkRetryCreateRequestQueryErrorCode{typeName: "attemptErrorCodes", AttemptErrorCodes: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryErrorCodeFromAttemptErrorCodesList(value []AttemptErrorCodes) *EventBulkRetryCreateRequestQueryErrorCode {
+	return &EventBulkRetryCreateRequestQueryErrorCode{typeName: "attemptErrorCodesList", AttemptErrorCodesList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryErrorCode) UnmarshalJSON(data []byte) error {
+	var valueAttemptErrorCodes AttemptErrorCodes
+	if err := json.Unmarshal(data, &valueAttemptErrorCodes); err == nil {
+		e.typeName = "attemptErrorCodes"
+		e.AttemptErrorCodes = valueAttemptErrorCodes
+		return nil
+	}
+	var valueAttemptErrorCodesList []AttemptErrorCodes
+	if err := json.Unmarshal(data, &valueAttemptErrorCodesList); err == nil {
+		e.typeName = "attemptErrorCodesList"
+		e.AttemptErrorCodesList = valueAttemptErrorCodesList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryErrorCode) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "attemptErrorCodes":
+		return json.Marshal(e.AttemptErrorCodes)
+	case "attemptErrorCodesList":
+		return json.Marshal(e.AttemptErrorCodesList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryErrorCodeVisitor interface {
+	VisitAttemptErrorCodes(AttemptErrorCodes) error
+	VisitAttemptErrorCodesList([]AttemptErrorCodes) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryErrorCode) Accept(visitor EventBulkRetryCreateRequestQueryErrorCodeVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "attemptErrorCodes":
+		return visitor.VisitAttemptErrorCodes(e.AttemptErrorCodes)
+	case "attemptErrorCodesList":
+		return visitor.VisitAttemptErrorCodesList(e.AttemptErrorCodesList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryEventDataId struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryEventDataIdFromString(value string) *EventBulkRetryCreateRequestQueryEventDataId {
+	return &EventBulkRetryCreateRequestQueryEventDataId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryEventDataIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryEventDataId {
+	return &EventBulkRetryCreateRequestQueryEventDataId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryEventDataId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryEventDataId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryEventDataIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryEventDataId) Accept(visitor EventBulkRetryCreateRequestQueryEventDataIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// URL Encoded string of the JSON to match to the data headers
+type EventBulkRetryCreateRequestQueryHeaders struct {
+	typeName                                   string
+	String                                     string
+	EventBulkRetryCreateRequestQueryHeadersOne *EventBulkRetryCreateRequestQueryHeadersOne
+}
+
+func NewEventBulkRetryCreateRequestQueryHeadersFromString(value string) *EventBulkRetryCreateRequestQueryHeaders {
+	return &EventBulkRetryCreateRequestQueryHeaders{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryHeadersFromEventBulkRetryCreateRequestQueryHeadersOne(value *EventBulkRetryCreateRequestQueryHeadersOne) *EventBulkRetryCreateRequestQueryHeaders {
+	return &EventBulkRetryCreateRequestQueryHeaders{typeName: "eventBulkRetryCreateRequestQueryHeadersOne", EventBulkRetryCreateRequestQueryHeadersOne: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryHeaders) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryHeadersOne := new(EventBulkRetryCreateRequestQueryHeadersOne)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryHeadersOne); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryHeadersOne"
+		e.EventBulkRetryCreateRequestQueryHeadersOne = valueEventBulkRetryCreateRequestQueryHeadersOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryHeaders) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "eventBulkRetryCreateRequestQueryHeadersOne":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryHeadersOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryHeadersVisitor interface {
+	VisitString(string) error
+	VisitEventBulkRetryCreateRequestQueryHeadersOne(*EventBulkRetryCreateRequestQueryHeadersOne) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryHeaders) Accept(visitor EventBulkRetryCreateRequestQueryHeadersVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "eventBulkRetryCreateRequestQueryHeadersOne":
+		return visitor.VisitEventBulkRetryCreateRequestQueryHeadersOne(e.EventBulkRetryCreateRequestQueryHeadersOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryHeadersOne struct {
+}
+
+// Filter by event IDs
+type EventBulkRetryCreateRequestQueryId struct {
+	typeName string
+	// Event ID
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryIdFromString(value string) *EventBulkRetryCreateRequestQueryId {
+	return &EventBulkRetryCreateRequestQueryId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryId {
+	return &EventBulkRetryCreateRequestQueryId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryId) Accept(visitor EventBulkRetryCreateRequestQueryIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryIssueId struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryIssueIdFromString(value string) *EventBulkRetryCreateRequestQueryIssueId {
+	return &EventBulkRetryCreateRequestQueryIssueId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryIssueIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryIssueId {
+	return &EventBulkRetryCreateRequestQueryIssueId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryIssueId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryIssueId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryIssueIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryIssueId) Accept(visitor EventBulkRetryCreateRequestQueryIssueIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Filter by `last_attempt_at` date using a date operator
+type EventBulkRetryCreateRequestQueryLastAttemptAt struct {
+	typeName                                         string
+	DateTime                                         time.Time
+	EventBulkRetryCreateRequestQueryLastAttemptAtAny *EventBulkRetryCreateRequestQueryLastAttemptAtAny
+}
+
+func NewEventBulkRetryCreateRequestQueryLastAttemptAtFromDateTime(value time.Time) *EventBulkRetryCreateRequestQueryLastAttemptAt {
+	return &EventBulkRetryCreateRequestQueryLastAttemptAt{typeName: "dateTime", DateTime: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryLastAttemptAtFromEventBulkRetryCreateRequestQueryLastAttemptAtAny(value *EventBulkRetryCreateRequestQueryLastAttemptAtAny) *EventBulkRetryCreateRequestQueryLastAttemptAt {
+	return &EventBulkRetryCreateRequestQueryLastAttemptAt{typeName: "eventBulkRetryCreateRequestQueryLastAttemptAtAny", EventBulkRetryCreateRequestQueryLastAttemptAtAny: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryLastAttemptAt) UnmarshalJSON(data []byte) error {
+	var valueDateTime time.Time
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		e.typeName = "dateTime"
+		e.DateTime = valueDateTime
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryLastAttemptAtAny := new(EventBulkRetryCreateRequestQueryLastAttemptAtAny)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryLastAttemptAtAny); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryLastAttemptAtAny"
+		e.EventBulkRetryCreateRequestQueryLastAttemptAtAny = valueEventBulkRetryCreateRequestQueryLastAttemptAtAny
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryLastAttemptAt) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return json.Marshal(e.DateTime)
+	case "eventBulkRetryCreateRequestQueryLastAttemptAtAny":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryLastAttemptAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryLastAttemptAtVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitEventBulkRetryCreateRequestQueryLastAttemptAtAny(*EventBulkRetryCreateRequestQueryLastAttemptAtAny) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryLastAttemptAt) Accept(visitor EventBulkRetryCreateRequestQueryLastAttemptAtVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return visitor.VisitDateTime(e.DateTime)
+	case "eventBulkRetryCreateRequestQueryLastAttemptAtAny":
+		return visitor.VisitEventBulkRetryCreateRequestQueryLastAttemptAtAny(e.EventBulkRetryCreateRequestQueryLastAttemptAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryLastAttemptAtAny struct {
+	Gt  *time.Time `json:"gt,omitempty"`
+	Gte *time.Time `json:"gte,omitempty"`
+	Le  *time.Time `json:"le,omitempty"`
+	Lte *time.Time `json:"lte,omitempty"`
+	Any *bool      `json:"any,omitempty"`
+}
+
+// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
+type EventBulkRetryCreateRequestQueryParsedQuery struct {
+	typeName                                       string
+	String                                         string
+	EventBulkRetryCreateRequestQueryParsedQueryOne *EventBulkRetryCreateRequestQueryParsedQueryOne
+}
+
+func NewEventBulkRetryCreateRequestQueryParsedQueryFromString(value string) *EventBulkRetryCreateRequestQueryParsedQuery {
+	return &EventBulkRetryCreateRequestQueryParsedQuery{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryParsedQueryFromEventBulkRetryCreateRequestQueryParsedQueryOne(value *EventBulkRetryCreateRequestQueryParsedQueryOne) *EventBulkRetryCreateRequestQueryParsedQuery {
+	return &EventBulkRetryCreateRequestQueryParsedQuery{typeName: "eventBulkRetryCreateRequestQueryParsedQueryOne", EventBulkRetryCreateRequestQueryParsedQueryOne: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryParsedQuery) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryParsedQueryOne := new(EventBulkRetryCreateRequestQueryParsedQueryOne)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryParsedQueryOne); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryParsedQueryOne"
+		e.EventBulkRetryCreateRequestQueryParsedQueryOne = valueEventBulkRetryCreateRequestQueryParsedQueryOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryParsedQuery) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "eventBulkRetryCreateRequestQueryParsedQueryOne":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryParsedQueryOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryParsedQueryVisitor interface {
+	VisitString(string) error
+	VisitEventBulkRetryCreateRequestQueryParsedQueryOne(*EventBulkRetryCreateRequestQueryParsedQueryOne) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryParsedQuery) Accept(visitor EventBulkRetryCreateRequestQueryParsedQueryVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "eventBulkRetryCreateRequestQueryParsedQueryOne":
+		return visitor.VisitEventBulkRetryCreateRequestQueryParsedQueryOne(e.EventBulkRetryCreateRequestQueryParsedQueryOne)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryParsedQueryOne struct {
+}
+
+// Filter by HTTP response status code
+type EventBulkRetryCreateRequestQueryResponseStatus struct {
+	typeName                                          string
+	Integer                                           int
+	EventBulkRetryCreateRequestQueryResponseStatusAll *EventBulkRetryCreateRequestQueryResponseStatusAll
+	IntegerList                                       []int
+}
+
+func NewEventBulkRetryCreateRequestQueryResponseStatusFromInteger(value int) *EventBulkRetryCreateRequestQueryResponseStatus {
+	return &EventBulkRetryCreateRequestQueryResponseStatus{typeName: "integer", Integer: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryResponseStatusFromEventBulkRetryCreateRequestQueryResponseStatusAll(value *EventBulkRetryCreateRequestQueryResponseStatusAll) *EventBulkRetryCreateRequestQueryResponseStatus {
+	return &EventBulkRetryCreateRequestQueryResponseStatus{typeName: "eventBulkRetryCreateRequestQueryResponseStatusAll", EventBulkRetryCreateRequestQueryResponseStatusAll: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryResponseStatusFromIntegerList(value []int) *EventBulkRetryCreateRequestQueryResponseStatus {
+	return &EventBulkRetryCreateRequestQueryResponseStatus{typeName: "integerList", IntegerList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryResponseStatus) UnmarshalJSON(data []byte) error {
+	var valueInteger int
+	if err := json.Unmarshal(data, &valueInteger); err == nil {
+		e.typeName = "integer"
+		e.Integer = valueInteger
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQueryResponseStatusAll := new(EventBulkRetryCreateRequestQueryResponseStatusAll)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryResponseStatusAll); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQueryResponseStatusAll"
+		e.EventBulkRetryCreateRequestQueryResponseStatusAll = valueEventBulkRetryCreateRequestQueryResponseStatusAll
+		return nil
+	}
+	var valueIntegerList []int
+	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
+		e.typeName = "integerList"
+		e.IntegerList = valueIntegerList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryResponseStatus) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "integer":
+		return json.Marshal(e.Integer)
+	case "eventBulkRetryCreateRequestQueryResponseStatusAll":
+		return json.Marshal(e.EventBulkRetryCreateRequestQueryResponseStatusAll)
+	case "integerList":
+		return json.Marshal(e.IntegerList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryResponseStatusVisitor interface {
+	VisitInteger(int) error
+	VisitEventBulkRetryCreateRequestQueryResponseStatusAll(*EventBulkRetryCreateRequestQueryResponseStatusAll) error
+	VisitIntegerList([]int) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryResponseStatus) Accept(visitor EventBulkRetryCreateRequestQueryResponseStatusVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "integer":
+		return visitor.VisitInteger(e.Integer)
+	case "eventBulkRetryCreateRequestQueryResponseStatusAll":
+		return visitor.VisitEventBulkRetryCreateRequestQueryResponseStatusAll(e.EventBulkRetryCreateRequestQueryResponseStatusAll)
+	case "integerList":
+		return visitor.VisitIntegerList(e.IntegerList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryResponseStatusAll struct {
+	Gt       *int  `json:"gt,omitempty"`
+	Gte      *int  `json:"gte,omitempty"`
+	Le       *int  `json:"le,omitempty"`
+	Lte      *int  `json:"lte,omitempty"`
+	Any      *bool `json:"any,omitempty"`
+	All      *bool `json:"all,omitempty"`
+	Contains *int  `json:"contains,omitempty"`
+}
+
+// Filter by source IDs
+type EventBulkRetryCreateRequestQuerySourceId struct {
+	typeName string
+	// Source ID
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQuerySourceIdFromString(value string) *EventBulkRetryCreateRequestQuerySourceId {
+	return &EventBulkRetryCreateRequestQuerySourceId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQuerySourceIdFromStringList(value []string) *EventBulkRetryCreateRequestQuerySourceId {
+	return &EventBulkRetryCreateRequestQuerySourceId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQuerySourceId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQuerySourceId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQuerySourceIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQuerySourceId) Accept(visitor EventBulkRetryCreateRequestQuerySourceIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// Lifecyle status of the event
+type EventBulkRetryCreateRequestQueryStatus struct {
+	typeName        string
+	EventStatus     EventStatus
+	EventStatusList []EventStatus
+}
+
+func NewEventBulkRetryCreateRequestQueryStatusFromEventStatus(value EventStatus) *EventBulkRetryCreateRequestQueryStatus {
+	return &EventBulkRetryCreateRequestQueryStatus{typeName: "eventStatus", EventStatus: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryStatusFromEventStatusList(value []EventStatus) *EventBulkRetryCreateRequestQueryStatus {
+	return &EventBulkRetryCreateRequestQueryStatus{typeName: "eventStatusList", EventStatusList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryStatus) UnmarshalJSON(data []byte) error {
+	var valueEventStatus EventStatus
+	if err := json.Unmarshal(data, &valueEventStatus); err == nil {
+		e.typeName = "eventStatus"
+		e.EventStatus = valueEventStatus
+		return nil
+	}
+	var valueEventStatusList []EventStatus
+	if err := json.Unmarshal(data, &valueEventStatusList); err == nil {
+		e.typeName = "eventStatusList"
+		e.EventStatusList = valueEventStatusList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryStatus) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "eventStatus":
+		return json.Marshal(e.EventStatus)
+	case "eventStatusList":
+		return json.Marshal(e.EventStatusList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryStatusVisitor interface {
+	VisitEventStatus(EventStatus) error
+	VisitEventStatusList([]EventStatus) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryStatus) Accept(visitor EventBulkRetryCreateRequestQueryStatusVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "eventStatus":
+		return visitor.VisitEventStatus(e.EventStatus)
+	case "eventStatusList":
+		return visitor.VisitEventStatusList(e.EventStatusList)
+	}
+}
+
+// Filter by `successful_at` date using a date operator
+type EventBulkRetryCreateRequestQuerySuccessfulAt struct {
+	typeName                                        string
+	DateTime                                        time.Time
+	EventBulkRetryCreateRequestQuerySuccessfulAtAny *EventBulkRetryCreateRequestQuerySuccessfulAtAny
+}
+
+func NewEventBulkRetryCreateRequestQuerySuccessfulAtFromDateTime(value time.Time) *EventBulkRetryCreateRequestQuerySuccessfulAt {
+	return &EventBulkRetryCreateRequestQuerySuccessfulAt{typeName: "dateTime", DateTime: value}
+}
+
+func NewEventBulkRetryCreateRequestQuerySuccessfulAtFromEventBulkRetryCreateRequestQuerySuccessfulAtAny(value *EventBulkRetryCreateRequestQuerySuccessfulAtAny) *EventBulkRetryCreateRequestQuerySuccessfulAt {
+	return &EventBulkRetryCreateRequestQuerySuccessfulAt{typeName: "eventBulkRetryCreateRequestQuerySuccessfulAtAny", EventBulkRetryCreateRequestQuerySuccessfulAtAny: value}
+}
+
+func (e *EventBulkRetryCreateRequestQuerySuccessfulAt) UnmarshalJSON(data []byte) error {
+	var valueDateTime time.Time
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		e.typeName = "dateTime"
+		e.DateTime = valueDateTime
+		return nil
+	}
+	valueEventBulkRetryCreateRequestQuerySuccessfulAtAny := new(EventBulkRetryCreateRequestQuerySuccessfulAtAny)
+	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQuerySuccessfulAtAny); err == nil {
+		e.typeName = "eventBulkRetryCreateRequestQuerySuccessfulAtAny"
+		e.EventBulkRetryCreateRequestQuerySuccessfulAtAny = valueEventBulkRetryCreateRequestQuerySuccessfulAtAny
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQuerySuccessfulAt) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return json.Marshal(e.DateTime)
+	case "eventBulkRetryCreateRequestQuerySuccessfulAtAny":
+		return json.Marshal(e.EventBulkRetryCreateRequestQuerySuccessfulAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQuerySuccessfulAtVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitEventBulkRetryCreateRequestQuerySuccessfulAtAny(*EventBulkRetryCreateRequestQuerySuccessfulAtAny) error
+}
+
+func (e *EventBulkRetryCreateRequestQuerySuccessfulAt) Accept(visitor EventBulkRetryCreateRequestQuerySuccessfulAtVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "dateTime":
+		return visitor.VisitDateTime(e.DateTime)
+	case "eventBulkRetryCreateRequestQuerySuccessfulAtAny":
+		return visitor.VisitEventBulkRetryCreateRequestQuerySuccessfulAtAny(e.EventBulkRetryCreateRequestQuerySuccessfulAtAny)
+	}
+}
+
+type EventBulkRetryCreateRequestQuerySuccessfulAtAny struct {
+	Gt  *time.Time `json:"gt,omitempty"`
+	Gte *time.Time `json:"gte,omitempty"`
+	Le  *time.Time `json:"le,omitempty"`
+	Lte *time.Time `json:"lte,omitempty"`
+	Any *bool      `json:"any,omitempty"`
+}
+
+// Filter by webhook connection IDs
+type EventBulkRetryCreateRequestQueryWebhookId struct {
+	typeName string
+	// Webhook ID
+	String     string
+	StringList []string
+}
+
+func NewEventBulkRetryCreateRequestQueryWebhookIdFromString(value string) *EventBulkRetryCreateRequestQueryWebhookId {
+	return &EventBulkRetryCreateRequestQueryWebhookId{typeName: "string", String: value}
+}
+
+func NewEventBulkRetryCreateRequestQueryWebhookIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryWebhookId {
+	return &EventBulkRetryCreateRequestQueryWebhookId{typeName: "stringList", StringList: value}
+}
+
+func (e *EventBulkRetryCreateRequestQueryWebhookId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		e.typeName = "string"
+		e.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		e.typeName = "stringList"
+		e.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
+}
+
+func (e EventBulkRetryCreateRequestQueryWebhookId) MarshalJSON() ([]byte, error) {
+	switch e.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return json.Marshal(e.String)
+	case "stringList":
+		return json.Marshal(e.StringList)
+	}
+}
+
+type EventBulkRetryCreateRequestQueryWebhookIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (e *EventBulkRetryCreateRequestQueryWebhookId) Accept(visitor EventBulkRetryCreateRequestQueryWebhookIdVisitor) error {
+	switch e.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
+	case "string":
+		return visitor.VisitString(e.String)
+	case "stringList":
+		return visitor.VisitStringList(e.StringList)
+	}
+}
+
+// The cause of the ignored event
+type IgnoredEventBulkRetryCreateRequestQueryCause struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewIgnoredEventBulkRetryCreateRequestQueryCauseFromString(value string) *IgnoredEventBulkRetryCreateRequestQueryCause {
+	return &IgnoredEventBulkRetryCreateRequestQueryCause{typeName: "string", String: value}
+}
+
+func NewIgnoredEventBulkRetryCreateRequestQueryCauseFromStringList(value []string) *IgnoredEventBulkRetryCreateRequestQueryCause {
+	return &IgnoredEventBulkRetryCreateRequestQueryCause{typeName: "stringList", StringList: value}
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQueryCause) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		i.typeName = "string"
+		i.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typeName = "stringList"
+		i.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IgnoredEventBulkRetryCreateRequestQueryCause) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return json.Marshal(i.String)
+	case "stringList":
+		return json.Marshal(i.StringList)
+	}
+}
+
+type IgnoredEventBulkRetryCreateRequestQueryCauseVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQueryCause) Accept(visitor IgnoredEventBulkRetryCreateRequestQueryCauseVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return visitor.VisitString(i.String)
+	case "stringList":
+		return visitor.VisitStringList(i.StringList)
+	}
+}
+
+// Connection ID of the ignored event
+type IgnoredEventBulkRetryCreateRequestQueryWebhookId struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewIgnoredEventBulkRetryCreateRequestQueryWebhookIdFromString(value string) *IgnoredEventBulkRetryCreateRequestQueryWebhookId {
+	return &IgnoredEventBulkRetryCreateRequestQueryWebhookId{typeName: "string", String: value}
+}
+
+func NewIgnoredEventBulkRetryCreateRequestQueryWebhookIdFromStringList(value []string) *IgnoredEventBulkRetryCreateRequestQueryWebhookId {
+	return &IgnoredEventBulkRetryCreateRequestQueryWebhookId{typeName: "stringList", StringList: value}
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQueryWebhookId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		i.typeName = "string"
+		i.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		i.typeName = "stringList"
+		i.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
+}
+
+func (i IgnoredEventBulkRetryCreateRequestQueryWebhookId) MarshalJSON() ([]byte, error) {
+	switch i.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return json.Marshal(i.String)
+	case "stringList":
+		return json.Marshal(i.StringList)
+	}
+}
+
+type IgnoredEventBulkRetryCreateRequestQueryWebhookIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQueryWebhookId) Accept(visitor IgnoredEventBulkRetryCreateRequestQueryWebhookIdVisitor) error {
+	switch i.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
+	case "string":
+		return visitor.VisitString(i.String)
+	case "stringList":
+		return visitor.VisitStringList(i.StringList)
+	}
+}
+
+// URL Encoded string of the JSON to match to the data body
+type RequestBulkRetryCreateRequestQueryBody struct {
+	typeName                                  string
+	String                                    string
+	RequestBulkRetryCreateRequestQueryBodyOne *RequestBulkRetryCreateRequestQueryBodyOne
+}
+
+func NewRequestBulkRetryCreateRequestQueryBodyFromString(value string) *RequestBulkRetryCreateRequestQueryBody {
+	return &RequestBulkRetryCreateRequestQueryBody{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryBodyFromRequestBulkRetryCreateRequestQueryBodyOne(value *RequestBulkRetryCreateRequestQueryBodyOne) *RequestBulkRetryCreateRequestQueryBody {
+	return &RequestBulkRetryCreateRequestQueryBody{typeName: "requestBulkRetryCreateRequestQueryBodyOne", RequestBulkRetryCreateRequestQueryBodyOne: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBody) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryBodyOne := new(RequestBulkRetryCreateRequestQueryBodyOne)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryBodyOne); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryBodyOne"
+		r.RequestBulkRetryCreateRequestQueryBodyOne = valueRequestBulkRetryCreateRequestQueryBodyOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryBody) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "requestBulkRetryCreateRequestQueryBodyOne":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryBodyOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryBodyVisitor interface {
+	VisitString(string) error
+	VisitRequestBulkRetryCreateRequestQueryBodyOne(*RequestBulkRetryCreateRequestQueryBodyOne) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBody) Accept(visitor RequestBulkRetryCreateRequestQueryBodyVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "requestBulkRetryCreateRequestQueryBodyOne":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryBodyOne(r.RequestBulkRetryCreateRequestQueryBodyOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryBodyOne struct {
+}
+
+type RequestBulkRetryCreateRequestQueryBulkRetryId struct {
+	typeName   string
+	String     string
+	StringList []string
+}
+
+func NewRequestBulkRetryCreateRequestQueryBulkRetryIdFromString(value string) *RequestBulkRetryCreateRequestQueryBulkRetryId {
+	return &RequestBulkRetryCreateRequestQueryBulkRetryId{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryBulkRetryIdFromStringList(value []string) *RequestBulkRetryCreateRequestQueryBulkRetryId {
+	return &RequestBulkRetryCreateRequestQueryBulkRetryId{typeName: "stringList", StringList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBulkRetryId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		r.typeName = "stringList"
+		r.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryBulkRetryId) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "stringList":
+		return json.Marshal(r.StringList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryBulkRetryIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBulkRetryId) Accept(visitor RequestBulkRetryCreateRequestQueryBulkRetryIdVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "stringList":
+		return visitor.VisitStringList(r.StringList)
+	}
+}
+
+// Filter by count of events
+type RequestBulkRetryCreateRequestQueryEventsCount struct {
+	typeName                                         string
+	Integer                                          int
+	RequestBulkRetryCreateRequestQueryEventsCountAll *RequestBulkRetryCreateRequestQueryEventsCountAll
+	IntegerList                                      []int
+}
+
+func NewRequestBulkRetryCreateRequestQueryEventsCountFromInteger(value int) *RequestBulkRetryCreateRequestQueryEventsCount {
+	return &RequestBulkRetryCreateRequestQueryEventsCount{typeName: "integer", Integer: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryEventsCountFromRequestBulkRetryCreateRequestQueryEventsCountAll(value *RequestBulkRetryCreateRequestQueryEventsCountAll) *RequestBulkRetryCreateRequestQueryEventsCount {
+	return &RequestBulkRetryCreateRequestQueryEventsCount{typeName: "requestBulkRetryCreateRequestQueryEventsCountAll", RequestBulkRetryCreateRequestQueryEventsCountAll: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryEventsCountFromIntegerList(value []int) *RequestBulkRetryCreateRequestQueryEventsCount {
+	return &RequestBulkRetryCreateRequestQueryEventsCount{typeName: "integerList", IntegerList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryEventsCount) UnmarshalJSON(data []byte) error {
+	var valueInteger int
+	if err := json.Unmarshal(data, &valueInteger); err == nil {
+		r.typeName = "integer"
+		r.Integer = valueInteger
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryEventsCountAll := new(RequestBulkRetryCreateRequestQueryEventsCountAll)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryEventsCountAll); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryEventsCountAll"
+		r.RequestBulkRetryCreateRequestQueryEventsCountAll = valueRequestBulkRetryCreateRequestQueryEventsCountAll
+		return nil
+	}
+	var valueIntegerList []int
+	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
+		r.typeName = "integerList"
+		r.IntegerList = valueIntegerList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryEventsCount) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "integer":
+		return json.Marshal(r.Integer)
+	case "requestBulkRetryCreateRequestQueryEventsCountAll":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryEventsCountAll)
+	case "integerList":
+		return json.Marshal(r.IntegerList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryEventsCountVisitor interface {
+	VisitInteger(int) error
+	VisitRequestBulkRetryCreateRequestQueryEventsCountAll(*RequestBulkRetryCreateRequestQueryEventsCountAll) error
+	VisitIntegerList([]int) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryEventsCount) Accept(visitor RequestBulkRetryCreateRequestQueryEventsCountVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "integer":
+		return visitor.VisitInteger(r.Integer)
+	case "requestBulkRetryCreateRequestQueryEventsCountAll":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryEventsCountAll(r.RequestBulkRetryCreateRequestQueryEventsCountAll)
+	case "integerList":
+		return visitor.VisitIntegerList(r.IntegerList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryEventsCountAll struct {
+	Gt       *int  `json:"gt,omitempty"`
+	Gte      *int  `json:"gte,omitempty"`
+	Le       *int  `json:"le,omitempty"`
+	Lte      *int  `json:"lte,omitempty"`
+	Any      *bool `json:"any,omitempty"`
+	All      *bool `json:"all,omitempty"`
+	Contains *int  `json:"contains,omitempty"`
+}
+
+// URL Encoded string of the JSON to match to the data headers
+type RequestBulkRetryCreateRequestQueryHeaders struct {
+	typeName                                     string
+	String                                       string
+	RequestBulkRetryCreateRequestQueryHeadersOne *RequestBulkRetryCreateRequestQueryHeadersOne
+}
+
+func NewRequestBulkRetryCreateRequestQueryHeadersFromString(value string) *RequestBulkRetryCreateRequestQueryHeaders {
+	return &RequestBulkRetryCreateRequestQueryHeaders{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryHeadersFromRequestBulkRetryCreateRequestQueryHeadersOne(value *RequestBulkRetryCreateRequestQueryHeadersOne) *RequestBulkRetryCreateRequestQueryHeaders {
+	return &RequestBulkRetryCreateRequestQueryHeaders{typeName: "requestBulkRetryCreateRequestQueryHeadersOne", RequestBulkRetryCreateRequestQueryHeadersOne: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryHeaders) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryHeadersOne := new(RequestBulkRetryCreateRequestQueryHeadersOne)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryHeadersOne); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryHeadersOne"
+		r.RequestBulkRetryCreateRequestQueryHeadersOne = valueRequestBulkRetryCreateRequestQueryHeadersOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryHeaders) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "requestBulkRetryCreateRequestQueryHeadersOne":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryHeadersOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryHeadersVisitor interface {
+	VisitString(string) error
+	VisitRequestBulkRetryCreateRequestQueryHeadersOne(*RequestBulkRetryCreateRequestQueryHeadersOne) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryHeaders) Accept(visitor RequestBulkRetryCreateRequestQueryHeadersVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "requestBulkRetryCreateRequestQueryHeadersOne":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryHeadersOne(r.RequestBulkRetryCreateRequestQueryHeadersOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryHeadersOne struct {
+}
+
+// Filter by requests IDs
+type RequestBulkRetryCreateRequestQueryId struct {
+	typeName string
+	// Request ID
+	String     string
+	StringList []string
+}
+
+func NewRequestBulkRetryCreateRequestQueryIdFromString(value string) *RequestBulkRetryCreateRequestQueryId {
+	return &RequestBulkRetryCreateRequestQueryId{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryIdFromStringList(value []string) *RequestBulkRetryCreateRequestQueryId {
+	return &RequestBulkRetryCreateRequestQueryId{typeName: "stringList", StringList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		r.typeName = "stringList"
+		r.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryId) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "stringList":
+		return json.Marshal(r.StringList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryId) Accept(visitor RequestBulkRetryCreateRequestQueryIdVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "stringList":
+		return visitor.VisitStringList(r.StringList)
+	}
+}
+
+// Filter by count of ignored events
+type RequestBulkRetryCreateRequestQueryIgnoredCount struct {
+	typeName                                          string
+	Integer                                           int
+	RequestBulkRetryCreateRequestQueryIgnoredCountAll *RequestBulkRetryCreateRequestQueryIgnoredCountAll
+	IntegerList                                       []int
+}
+
+func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromInteger(value int) *RequestBulkRetryCreateRequestQueryIgnoredCount {
+	return &RequestBulkRetryCreateRequestQueryIgnoredCount{typeName: "integer", Integer: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromRequestBulkRetryCreateRequestQueryIgnoredCountAll(value *RequestBulkRetryCreateRequestQueryIgnoredCountAll) *RequestBulkRetryCreateRequestQueryIgnoredCount {
+	return &RequestBulkRetryCreateRequestQueryIgnoredCount{typeName: "requestBulkRetryCreateRequestQueryIgnoredCountAll", RequestBulkRetryCreateRequestQueryIgnoredCountAll: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromIntegerList(value []int) *RequestBulkRetryCreateRequestQueryIgnoredCount {
+	return &RequestBulkRetryCreateRequestQueryIgnoredCount{typeName: "integerList", IntegerList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryIgnoredCount) UnmarshalJSON(data []byte) error {
+	var valueInteger int
+	if err := json.Unmarshal(data, &valueInteger); err == nil {
+		r.typeName = "integer"
+		r.Integer = valueInteger
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryIgnoredCountAll := new(RequestBulkRetryCreateRequestQueryIgnoredCountAll)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryIgnoredCountAll); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryIgnoredCountAll"
+		r.RequestBulkRetryCreateRequestQueryIgnoredCountAll = valueRequestBulkRetryCreateRequestQueryIgnoredCountAll
+		return nil
+	}
+	var valueIntegerList []int
+	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
+		r.typeName = "integerList"
+		r.IntegerList = valueIntegerList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryIgnoredCount) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "integer":
+		return json.Marshal(r.Integer)
+	case "requestBulkRetryCreateRequestQueryIgnoredCountAll":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryIgnoredCountAll)
+	case "integerList":
+		return json.Marshal(r.IntegerList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIgnoredCountVisitor interface {
+	VisitInteger(int) error
+	VisitRequestBulkRetryCreateRequestQueryIgnoredCountAll(*RequestBulkRetryCreateRequestQueryIgnoredCountAll) error
+	VisitIntegerList([]int) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryIgnoredCount) Accept(visitor RequestBulkRetryCreateRequestQueryIgnoredCountVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "integer":
+		return visitor.VisitInteger(r.Integer)
+	case "requestBulkRetryCreateRequestQueryIgnoredCountAll":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryIgnoredCountAll(r.RequestBulkRetryCreateRequestQueryIgnoredCountAll)
+	case "integerList":
+		return visitor.VisitIntegerList(r.IntegerList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIgnoredCountAll struct {
+	Gt       *int  `json:"gt,omitempty"`
+	Gte      *int  `json:"gte,omitempty"`
+	Le       *int  `json:"le,omitempty"`
+	Lte      *int  `json:"lte,omitempty"`
+	Any      *bool `json:"any,omitempty"`
+	All      *bool `json:"all,omitempty"`
+	Contains *int  `json:"contains,omitempty"`
+}
+
+// Filter by event ingested date
+type RequestBulkRetryCreateRequestQueryIngestedAt struct {
+	typeName                                        string
+	DateTime                                        time.Time
+	RequestBulkRetryCreateRequestQueryIngestedAtAny *RequestBulkRetryCreateRequestQueryIngestedAtAny
+}
+
+func NewRequestBulkRetryCreateRequestQueryIngestedAtFromDateTime(value time.Time) *RequestBulkRetryCreateRequestQueryIngestedAt {
+	return &RequestBulkRetryCreateRequestQueryIngestedAt{typeName: "dateTime", DateTime: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryIngestedAtFromRequestBulkRetryCreateRequestQueryIngestedAtAny(value *RequestBulkRetryCreateRequestQueryIngestedAtAny) *RequestBulkRetryCreateRequestQueryIngestedAt {
+	return &RequestBulkRetryCreateRequestQueryIngestedAt{typeName: "requestBulkRetryCreateRequestQueryIngestedAtAny", RequestBulkRetryCreateRequestQueryIngestedAtAny: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryIngestedAt) UnmarshalJSON(data []byte) error {
+	var valueDateTime time.Time
+	if err := json.Unmarshal(data, &valueDateTime); err == nil {
+		r.typeName = "dateTime"
+		r.DateTime = valueDateTime
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryIngestedAtAny := new(RequestBulkRetryCreateRequestQueryIngestedAtAny)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryIngestedAtAny); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryIngestedAtAny"
+		r.RequestBulkRetryCreateRequestQueryIngestedAtAny = valueRequestBulkRetryCreateRequestQueryIngestedAtAny
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryIngestedAt) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "dateTime":
+		return json.Marshal(r.DateTime)
+	case "requestBulkRetryCreateRequestQueryIngestedAtAny":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryIngestedAtAny)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIngestedAtVisitor interface {
+	VisitDateTime(time.Time) error
+	VisitRequestBulkRetryCreateRequestQueryIngestedAtAny(*RequestBulkRetryCreateRequestQueryIngestedAtAny) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryIngestedAt) Accept(visitor RequestBulkRetryCreateRequestQueryIngestedAtVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "dateTime":
+		return visitor.VisitDateTime(r.DateTime)
+	case "requestBulkRetryCreateRequestQueryIngestedAtAny":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryIngestedAtAny(r.RequestBulkRetryCreateRequestQueryIngestedAtAny)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryIngestedAtAny struct {
+	Gt  *time.Time `json:"gt,omitempty"`
+	Gte *time.Time `json:"gte,omitempty"`
+	Le  *time.Time `json:"le,omitempty"`
+	Lte *time.Time `json:"lte,omitempty"`
+	Any *bool      `json:"any,omitempty"`
+}
+
+// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
+type RequestBulkRetryCreateRequestQueryParsedQuery struct {
+	typeName                                         string
+	String                                           string
+	RequestBulkRetryCreateRequestQueryParsedQueryOne *RequestBulkRetryCreateRequestQueryParsedQueryOne
+}
+
+func NewRequestBulkRetryCreateRequestQueryParsedQueryFromString(value string) *RequestBulkRetryCreateRequestQueryParsedQuery {
+	return &RequestBulkRetryCreateRequestQueryParsedQuery{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryParsedQueryFromRequestBulkRetryCreateRequestQueryParsedQueryOne(value *RequestBulkRetryCreateRequestQueryParsedQueryOne) *RequestBulkRetryCreateRequestQueryParsedQuery {
+	return &RequestBulkRetryCreateRequestQueryParsedQuery{typeName: "requestBulkRetryCreateRequestQueryParsedQueryOne", RequestBulkRetryCreateRequestQueryParsedQueryOne: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryParsedQuery) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	valueRequestBulkRetryCreateRequestQueryParsedQueryOne := new(RequestBulkRetryCreateRequestQueryParsedQueryOne)
+	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryParsedQueryOne); err == nil {
+		r.typeName = "requestBulkRetryCreateRequestQueryParsedQueryOne"
+		r.RequestBulkRetryCreateRequestQueryParsedQueryOne = valueRequestBulkRetryCreateRequestQueryParsedQueryOne
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryParsedQuery) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "requestBulkRetryCreateRequestQueryParsedQueryOne":
+		return json.Marshal(r.RequestBulkRetryCreateRequestQueryParsedQueryOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryParsedQueryVisitor interface {
+	VisitString(string) error
+	VisitRequestBulkRetryCreateRequestQueryParsedQueryOne(*RequestBulkRetryCreateRequestQueryParsedQueryOne) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryParsedQuery) Accept(visitor RequestBulkRetryCreateRequestQueryParsedQueryVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "requestBulkRetryCreateRequestQueryParsedQueryOne":
+		return visitor.VisitRequestBulkRetryCreateRequestQueryParsedQueryOne(r.RequestBulkRetryCreateRequestQueryParsedQueryOne)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryParsedQueryOne struct {
+}
+
+// Filter by rejection cause
+type RequestBulkRetryCreateRequestQueryRejectionCause struct {
+	typeName                  string
+	RequestRejectionCause     RequestRejectionCause
+	RequestRejectionCauseList []RequestRejectionCause
+}
+
+func NewRequestBulkRetryCreateRequestQueryRejectionCauseFromRequestRejectionCause(value RequestRejectionCause) *RequestBulkRetryCreateRequestQueryRejectionCause {
+	return &RequestBulkRetryCreateRequestQueryRejectionCause{typeName: "requestRejectionCause", RequestRejectionCause: value}
+}
+
+func NewRequestBulkRetryCreateRequestQueryRejectionCauseFromRequestRejectionCauseList(value []RequestRejectionCause) *RequestBulkRetryCreateRequestQueryRejectionCause {
+	return &RequestBulkRetryCreateRequestQueryRejectionCause{typeName: "requestRejectionCauseList", RequestRejectionCauseList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQueryRejectionCause) UnmarshalJSON(data []byte) error {
+	var valueRequestRejectionCause RequestRejectionCause
+	if err := json.Unmarshal(data, &valueRequestRejectionCause); err == nil {
+		r.typeName = "requestRejectionCause"
+		r.RequestRejectionCause = valueRequestRejectionCause
+		return nil
+	}
+	var valueRequestRejectionCauseList []RequestRejectionCause
+	if err := json.Unmarshal(data, &valueRequestRejectionCauseList); err == nil {
+		r.typeName = "requestRejectionCauseList"
+		r.RequestRejectionCauseList = valueRequestRejectionCauseList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQueryRejectionCause) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "requestRejectionCause":
+		return json.Marshal(r.RequestRejectionCause)
+	case "requestRejectionCauseList":
+		return json.Marshal(r.RequestRejectionCauseList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQueryRejectionCauseVisitor interface {
+	VisitRequestRejectionCause(RequestRejectionCause) error
+	VisitRequestRejectionCauseList([]RequestRejectionCause) error
+}
+
+func (r *RequestBulkRetryCreateRequestQueryRejectionCause) Accept(visitor RequestBulkRetryCreateRequestQueryRejectionCauseVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "requestRejectionCause":
+		return visitor.VisitRequestRejectionCause(r.RequestRejectionCause)
+	case "requestRejectionCauseList":
+		return visitor.VisitRequestRejectionCauseList(r.RequestRejectionCauseList)
+	}
+}
+
+// Filter by source IDs
+type RequestBulkRetryCreateRequestQuerySourceId struct {
+	typeName string
+	// Source ID
+	String     string
+	StringList []string
+}
+
+func NewRequestBulkRetryCreateRequestQuerySourceIdFromString(value string) *RequestBulkRetryCreateRequestQuerySourceId {
+	return &RequestBulkRetryCreateRequestQuerySourceId{typeName: "string", String: value}
+}
+
+func NewRequestBulkRetryCreateRequestQuerySourceIdFromStringList(value []string) *RequestBulkRetryCreateRequestQuerySourceId {
+	return &RequestBulkRetryCreateRequestQuerySourceId{typeName: "stringList", StringList: value}
+}
+
+func (r *RequestBulkRetryCreateRequestQuerySourceId) UnmarshalJSON(data []byte) error {
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		r.typeName = "string"
+		r.String = valueString
+		return nil
+	}
+	var valueStringList []string
+	if err := json.Unmarshal(data, &valueStringList); err == nil {
+		r.typeName = "stringList"
+		r.StringList = valueStringList
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+}
+
+func (r RequestBulkRetryCreateRequestQuerySourceId) MarshalJSON() ([]byte, error) {
+	switch r.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return json.Marshal(r.String)
+	case "stringList":
+		return json.Marshal(r.StringList)
+	}
+}
+
+type RequestBulkRetryCreateRequestQuerySourceIdVisitor interface {
+	VisitString(string) error
+	VisitStringList([]string) error
+}
+
+func (r *RequestBulkRetryCreateRequestQuerySourceId) Accept(visitor RequestBulkRetryCreateRequestQuerySourceIdVisitor) error {
+	switch r.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
+	case "string":
+		return visitor.VisitString(r.String)
+	case "stringList":
+		return visitor.VisitStringList(r.StringList)
+	}
+}
+
+// Filter by status
+type RequestBulkRetryCreateRequestQueryStatus string
+
+const (
+	RequestBulkRetryCreateRequestQueryStatusAccepted RequestBulkRetryCreateRequestQueryStatus = "accepted"
+	RequestBulkRetryCreateRequestQueryStatusRejected RequestBulkRetryCreateRequestQueryStatus = "rejected"
+)
+
+func NewRequestBulkRetryCreateRequestQueryStatusFromString(s string) (RequestBulkRetryCreateRequestQueryStatus, error) {
+	switch s {
+	case "accepted":
+		return RequestBulkRetryCreateRequestQueryStatusAccepted, nil
+	case "rejected":
+		return RequestBulkRetryCreateRequestQueryStatusRejected, nil
+	}
+	var t RequestBulkRetryCreateRequestQueryStatus
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (r RequestBulkRetryCreateRequestQueryStatus) Ptr() *RequestBulkRetryCreateRequestQueryStatus {
+	return &r
+}
+
+// Body of the request
+type TransformationRunRequestRequestBody struct {
+	typeName                                string
+	TransformationRunRequestRequestBodyZero *TransformationRunRequestRequestBodyZero
+	String                                  string
+}
+
+func NewTransformationRunRequestRequestBodyFromTransformationRunRequestRequestBodyZero(value *TransformationRunRequestRequestBodyZero) *TransformationRunRequestRequestBody {
+	return &TransformationRunRequestRequestBody{typeName: "transformationRunRequestRequestBodyZero", TransformationRunRequestRequestBodyZero: value}
+}
+
+func NewTransformationRunRequestRequestBodyFromString(value string) *TransformationRunRequestRequestBody {
+	return &TransformationRunRequestRequestBody{typeName: "string", String: value}
+}
+
+func (t *TransformationRunRequestRequestBody) UnmarshalJSON(data []byte) error {
+	valueTransformationRunRequestRequestBodyZero := new(TransformationRunRequestRequestBodyZero)
+	if err := json.Unmarshal(data, &valueTransformationRunRequestRequestBodyZero); err == nil {
+		t.typeName = "transformationRunRequestRequestBodyZero"
+		t.TransformationRunRequestRequestBodyZero = valueTransformationRunRequestRequestBodyZero
+		return nil
+	}
+	var valueString string
+	if err := json.Unmarshal(data, &valueString); err == nil {
+		t.typeName = "string"
+		t.String = valueString
+		return nil
+	}
+	return fmt.Errorf("%s cannot be deserialized as a %T", data, t)
+}
+
+func (t TransformationRunRequestRequestBody) MarshalJSON() ([]byte, error) {
+	switch t.typeName {
+	default:
+		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "transformationRunRequestRequestBodyZero":
+		return json.Marshal(t.TransformationRunRequestRequestBodyZero)
+	case "string":
+		return json.Marshal(t.String)
+	}
+}
+
+type TransformationRunRequestRequestBodyVisitor interface {
+	VisitTransformationRunRequestRequestBodyZero(*TransformationRunRequestRequestBodyZero) error
+	VisitString(string) error
+}
+
+func (t *TransformationRunRequestRequestBody) Accept(visitor TransformationRunRequestRequestBodyVisitor) error {
+	switch t.typeName {
+	default:
+		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
+	case "transformationRunRequestRequestBodyZero":
+		return visitor.VisitTransformationRunRequestRequestBodyZero(t.TransformationRunRequestRequestBodyZero)
+	case "string":
+		return visitor.VisitString(t.String)
+	}
+}
+
+type TransformationRunRequestRequestBodyZero struct {
+}
+
+// JSON representation of the query params
+type TransformationRunRequestRequestParsedQuery struct {
 }
