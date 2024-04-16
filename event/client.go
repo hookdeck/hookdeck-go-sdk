@@ -35,11 +35,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 }
 
 func (c *Client) List(ctx context.Context, request *hookdeckgosdk.EventListRequest) (*hookdeckgosdk.EventPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/events"
+	endpointURL := baseURL + "/" + "events"
 
 	queryParams := make(url.Values)
 	if request.Id != nil {
@@ -171,11 +171,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.EventListReque
 }
 
 func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Event, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/events/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"events/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -214,11 +214,11 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Event,
 }
 
 func (c *Client) RetrieveBody(ctx context.Context, id string) (*hookdeckgosdk.RawBody, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/events/%v/raw_body", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"events/%v/raw_body", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -257,11 +257,11 @@ func (c *Client) RetrieveBody(ctx context.Context, id string) (*hookdeckgosdk.Ra
 }
 
 func (c *Client) Retry(ctx context.Context, id string) (*hookdeckgosdk.RetriedEvent, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/events/%v/retry", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"events/%v/retry", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -300,11 +300,11 @@ func (c *Client) Retry(ctx context.Context, id string) (*hookdeckgosdk.RetriedEv
 }
 
 func (c *Client) Mute(ctx context.Context, id string) (*hookdeckgosdk.Event, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/events/%v/mute", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"events/%v/mute", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

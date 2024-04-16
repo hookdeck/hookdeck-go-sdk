@@ -28,12 +28,12 @@ func NewClient(opts ...core.ClientOption) *Client {
 	}
 }
 
-func (c *Client) List(ctx context.Context, teamId string) (hookdeckgosdk.ListCustomDomainSchema, error) {
-	baseURL := "https://api.hookdeck.com"
+func (c *Client) List(ctx context.Context) (hookdeckgosdk.ListCustomDomainSchema, error) {
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/teams/%v/custom_domains", teamId)
+	endpointURL := baseURL + "/" + "teams/current/custom_domains"
 
 	var response hookdeckgosdk.ListCustomDomainSchema
 	if err := core.DoRequest(
@@ -52,12 +52,12 @@ func (c *Client) List(ctx context.Context, teamId string) (hookdeckgosdk.ListCus
 	return response, nil
 }
 
-func (c *Client) Create(ctx context.Context, teamId string, request *hookdeckgosdk.AddCustomHostname) (*hookdeckgosdk.AddCustomHostname, error) {
-	baseURL := "https://api.hookdeck.com"
+func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.AddCustomHostname) (*hookdeckgosdk.AddCustomHostname, error) {
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/teams/%v/custom_domains", teamId)
+	endpointURL := baseURL + "/" + "teams/current/custom_domains"
 
 	var response *hookdeckgosdk.AddCustomHostname
 	if err := core.DoRequest(
@@ -76,12 +76,12 @@ func (c *Client) Create(ctx context.Context, teamId string, request *hookdeckgos
 	return response, nil
 }
 
-func (c *Client) Delete(ctx context.Context, teamId string, domainId string) (*hookdeckgosdk.DeleteCustomDomainSchema, error) {
-	baseURL := "https://api.hookdeck.com"
+func (c *Client) Delete(ctx context.Context, domainId string) (*hookdeckgosdk.DeleteCustomDomainSchema, error) {
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/teams/%v/custom_domains/%v", teamId, domainId)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"teams/current/custom_domains/%v", domainId)
 
 	var response *hookdeckgosdk.DeleteCustomDomainSchema
 	if err := core.DoRequest(

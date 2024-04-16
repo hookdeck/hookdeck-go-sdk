@@ -35,11 +35,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 }
 
 func (c *Client) List(ctx context.Context, request *hookdeckgosdk.TransformationListRequest) (*hookdeckgosdk.TransformationPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/transformations"
+	endpointURL := baseURL + "/" + "transformations"
 
 	queryParams := make(url.Values)
 	if request.Id != nil {
@@ -111,11 +111,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.Transformation
 }
 
 func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.TransformationCreateRequest) (*hookdeckgosdk.Transformation, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/transformations"
+	endpointURL := baseURL + "/" + "transformations"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -161,11 +161,11 @@ func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.Transformati
 }
 
 func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.TransformationUpsertRequest) (*hookdeckgosdk.Transformation, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/transformations"
+	endpointURL := baseURL + "/" + "transformations"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -211,11 +211,11 @@ func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.Transformati
 }
 
 func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Transformation, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/transformations/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"transformations/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -254,11 +254,11 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Transf
 }
 
 func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.TransformationUpdateRequest) (*hookdeckgosdk.Transformation, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/transformations/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"transformations/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -311,11 +311,11 @@ func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.T
 }
 
 func (c *Client) Run(ctx context.Context, request *hookdeckgosdk.TransformationRunRequest) (*hookdeckgosdk.TransformationExecutorOutput, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/transformations/run"
+	endpointURL := baseURL + "/" + "transformations/run"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -361,11 +361,11 @@ func (c *Client) Run(ctx context.Context, request *hookdeckgosdk.TransformationR
 }
 
 func (c *Client) ListExecution(ctx context.Context, id string, request *hookdeckgosdk.TransformationListExecutionRequest) (*hookdeckgosdk.TransformationExecutionPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/transformations/%v/executions", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"transformations/%v/executions", id)
 
 	queryParams := make(url.Values)
 	if request.LogLevel != nil {
@@ -443,11 +443,11 @@ func (c *Client) ListExecution(ctx context.Context, id string, request *hookdeck
 }
 
 func (c *Client) RetrieveExecution(ctx context.Context, id string, executionId string) (*hookdeckgosdk.TransformationExecution, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/transformations/%v/executions/%v", id, executionId)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"transformations/%v/executions/%v", id, executionId)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

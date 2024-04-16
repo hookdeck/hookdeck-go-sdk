@@ -11,8 +11,8 @@ import (
 type ConnectionCountRequest struct {
 	DestinationId *string    `json:"-"`
 	SourceId      *string    `json:"-"`
-	Archived      *bool      `json:"-"`
-	ArchivedAt    *time.Time `json:"-"`
+	Disabled      *bool      `json:"-"`
+	DisabledAt    *time.Time `json:"-"`
 	PausedAt      *time.Time `json:"-"`
 }
 
@@ -37,8 +37,8 @@ type ConnectionListRequest struct {
 	Name          *string                       `json:"-"`
 	DestinationId *string                       `json:"-"`
 	SourceId      *string                       `json:"-"`
-	Archived      *bool                         `json:"-"`
-	ArchivedAt    *time.Time                    `json:"-"`
+	Disabled      *bool                         `json:"-"`
+	DisabledAt    *time.Time                    `json:"-"`
 	FullName      *string                       `json:"-"`
 	PausedAt      *time.Time                    `json:"-"`
 	OrderBy       *ConnectionListRequestOrderBy `json:"-"`

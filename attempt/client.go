@@ -34,11 +34,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 }
 
 func (c *Client) List(ctx context.Context, request *hookdeckgosdk.AttemptListRequest) (*hookdeckgosdk.EventAttemptPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/attempts"
+	endpointURL := baseURL + "/" + "attempts"
 
 	queryParams := make(url.Values)
 	if request.EventId != nil {
@@ -107,11 +107,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.AttemptListReq
 }
 
 func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.EventAttempt, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/attempts/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"attempts/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

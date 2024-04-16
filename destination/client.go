@@ -35,11 +35,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 }
 
 func (c *Client) List(ctx context.Context, request *hookdeckgosdk.DestinationListRequest) (*hookdeckgosdk.DestinationPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/destinations"
+	endpointURL := baseURL + "/" + "destinations"
 
 	queryParams := make(url.Values)
 	if request.Id != nil {
@@ -48,11 +48,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.DestinationLis
 	if request.Name != nil {
 		queryParams.Add("name", fmt.Sprintf("%v", *request.Name))
 	}
-	if request.Archived != nil {
-		queryParams.Add("archived", fmt.Sprintf("%v", *request.Archived))
+	if request.Disabled != nil {
+		queryParams.Add("disabled", fmt.Sprintf("%v", *request.Disabled))
 	}
-	if request.ArchivedAt != nil {
-		queryParams.Add("archived_at", fmt.Sprintf("%v", request.ArchivedAt.Format(time.RFC3339)))
+	if request.DisabledAt != nil {
+		queryParams.Add("disabled_at", fmt.Sprintf("%v", request.DisabledAt.Format(time.RFC3339)))
 	}
 	if request.Url != nil {
 		queryParams.Add("url", fmt.Sprintf("%v", *request.Url))
@@ -123,11 +123,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.DestinationLis
 }
 
 func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.DestinationCreateRequest) (*hookdeckgosdk.Destination, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/destinations"
+	endpointURL := baseURL + "/" + "destinations"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -173,11 +173,11 @@ func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.DestinationC
 }
 
 func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.DestinationUpsertRequest) (*hookdeckgosdk.Destination, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/destinations"
+	endpointURL := baseURL + "/" + "destinations"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -223,11 +223,11 @@ func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.DestinationU
 }
 
 func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/destinations/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"destinations/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -266,11 +266,11 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Destin
 }
 
 func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.DestinationUpdateRequest) (*hookdeckgosdk.Destination, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/destinations/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"destinations/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -323,11 +323,11 @@ func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.D
 }
 
 func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.DestinationDeleteResponse, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/destinations/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"destinations/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -365,12 +365,12 @@ func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.Destinat
 	return response, nil
 }
 
-func (c *Client) Archive(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
-	baseURL := "https://api.hookdeck.com"
+func (c *Client) Disable(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/destinations/%v/archive", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"destinations/%v/archive", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -408,12 +408,12 @@ func (c *Client) Archive(ctx context.Context, id string) (*hookdeckgosdk.Destina
 	return response, nil
 }
 
-func (c *Client) Unarchive(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
-	baseURL := "https://api.hookdeck.com"
+func (c *Client) Enable(ctx context.Context, id string) (*hookdeckgosdk.Destination, error) {
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/destinations/%v/unarchive", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"destinations/%v/unarchive", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

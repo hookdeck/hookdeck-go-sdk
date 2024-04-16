@@ -35,11 +35,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 }
 
 func (c *Client) List(ctx context.Context, request *hookdeckgosdk.ConnectionListRequest) (*hookdeckgosdk.ConnectionPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/connections"
+	endpointURL := baseURL + "/" + "connections"
 
 	queryParams := make(url.Values)
 	if request.Id != nil {
@@ -54,11 +54,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.ConnectionList
 	if request.SourceId != nil {
 		queryParams.Add("source_id", fmt.Sprintf("%v", *request.SourceId))
 	}
-	if request.Archived != nil {
-		queryParams.Add("archived", fmt.Sprintf("%v", *request.Archived))
+	if request.Disabled != nil {
+		queryParams.Add("disabled", fmt.Sprintf("%v", *request.Disabled))
 	}
-	if request.ArchivedAt != nil {
-		queryParams.Add("archived_at", fmt.Sprintf("%v", request.ArchivedAt.Format(time.RFC3339)))
+	if request.DisabledAt != nil {
+		queryParams.Add("disabled_at", fmt.Sprintf("%v", request.DisabledAt.Format(time.RFC3339)))
 	}
 	if request.FullName != nil {
 		queryParams.Add("full_name", fmt.Sprintf("%v", *request.FullName))
@@ -129,11 +129,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.ConnectionList
 }
 
 func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.ConnectionCreateRequest) (*hookdeckgosdk.Connection, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/connections"
+	endpointURL := baseURL + "/" + "connections"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -179,11 +179,11 @@ func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.ConnectionCr
 }
 
 func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.ConnectionUpsertRequest) (*hookdeckgosdk.Connection, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/connections"
+	endpointURL := baseURL + "/" + "connections"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -229,11 +229,11 @@ func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.ConnectionUp
 }
 
 func (c *Client) Count(ctx context.Context, request *hookdeckgosdk.ConnectionCountRequest) (*hookdeckgosdk.ConnectionCountResponse, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/connections/count"
+	endpointURL := baseURL + "/" + "connections/count"
 
 	queryParams := make(url.Values)
 	if request.DestinationId != nil {
@@ -242,11 +242,11 @@ func (c *Client) Count(ctx context.Context, request *hookdeckgosdk.ConnectionCou
 	if request.SourceId != nil {
 		queryParams.Add("source_id", fmt.Sprintf("%v", *request.SourceId))
 	}
-	if request.Archived != nil {
-		queryParams.Add("archived", fmt.Sprintf("%v", *request.Archived))
+	if request.Disabled != nil {
+		queryParams.Add("disabled", fmt.Sprintf("%v", *request.Disabled))
 	}
-	if request.ArchivedAt != nil {
-		queryParams.Add("archived_at", fmt.Sprintf("%v", request.ArchivedAt.Format(time.RFC3339)))
+	if request.DisabledAt != nil {
+		queryParams.Add("disabled_at", fmt.Sprintf("%v", request.DisabledAt.Format(time.RFC3339)))
 	}
 	if request.PausedAt != nil {
 		queryParams.Add("paused_at", fmt.Sprintf("%v", request.PausedAt.Format(time.RFC3339)))
@@ -299,11 +299,11 @@ func (c *Client) Count(ctx context.Context, request *hookdeckgosdk.ConnectionCou
 }
 
 func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/connections/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -342,11 +342,11 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Connec
 }
 
 func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.ConnectionUpdateRequest) (*hookdeckgosdk.Connection, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/connections/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -399,11 +399,11 @@ func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.C
 }
 
 func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.ConnectionDeleteResponse, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/connections/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -441,12 +441,12 @@ func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.Connecti
 	return response, nil
 }
 
-func (c *Client) Archive(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
-	baseURL := "https://api.hookdeck.com"
+func (c *Client) Disable(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/connections/%v/archive", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v/archive", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -484,12 +484,12 @@ func (c *Client) Archive(ctx context.Context, id string) (*hookdeckgosdk.Connect
 	return response, nil
 }
 
-func (c *Client) Unarchive(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
-	baseURL := "https://api.hookdeck.com"
+func (c *Client) Enable(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/connections/%v/unarchive", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v/unarchive", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -528,11 +528,11 @@ func (c *Client) Unarchive(ctx context.Context, id string) (*hookdeckgosdk.Conne
 }
 
 func (c *Client) Pause(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/connections/%v/pause", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v/pause", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -571,11 +571,11 @@ func (c *Client) Pause(ctx context.Context, id string) (*hookdeckgosdk.Connectio
 }
 
 func (c *Client) Unpause(ctx context.Context, id string) (*hookdeckgosdk.Connection, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/connections/%v/unpause", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"connections/%v/unpause", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

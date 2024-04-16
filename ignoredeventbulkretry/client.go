@@ -35,11 +35,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 }
 
 func (c *Client) List(ctx context.Context, request *hookdeckgosdk.IgnoredEventBulkRetryListRequest) (*hookdeckgosdk.BatchOperationPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/bulk/ignored-events/retry"
+	endpointURL := baseURL + "/" + "bulk/ignored-events/retry"
 
 	queryParams := make(url.Values)
 	if request.CancelledAt != nil {
@@ -123,11 +123,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.IgnoredEventBu
 }
 
 func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.IgnoredEventBulkRetryCreateRequest) (*hookdeckgosdk.BatchOperation, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/bulk/ignored-events/retry"
+	endpointURL := baseURL + "/" + "bulk/ignored-events/retry"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -173,11 +173,11 @@ func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.IgnoredEvent
 }
 
 func (c *Client) Plan(ctx context.Context) (*hookdeckgosdk.IgnoredEventBulkRetryPlanResponse, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/bulk/ignored-events/retry/plan"
+	endpointURL := baseURL + "/" + "bulk/ignored-events/retry/plan"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -223,11 +223,11 @@ func (c *Client) Plan(ctx context.Context) (*hookdeckgosdk.IgnoredEventBulkRetry
 }
 
 func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/bulk/ignored-events/retry/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"bulk/ignored-events/retry/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -266,11 +266,11 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.BatchO
 }
 
 func (c *Client) Cancel(ctx context.Context, id string) (*hookdeckgosdk.BatchOperation, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/bulk/ignored-events/retry/%v/cancel", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"bulk/ignored-events/retry/%v/cancel", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

@@ -35,11 +35,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 }
 
 func (c *Client) List(ctx context.Context, request *hookdeckgosdk.IssueTriggerListRequest) (*hookdeckgosdk.IssueTriggerPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/issue-triggers"
+	endpointURL := baseURL + "/" + "issue-triggers"
 
 	queryParams := make(url.Values)
 	if request.Name != nil {
@@ -114,11 +114,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.IssueTriggerLi
 }
 
 func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.IssueTriggerCreateRequest) (*hookdeckgosdk.IssueTrigger, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/issue-triggers"
+	endpointURL := baseURL + "/" + "issue-triggers"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -164,11 +164,11 @@ func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.IssueTrigger
 }
 
 func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.IssueTriggerUpsertRequest) (*hookdeckgosdk.IssueTrigger, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/issue-triggers"
+	endpointURL := baseURL + "/" + "issue-triggers"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -214,11 +214,11 @@ func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.IssueTrigger
 }
 
 func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/issue-triggers/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"issue-triggers/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -257,11 +257,11 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.IssueT
 }
 
 func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.IssueTriggerUpdateRequest) (*hookdeckgosdk.IssueTrigger, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/issue-triggers/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"issue-triggers/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -307,11 +307,11 @@ func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.I
 }
 
 func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.DeletedIssueTriggerResponse, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/issue-triggers/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"issue-triggers/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -350,11 +350,11 @@ func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.DeletedI
 }
 
 func (c *Client) Disable(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/issue-triggers/%v/disable", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"issue-triggers/%v/disable", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -393,11 +393,11 @@ func (c *Client) Disable(ctx context.Context, id string) (*hookdeckgosdk.IssueTr
 }
 
 func (c *Client) Enable(ctx context.Context, id string) (*hookdeckgosdk.IssueTrigger, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/issue-triggers/%v/enable", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"issue-triggers/%v/enable", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

@@ -28,11 +28,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 }
 
 func (c *Client) Update(ctx context.Context, request *hookdeckgosdk.NotificationUpdateRequest) (*hookdeckgosdk.ToggleWebhookNotifications, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/notifications/webhooks"
+	endpointURL := baseURL + "/" + "notifications/webhooks"
 
 	var response *hookdeckgosdk.ToggleWebhookNotifications
 	if err := core.DoRequest(

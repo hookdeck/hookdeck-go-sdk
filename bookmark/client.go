@@ -35,11 +35,11 @@ func NewClient(opts ...core.ClientOption) *Client {
 }
 
 func (c *Client) List(ctx context.Context, request *hookdeckgosdk.BookmarkListRequest) (*hookdeckgosdk.BookmarkPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/bookmarks"
+	endpointURL := baseURL + "/" + "bookmarks"
 
 	queryParams := make(url.Values)
 	if request.Id != nil {
@@ -123,11 +123,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.BookmarkListRe
 }
 
 func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.BookmarkCreateRequest) (*hookdeckgosdk.Bookmark, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "2023-07-01/bookmarks"
+	endpointURL := baseURL + "/" + "bookmarks"
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -173,11 +173,11 @@ func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.BookmarkCrea
 }
 
 func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Bookmark, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/bookmarks/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -216,11 +216,11 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Bookma
 }
 
 func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.BookmarkUpdateRequest) (*hookdeckgosdk.Bookmark, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/bookmarks/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -273,11 +273,11 @@ func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.B
 }
 
 func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.DeletedBookmarkResponse, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/bookmarks/%v", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -316,11 +316,11 @@ func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.DeletedB
 }
 
 func (c *Client) RetrieveBody(ctx context.Context, id string) (*hookdeckgosdk.RawBody, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/bookmarks/%v/raw_body", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v/raw_body", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -359,11 +359,11 @@ func (c *Client) RetrieveBody(ctx context.Context, id string) (*hookdeckgosdk.Ra
 }
 
 func (c *Client) Trigger(ctx context.Context, id string, request *hookdeckgosdk.BookmarkTriggerRequest) (hookdeckgosdk.EventArray, error) {
-	baseURL := "https://api.hookdeck.com"
+	baseURL := "https://api.hookdeck.com/2024-03-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"2023-07-01/bookmarks/%v/trigger", id)
+	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v/trigger", id)
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)

@@ -21,8 +21,8 @@ type SourceCreateRequest struct {
 type SourceListRequest struct {
 	Id         *string                   `json:"-"`
 	Name       *string                   `json:"-"`
-	Archived   *bool                     `json:"-"`
-	ArchivedAt *time.Time                `json:"-"`
+	Disabled   *bool                     `json:"-"`
+	DisabledAt *time.Time                `json:"-"`
 	OrderBy    *SourceListRequestOrderBy `json:"-"`
 	Dir        *SourceListRequestDir     `json:"-"`
 	Limit      *int                      `json:"-"`
