@@ -43,6 +43,6 @@ func (c *ClientOptions) cloneHeader() http.Header {
 	headers := c.HTTPHeader.Clone()
 	headers.Set("X-Fern-Language", "Go")
 	headers.Set("X-Fern-SDK-Name", "github.com/hookdeck/hookdeck-go-sdk")
-	headers.Set("X-Fern-SDK-Version", "v0.0.37")
+	headers.Set("X-Fern-SDK-Version", "v0.0.38")
 	return headers
 }

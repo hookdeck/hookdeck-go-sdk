@@ -44,9 +44,10 @@ type DestinationListRequest struct {
 type DestinationCreateRequestRateLimitPeriod string
 
 const (
-	DestinationCreateRequestRateLimitPeriodSecond DestinationCreateRequestRateLimitPeriod = "second"
-	DestinationCreateRequestRateLimitPeriodMinute DestinationCreateRequestRateLimitPeriod = "minute"
-	DestinationCreateRequestRateLimitPeriodHour   DestinationCreateRequestRateLimitPeriod = "hour"
+	DestinationCreateRequestRateLimitPeriodSecond     DestinationCreateRequestRateLimitPeriod = "second"
+	DestinationCreateRequestRateLimitPeriodMinute     DestinationCreateRequestRateLimitPeriod = "minute"
+	DestinationCreateRequestRateLimitPeriodHour       DestinationCreateRequestRateLimitPeriod = "hour"
+	DestinationCreateRequestRateLimitPeriodConcurrent DestinationCreateRequestRateLimitPeriod = "concurrent"
 )
 
 func NewDestinationCreateRequestRateLimitPeriodFromString(s string) (DestinationCreateRequestRateLimitPeriod, error) {
@@ -57,6 +58,8 @@ func NewDestinationCreateRequestRateLimitPeriodFromString(s string) (Destination
 		return DestinationCreateRequestRateLimitPeriodMinute, nil
 	case "hour":
 		return DestinationCreateRequestRateLimitPeriodHour, nil
+	case "concurrent":
+		return DestinationCreateRequestRateLimitPeriodConcurrent, nil
 	}
 	var t DestinationCreateRequestRateLimitPeriod
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -116,9 +119,10 @@ func (d DestinationListRequestOrderBy) Ptr() *DestinationListRequestOrderBy {
 type DestinationUpdateRequestRateLimitPeriod string
 
 const (
-	DestinationUpdateRequestRateLimitPeriodSecond DestinationUpdateRequestRateLimitPeriod = "second"
-	DestinationUpdateRequestRateLimitPeriodMinute DestinationUpdateRequestRateLimitPeriod = "minute"
-	DestinationUpdateRequestRateLimitPeriodHour   DestinationUpdateRequestRateLimitPeriod = "hour"
+	DestinationUpdateRequestRateLimitPeriodSecond     DestinationUpdateRequestRateLimitPeriod = "second"
+	DestinationUpdateRequestRateLimitPeriodMinute     DestinationUpdateRequestRateLimitPeriod = "minute"
+	DestinationUpdateRequestRateLimitPeriodHour       DestinationUpdateRequestRateLimitPeriod = "hour"
+	DestinationUpdateRequestRateLimitPeriodConcurrent DestinationUpdateRequestRateLimitPeriod = "concurrent"
 )
 
 func NewDestinationUpdateRequestRateLimitPeriodFromString(s string) (DestinationUpdateRequestRateLimitPeriod, error) {
@@ -129,6 +133,8 @@ func NewDestinationUpdateRequestRateLimitPeriodFromString(s string) (Destination
 		return DestinationUpdateRequestRateLimitPeriodMinute, nil
 	case "hour":
 		return DestinationUpdateRequestRateLimitPeriodHour, nil
+	case "concurrent":
+		return DestinationUpdateRequestRateLimitPeriodConcurrent, nil
 	}
 	var t DestinationUpdateRequestRateLimitPeriod
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -142,9 +148,10 @@ func (d DestinationUpdateRequestRateLimitPeriod) Ptr() *DestinationUpdateRequest
 type DestinationUpsertRequestRateLimitPeriod string
 
 const (
-	DestinationUpsertRequestRateLimitPeriodSecond DestinationUpsertRequestRateLimitPeriod = "second"
-	DestinationUpsertRequestRateLimitPeriodMinute DestinationUpsertRequestRateLimitPeriod = "minute"
-	DestinationUpsertRequestRateLimitPeriodHour   DestinationUpsertRequestRateLimitPeriod = "hour"
+	DestinationUpsertRequestRateLimitPeriodSecond     DestinationUpsertRequestRateLimitPeriod = "second"
+	DestinationUpsertRequestRateLimitPeriodMinute     DestinationUpsertRequestRateLimitPeriod = "minute"
+	DestinationUpsertRequestRateLimitPeriodHour       DestinationUpsertRequestRateLimitPeriod = "hour"
+	DestinationUpsertRequestRateLimitPeriodConcurrent DestinationUpsertRequestRateLimitPeriod = "concurrent"
 )
 
 func NewDestinationUpsertRequestRateLimitPeriodFromString(s string) (DestinationUpsertRequestRateLimitPeriod, error) {
@@ -155,6 +162,8 @@ func NewDestinationUpsertRequestRateLimitPeriodFromString(s string) (Destination
 		return DestinationUpsertRequestRateLimitPeriodMinute, nil
 	case "hour":
 		return DestinationUpsertRequestRateLimitPeriodHour, nil
+	case "concurrent":
+		return DestinationUpsertRequestRateLimitPeriodConcurrent, nil
 	}
 	var t DestinationUpsertRequestRateLimitPeriod
 	return "", fmt.Errorf("%s is not a valid %T", s, t)

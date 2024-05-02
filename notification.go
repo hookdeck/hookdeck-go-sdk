@@ -7,7 +7,7 @@ import (
 )
 
 type NotificationUpdateRequest struct {
-	// Enable or disable webhook notifications on the workspace
+	// Enable or disable webhook notifications on the project
 	Enabled *core.Optional[bool] `json:"enabled,omitempty"`
 	// List of topics to send notifications for
 	Topics *core.Optional[[]TopicsValue] `json:"topics,omitempty"`

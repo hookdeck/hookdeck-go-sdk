@@ -9,7 +9,7 @@ import (
 )
 
 type AddCustomHostname struct {
-	// The custom hostname to attach to the workspace
+	// The custom hostname to attach to the project
 	Hostname string `json:"hostname"`
 }
 
@@ -216,6 +216,11 @@ type AuthApiKey struct {
 	Config *DestinationAuthMethodApiKeyConfig `json:"config,omitempty"`
 }
 
+// AWS Signature
+type AuthAwsSignature struct {
+	Config *DestinationAuthMethodAwsSignatureConfig `json:"config,omitempty"`
+}
+
 // Basic Auth
 type AuthBasicAuth struct {
 	Config *DestinationAuthMethodBasicAuthConfig `json:"config,omitempty"`
@@ -254,7 +259,7 @@ type BasicAuthIntegrationConfigs struct {
 type BatchOperation struct {
 	// ID of the bulk retry
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string `json:"team_id"`
 	// Query object to filter records
 	Query *BatchOperationQuery `json:"query,omitempty"`
@@ -350,7 +355,7 @@ func (b *BatchOperationQuery) Accept(visitor BatchOperationQueryVisitor) error {
 type Bookmark struct {
 	// ID of the bookmark
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string `json:"team_id"`
 	// ID of the associated connection
 	WebhookId string `json:"webhook_id"`
@@ -384,7 +389,7 @@ type Connection struct {
 	FullName *string `json:"full_name,omitempty"`
 	// Description of the connection
 	Description *string `json:"description,omitempty"`
-	// ID of the workspace
+	// ID of the project
 	TeamId      string       `json:"team_id"`
 	Destination *Destination `json:"destination,omitempty"`
 	Source      *Source      `json:"source,omitempty"`
@@ -497,7 +502,7 @@ type DeletedIssueTriggerResponse struct {
 type DeliveryIssue struct {
 	// Issue ID
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string      `json:"team_id"`
 	Status IssueStatus `json:"status,omitempty"`
 	// ISO timestamp for when the issue was last opened
@@ -543,7 +548,7 @@ type DeliveryIssueReference struct {
 type DeliveryIssueWithData struct {
 	// Issue ID
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string      `json:"team_id"`
 	Status IssueStatus `json:"status,omitempty"`
 	// ISO timestamp for when the issue was last opened
@@ -575,14 +580,14 @@ type Destination struct {
 	Name string `json:"name"`
 	// Description of the destination
 	Description *string `json:"description,omitempty"`
-	// ID of the workspace
+	// ID of the project
 	TeamId                 string `json:"team_id"`
 	PathForwardingDisabled *bool  `json:"path_forwarding_disabled,omitempty"`
 	// HTTP endpoint of the destination
 	Url *string `json:"url,omitempty"`
 	// Path for the CLI destination
 	CliPath *string `json:"cli_path,omitempty"`
-	// Limit event attempts to receive per period. Max value is workspace plan's max attempts thoughput.
+	// Limit delivery rate of event attempts to receive per period.
 	RateLimit       *int                         `json:"rate_limit,omitempty"`
 	RateLimitPeriod *DestinationRateLimitPeriod  `json:"rate_limit_period,omitempty"`
 	HttpMethod      *DestinationHttpMethod       `json:"http_method,omitempty"`
@@ -628,6 +633,14 @@ func (d DestinationAuthMethodApiKeyConfigTo) Ptr() *DestinationAuthMethodApiKeyC
 	return &d
 }
 
+// AWS Signature config for the destination's auth method
+type DestinationAuthMethodAwsSignatureConfig struct {
+	// AWS access key id
+	AccessKeyId string `json:"access_key_id"`
+	// AWS secret access key
+	SecretAccessKey string `json:"secret_access_key"`
+}
+
 // Basic auth config for the destination's auth method
 type DestinationAuthMethodBasicAuthConfig struct {
 	// Username for basic auth
@@ -652,6 +665,7 @@ type DestinationAuthMethodConfig struct {
 	Oauth2ClientCredentials *AuthOAuth2ClientCredentials
 	Oauth2AuthorizationCode *AuthOAuth2AuthorizationCode
 	CustomSignature         *AuthCustomSignature
+	AwsSignature            *AuthAwsSignature
 }
 
 func NewDestinationAuthMethodConfigFromHookdeckSignature(value *AuthHookdeckSignature) *DestinationAuthMethodConfig {
@@ -680,6 +694,10 @@ func NewDestinationAuthMethodConfigFromOauth2AuthorizationCode(value *AuthOAuth2
 
 func NewDestinationAuthMethodConfigFromCustomSignature(value *AuthCustomSignature) *DestinationAuthMethodConfig {
 	return &DestinationAuthMethodConfig{Type: "CUSTOM_SIGNATURE", CustomSignature: value}
+}
+
+func NewDestinationAuthMethodConfigFromAwsSignature(value *AuthAwsSignature) *DestinationAuthMethodConfig {
+	return &DestinationAuthMethodConfig{Type: "AWS_SIGNATURE", AwsSignature: value}
 }
 
 func (d *DestinationAuthMethodConfig) UnmarshalJSON(data []byte) error {
@@ -733,6 +751,12 @@ func (d *DestinationAuthMethodConfig) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		d.CustomSignature = value
+	case "AWS_SIGNATURE":
+		value := new(AuthAwsSignature)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		d.AwsSignature = value
 	}
 	return nil
 }
@@ -804,6 +828,15 @@ func (d DestinationAuthMethodConfig) MarshalJSON() ([]byte, error) {
 			AuthCustomSignature: d.CustomSignature,
 		}
 		return json.Marshal(marshaler)
+	case "AWS_SIGNATURE":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*AuthAwsSignature
+		}{
+			Type:             d.Type,
+			AuthAwsSignature: d.AwsSignature,
+		}
+		return json.Marshal(marshaler)
 	}
 }
 
@@ -815,6 +848,7 @@ type DestinationAuthMethodConfigVisitor interface {
 	VisitOauth2ClientCredentials(*AuthOAuth2ClientCredentials) error
 	VisitOauth2AuthorizationCode(*AuthOAuth2AuthorizationCode) error
 	VisitCustomSignature(*AuthCustomSignature) error
+	VisitAwsSignature(*AuthAwsSignature) error
 }
 
 func (d *DestinationAuthMethodConfig) Accept(visitor DestinationAuthMethodConfigVisitor) error {
@@ -835,6 +869,8 @@ func (d *DestinationAuthMethodConfig) Accept(visitor DestinationAuthMethodConfig
 		return visitor.VisitOauth2AuthorizationCode(d.Oauth2AuthorizationCode)
 	case "CUSTOM_SIGNATURE":
 		return visitor.VisitCustomSignature(d.CustomSignature)
+	case "AWS_SIGNATURE":
+		return visitor.VisitAwsSignature(d.AwsSignature)
 	}
 }
 
@@ -949,7 +985,7 @@ type DetachedIntegrationFromSource struct {
 type Event struct {
 	// ID of the event
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string `json:"team_id"`
 	// ID of the associated connection
 	WebhookId string `json:"webhook_id"`
@@ -1484,7 +1520,7 @@ type IgnoredEventPaginatedResult struct {
 type Integration struct {
 	// ID of the integration
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string `json:"team_id"`
 	// Label of the integration
 	Label    string              `json:"label"`
@@ -1723,6 +1759,8 @@ const (
 	IntegrationProviderEbay           IntegrationProvider = "EBAY"
 	IntegrationProviderTelnyx         IntegrationProvider = "TELNYX"
 	IntegrationProviderTokenio        IntegrationProvider = "TOKENIO"
+	IntegrationProviderFiserv         IntegrationProvider = "FISERV"
+	IntegrationProviderBondsmith      IntegrationProvider = "BONDSMITH"
 )
 
 func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
@@ -1827,6 +1865,10 @@ func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
 		return IntegrationProviderTelnyx, nil
 	case "TOKENIO":
 		return IntegrationProviderTokenio, nil
+	case "FISERV":
+		return IntegrationProviderFiserv, nil
+	case "BONDSMITH":
+		return IntegrationProviderBondsmith, nil
 	}
 	var t IntegrationProvider
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -1954,7 +1996,7 @@ func (i IssueStatus) Ptr() *IssueStatus {
 type IssueTrigger struct {
 	// ID of the issue trigger
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId *string `json:"team_id,omitempty"`
 	// Optional unique name to use as reference when using the API
 	Name     *string                `json:"name,omitempty"`
@@ -2482,7 +2524,7 @@ type RawBody struct {
 type Request struct {
 	// ID of the request
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string `json:"team_id"`
 	// Whether or not the request was verified when received
 	Verified *bool `json:"verified,omitempty"`
@@ -3110,7 +3152,7 @@ type Source struct {
 	Name string `json:"name"`
 	// Description of the source
 	Description *string `json:"description,omitempty"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string `json:"team_id"`
 	// A unique URL that must be supplied to your webhook's provider
 	Url                string                   `json:"url"`
@@ -3431,7 +3473,7 @@ func (t *TransformRule) Accept(visitor TransformRuleVisitor) error {
 type Transformation struct {
 	// ID of the transformation
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string `json:"team_id"`
 	// A unique, human-friendly name for the transformation
 	Name string `json:"name"`
@@ -3763,7 +3805,7 @@ type TransformationFailedMeta struct {
 type TransformationIssue struct {
 	// Issue ID
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string      `json:"team_id"`
 	Status IssueStatus `json:"status,omitempty"`
 	// ISO timestamp for when the issue was last opened
@@ -3809,7 +3851,7 @@ type TransformationIssueReference struct {
 type TransformationIssueWithData struct {
 	// Issue ID
 	Id string `json:"id"`
-	// ID of the workspace
+	// ID of the project
 	TeamId string      `json:"team_id"`
 	Status IssueStatus `json:"status,omitempty"`
 	// ISO timestamp for when the issue was last opened
@@ -4014,6 +4056,35 @@ func (v VerificationBasicAuthType) Ptr() *VerificationBasicAuthType {
 	return &v
 }
 
+type VerificationBondsmith struct {
+	Type    VerificationBondsmithType     `json:"type,omitempty"`
+	Configs *VerificationBondsmithConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Bondsmith. Only included if the ?include=verification.configs query param is present
+type VerificationBondsmithConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationBondsmithType string
+
+const (
+	VerificationBondsmithTypeBondsmith VerificationBondsmithType = "bondsmith"
+)
+
+func NewVerificationBondsmithTypeFromString(s string) (VerificationBondsmithType, error) {
+	switch s {
+	case "bondsmith":
+		return VerificationBondsmithTypeBondsmith, nil
+	}
+	var t VerificationBondsmithType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationBondsmithType) Ptr() *VerificationBondsmithType {
+	return &v
+}
+
 type VerificationCloudSignal struct {
 	Type    VerificationCloudSignalType     `json:"type,omitempty"`
 	Configs *VerificationCloudSignalConfigs `json:"configs,omitempty"`
@@ -4125,6 +4196,8 @@ type VerificationConfig struct {
 	VerificationEbay              *VerificationEbay
 	VerificationTelnyx            *VerificationTelnyx
 	VerificationTokenIo           *VerificationTokenIo
+	VerificationFiserv            *VerificationFiserv
+	VerificationBondsmith         *VerificationBondsmith
 }
 
 func NewVerificationConfigFromVerificationHmac(value *VerificationHmac) *VerificationConfig {
@@ -4325,6 +4398,14 @@ func NewVerificationConfigFromVerificationTelnyx(value *VerificationTelnyx) *Ver
 
 func NewVerificationConfigFromVerificationTokenIo(value *VerificationTokenIo) *VerificationConfig {
 	return &VerificationConfig{typeName: "verificationTokenIo", VerificationTokenIo: value}
+}
+
+func NewVerificationConfigFromVerificationFiserv(value *VerificationFiserv) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationFiserv", VerificationFiserv: value}
+}
+
+func NewVerificationConfigFromVerificationBondsmith(value *VerificationBondsmith) *VerificationConfig {
+	return &VerificationConfig{typeName: "verificationBondsmith", VerificationBondsmith: value}
 }
 
 func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
@@ -4628,6 +4709,18 @@ func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 		v.VerificationTokenIo = valueVerificationTokenIo
 		return nil
 	}
+	valueVerificationFiserv := new(VerificationFiserv)
+	if err := json.Unmarshal(data, &valueVerificationFiserv); err == nil {
+		v.typeName = "verificationFiserv"
+		v.VerificationFiserv = valueVerificationFiserv
+		return nil
+	}
+	valueVerificationBondsmith := new(VerificationBondsmith)
+	if err := json.Unmarshal(data, &valueVerificationBondsmith); err == nil {
+		v.typeName = "verificationBondsmith"
+		v.VerificationBondsmith = valueVerificationBondsmith
+		return nil
+	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, v)
 }
 
@@ -4735,6 +4828,10 @@ func (v VerificationConfig) MarshalJSON() ([]byte, error) {
 		return json.Marshal(v.VerificationTelnyx)
 	case "verificationTokenIo":
 		return json.Marshal(v.VerificationTokenIo)
+	case "verificationFiserv":
+		return json.Marshal(v.VerificationFiserv)
+	case "verificationBondsmith":
+		return json.Marshal(v.VerificationBondsmith)
 	}
 }
 
@@ -4789,6 +4886,8 @@ type VerificationConfigVisitor interface {
 	VisitVerificationEbay(*VerificationEbay) error
 	VisitVerificationTelnyx(*VerificationTelnyx) error
 	VisitVerificationTokenIo(*VerificationTokenIo) error
+	VisitVerificationFiserv(*VerificationFiserv) error
+	VisitVerificationBondsmith(*VerificationBondsmith) error
 }
 
 func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
@@ -4895,6 +4994,10 @@ func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
 		return visitor.VisitVerificationTelnyx(v.VerificationTelnyx)
 	case "verificationTokenIo":
 		return visitor.VisitVerificationTokenIo(v.VerificationTokenIo)
+	case "verificationFiserv":
+		return visitor.VisitVerificationFiserv(v.VerificationFiserv)
+	case "verificationBondsmith":
+		return visitor.VisitVerificationBondsmith(v.VerificationBondsmith)
 	}
 }
 
@@ -5015,6 +5118,35 @@ func NewVerificationFavroTypeFromString(s string) (VerificationFavroType, error)
 }
 
 func (v VerificationFavroType) Ptr() *VerificationFavroType {
+	return &v
+}
+
+type VerificationFiserv struct {
+	Type    VerificationFiservType     `json:"type,omitempty"`
+	Configs *VerificationFiservConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Fiserv. Only included if the ?include=verification.configs query param is present
+type VerificationFiservConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationFiservType string
+
+const (
+	VerificationFiservTypeFiserv VerificationFiservType = "fiserv"
+)
+
+func NewVerificationFiservTypeFromString(s string) (VerificationFiservType, error) {
+	switch s {
+	case "fiserv":
+		return VerificationFiservTypeFiserv, nil
+	}
+	var t VerificationFiservType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (v VerificationFiservType) Ptr() *VerificationFiservType {
 	return &v
 }
 
@@ -6190,9 +6322,10 @@ func (v VerificationZoomType) Ptr() *VerificationZoomType {
 type ConnectionCreateRequestDestinationRateLimitPeriod string
 
 const (
-	ConnectionCreateRequestDestinationRateLimitPeriodSecond ConnectionCreateRequestDestinationRateLimitPeriod = "second"
-	ConnectionCreateRequestDestinationRateLimitPeriodMinute ConnectionCreateRequestDestinationRateLimitPeriod = "minute"
-	ConnectionCreateRequestDestinationRateLimitPeriodHour   ConnectionCreateRequestDestinationRateLimitPeriod = "hour"
+	ConnectionCreateRequestDestinationRateLimitPeriodSecond     ConnectionCreateRequestDestinationRateLimitPeriod = "second"
+	ConnectionCreateRequestDestinationRateLimitPeriodMinute     ConnectionCreateRequestDestinationRateLimitPeriod = "minute"
+	ConnectionCreateRequestDestinationRateLimitPeriodHour       ConnectionCreateRequestDestinationRateLimitPeriod = "hour"
+	ConnectionCreateRequestDestinationRateLimitPeriodConcurrent ConnectionCreateRequestDestinationRateLimitPeriod = "concurrent"
 )
 
 func NewConnectionCreateRequestDestinationRateLimitPeriodFromString(s string) (ConnectionCreateRequestDestinationRateLimitPeriod, error) {
@@ -6203,6 +6336,8 @@ func NewConnectionCreateRequestDestinationRateLimitPeriodFromString(s string) (C
 		return ConnectionCreateRequestDestinationRateLimitPeriodMinute, nil
 	case "hour":
 		return ConnectionCreateRequestDestinationRateLimitPeriodHour, nil
+	case "concurrent":
+		return ConnectionCreateRequestDestinationRateLimitPeriodConcurrent, nil
 	}
 	var t ConnectionCreateRequestDestinationRateLimitPeriod
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -6216,9 +6351,10 @@ func (c ConnectionCreateRequestDestinationRateLimitPeriod) Ptr() *ConnectionCrea
 type ConnectionUpsertRequestDestinationRateLimitPeriod string
 
 const (
-	ConnectionUpsertRequestDestinationRateLimitPeriodSecond ConnectionUpsertRequestDestinationRateLimitPeriod = "second"
-	ConnectionUpsertRequestDestinationRateLimitPeriodMinute ConnectionUpsertRequestDestinationRateLimitPeriod = "minute"
-	ConnectionUpsertRequestDestinationRateLimitPeriodHour   ConnectionUpsertRequestDestinationRateLimitPeriod = "hour"
+	ConnectionUpsertRequestDestinationRateLimitPeriodSecond     ConnectionUpsertRequestDestinationRateLimitPeriod = "second"
+	ConnectionUpsertRequestDestinationRateLimitPeriodMinute     ConnectionUpsertRequestDestinationRateLimitPeriod = "minute"
+	ConnectionUpsertRequestDestinationRateLimitPeriodHour       ConnectionUpsertRequestDestinationRateLimitPeriod = "hour"
+	ConnectionUpsertRequestDestinationRateLimitPeriodConcurrent ConnectionUpsertRequestDestinationRateLimitPeriod = "concurrent"
 )
 
 func NewConnectionUpsertRequestDestinationRateLimitPeriodFromString(s string) (ConnectionUpsertRequestDestinationRateLimitPeriod, error) {
@@ -6229,6 +6365,8 @@ func NewConnectionUpsertRequestDestinationRateLimitPeriodFromString(s string) (C
 		return ConnectionUpsertRequestDestinationRateLimitPeriodMinute, nil
 	case "hour":
 		return ConnectionUpsertRequestDestinationRateLimitPeriodHour, nil
+	case "concurrent":
+		return ConnectionUpsertRequestDestinationRateLimitPeriodConcurrent, nil
 	}
 	var t ConnectionUpsertRequestDestinationRateLimitPeriod
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
