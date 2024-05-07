@@ -894,31 +894,6 @@ type DestinationAuthMethodOAuth2AuthorizationCodeConfig struct {
 	Scope *string `json:"scope,omitempty"`
 	// URL of the auth server
 	AuthServer string `json:"auth_server"`
-	// Basic (default) or Bearer Authentication
-	AuthenticationType *DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationType `json:"authentication_type,omitempty"`
-}
-
-// Basic (default) or Bearer Authentication
-type DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationType string
-
-const (
-	DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationTypeBasic  DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationType = "basic"
-	DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationTypeBearer DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationType = "bearer"
-)
-
-func NewDestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationTypeFromString(s string) (DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationType, error) {
-	switch s {
-	case "basic":
-		return DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationTypeBasic, nil
-	case "bearer":
-		return DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationTypeBearer, nil
-	}
-	var t DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationType
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (d DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationType) Ptr() *DestinationAuthMethodOAuth2AuthorizationCodeConfigAuthenticationType {
-	return &d
 }
 
 // OAuth2 Client Credentials config for the destination's auth method
@@ -931,6 +906,31 @@ type DestinationAuthMethodOAuth2ClientCredentialsConfig struct {
 	Scope *string `json:"scope,omitempty"`
 	// URL of the auth server
 	AuthServer string `json:"auth_server"`
+	// Basic (default) or Bearer Authentication
+	AuthenticationType *DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType `json:"authentication_type,omitempty"`
+}
+
+// Basic (default) or Bearer Authentication
+type DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType string
+
+const (
+	DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBasic  DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType = "basic"
+	DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBearer DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType = "bearer"
+)
+
+func NewDestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeFromString(s string) (DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType, error) {
+	switch s {
+	case "basic":
+		return DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBasic, nil
+	case "bearer":
+		return DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBearer, nil
+	}
+	var t DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType
+	return "", fmt.Errorf("%s is not a valid %T", s, t)
+}
+
+func (d DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType) Ptr() *DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType {
+	return &d
 }
 
 // Empty config for the destination's auth method
