@@ -244,6 +244,13 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Destin
 				return apiError
 			}
 			return value
+		case 410:
+			value := new(hookdeckgosdk.GoneError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
 		}
 		return apiError
 	}

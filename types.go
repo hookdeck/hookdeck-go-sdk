@@ -450,34 +450,6 @@ func (c ConsoleLineType) Ptr() *ConsoleLineType {
 type DelayRule struct {
 	// Delay to introduce in MS
 	Delay int `json:"delay"`
-	type_ string
-}
-
-func (d *DelayRule) Type() string {
-	return d.type_
-}
-
-func (d *DelayRule) UnmarshalJSON(data []byte) error {
-	type unmarshaler DelayRule
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*d = DelayRule(value)
-	d.type_ = "delay"
-	return nil
-}
-
-func (d *DelayRule) MarshalJSON() ([]byte, error) {
-	type embed DelayRule
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*d),
-		Type:  "delay",
-	}
-	return json.Marshal(marshaler)
 }
 
 type DeleteCustomDomainSchema struct {
@@ -1227,34 +1199,6 @@ type FilterRule struct {
 	Body    *FilterRuleProperty `json:"body,omitempty"`
 	Query   *FilterRuleProperty `json:"query,omitempty"`
 	Path    *FilterRuleProperty `json:"path,omitempty"`
-	type_   string
-}
-
-func (f *FilterRule) Type() string {
-	return f.type_
-}
-
-func (f *FilterRule) UnmarshalJSON(data []byte) error {
-	type unmarshaler FilterRule
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*f = FilterRule(value)
-	f.type_ = "filter"
-	return nil
-}
-
-func (f *FilterRule) MarshalJSON() ([]byte, error) {
-	type embed FilterRule
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*f),
-		Type:  "filter",
-	}
-	return json.Marshal(marshaler)
 }
 
 // JSON using our filter syntax to filter on request headers
@@ -2662,34 +2606,6 @@ type RetryRule struct {
 	Interval *int `json:"interval,omitempty"`
 	// Maximum number of retries to attempt
 	Count *int `json:"count,omitempty"`
-	type_ string
-}
-
-func (r *RetryRule) Type() string {
-	return r.type_
-}
-
-func (r *RetryRule) UnmarshalJSON(data []byte) error {
-	type unmarshaler RetryRule
-	var value unmarshaler
-	if err := json.Unmarshal(data, &value); err != nil {
-		return err
-	}
-	*r = RetryRule(value)
-	r.type_ = "retry"
-	return nil
-}
-
-func (r *RetryRule) MarshalJSON() ([]byte, error) {
-	type embed RetryRule
-	var marshaler = struct {
-		embed
-		Type string `json:"type"`
-	}{
-		embed: embed(*r),
-		Type:  "retry",
-	}
-	return json.Marshal(marshaler)
 }
 
 // Algorithm to use when calculating delay between retries
@@ -2716,91 +2632,130 @@ func (r RetryStrategy) Ptr() *RetryStrategy {
 }
 
 type Rule struct {
-	typeName      string
-	RetryRule     *RetryRule
-	FilterRule    *FilterRule
-	TransformRule *TransformRule
-	DelayRule     *DelayRule
+	Type      string
+	Retry     *RetryRule
+	Filter    *FilterRule
+	Transform *TransformRule
+	Delay     *DelayRule
 }
 
-func NewRuleFromRetryRule(value *RetryRule) *Rule {
-	return &Rule{typeName: "retryRule", RetryRule: value}
+func NewRuleFromRetry(value *RetryRule) *Rule {
+	return &Rule{Type: "retry", Retry: value}
 }
 
-func NewRuleFromFilterRule(value *FilterRule) *Rule {
-	return &Rule{typeName: "filterRule", FilterRule: value}
+func NewRuleFromFilter(value *FilterRule) *Rule {
+	return &Rule{Type: "filter", Filter: value}
 }
 
-func NewRuleFromTransformRule(value *TransformRule) *Rule {
-	return &Rule{typeName: "transformRule", TransformRule: value}
+func NewRuleFromTransform(value *TransformRule) *Rule {
+	return &Rule{Type: "transform", Transform: value}
 }
 
-func NewRuleFromDelayRule(value *DelayRule) *Rule {
-	return &Rule{typeName: "delayRule", DelayRule: value}
+func NewRuleFromDelay(value *DelayRule) *Rule {
+	return &Rule{Type: "delay", Delay: value}
 }
 
 func (r *Rule) UnmarshalJSON(data []byte) error {
-	valueRetryRule := new(RetryRule)
-	if err := json.Unmarshal(data, &valueRetryRule); err == nil {
-		r.typeName = "retryRule"
-		r.RetryRule = valueRetryRule
-		return nil
+	var unmarshaler struct {
+		Type string `json:"type"`
 	}
-	valueFilterRule := new(FilterRule)
-	if err := json.Unmarshal(data, &valueFilterRule); err == nil {
-		r.typeName = "filterRule"
-		r.FilterRule = valueFilterRule
-		return nil
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
 	}
-	valueTransformRule := new(TransformRule)
-	if err := json.Unmarshal(data, &valueTransformRule); err == nil {
-		r.typeName = "transformRule"
-		r.TransformRule = valueTransformRule
-		return nil
+	r.Type = unmarshaler.Type
+	switch unmarshaler.Type {
+	case "retry":
+		value := new(RetryRule)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		r.Retry = value
+	case "filter":
+		value := new(FilterRule)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		r.Filter = value
+	case "transform":
+		var valueUnmarshaler struct {
+			Transform *TransformRule `json:"value,omitempty"`
+		}
+		if err := json.Unmarshal(data, &valueUnmarshaler); err != nil {
+			return err
+		}
+		r.Transform = valueUnmarshaler.Transform
+	case "delay":
+		value := new(DelayRule)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		r.Delay = value
 	}
-	valueDelayRule := new(DelayRule)
-	if err := json.Unmarshal(data, &valueDelayRule); err == nil {
-		r.typeName = "delayRule"
-		r.DelayRule = valueDelayRule
-		return nil
-	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
+	return nil
 }
 
 func (r Rule) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
+	switch r.Type {
 	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "retryRule":
-		return json.Marshal(r.RetryRule)
-	case "filterRule":
-		return json.Marshal(r.FilterRule)
-	case "transformRule":
-		return json.Marshal(r.TransformRule)
-	case "delayRule":
-		return json.Marshal(r.DelayRule)
+		return nil, fmt.Errorf("invalid type %s in %T", r.Type, r)
+	case "retry":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*RetryRule
+		}{
+			Type:      r.Type,
+			RetryRule: r.Retry,
+		}
+		return json.Marshal(marshaler)
+	case "filter":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*FilterRule
+		}{
+			Type:       r.Type,
+			FilterRule: r.Filter,
+		}
+		return json.Marshal(marshaler)
+	case "transform":
+		var marshaler = struct {
+			Type      string         `json:"type"`
+			Transform *TransformRule `json:"value,omitempty"`
+		}{
+			Type:      r.Type,
+			Transform: r.Transform,
+		}
+		return json.Marshal(marshaler)
+	case "delay":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*DelayRule
+		}{
+			Type:      r.Type,
+			DelayRule: r.Delay,
+		}
+		return json.Marshal(marshaler)
 	}
 }
 
 type RuleVisitor interface {
-	VisitRetryRule(*RetryRule) error
-	VisitFilterRule(*FilterRule) error
-	VisitTransformRule(*TransformRule) error
-	VisitDelayRule(*DelayRule) error
+	VisitRetry(*RetryRule) error
+	VisitFilter(*FilterRule) error
+	VisitTransform(*TransformRule) error
+	VisitDelay(*DelayRule) error
 }
 
 func (r *Rule) Accept(visitor RuleVisitor) error {
-	switch r.typeName {
+	switch r.Type {
 	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "retryRule":
-		return visitor.VisitRetryRule(r.RetryRule)
-	case "filterRule":
-		return visitor.VisitFilterRule(r.FilterRule)
-	case "transformRule":
-		return visitor.VisitTransformRule(r.TransformRule)
-	case "delayRule":
-		return visitor.VisitDelayRule(r.DelayRule)
+		return fmt.Errorf("invalid type %s in %T", r.Type, r)
+	case "retry":
+		return visitor.VisitRetry(r.Retry)
+	case "filter":
+		return visitor.VisitFilter(r.Filter)
+	case "transform":
+		return visitor.VisitTransform(r.Transform)
+	case "delay":
+		return visitor.VisitDelay(r.Delay)
 	}
 }
 
@@ -3361,6 +3316,7 @@ func (t TopicsValue) Ptr() *TopicsValue {
 }
 
 type TransformFull struct {
+	// A transformation rule must be of type `transformation`
 	// ID of the attached transformation object. Optional input, always set once the rule is defined
 	TransformationId *string `json:"transformation_id,omitempty"`
 	// You can optionally define a new transformation while creating a transform rule
@@ -3406,6 +3362,7 @@ type TransformFullTransformation struct {
 }
 
 type TransformReference struct {
+	// A transformation rule must be of type `transformation`
 	// ID of the attached transformation object. Optional input, always set once the rule is defined
 	TransformationId string `json:"transformation_id"`
 	type_            string

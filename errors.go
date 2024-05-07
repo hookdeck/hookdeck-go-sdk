@@ -7,6 +7,7 @@ import (
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
 )
 
+// Bad Request
 type BadRequestError struct {
 	*core.APIError
 	Body *ApiErrorResponse
@@ -30,6 +31,31 @@ func (b *BadRequestError) Unwrap() error {
 	return b.APIError
 }
 
+// Gone
+type GoneError struct {
+	*core.APIError
+	Body *ApiErrorResponse
+}
+
+func (g *GoneError) UnmarshalJSON(data []byte) error {
+	var body *ApiErrorResponse
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	g.StatusCode = 410
+	g.Body = body
+	return nil
+}
+
+func (g *GoneError) MarshalJSON() ([]byte, error) {
+	return json.Marshal(g.Body)
+}
+
+func (g *GoneError) Unwrap() error {
+	return g.APIError
+}
+
+// Not Found
 type NotFoundError struct {
 	*core.APIError
 	Body *ApiErrorResponse
@@ -53,6 +79,7 @@ func (n *NotFoundError) Unwrap() error {
 	return n.APIError
 }
 
+// Unprocessable Entity
 type UnprocessableEntityError struct {
 	*core.APIError
 	Body *ApiErrorResponse
