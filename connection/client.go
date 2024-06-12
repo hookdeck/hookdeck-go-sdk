@@ -42,17 +42,17 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.ConnectionList
 	endpointURL := baseURL + "/" + "connections"
 
 	queryParams := make(url.Values)
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
 	if request.Name != nil {
 		queryParams.Add("name", fmt.Sprintf("%v", *request.Name))
 	}
-	if request.DestinationId != nil {
-		queryParams.Add("destination_id", fmt.Sprintf("%v", *request.DestinationId))
+	for _, value := range request.DestinationId {
+		queryParams.Add("destination_id", fmt.Sprintf("%v", *value))
 	}
-	if request.SourceId != nil {
-		queryParams.Add("source_id", fmt.Sprintf("%v", *request.SourceId))
+	for _, value := range request.SourceId {
+		queryParams.Add("source_id", fmt.Sprintf("%v", *value))
 	}
 	if request.Disabled != nil {
 		queryParams.Add("disabled", fmt.Sprintf("%v", *request.Disabled))
@@ -236,11 +236,11 @@ func (c *Client) Count(ctx context.Context, request *hookdeckgosdk.ConnectionCou
 	endpointURL := baseURL + "/" + "connections/count"
 
 	queryParams := make(url.Values)
-	if request.DestinationId != nil {
-		queryParams.Add("destination_id", fmt.Sprintf("%v", *request.DestinationId))
+	for _, value := range request.DestinationId {
+		queryParams.Add("destination_id", fmt.Sprintf("%v", *value))
 	}
-	if request.SourceId != nil {
-		queryParams.Add("source_id", fmt.Sprintf("%v", *request.SourceId))
+	for _, value := range request.SourceId {
+		queryParams.Add("source_id", fmt.Sprintf("%v", *value))
 	}
 	if request.Disabled != nil {
 		queryParams.Add("disabled", fmt.Sprintf("%v", *request.Disabled))

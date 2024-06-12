@@ -17,7 +17,7 @@ type IgnoredEventBulkRetryListRequest struct {
 	CancelledAt       *time.Time                               `json:"-"`
 	CompletedAt       *time.Time                               `json:"-"`
 	CreatedAt         *time.Time                               `json:"-"`
-	Id                *string                                  `json:"-"`
+	Id                []*string                                `json:"-"`
 	QueryPartialMatch *bool                                    `json:"-"`
 	InProgress        *bool                                    `json:"-"`
 	OrderBy           *IgnoredEventBulkRetryListRequestOrderBy `json:"-"`

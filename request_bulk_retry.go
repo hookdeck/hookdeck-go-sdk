@@ -17,7 +17,7 @@ type RequestBulkRetryListRequest struct {
 	CancelledAt       *time.Time                          `json:"-"`
 	CompletedAt       *time.Time                          `json:"-"`
 	CreatedAt         *time.Time                          `json:"-"`
-	Id                *string                             `json:"-"`
+	Id                []*string                           `json:"-"`
 	InProgress        *bool                               `json:"-"`
 	QueryPartialMatch *bool                               `json:"-"`
 	OrderBy           *RequestBulkRetryListRequestOrderBy `json:"-"`

@@ -8,10 +8,10 @@ import (
 )
 
 type RequestListRequest struct {
-	Id             *string                    `json:"-"`
+	Id             []*string                  `json:"-"`
 	Status         *RequestListRequestStatus  `json:"-"`
 	RejectionCause *RequestRejectionCause     `json:"-"`
-	SourceId       *string                    `json:"-"`
+	SourceId       []*string                  `json:"-"`
 	Verified       *bool                      `json:"-"`
 	SearchTerm     *string                    `json:"-"`
 	Headers        *string                    `json:"-"`
@@ -21,7 +21,7 @@ type RequestListRequest struct {
 	IgnoredCount   *int                       `json:"-"`
 	EventsCount    *int                       `json:"-"`
 	IngestedAt     *time.Time                 `json:"-"`
-	BulkRetryId    *string                    `json:"-"`
+	BulkRetryId    []*string                  `json:"-"`
 	Include        *string                    `json:"-"`
 	OrderBy        *RequestListRequestOrderBy `json:"-"`
 	Dir            *RequestListRequestDir     `json:"-"`
@@ -31,11 +31,11 @@ type RequestListRequest struct {
 }
 
 type RequestListEventRequest struct {
-	Id             *string                         `json:"-"`
+	Id             []*string                       `json:"-"`
 	Status         *EventStatus                    `json:"-"`
-	WebhookId      *string                         `json:"-"`
-	DestinationId  *string                         `json:"-"`
-	SourceId       *string                         `json:"-"`
+	WebhookId      []*string                       `json:"-"`
+	DestinationId  []*string                       `json:"-"`
+	SourceId       []*string                       `json:"-"`
 	Attempts       *int                            `json:"-"`
 	ResponseStatus *int                            `json:"-"`
 	SuccessfulAt   *time.Time                      `json:"-"`
@@ -48,10 +48,10 @@ type RequestListEventRequest struct {
 	Body           *string                         `json:"-"`
 	ParsedQuery    *string                         `json:"-"`
 	Path           *string                         `json:"-"`
-	CliUserId      *string                         `json:"-"`
-	IssueId        *string                         `json:"-"`
-	EventDataId    *string                         `json:"-"`
-	BulkRetryId    *string                         `json:"-"`
+	CliUserId      []*string                       `json:"-"`
+	IssueId        []*string                       `json:"-"`
+	EventDataId    []*string                       `json:"-"`
+	BulkRetryId    []*string                       `json:"-"`
 	Include        *string                         `json:"-"`
 	OrderBy        *RequestListEventRequestOrderBy `json:"-"`
 	Dir            *RequestListEventRequestDir     `json:"-"`
@@ -61,7 +61,7 @@ type RequestListEventRequest struct {
 }
 
 type RequestListIgnoredEventRequest struct {
-	Id      *string                                `json:"-"`
+	Id      []*string                              `json:"-"`
 	OrderBy *RequestListIgnoredEventRequestOrderBy `json:"-"`
 	Dir     *RequestListIgnoredEventRequestDir     `json:"-"`
 	Limit   *int                                   `json:"-"`

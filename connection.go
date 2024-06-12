@@ -9,8 +9,8 @@ import (
 )
 
 type ConnectionCountRequest struct {
-	DestinationId *string    `json:"-"`
-	SourceId      *string    `json:"-"`
+	DestinationId []*string  `json:"-"`
+	SourceId      []*string  `json:"-"`
 	Disabled      *bool      `json:"-"`
 	DisabledAt    *time.Time `json:"-"`
 	PausedAt      *time.Time `json:"-"`
@@ -33,10 +33,10 @@ type ConnectionCreateRequest struct {
 }
 
 type ConnectionListRequest struct {
-	Id            *string                       `json:"-"`
+	Id            []*string                     `json:"-"`
 	Name          *string                       `json:"-"`
-	DestinationId *string                       `json:"-"`
-	SourceId      *string                       `json:"-"`
+	DestinationId []*string                     `json:"-"`
+	SourceId      []*string                     `json:"-"`
 	Disabled      *bool                         `json:"-"`
 	DisabledAt    *time.Time                    `json:"-"`
 	FullName      *string                       `json:"-"`

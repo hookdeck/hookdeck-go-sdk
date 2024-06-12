@@ -41,8 +41,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.AttemptListReq
 	endpointURL := baseURL + "/" + "attempts"
 
 	queryParams := make(url.Values)
-	if request.EventId != nil {
-		queryParams.Add("event_id", fmt.Sprintf("%v", *request.EventId))
+	for _, value := range request.EventId {
+		queryParams.Add("event_id", fmt.Sprintf("%v", *value))
 	}
 	if request.OrderBy != nil {
 		queryParams.Add("order_by", fmt.Sprintf("%v", *request.OrderBy))

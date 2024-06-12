@@ -51,8 +51,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.IgnoredEventBu
 	if request.CreatedAt != nil {
 		queryParams.Add("created_at", fmt.Sprintf("%v", request.CreatedAt.Format(time.RFC3339)))
 	}
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
 	if request.QueryPartialMatch != nil {
 		queryParams.Add("query_partial_match", fmt.Sprintf("%v", *request.QueryPartialMatch))

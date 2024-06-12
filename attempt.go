@@ -7,7 +7,7 @@ import (
 )
 
 type AttemptListRequest struct {
-	EventId *string                    `json:"-"`
+	EventId []*string                  `json:"-"`
 	OrderBy *AttemptListRequestOrderBy `json:"-"`
 	Dir     *AttemptListRequestDir     `json:"-"`
 	Limit   *int                       `json:"-"`

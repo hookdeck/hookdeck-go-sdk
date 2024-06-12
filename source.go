@@ -19,7 +19,7 @@ type SourceCreateRequest struct {
 }
 
 type SourceListRequest struct {
-	Id         *string                   `json:"-"`
+	Id         []*string                 `json:"-"`
 	Name       *string                   `json:"-"`
 	Disabled   *bool                     `json:"-"`
 	DisabledAt *time.Time                `json:"-"`

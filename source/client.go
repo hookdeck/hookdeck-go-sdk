@@ -42,8 +42,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.SourceListRequ
 	endpointURL := baseURL + "/" + "sources"
 
 	queryParams := make(url.Values)
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
 	if request.Name != nil {
 		queryParams.Add("name", fmt.Sprintf("%v", *request.Name))

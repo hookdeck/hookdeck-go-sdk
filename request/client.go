@@ -42,8 +42,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.RequestListReq
 	endpointURL := baseURL + "/" + "requests"
 
 	queryParams := make(url.Values)
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
 	if request.Status != nil {
 		queryParams.Add("status", fmt.Sprintf("%v", *request.Status))
@@ -51,8 +51,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.RequestListReq
 	if request.RejectionCause != nil {
 		queryParams.Add("rejection_cause", fmt.Sprintf("%v", *request.RejectionCause))
 	}
-	if request.SourceId != nil {
-		queryParams.Add("source_id", fmt.Sprintf("%v", *request.SourceId))
+	for _, value := range request.SourceId {
+		queryParams.Add("source_id", fmt.Sprintf("%v", *value))
 	}
 	if request.Verified != nil {
 		queryParams.Add("verified", fmt.Sprintf("%v", *request.Verified))
@@ -81,8 +81,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.RequestListReq
 	if request.IngestedAt != nil {
 		queryParams.Add("ingested_at", fmt.Sprintf("%v", request.IngestedAt.Format(time.RFC3339)))
 	}
-	if request.BulkRetryId != nil {
-		queryParams.Add("bulk_retry_id", fmt.Sprintf("%v", *request.BulkRetryId))
+	for _, value := range request.BulkRetryId {
+		queryParams.Add("bulk_retry_id", fmt.Sprintf("%v", *value))
 	}
 	if request.Include != nil {
 		queryParams.Add("include", fmt.Sprintf("%v", *request.Include))
@@ -300,20 +300,20 @@ func (c *Client) ListEvent(ctx context.Context, id string, request *hookdeckgosd
 	endpointURL := fmt.Sprintf(baseURL+"/"+"requests/%v/events", id)
 
 	queryParams := make(url.Values)
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
 	if request.Status != nil {
 		queryParams.Add("status", fmt.Sprintf("%v", *request.Status))
 	}
-	if request.WebhookId != nil {
-		queryParams.Add("webhook_id", fmt.Sprintf("%v", *request.WebhookId))
+	for _, value := range request.WebhookId {
+		queryParams.Add("webhook_id", fmt.Sprintf("%v", *value))
 	}
-	if request.DestinationId != nil {
-		queryParams.Add("destination_id", fmt.Sprintf("%v", *request.DestinationId))
+	for _, value := range request.DestinationId {
+		queryParams.Add("destination_id", fmt.Sprintf("%v", *value))
 	}
-	if request.SourceId != nil {
-		queryParams.Add("source_id", fmt.Sprintf("%v", *request.SourceId))
+	for _, value := range request.SourceId {
+		queryParams.Add("source_id", fmt.Sprintf("%v", *value))
 	}
 	if request.Attempts != nil {
 		queryParams.Add("attempts", fmt.Sprintf("%v", *request.Attempts))
@@ -351,17 +351,17 @@ func (c *Client) ListEvent(ctx context.Context, id string, request *hookdeckgosd
 	if request.Path != nil {
 		queryParams.Add("path", fmt.Sprintf("%v", *request.Path))
 	}
-	if request.CliUserId != nil {
-		queryParams.Add("cli_user_id", fmt.Sprintf("%v", *request.CliUserId))
+	for _, value := range request.CliUserId {
+		queryParams.Add("cli_user_id", fmt.Sprintf("%v", *value))
 	}
-	if request.IssueId != nil {
-		queryParams.Add("issue_id", fmt.Sprintf("%v", *request.IssueId))
+	for _, value := range request.IssueId {
+		queryParams.Add("issue_id", fmt.Sprintf("%v", *value))
 	}
-	if request.EventDataId != nil {
-		queryParams.Add("event_data_id", fmt.Sprintf("%v", *request.EventDataId))
+	for _, value := range request.EventDataId {
+		queryParams.Add("event_data_id", fmt.Sprintf("%v", *value))
 	}
-	if request.BulkRetryId != nil {
-		queryParams.Add("bulk_retry_id", fmt.Sprintf("%v", *request.BulkRetryId))
+	for _, value := range request.BulkRetryId {
+		queryParams.Add("bulk_retry_id", fmt.Sprintf("%v", *value))
 	}
 	if request.Include != nil {
 		queryParams.Add("include", fmt.Sprintf("%v", *request.Include))
@@ -443,8 +443,8 @@ func (c *Client) ListIgnoredEvent(ctx context.Context, id string, request *hookd
 	endpointURL := fmt.Sprintf(baseURL+"/"+"requests/%v/ignored_events", id)
 
 	queryParams := make(url.Values)
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
 	if request.OrderBy != nil {
 		queryParams.Add("order_by", fmt.Sprintf("%v", *request.OrderBy))

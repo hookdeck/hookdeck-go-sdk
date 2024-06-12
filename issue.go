@@ -8,11 +8,11 @@ import (
 )
 
 type IssueCountRequest struct {
-	Id             *string                   `json:"-"`
-	IssueTriggerId *string                   `json:"-"`
+	Id             []*string                 `json:"-"`
+	IssueTriggerId []*string                 `json:"-"`
 	Type           *IssueCountRequestType    `json:"-"`
 	Status         *IssueCountRequestStatus  `json:"-"`
-	MergedWith     *string                   `json:"-"`
+	MergedWith     []*string                 `json:"-"`
 	CreatedAt      *time.Time                `json:"-"`
 	FirstSeenAt    *time.Time                `json:"-"`
 	LastSeenAt     *time.Time                `json:"-"`
@@ -25,11 +25,11 @@ type IssueCountRequest struct {
 }
 
 type IssueListRequest struct {
-	Id             *string                  `json:"-"`
-	IssueTriggerId *string                  `json:"-"`
+	Id             []*string                `json:"-"`
+	IssueTriggerId []*string                `json:"-"`
 	Type           *IssueListRequestType    `json:"-"`
 	Status         *IssueListRequestStatus  `json:"-"`
-	MergedWith     *string                  `json:"-"`
+	MergedWith     []*string                `json:"-"`
 	CreatedAt      *time.Time               `json:"-"`
 	FirstSeenAt    *time.Time               `json:"-"`
 	LastSeenAt     *time.Time               `json:"-"`

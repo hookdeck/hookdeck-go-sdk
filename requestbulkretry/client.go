@@ -51,8 +51,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.RequestBulkRet
 	if request.CreatedAt != nil {
 		queryParams.Add("created_at", fmt.Sprintf("%v", request.CreatedAt.Format(time.RFC3339)))
 	}
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
 	if request.InProgress != nil {
 		queryParams.Add("in_progress", fmt.Sprintf("%v", *request.InProgress))

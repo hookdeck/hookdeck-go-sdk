@@ -42,8 +42,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.DestinationLis
 	endpointURL := baseURL + "/" + "destinations"
 
 	queryParams := make(url.Values)
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
 	if request.Name != nil {
 		queryParams.Add("name", fmt.Sprintf("%v", *request.Name))
@@ -54,8 +54,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.DestinationLis
 	if request.DisabledAt != nil {
 		queryParams.Add("disabled_at", fmt.Sprintf("%v", request.DisabledAt.Format(time.RFC3339)))
 	}
-	if request.Url != nil {
-		queryParams.Add("url", fmt.Sprintf("%v", *request.Url))
+	for _, value := range request.Url {
+		queryParams.Add("url", fmt.Sprintf("%v", *value))
 	}
 	if request.CliPath != nil {
 		queryParams.Add("cli_path", fmt.Sprintf("%v", *request.CliPath))

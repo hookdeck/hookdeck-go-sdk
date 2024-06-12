@@ -8,11 +8,11 @@ import (
 )
 
 type EventListRequest struct {
-	Id             *string                  `json:"-"`
+	Id             []*string                `json:"-"`
 	Status         *EventStatus             `json:"-"`
-	WebhookId      *string                  `json:"-"`
-	DestinationId  *string                  `json:"-"`
-	SourceId       *string                  `json:"-"`
+	WebhookId      []*string                `json:"-"`
+	DestinationId  []*string                `json:"-"`
+	SourceId       []*string                `json:"-"`
 	Attempts       *int                     `json:"-"`
 	ResponseStatus *int                     `json:"-"`
 	SuccessfulAt   *time.Time               `json:"-"`
@@ -25,10 +25,10 @@ type EventListRequest struct {
 	Body           *string                  `json:"-"`
 	ParsedQuery    *string                  `json:"-"`
 	Path           *string                  `json:"-"`
-	CliUserId      *string                  `json:"-"`
-	IssueId        *string                  `json:"-"`
-	EventDataId    *string                  `json:"-"`
-	BulkRetryId    *string                  `json:"-"`
+	CliUserId      []*string                `json:"-"`
+	IssueId        []*string                `json:"-"`
+	EventDataId    []*string                `json:"-"`
+	BulkRetryId    []*string                `json:"-"`
 	Include        *string                  `json:"-"`
 	OrderBy        *EventListRequestOrderBy `json:"-"`
 	Dir            *EventListRequestDir     `json:"-"`

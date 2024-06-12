@@ -27,11 +27,11 @@ type DestinationCreateRequest struct {
 }
 
 type DestinationListRequest struct {
-	Id         *string                        `json:"-"`
+	Id         []*string                      `json:"-"`
 	Name       *string                        `json:"-"`
 	Disabled   *bool                          `json:"-"`
 	DisabledAt *time.Time                     `json:"-"`
-	Url        *string                        `json:"-"`
+	Url        []*string                      `json:"-"`
 	CliPath    *string                        `json:"-"`
 	OrderBy    *DestinationListRequestOrderBy `json:"-"`
 	Dir        *DestinationListRequestDir     `json:"-"`

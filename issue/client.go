@@ -42,11 +42,11 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.IssueListReque
 	endpointURL := baseURL + "/" + "issues"
 
 	queryParams := make(url.Values)
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
-	if request.IssueTriggerId != nil {
-		queryParams.Add("issue_trigger_id", fmt.Sprintf("%v", *request.IssueTriggerId))
+	for _, value := range request.IssueTriggerId {
+		queryParams.Add("issue_trigger_id", fmt.Sprintf("%v", *value))
 	}
 	if request.Type != nil {
 		queryParams.Add("type", fmt.Sprintf("%v", *request.Type))
@@ -54,8 +54,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.IssueListReque
 	if request.Status != nil {
 		queryParams.Add("status", fmt.Sprintf("%v", *request.Status))
 	}
-	if request.MergedWith != nil {
-		queryParams.Add("merged_with", fmt.Sprintf("%v", *request.MergedWith))
+	for _, value := range request.MergedWith {
+		queryParams.Add("merged_with", fmt.Sprintf("%v", *value))
 	}
 	if request.CreatedAt != nil {
 		queryParams.Add("created_at", fmt.Sprintf("%v", request.CreatedAt.Format(time.RFC3339)))
@@ -139,11 +139,11 @@ func (c *Client) Count(ctx context.Context, request *hookdeckgosdk.IssueCountReq
 	endpointURL := baseURL + "/" + "issues/count"
 
 	queryParams := make(url.Values)
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
-	if request.IssueTriggerId != nil {
-		queryParams.Add("issue_trigger_id", fmt.Sprintf("%v", *request.IssueTriggerId))
+	for _, value := range request.IssueTriggerId {
+		queryParams.Add("issue_trigger_id", fmt.Sprintf("%v", *value))
 	}
 	if request.Type != nil {
 		queryParams.Add("type", fmt.Sprintf("%v", *request.Type))
@@ -151,8 +151,8 @@ func (c *Client) Count(ctx context.Context, request *hookdeckgosdk.IssueCountReq
 	if request.Status != nil {
 		queryParams.Add("status", fmt.Sprintf("%v", *request.Status))
 	}
-	if request.MergedWith != nil {
-		queryParams.Add("merged_with", fmt.Sprintf("%v", *request.MergedWith))
+	for _, value := range request.MergedWith {
+		queryParams.Add("merged_with", fmt.Sprintf("%v", *value))
 	}
 	if request.CreatedAt != nil {
 		queryParams.Add("created_at", fmt.Sprintf("%v", request.CreatedAt.Format(time.RFC3339)))

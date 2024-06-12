@@ -20,11 +20,11 @@ type BookmarkCreateRequest struct {
 }
 
 type BookmarkListRequest struct {
-	Id          *string                     `json:"-"`
-	Name        *string                     `json:"-"`
-	WebhookId   *string                     `json:"-"`
-	EventDataId *string                     `json:"-"`
-	Label       *string                     `json:"-"`
+	Id          []*string                   `json:"-"`
+	Name        []*string                   `json:"-"`
+	WebhookId   []*string                   `json:"-"`
+	EventDataId []*string                   `json:"-"`
+	Label       []*string                   `json:"-"`
 	LastUsedAt  *time.Time                  `json:"-"`
 	OrderBy     *BookmarkListRequestOrderBy `json:"-"`
 	Dir         *BookmarkListRequestDir     `json:"-"`

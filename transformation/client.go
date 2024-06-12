@@ -42,8 +42,8 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.Transformation
 	endpointURL := baseURL + "/" + "transformations"
 
 	queryParams := make(url.Values)
-	if request.Id != nil {
-		queryParams.Add("id", fmt.Sprintf("%v", *request.Id))
+	for _, value := range request.Id {
+		queryParams.Add("id", fmt.Sprintf("%v", *value))
 	}
 	if request.Name != nil {
 		queryParams.Add("name", fmt.Sprintf("%v", *request.Name))
@@ -371,11 +371,11 @@ func (c *Client) ListExecution(ctx context.Context, id string, request *hookdeck
 	if request.LogLevel != nil {
 		queryParams.Add("log_level", fmt.Sprintf("%v", *request.LogLevel))
 	}
-	if request.WebhookId != nil {
-		queryParams.Add("webhook_id", fmt.Sprintf("%v", *request.WebhookId))
+	for _, value := range request.WebhookId {
+		queryParams.Add("webhook_id", fmt.Sprintf("%v", *value))
 	}
-	if request.IssueId != nil {
-		queryParams.Add("issue_id", fmt.Sprintf("%v", *request.IssueId))
+	for _, value := range request.IssueId {
+		queryParams.Add("issue_id", fmt.Sprintf("%v", *value))
 	}
 	if request.CreatedAt != nil {
 		queryParams.Add("created_at", fmt.Sprintf("%v", request.CreatedAt.Format(time.RFC3339)))

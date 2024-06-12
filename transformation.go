@@ -18,7 +18,7 @@ type TransformationCreateRequest struct {
 }
 
 type TransformationListRequest struct {
-	Id      *string                           `json:"-"`
+	Id      []*string                         `json:"-"`
 	Name    *string                           `json:"-"`
 	OrderBy *TransformationListRequestOrderBy `json:"-"`
 	Dir     *TransformationListRequestDir     `json:"-"`
@@ -29,8 +29,8 @@ type TransformationListRequest struct {
 
 type TransformationListExecutionRequest struct {
 	LogLevel  *TransformationListExecutionRequestLogLevel `json:"-"`
-	WebhookId *string                                     `json:"-"`
-	IssueId   *string                                     `json:"-"`
+	WebhookId []*string                                   `json:"-"`
+	IssueId   []*string                                   `json:"-"`
 	CreatedAt *time.Time                                  `json:"-"`
 	OrderBy   *TransformationListExecutionRequestOrderBy  `json:"-"`
 	Dir       *TransformationListExecutionRequestDir      `json:"-"`
