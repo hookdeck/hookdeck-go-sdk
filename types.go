@@ -1508,14 +1508,15 @@ type Integration struct {
 
 // Decrypted Key/Value object of the associated configuration for that provider
 type IntegrationConfigs struct {
-	typeName                        string
-	HmacIntegrationConfigs          *HmacIntegrationConfigs
-	ApiKeyIntegrationConfigs        *ApiKeyIntegrationConfigs
-	HandledApiKeyIntegrationConfigs *HandledApiKeyIntegrationConfigs
-	HandledHmacConfigs              *HandledHmacConfigs
-	BasicAuthIntegrationConfigs     *BasicAuthIntegrationConfigs
-	ShopifyIntegrationConfigs       *ShopifyIntegrationConfigs
-	IntegrationConfigsSix           *IntegrationConfigsSix
+	typeName                          string
+	HmacIntegrationConfigs            *HmacIntegrationConfigs
+	ApiKeyIntegrationConfigs          *ApiKeyIntegrationConfigs
+	HandledApiKeyIntegrationConfigs   *HandledApiKeyIntegrationConfigs
+	HandledHmacConfigs                *HandledHmacConfigs
+	BasicAuthIntegrationConfigs       *BasicAuthIntegrationConfigs
+	ShopifyIntegrationConfigs         *ShopifyIntegrationConfigs
+	VercelLogDrainsIntegrationConfigs *VercelLogDrainsIntegrationConfigs
+	IntegrationConfigsSeven           *IntegrationConfigsSeven
 }
 
 func NewIntegrationConfigsFromHmacIntegrationConfigs(value *HmacIntegrationConfigs) *IntegrationConfigs {
@@ -1542,8 +1543,12 @@ func NewIntegrationConfigsFromShopifyIntegrationConfigs(value *ShopifyIntegratio
 	return &IntegrationConfigs{typeName: "shopifyIntegrationConfigs", ShopifyIntegrationConfigs: value}
 }
 
-func NewIntegrationConfigsFromIntegrationConfigsSix(value *IntegrationConfigsSix) *IntegrationConfigs {
-	return &IntegrationConfigs{typeName: "integrationConfigsSix", IntegrationConfigsSix: value}
+func NewIntegrationConfigsFromVercelLogDrainsIntegrationConfigs(value *VercelLogDrainsIntegrationConfigs) *IntegrationConfigs {
+	return &IntegrationConfigs{typeName: "vercelLogDrainsIntegrationConfigs", VercelLogDrainsIntegrationConfigs: value}
+}
+
+func NewIntegrationConfigsFromIntegrationConfigsSeven(value *IntegrationConfigsSeven) *IntegrationConfigs {
+	return &IntegrationConfigs{typeName: "integrationConfigsSeven", IntegrationConfigsSeven: value}
 }
 
 func (i *IntegrationConfigs) UnmarshalJSON(data []byte) error {
@@ -1583,10 +1588,16 @@ func (i *IntegrationConfigs) UnmarshalJSON(data []byte) error {
 		i.ShopifyIntegrationConfigs = valueShopifyIntegrationConfigs
 		return nil
 	}
-	valueIntegrationConfigsSix := new(IntegrationConfigsSix)
-	if err := json.Unmarshal(data, &valueIntegrationConfigsSix); err == nil {
-		i.typeName = "integrationConfigsSix"
-		i.IntegrationConfigsSix = valueIntegrationConfigsSix
+	valueVercelLogDrainsIntegrationConfigs := new(VercelLogDrainsIntegrationConfigs)
+	if err := json.Unmarshal(data, &valueVercelLogDrainsIntegrationConfigs); err == nil {
+		i.typeName = "vercelLogDrainsIntegrationConfigs"
+		i.VercelLogDrainsIntegrationConfigs = valueVercelLogDrainsIntegrationConfigs
+		return nil
+	}
+	valueIntegrationConfigsSeven := new(IntegrationConfigsSeven)
+	if err := json.Unmarshal(data, &valueIntegrationConfigsSeven); err == nil {
+		i.typeName = "integrationConfigsSeven"
+		i.IntegrationConfigsSeven = valueIntegrationConfigsSeven
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, i)
@@ -1608,8 +1619,10 @@ func (i IntegrationConfigs) MarshalJSON() ([]byte, error) {
 		return json.Marshal(i.BasicAuthIntegrationConfigs)
 	case "shopifyIntegrationConfigs":
 		return json.Marshal(i.ShopifyIntegrationConfigs)
-	case "integrationConfigsSix":
-		return json.Marshal(i.IntegrationConfigsSix)
+	case "vercelLogDrainsIntegrationConfigs":
+		return json.Marshal(i.VercelLogDrainsIntegrationConfigs)
+	case "integrationConfigsSeven":
+		return json.Marshal(i.IntegrationConfigsSeven)
 	}
 }
 
@@ -1620,7 +1633,8 @@ type IntegrationConfigsVisitor interface {
 	VisitHandledHmacConfigs(*HandledHmacConfigs) error
 	VisitBasicAuthIntegrationConfigs(*BasicAuthIntegrationConfigs) error
 	VisitShopifyIntegrationConfigs(*ShopifyIntegrationConfigs) error
-	VisitIntegrationConfigsSix(*IntegrationConfigsSix) error
+	VisitVercelLogDrainsIntegrationConfigs(*VercelLogDrainsIntegrationConfigs) error
+	VisitIntegrationConfigsSeven(*IntegrationConfigsSeven) error
 }
 
 func (i *IntegrationConfigs) Accept(visitor IntegrationConfigsVisitor) error {
@@ -1639,12 +1653,14 @@ func (i *IntegrationConfigs) Accept(visitor IntegrationConfigsVisitor) error {
 		return visitor.VisitBasicAuthIntegrationConfigs(i.BasicAuthIntegrationConfigs)
 	case "shopifyIntegrationConfigs":
 		return visitor.VisitShopifyIntegrationConfigs(i.ShopifyIntegrationConfigs)
-	case "integrationConfigsSix":
-		return visitor.VisitIntegrationConfigsSix(i.IntegrationConfigsSix)
+	case "vercelLogDrainsIntegrationConfigs":
+		return visitor.VisitVercelLogDrainsIntegrationConfigs(i.VercelLogDrainsIntegrationConfigs)
+	case "integrationConfigsSeven":
+		return visitor.VisitIntegrationConfigsSeven(i.IntegrationConfigsSeven)
 	}
 }
 
-type IntegrationConfigsSix struct {
+type IntegrationConfigsSeven struct {
 }
 
 type IntegrationFeature string
@@ -1678,58 +1694,64 @@ type IntegrationPaginatedResult struct {
 type IntegrationProvider string
 
 const (
-	IntegrationProviderHmac           IntegrationProvider = "HMAC"
-	IntegrationProviderBasicAuth      IntegrationProvider = "BASIC_AUTH"
-	IntegrationProviderApiKey         IntegrationProvider = "API_KEY"
-	IntegrationProviderCloudsignal    IntegrationProvider = "CLOUDSIGNAL"
-	IntegrationProviderCourier        IntegrationProvider = "COURIER"
-	IntegrationProviderFrontapp       IntegrationProvider = "FRONTAPP"
-	IntegrationProviderTwitter        IntegrationProvider = "TWITTER"
-	IntegrationProviderStripe         IntegrationProvider = "STRIPE"
-	IntegrationProviderRecharge       IntegrationProvider = "RECHARGE"
-	IntegrationProviderTwilio         IntegrationProvider = "TWILIO"
-	IntegrationProviderGithub         IntegrationProvider = "GITHUB"
-	IntegrationProviderShopify        IntegrationProvider = "SHOPIFY"
-	IntegrationProviderPostmark       IntegrationProvider = "POSTMARK"
-	IntegrationProviderTypeform       IntegrationProvider = "TYPEFORM"
-	IntegrationProviderXero           IntegrationProvider = "XERO"
-	IntegrationProviderSvix           IntegrationProvider = "SVIX"
-	IntegrationProviderZoom           IntegrationProvider = "ZOOM"
-	IntegrationProviderAkeneo         IntegrationProvider = "AKENEO"
-	IntegrationProviderAdyen          IntegrationProvider = "ADYEN"
-	IntegrationProviderGitlab         IntegrationProvider = "GITLAB"
-	IntegrationProviderPropertyFinder IntegrationProvider = "PROPERTY-FINDER"
-	IntegrationProviderWoocommerce    IntegrationProvider = "WOOCOMMERCE"
-	IntegrationProviderOura           IntegrationProvider = "OURA"
-	IntegrationProviderCommercelayer  IntegrationProvider = "COMMERCELAYER"
-	IntegrationProviderHubspot        IntegrationProvider = "HUBSPOT"
-	IntegrationProviderMailgun        IntegrationProvider = "MAILGUN"
-	IntegrationProviderPersona        IntegrationProvider = "PERSONA"
-	IntegrationProviderPipedrive      IntegrationProvider = "PIPEDRIVE"
-	IntegrationProviderSendgrid       IntegrationProvider = "SENDGRID"
-	IntegrationProviderWorkos         IntegrationProvider = "WORKOS"
-	IntegrationProviderSynctera       IntegrationProvider = "SYNCTERA"
-	IntegrationProviderAwsSns         IntegrationProvider = "AWS_SNS"
-	IntegrationProviderThreeDEye      IntegrationProvider = "THREE_D_EYE"
-	IntegrationProviderTwitch         IntegrationProvider = "TWITCH"
-	IntegrationProviderEnode          IntegrationProvider = "ENODE"
-	IntegrationProviderFavro          IntegrationProvider = "FAVRO"
-	IntegrationProviderLinear         IntegrationProvider = "LINEAR"
-	IntegrationProviderShopline       IntegrationProvider = "SHOPLINE"
-	IntegrationProviderWix            IntegrationProvider = "WIX"
-	IntegrationProviderNmi            IntegrationProvider = "NMI"
-	IntegrationProviderOrb            IntegrationProvider = "ORB"
-	IntegrationProviderPylon          IntegrationProvider = "PYLON"
-	IntegrationProviderRepay          IntegrationProvider = "REPAY"
-	IntegrationProviderSquare         IntegrationProvider = "SQUARE"
-	IntegrationProviderSolidgate      IntegrationProvider = "SOLIDGATE"
-	IntegrationProviderTrello         IntegrationProvider = "TRELLO"
-	IntegrationProviderSanity         IntegrationProvider = "SANITY"
-	IntegrationProviderEbay           IntegrationProvider = "EBAY"
-	IntegrationProviderTelnyx         IntegrationProvider = "TELNYX"
-	IntegrationProviderTokenio        IntegrationProvider = "TOKENIO"
-	IntegrationProviderFiserv         IntegrationProvider = "FISERV"
-	IntegrationProviderBondsmith      IntegrationProvider = "BONDSMITH"
+	IntegrationProviderHmac            IntegrationProvider = "HMAC"
+	IntegrationProviderBasicAuth       IntegrationProvider = "BASIC_AUTH"
+	IntegrationProviderApiKey          IntegrationProvider = "API_KEY"
+	IntegrationProviderCloudsignal     IntegrationProvider = "CLOUDSIGNAL"
+	IntegrationProviderCourier         IntegrationProvider = "COURIER"
+	IntegrationProviderFrontapp        IntegrationProvider = "FRONTAPP"
+	IntegrationProviderTwitter         IntegrationProvider = "TWITTER"
+	IntegrationProviderStripe          IntegrationProvider = "STRIPE"
+	IntegrationProviderRecharge        IntegrationProvider = "RECHARGE"
+	IntegrationProviderTwilio          IntegrationProvider = "TWILIO"
+	IntegrationProviderGithub          IntegrationProvider = "GITHUB"
+	IntegrationProviderShopify         IntegrationProvider = "SHOPIFY"
+	IntegrationProviderPostmark        IntegrationProvider = "POSTMARK"
+	IntegrationProviderTypeform        IntegrationProvider = "TYPEFORM"
+	IntegrationProviderXero            IntegrationProvider = "XERO"
+	IntegrationProviderSvix            IntegrationProvider = "SVIX"
+	IntegrationProviderZoom            IntegrationProvider = "ZOOM"
+	IntegrationProviderAkeneo          IntegrationProvider = "AKENEO"
+	IntegrationProviderAdyen           IntegrationProvider = "ADYEN"
+	IntegrationProviderGitlab          IntegrationProvider = "GITLAB"
+	IntegrationProviderPropertyFinder  IntegrationProvider = "PROPERTY-FINDER"
+	IntegrationProviderWoocommerce     IntegrationProvider = "WOOCOMMERCE"
+	IntegrationProviderOura            IntegrationProvider = "OURA"
+	IntegrationProviderCommercelayer   IntegrationProvider = "COMMERCELAYER"
+	IntegrationProviderHubspot         IntegrationProvider = "HUBSPOT"
+	IntegrationProviderMailgun         IntegrationProvider = "MAILGUN"
+	IntegrationProviderPersona         IntegrationProvider = "PERSONA"
+	IntegrationProviderPipedrive       IntegrationProvider = "PIPEDRIVE"
+	IntegrationProviderSendgrid        IntegrationProvider = "SENDGRID"
+	IntegrationProviderWorkos          IntegrationProvider = "WORKOS"
+	IntegrationProviderSynctera        IntegrationProvider = "SYNCTERA"
+	IntegrationProviderAwsSns          IntegrationProvider = "AWS_SNS"
+	IntegrationProviderThreeDEye       IntegrationProvider = "THREE_D_EYE"
+	IntegrationProviderTwitch          IntegrationProvider = "TWITCH"
+	IntegrationProviderEnode           IntegrationProvider = "ENODE"
+	IntegrationProviderFavro           IntegrationProvider = "FAVRO"
+	IntegrationProviderLinear          IntegrationProvider = "LINEAR"
+	IntegrationProviderShopline        IntegrationProvider = "SHOPLINE"
+	IntegrationProviderWix             IntegrationProvider = "WIX"
+	IntegrationProviderNmi             IntegrationProvider = "NMI"
+	IntegrationProviderOrb             IntegrationProvider = "ORB"
+	IntegrationProviderPylon           IntegrationProvider = "PYLON"
+	IntegrationProviderRepay           IntegrationProvider = "REPAY"
+	IntegrationProviderSquare          IntegrationProvider = "SQUARE"
+	IntegrationProviderSolidgate       IntegrationProvider = "SOLIDGATE"
+	IntegrationProviderTrello          IntegrationProvider = "TRELLO"
+	IntegrationProviderSanity          IntegrationProvider = "SANITY"
+	IntegrationProviderEbay            IntegrationProvider = "EBAY"
+	IntegrationProviderTelnyx          IntegrationProvider = "TELNYX"
+	IntegrationProviderDiscord         IntegrationProvider = "DISCORD"
+	IntegrationProviderTokenio         IntegrationProvider = "TOKENIO"
+	IntegrationProviderFiserv          IntegrationProvider = "FISERV"
+	IntegrationProviderBondsmith       IntegrationProvider = "BONDSMITH"
+	IntegrationProviderVercelLogDrains IntegrationProvider = "VERCEL_LOG_DRAINS"
+	IntegrationProviderVercel          IntegrationProvider = "VERCEL"
+	IntegrationProviderTebex           IntegrationProvider = "TEBEX"
+	IntegrationProviderSlack           IntegrationProvider = "SLACK"
+	IntegrationProviderRazorpay        IntegrationProvider = "RAZORPAY"
 )
 
 func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
@@ -1832,12 +1854,24 @@ func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
 		return IntegrationProviderEbay, nil
 	case "TELNYX":
 		return IntegrationProviderTelnyx, nil
+	case "DISCORD":
+		return IntegrationProviderDiscord, nil
 	case "TOKENIO":
 		return IntegrationProviderTokenio, nil
 	case "FISERV":
 		return IntegrationProviderFiserv, nil
 	case "BONDSMITH":
 		return IntegrationProviderBondsmith, nil
+	case "VERCEL_LOG_DRAINS":
+		return IntegrationProviderVercelLogDrains, nil
+	case "VERCEL":
+		return IntegrationProviderVercel, nil
+	case "TEBEX":
+		return IntegrationProviderTebex, nil
+	case "SLACK":
+		return IntegrationProviderSlack, nil
+	case "RAZORPAY":
+		return IntegrationProviderRazorpay, nil
 	}
 	var t IntegrationProvider
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -3741,6 +3775,11 @@ type TransformationPaginatedResult struct {
 	Models     []*Transformation `json:"models,omitempty"`
 }
 
+type VercelLogDrainsIntegrationConfigs struct {
+	WebhookSecretKey      *string `json:"webhook_secret_key,omitempty"`
+	VercelLogDrainsSecret string  `json:"vercel_log_drains_secret"`
+}
+
 type Verification3DEye struct {
 	Configs *Verification3DEyeConfigs `json:"configs,omitempty"`
 }
@@ -3825,59 +3864,65 @@ type VerificationCommercelayerConfigs struct {
 
 // The verification configs for the specified verification type
 type VerificationConfig struct {
-	Type           string
-	Hmac           *VerificationHmac
-	BasicAuth      *VerificationBasicAuth
-	ApiKey         *VerificationApiKey
-	Cloudsignal    *VerificationCloudSignal
-	Courier        *VerificationCourier
-	Frontapp       *VerificationFrontApp
-	Twitter        *VerificationTwitter
-	Stripe         *VerificationStripe
-	Recharge       *VerificationRecharge
-	Twilio         *VerificationTwilio
-	Github         *VerificationGitHub
-	Shopify        *VerificationShopify
-	Postmark       *VerificationPostmark
-	Typeform       *VerificationTypeform
-	Xero           *VerificationXero
-	Svix           *VerificationSvix
-	Zoom           *VerificationZoom
-	Akeneo         *VerificationAkeneo
-	Adyen          *VerificationAdyen
-	Gitlab         *VerificationGitLab
-	PropertyFinder *VerificationPropertyFinder
-	Woocommerce    *VerificationWooCommerce
-	Oura           *VerificationOura
-	Commercelayer  *VerificationCommercelayer
-	Hubspot        *VerificationHubspot
-	Mailgun        *VerificationMailgun
-	Persona        *VerificationPersona
-	Pipedrive      *VerificationPipedrive
-	Sendgrid       *VerificationSendGrid
-	Workos         *VerificationWorkOs
-	Synctera       *VerificationSynctera
-	AwsSns         *VerificationAwssns
-	ThreeDEye      *Verification3DEye
-	Twitch         *VerificationTwitch
-	Enode          *VerificationEnode
-	Favro          *VerificationFavro
-	Linear         *VerificationLinear
-	Shopline       *VerificationShopline
-	Wix            *VerificationWix
-	Nmi            *VerificationNmiPaymentGateway
-	Orb            *VerificationOrb
-	Pylon          *VerificationPylon
-	Repay          *VerificationRepay
-	Square         *VerificationSquare
-	Solidgate      *VerificationSolidGate
-	Trello         *VerificationTrello
-	Sanity         *VerificationSanity
-	Ebay           *VerificationEbay
-	Telnyx         *VerificationTelnyx
-	Tokenio        *VerificationTokenIo
-	Fiserv         *VerificationFiserv
-	Bondsmith      *VerificationBondsmith
+	Type            string
+	Hmac            *VerificationHmac
+	BasicAuth       *VerificationBasicAuth
+	ApiKey          *VerificationApiKey
+	Cloudsignal     *VerificationCloudSignal
+	Courier         *VerificationCourier
+	Frontapp        *VerificationFrontApp
+	Twitter         *VerificationTwitter
+	Stripe          *VerificationStripe
+	Recharge        *VerificationRecharge
+	Twilio          *VerificationTwilio
+	Github          *VerificationGitHub
+	Shopify         *VerificationShopify
+	Postmark        *VerificationPostmark
+	Typeform        *VerificationTypeform
+	Xero            *VerificationXero
+	Svix            *VerificationSvix
+	Zoom            *VerificationZoom
+	Akeneo          *VerificationAkeneo
+	Adyen           *VerificationAdyen
+	Gitlab          *VerificationGitLab
+	PropertyFinder  *VerificationPropertyFinder
+	Woocommerce     *VerificationWooCommerce
+	Oura            *VerificationOura
+	Commercelayer   *VerificationCommercelayer
+	Hubspot         *VerificationHubspot
+	Mailgun         *VerificationMailgun
+	Persona         *VerificationPersona
+	Pipedrive       *VerificationPipedrive
+	Sendgrid        *VerificationSendGrid
+	Workos          *VerificationWorkOs
+	Synctera        *VerificationSynctera
+	AwsSns          *VerificationAwssns
+	ThreeDEye       *Verification3DEye
+	Twitch          *VerificationTwitch
+	Enode           *VerificationEnode
+	Favro           *VerificationFavro
+	Linear          *VerificationLinear
+	Shopline        *VerificationShopline
+	Wix             *VerificationWix
+	Nmi             *VerificationNmiPaymentGateway
+	Orb             *VerificationOrb
+	Pylon           *VerificationPylon
+	Repay           *VerificationRepay
+	Square          *VerificationSquare
+	Solidgate       *VerificationSolidGate
+	Trello          *VerificationTrello
+	Sanity          *VerificationSanity
+	Ebay            *VerificationEbay
+	Telnyx          *VerificationTelnyx
+	Discord         *VerificationDiscord
+	Tokenio         *VerificationTokenIo
+	Fiserv          *VerificationFiserv
+	Bondsmith       *VerificationBondsmith
+	VercelLogDrains *VerificationVercelLogDrains
+	Vercel          *VerificationVercel
+	Tebex           *VerificationTebex
+	Slack           *VerificationSlack
+	Razorpay        *VerificationRazorpay
 }
 
 func NewVerificationConfigFromHmac(value *VerificationHmac) *VerificationConfig {
@@ -4076,6 +4121,10 @@ func NewVerificationConfigFromTelnyx(value *VerificationTelnyx) *VerificationCon
 	return &VerificationConfig{Type: "telnyx", Telnyx: value}
 }
 
+func NewVerificationConfigFromDiscord(value *VerificationDiscord) *VerificationConfig {
+	return &VerificationConfig{Type: "discord", Discord: value}
+}
+
 func NewVerificationConfigFromTokenio(value *VerificationTokenIo) *VerificationConfig {
 	return &VerificationConfig{Type: "tokenio", Tokenio: value}
 }
@@ -4086,6 +4135,26 @@ func NewVerificationConfigFromFiserv(value *VerificationFiserv) *VerificationCon
 
 func NewVerificationConfigFromBondsmith(value *VerificationBondsmith) *VerificationConfig {
 	return &VerificationConfig{Type: "bondsmith", Bondsmith: value}
+}
+
+func NewVerificationConfigFromVercelLogDrains(value *VerificationVercelLogDrains) *VerificationConfig {
+	return &VerificationConfig{Type: "vercel_log_drains", VercelLogDrains: value}
+}
+
+func NewVerificationConfigFromVercel(value *VerificationVercel) *VerificationConfig {
+	return &VerificationConfig{Type: "vercel", Vercel: value}
+}
+
+func NewVerificationConfigFromTebex(value *VerificationTebex) *VerificationConfig {
+	return &VerificationConfig{Type: "tebex", Tebex: value}
+}
+
+func NewVerificationConfigFromSlack(value *VerificationSlack) *VerificationConfig {
+	return &VerificationConfig{Type: "slack", Slack: value}
+}
+
+func NewVerificationConfigFromRazorpay(value *VerificationRazorpay) *VerificationConfig {
+	return &VerificationConfig{Type: "razorpay", Razorpay: value}
 }
 
 func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
@@ -4391,6 +4460,12 @@ func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		v.Telnyx = value
+	case "discord":
+		value := new(VerificationDiscord)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Discord = value
 	case "tokenio":
 		value := new(VerificationTokenIo)
 		if err := json.Unmarshal(data, &value); err != nil {
@@ -4409,6 +4484,36 @@ func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		v.Bondsmith = value
+	case "vercel_log_drains":
+		value := new(VerificationVercelLogDrains)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.VercelLogDrains = value
+	case "vercel":
+		value := new(VerificationVercel)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Vercel = value
+	case "tebex":
+		value := new(VerificationTebex)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Tebex = value
+	case "slack":
+		value := new(VerificationSlack)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Slack = value
+	case "razorpay":
+		value := new(VerificationRazorpay)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Razorpay = value
 	}
 	return nil
 }
@@ -4858,6 +4963,15 @@ func (v VerificationConfig) MarshalJSON() ([]byte, error) {
 			VerificationTelnyx: v.Telnyx,
 		}
 		return json.Marshal(marshaler)
+	case "discord":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationDiscord
+		}{
+			Type:                v.Type,
+			VerificationDiscord: v.Discord,
+		}
+		return json.Marshal(marshaler)
 	case "tokenio":
 		var marshaler = struct {
 			Type string `json:"type"`
@@ -4883,6 +4997,51 @@ func (v VerificationConfig) MarshalJSON() ([]byte, error) {
 		}{
 			Type:                  v.Type,
 			VerificationBondsmith: v.Bondsmith,
+		}
+		return json.Marshal(marshaler)
+	case "vercel_log_drains":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationVercelLogDrains
+		}{
+			Type:                        v.Type,
+			VerificationVercelLogDrains: v.VercelLogDrains,
+		}
+		return json.Marshal(marshaler)
+	case "vercel":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationVercel
+		}{
+			Type:               v.Type,
+			VerificationVercel: v.Vercel,
+		}
+		return json.Marshal(marshaler)
+	case "tebex":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationTebex
+		}{
+			Type:              v.Type,
+			VerificationTebex: v.Tebex,
+		}
+		return json.Marshal(marshaler)
+	case "slack":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationSlack
+		}{
+			Type:              v.Type,
+			VerificationSlack: v.Slack,
+		}
+		return json.Marshal(marshaler)
+	case "razorpay":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationRazorpay
+		}{
+			Type:                 v.Type,
+			VerificationRazorpay: v.Razorpay,
 		}
 		return json.Marshal(marshaler)
 	}
@@ -4938,9 +5097,15 @@ type VerificationConfigVisitor interface {
 	VisitSanity(*VerificationSanity) error
 	VisitEbay(*VerificationEbay) error
 	VisitTelnyx(*VerificationTelnyx) error
+	VisitDiscord(*VerificationDiscord) error
 	VisitTokenio(*VerificationTokenIo) error
 	VisitFiserv(*VerificationFiserv) error
 	VisitBondsmith(*VerificationBondsmith) error
+	VisitVercelLogDrains(*VerificationVercelLogDrains) error
+	VisitVercel(*VerificationVercel) error
+	VisitTebex(*VerificationTebex) error
+	VisitSlack(*VerificationSlack) error
+	VisitRazorpay(*VerificationRazorpay) error
 }
 
 func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
@@ -5045,12 +5210,24 @@ func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
 		return visitor.VisitEbay(v.Ebay)
 	case "telnyx":
 		return visitor.VisitTelnyx(v.Telnyx)
+	case "discord":
+		return visitor.VisitDiscord(v.Discord)
 	case "tokenio":
 		return visitor.VisitTokenio(v.Tokenio)
 	case "fiserv":
 		return visitor.VisitFiserv(v.Fiserv)
 	case "bondsmith":
 		return visitor.VisitBondsmith(v.Bondsmith)
+	case "vercel_log_drains":
+		return visitor.VisitVercelLogDrains(v.VercelLogDrains)
+	case "vercel":
+		return visitor.VisitVercel(v.Vercel)
+	case "tebex":
+		return visitor.VisitTebex(v.Tebex)
+	case "slack":
+		return visitor.VisitSlack(v.Slack)
+	case "razorpay":
+		return visitor.VisitRazorpay(v.Razorpay)
 	}
 }
 
@@ -5061,6 +5238,15 @@ type VerificationCourier struct {
 // The verification configs for Courier. Only included if the ?include=verification.configs query param is present
 type VerificationCourierConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationDiscord struct {
+	Configs *VerificationDiscordConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Discord. Only included if the ?include=verification.configs query param is present
+type VerificationDiscordConfigs struct {
+	PublicKey string `json:"public_key"`
 }
 
 type VerificationEbay struct {
@@ -5268,6 +5454,15 @@ type VerificationPylonConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
+type VerificationRazorpay struct {
+	Configs *VerificationRazorpayConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Razorpay. Only included if the ?include=verification.configs query param is present
+type VerificationRazorpayConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
 type VerificationRecharge struct {
 	Configs *VerificationRechargeConfigs `json:"configs,omitempty"`
 }
@@ -5377,6 +5572,15 @@ type VerificationShoplineConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
+type VerificationSlack struct {
+	Configs *VerificationSlackConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Slack. Only included if the ?include=verification.configs query param is present
+type VerificationSlackConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
 type VerificationSolidGate struct {
 	Configs *VerificationSolidGateConfigs `json:"configs,omitempty"`
 }
@@ -5419,6 +5623,15 @@ type VerificationSynctera struct {
 
 // The verification configs for Synctera. Only included if the ?include=verification.configs query param is present
 type VerificationSyncteraConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationTebex struct {
+	Configs *VerificationTebexConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Tebex. Only included if the ?include=verification.configs query param is present
+type VerificationTebexConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
@@ -5483,6 +5696,25 @@ type VerificationTypeform struct {
 // The verification configs for Typeform. Only included if the ?include=verification.configs query param is present
 type VerificationTypeformConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationVercel struct {
+	Configs *VerificationVercelConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Vercel. Only included if the ?include=verification.configs query param is present
+type VerificationVercelConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationVercelLogDrains struct {
+	Configs *VerificationVercelLogDrainsConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Vercel Log Drains. Only included if the ?include=verification.configs query param is present
+type VerificationVercelLogDrainsConfigs struct {
+	WebhookSecretKey      *string `json:"webhook_secret_key,omitempty"`
+	VercelLogDrainsSecret string  `json:"vercel_log_drains_secret"`
 }
 
 type VerificationWix struct {
