@@ -1752,6 +1752,8 @@ const (
 	IntegrationProviderTebex           IntegrationProvider = "TEBEX"
 	IntegrationProviderSlack           IntegrationProvider = "SLACK"
 	IntegrationProviderRazorpay        IntegrationProvider = "RAZORPAY"
+	IntegrationProviderMailchimp       IntegrationProvider = "MAILCHIMP"
+	IntegrationProviderPaddle          IntegrationProvider = "PADDLE"
 )
 
 func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
@@ -1872,6 +1874,10 @@ func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
 		return IntegrationProviderSlack, nil
 	case "RAZORPAY":
 		return IntegrationProviderRazorpay, nil
+	case "MAILCHIMP":
+		return IntegrationProviderMailchimp, nil
+	case "PADDLE":
+		return IntegrationProviderPaddle, nil
 	}
 	var t IntegrationProvider
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -3923,6 +3929,8 @@ type VerificationConfig struct {
 	Tebex           *VerificationTebex
 	Slack           *VerificationSlack
 	Razorpay        *VerificationRazorpay
+	Mailchimp       *VerificationMailchimp
+	Paddle          *VerificationPaddle
 }
 
 func NewVerificationConfigFromHmac(value *VerificationHmac) *VerificationConfig {
@@ -4155,6 +4163,14 @@ func NewVerificationConfigFromSlack(value *VerificationSlack) *VerificationConfi
 
 func NewVerificationConfigFromRazorpay(value *VerificationRazorpay) *VerificationConfig {
 	return &VerificationConfig{Type: "razorpay", Razorpay: value}
+}
+
+func NewVerificationConfigFromMailchimp(value *VerificationMailchimp) *VerificationConfig {
+	return &VerificationConfig{Type: "mailchimp", Mailchimp: value}
+}
+
+func NewVerificationConfigFromPaddle(value *VerificationPaddle) *VerificationConfig {
+	return &VerificationConfig{Type: "paddle", Paddle: value}
 }
 
 func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
@@ -4514,6 +4530,18 @@ func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		v.Razorpay = value
+	case "mailchimp":
+		value := new(VerificationMailchimp)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Mailchimp = value
+	case "paddle":
+		value := new(VerificationPaddle)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Paddle = value
 	}
 	return nil
 }
@@ -5044,6 +5072,24 @@ func (v VerificationConfig) MarshalJSON() ([]byte, error) {
 			VerificationRazorpay: v.Razorpay,
 		}
 		return json.Marshal(marshaler)
+	case "mailchimp":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationMailchimp
+		}{
+			Type:                  v.Type,
+			VerificationMailchimp: v.Mailchimp,
+		}
+		return json.Marshal(marshaler)
+	case "paddle":
+		var marshaler = struct {
+			Type string `json:"type"`
+			*VerificationPaddle
+		}{
+			Type:               v.Type,
+			VerificationPaddle: v.Paddle,
+		}
+		return json.Marshal(marshaler)
 	}
 }
 
@@ -5106,6 +5152,8 @@ type VerificationConfigVisitor interface {
 	VisitTebex(*VerificationTebex) error
 	VisitSlack(*VerificationSlack) error
 	VisitRazorpay(*VerificationRazorpay) error
+	VisitMailchimp(*VerificationMailchimp) error
+	VisitPaddle(*VerificationPaddle) error
 }
 
 func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
@@ -5228,6 +5276,10 @@ func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
 		return visitor.VisitSlack(v.Slack)
 	case "razorpay":
 		return visitor.VisitRazorpay(v.Razorpay)
+	case "mailchimp":
+		return visitor.VisitMailchimp(v.Mailchimp)
+	case "paddle":
+		return visitor.VisitPaddle(v.Paddle)
 	}
 }
 
@@ -5371,6 +5423,15 @@ type VerificationLinearConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
+type VerificationMailchimp struct {
+	Configs *VerificationMailchimpConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Mailchimp. Only included if the ?include=verification.configs query param is present
+type VerificationMailchimpConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
 type VerificationMailgun struct {
 	Configs *VerificationMailgunConfigs `json:"configs,omitempty"`
 }
@@ -5404,6 +5465,15 @@ type VerificationOura struct {
 
 // The verification configs for Oura. Only included if the ?include=verification.configs query param is present
 type VerificationOuraConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key"`
+}
+
+type VerificationPaddle struct {
+	Configs *VerificationPaddleConfigs `json:"configs,omitempty"`
+}
+
+// The verification configs for Paddle. Only included if the ?include=verification.configs query param is present
+type VerificationPaddleConfigs struct {
 	WebhookSecretKey string `json:"webhook_secret_key"`
 }
 
