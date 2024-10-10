@@ -3,89 +3,238 @@
 package api
 
 import (
+	json "encoding/json"
 	fmt "fmt"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
 )
 
 type ConnectionCountRequest struct {
-	DestinationId []*string  `json:"-"`
-	SourceId      []*string  `json:"-"`
-	Disabled      *bool      `json:"-"`
-	DisabledAt    *time.Time `json:"-"`
-	PausedAt      *time.Time `json:"-"`
+	DestinationId []*string  `json:"-" url:"destination_id,omitempty"`
+	SourceId      []*string  `json:"-" url:"source_id,omitempty"`
+	Disabled      *bool      `json:"-" url:"disabled,omitempty"`
+	DisabledAt    *time.Time `json:"-" url:"disabled_at,omitempty"`
+	PausedAt      *time.Time `json:"-" url:"paused_at,omitempty"`
 }
 
 type ConnectionCreateRequest struct {
 	// A unique name of the connection for the source
-	Name *core.Optional[string] `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty" url:"-"`
 	// Description for the connection
-	Description *core.Optional[string] `json:"description,omitempty"`
+	Description *core.Optional[string] `json:"description,omitempty" url:"-"`
 	// ID of a destination to bind to the connection
-	DestinationId *core.Optional[string] `json:"destination_id,omitempty"`
+	DestinationId *core.Optional[string] `json:"destination_id,omitempty" url:"-"`
 	// ID of a source to bind to the connection
-	SourceId *core.Optional[string] `json:"source_id,omitempty"`
+	SourceId *core.Optional[string] `json:"source_id,omitempty" url:"-"`
 	// Destination input object
-	Destination *core.Optional[ConnectionCreateRequestDestination] `json:"destination,omitempty"`
+	Destination *core.Optional[ConnectionCreateRequestDestination] `json:"destination,omitempty" url:"-"`
 	// Source input object
-	Source *core.Optional[ConnectionCreateRequestSource] `json:"source,omitempty"`
-	Rules  *core.Optional[[]*Rule]                       `json:"rules,omitempty"`
+	Source *core.Optional[ConnectionCreateRequestSource] `json:"source,omitempty" url:"-"`
+	Rules  *core.Optional[[]*Rule]                       `json:"rules,omitempty" url:"-"`
 }
 
 type ConnectionListRequest struct {
-	Id            []*string                     `json:"-"`
-	Name          *string                       `json:"-"`
-	DestinationId []*string                     `json:"-"`
-	SourceId      []*string                     `json:"-"`
-	Disabled      *bool                         `json:"-"`
-	DisabledAt    *time.Time                    `json:"-"`
-	FullName      *string                       `json:"-"`
-	PausedAt      *time.Time                    `json:"-"`
-	OrderBy       *ConnectionListRequestOrderBy `json:"-"`
-	Dir           *ConnectionListRequestDir     `json:"-"`
-	Limit         *int                          `json:"-"`
-	Next          *string                       `json:"-"`
-	Prev          *string                       `json:"-"`
+	Id            []*string                     `json:"-" url:"id,omitempty"`
+	Name          *string                       `json:"-" url:"name,omitempty"`
+	DestinationId []*string                     `json:"-" url:"destination_id,omitempty"`
+	SourceId      []*string                     `json:"-" url:"source_id,omitempty"`
+	Disabled      *bool                         `json:"-" url:"disabled,omitempty"`
+	DisabledAt    *time.Time                    `json:"-" url:"disabled_at,omitempty"`
+	FullName      *string                       `json:"-" url:"full_name,omitempty"`
+	PausedAt      *time.Time                    `json:"-" url:"paused_at,omitempty"`
+	OrderBy       *ConnectionListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir           *ConnectionListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit         *int                          `json:"-" url:"limit,omitempty"`
+	Next          *string                       `json:"-" url:"next,omitempty"`
+	Prev          *string                       `json:"-" url:"prev,omitempty"`
 }
 
 type ConnectionCountResponse struct {
 	// Count of connections
-	Count float64 `json:"count"`
+	Count float64 `json:"count" url:"count"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *ConnectionCountResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConnectionCountResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionCountResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionCountResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionCountResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 // Destination input object
 type ConnectionCreateRequestDestination struct {
 	// Name for the destination
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// Description for the destination
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
 	// Endpoint of the destination
-	Url *string `json:"url,omitempty"`
+	Url *string `json:"url,omitempty" url:"url,omitempty"`
 	// Path for the CLI destination
-	CliPath *string `json:"cli_path,omitempty"`
-	// Period to rate limit attempts
-	RateLimitPeriod *ConnectionCreateRequestDestinationRateLimitPeriod `json:"rate_limit_period,omitempty"`
-	// Limit event attempts to receive per period
-	RateLimit              *int                         `json:"rate_limit,omitempty"`
-	HttpMethod             *DestinationHttpMethod       `json:"http_method,omitempty"`
-	AuthMethod             *DestinationAuthMethodConfig `json:"auth_method,omitempty"`
-	PathForwardingDisabled *bool                        `json:"path_forwarding_disabled,omitempty"`
+	CliPath *string `json:"cli_path,omitempty" url:"cli_path,omitempty"`
+	// Limit of events to receive per period. Refered as Delivery Rate limit in the dashboard and documentation.
+	RateLimit *int `json:"rate_limit,omitempty" url:"rate_limit,omitempty"`
+	// Period to rate limit events by. Refered as Delivery Rate period in the dashboard and documentation.
+	RateLimitPeriod        *ConnectionCreateRequestDestinationRateLimitPeriod `json:"rate_limit_period,omitempty" url:"rate_limit_period,omitempty"`
+	HttpMethod             *DestinationHttpMethod                             `json:"http_method,omitempty" url:"http_method,omitempty"`
+	AuthMethod             *DestinationAuthMethodConfig                       `json:"auth_method,omitempty" url:"auth_method,omitempty"`
+	PathForwardingDisabled *bool                                              `json:"path_forwarding_disabled,omitempty" url:"path_forwarding_disabled,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *ConnectionCreateRequestDestination) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConnectionCreateRequestDestination) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionCreateRequestDestination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionCreateRequestDestination(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionCreateRequestDestination) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 // Source input object
 type ConnectionCreateRequestSource struct {
 	// A unique name for the source
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// Description for the source
-	Description        *string                  `json:"description,omitempty"`
-	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty"`
-	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty"`
-	Verification       *VerificationConfig      `json:"verification,omitempty"`
+	Description        *string                  `json:"description,omitempty" url:"description,omitempty"`
+	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty" url:"allowed_http_methods,omitempty"`
+	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty" url:"custom_response,omitempty"`
+	Verification       *VerificationConfig      `json:"verification,omitempty" url:"verification,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *ConnectionCreateRequestSource) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConnectionCreateRequestSource) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionCreateRequestSource
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionCreateRequestSource(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionCreateRequestSource) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectionDeleteResponse struct {
 	// ID of the connection
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *ConnectionDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConnectionDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionDeleteResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionDeleteResponse) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectionListRequestDir string
@@ -147,52 +296,126 @@ func (c ConnectionListRequestOrderBy) Ptr() *ConnectionListRequestOrderBy {
 // Destination input object
 type ConnectionUpsertRequestDestination struct {
 	// Name for the destination
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// Description for the destination
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
 	// Endpoint of the destination
-	Url *string `json:"url,omitempty"`
+	Url *string `json:"url,omitempty" url:"url,omitempty"`
 	// Path for the CLI destination
-	CliPath *string `json:"cli_path,omitempty"`
-	// Period to rate limit attempts
-	RateLimitPeriod *ConnectionUpsertRequestDestinationRateLimitPeriod `json:"rate_limit_period,omitempty"`
-	// Limit event attempts to receive per period
-	RateLimit              *int                         `json:"rate_limit,omitempty"`
-	HttpMethod             *DestinationHttpMethod       `json:"http_method,omitempty"`
-	AuthMethod             *DestinationAuthMethodConfig `json:"auth_method,omitempty"`
-	PathForwardingDisabled *bool                        `json:"path_forwarding_disabled,omitempty"`
+	CliPath *string `json:"cli_path,omitempty" url:"cli_path,omitempty"`
+	// Limit of events to receive per period. Refered as Delivery Rate limit in the dashboard and documentation.
+	RateLimit *int `json:"rate_limit,omitempty" url:"rate_limit,omitempty"`
+	// Period to rate limit events by. Refered as Delivery Rate period in the dashboard and documentation.
+	RateLimitPeriod        *ConnectionUpsertRequestDestinationRateLimitPeriod `json:"rate_limit_period,omitempty" url:"rate_limit_period,omitempty"`
+	HttpMethod             *DestinationHttpMethod                             `json:"http_method,omitempty" url:"http_method,omitempty"`
+	AuthMethod             *DestinationAuthMethodConfig                       `json:"auth_method,omitempty" url:"auth_method,omitempty"`
+	PathForwardingDisabled *bool                                              `json:"path_forwarding_disabled,omitempty" url:"path_forwarding_disabled,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *ConnectionUpsertRequestDestination) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConnectionUpsertRequestDestination) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionUpsertRequestDestination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionUpsertRequestDestination(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionUpsertRequestDestination) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 // Source input object
 type ConnectionUpsertRequestSource struct {
 	// A unique name for the source
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// Description for the source
-	Description        *string                  `json:"description,omitempty"`
-	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty"`
-	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty"`
-	Verification       *VerificationConfig      `json:"verification,omitempty"`
+	Description        *string                  `json:"description,omitempty" url:"description,omitempty"`
+	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty" url:"allowed_http_methods,omitempty"`
+	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty" url:"custom_response,omitempty"`
+	Verification       *VerificationConfig      `json:"verification,omitempty" url:"verification,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *ConnectionUpsertRequestSource) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConnectionUpsertRequestSource) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionUpsertRequestSource
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionUpsertRequestSource(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionUpsertRequestSource) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectionUpdateRequest struct {
-	Name *core.Optional[string] `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty" url:"-"`
 	// Description for the connection
-	Description *core.Optional[string]  `json:"description,omitempty"`
-	Rules       *core.Optional[[]*Rule] `json:"rules,omitempty"`
+	Description *core.Optional[string]  `json:"description,omitempty" url:"-"`
+	Rules       *core.Optional[[]*Rule] `json:"rules,omitempty" url:"-"`
 }
 
 type ConnectionUpsertRequest struct {
 	// A unique name of the connection for the source
-	Name *core.Optional[string] `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty" url:"-"`
 	// Description for the connection
-	Description *core.Optional[string] `json:"description,omitempty"`
+	Description *core.Optional[string] `json:"description,omitempty" url:"-"`
 	// ID of a destination to bind to the connection
-	DestinationId *core.Optional[string] `json:"destination_id,omitempty"`
+	DestinationId *core.Optional[string] `json:"destination_id,omitempty" url:"-"`
 	// ID of a source to bind to the connection
-	SourceId *core.Optional[string] `json:"source_id,omitempty"`
+	SourceId *core.Optional[string] `json:"source_id,omitempty" url:"-"`
 	// Destination input object
-	Destination *core.Optional[ConnectionUpsertRequestDestination] `json:"destination,omitempty"`
+	Destination *core.Optional[ConnectionUpsertRequestDestination] `json:"destination,omitempty" url:"-"`
 	// Source input object
-	Source *core.Optional[ConnectionUpsertRequestSource] `json:"source,omitempty"`
-	Rules  *core.Optional[[]*Rule]                       `json:"rules,omitempty"`
+	Source *core.Optional[ConnectionUpsertRequestSource] `json:"source,omitempty" url:"-"`
+	Rules  *core.Optional[[]*Rule]                       `json:"rules,omitempty" url:"-"`
 }

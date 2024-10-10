@@ -7,71 +7,58 @@ import (
 	context "context"
 	json "encoding/json"
 	errors "errors"
-	fmt "fmt"
 	hookdeckgosdk "github.com/hookdeck/hookdeck-go-sdk"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
+	option "github.com/hookdeck/hookdeck-go-sdk/option"
 	io "io"
 	http "net/http"
-	url "net/url"
-	time "time"
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:    options.BaseURL,
-		httpClient: options.HTTPClient,
-		header:     options.ToHeader(),
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) List(ctx context.Context, request *hookdeckgosdk.SourceListRequest) (*hookdeckgosdk.SourcePaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) List(
+	ctx context.Context,
+	request *hookdeckgosdk.SourceListRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.SourcePaginatedResult, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "sources"
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := baseURL + "/sources"
 
-	queryParams := make(url.Values)
-	for _, value := range request.Id {
-		queryParams.Add("id", fmt.Sprintf("%v", *value))
-	}
-	if request.Name != nil {
-		queryParams.Add("name", fmt.Sprintf("%v", *request.Name))
-	}
-	if request.Disabled != nil {
-		queryParams.Add("disabled", fmt.Sprintf("%v", *request.Disabled))
-	}
-	if request.DisabledAt != nil {
-		queryParams.Add("disabled_at", fmt.Sprintf("%v", request.DisabledAt.Format(time.RFC3339)))
-	}
-	if request.OrderBy != nil {
-		queryParams.Add("order_by", fmt.Sprintf("%v", *request.OrderBy))
-	}
-	if request.Dir != nil {
-		queryParams.Add("dir", fmt.Sprintf("%v", *request.Dir))
-	}
-	if request.Limit != nil {
-		queryParams.Add("limit", fmt.Sprintf("%v", *request.Limit))
-	}
-	if request.Next != nil {
-		queryParams.Add("next", fmt.Sprintf("%v", *request.Next))
-	}
-	if request.Prev != nil {
-		queryParams.Add("prev", fmt.Sprintf("%v", *request.Prev))
+	queryParams, err := core.QueryValues(request)
+	if err != nil {
+		return nil, err
 	}
 	if len(queryParams) > 0 {
 		endpointURL += "?" + queryParams.Encode()
 	}
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -100,28 +87,43 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.SourceListRequ
 	}
 
 	var response *hookdeckgosdk.SourcePaginatedResult
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.SourceCreateRequest) (*hookdeckgosdk.Source, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Create(
+	ctx context.Context,
+	request *hookdeckgosdk.SourceCreateRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Source, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "sources"
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := baseURL + "/sources"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -150,28 +152,44 @@ func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.SourceCreate
 	}
 
 	var response *hookdeckgosdk.Source
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.SourceUpsertRequest) (*hookdeckgosdk.Source, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Upsert(
+	ctx context.Context,
+	request *hookdeckgosdk.SourceUpsertRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Source, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "sources"
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := baseURL + "/sources"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -200,36 +218,52 @@ func (c *Client) Upsert(ctx context.Context, request *hookdeckgosdk.SourceUpsert
 	}
 
 	var response *hookdeckgosdk.Source
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPut,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPut,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Retrieve(ctx context.Context, id string, request *hookdeckgosdk.SourceRetrieveRequest) (*hookdeckgosdk.Source, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Retrieve(
+	ctx context.Context,
+	id string,
+	request *hookdeckgosdk.SourceRetrieveRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Source, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"sources/%v", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/sources/%v", id)
 
-	queryParams := make(url.Values)
-	if request.Include != nil {
-		queryParams.Add("include", fmt.Sprintf("%v", *request.Include))
+	queryParams, err := core.QueryValues(request)
+	if err != nil {
+		return nil, err
 	}
 	if len(queryParams) > 0 {
 		endpointURL += "?" + queryParams.Encode()
 	}
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -258,28 +292,44 @@ func (c *Client) Retrieve(ctx context.Context, id string, request *hookdeckgosdk
 	}
 
 	var response *hookdeckgosdk.Source
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.SourceUpdateRequest) (*hookdeckgosdk.Source, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Update(
+	ctx context.Context,
+	id string,
+	request *hookdeckgosdk.SourceUpdateRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Source, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"sources/%v", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/sources/%v", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -315,28 +365,43 @@ func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.S
 	}
 
 	var response *hookdeckgosdk.Source
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPut,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPut,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.SourceDeleteResponse, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Delete(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.SourceDeleteResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"sources/%v", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/sources/%v", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -358,28 +423,42 @@ func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.SourceDe
 	}
 
 	var response *hookdeckgosdk.SourceDeleteResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodDelete,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodDelete,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Disable(ctx context.Context, id string) (*hookdeckgosdk.Source, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Disable(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Source, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"sources/%v/archive", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/sources/%v/archive", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -401,28 +480,42 @@ func (c *Client) Disable(ctx context.Context, id string) (*hookdeckgosdk.Source,
 	}
 
 	var response *hookdeckgosdk.Source
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPut,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPut,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Enable(ctx context.Context, id string) (*hookdeckgosdk.Source, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Enable(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Source, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"sources/%v/unarchive", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/sources/%v/unarchive", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -444,18 +537,21 @@ func (c *Client) Enable(ctx context.Context, id string) (*hookdeckgosdk.Source, 
 	}
 
 	var response *hookdeckgosdk.Source
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPut,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPut,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }

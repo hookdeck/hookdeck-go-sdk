@@ -6,47 +6,65 @@ import (
 	context "context"
 	hookdeckgosdk "github.com/hookdeck/hookdeck-go-sdk"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
+	option "github.com/hookdeck/hookdeck-go-sdk/option"
 	http "net/http"
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:    options.BaseURL,
-		httpClient: options.HTTPClient,
-		header:     options.ToHeader(),
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) Update(ctx context.Context, request *hookdeckgosdk.NotificationUpdateRequest) (*hookdeckgosdk.ToggleWebhookNotifications, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Update(
+	ctx context.Context,
+	request *hookdeckgosdk.NotificationUpdateRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.ToggleWebhookNotifications, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "notifications/webhooks"
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := baseURL + "/notifications/webhooks"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	var response *hookdeckgosdk.ToggleWebhookNotifications
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPut,
-		request,
-		&response,
-		false,
-		c.header,
-		nil,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPut,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }

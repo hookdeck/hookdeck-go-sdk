@@ -3,6 +3,7 @@
 package api
 
 import (
+	json "encoding/json"
 	fmt "fmt"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
@@ -10,33 +11,70 @@ import (
 
 type SourceCreateRequest struct {
 	// A unique name for the source
-	Name string `json:"name"`
+	Name string `json:"name" url:"-"`
 	// Description for the source
-	Description        *core.Optional[string]                  `json:"description,omitempty"`
-	AllowedHttpMethods *core.Optional[SourceAllowedHttpMethod] `json:"allowed_http_methods,omitempty"`
-	CustomResponse     *core.Optional[SourceCustomResponse]    `json:"custom_response,omitempty"`
-	Verification       *core.Optional[VerificationConfig]      `json:"verification,omitempty"`
+	Description        *core.Optional[string]                  `json:"description,omitempty" url:"-"`
+	AllowedHttpMethods *core.Optional[SourceAllowedHttpMethod] `json:"allowed_http_methods,omitempty" url:"-"`
+	CustomResponse     *core.Optional[SourceCustomResponse]    `json:"custom_response,omitempty" url:"-"`
+	Verification       *core.Optional[VerificationConfig]      `json:"verification,omitempty" url:"-"`
 }
 
 type SourceListRequest struct {
-	Id         []*string                 `json:"-"`
-	Name       *string                   `json:"-"`
-	Disabled   *bool                     `json:"-"`
-	DisabledAt *time.Time                `json:"-"`
-	OrderBy    *SourceListRequestOrderBy `json:"-"`
-	Dir        *SourceListRequestDir     `json:"-"`
-	Limit      *int                      `json:"-"`
-	Next       *string                   `json:"-"`
-	Prev       *string                   `json:"-"`
+	Id         []*string                 `json:"-" url:"id,omitempty"`
+	Name       *string                   `json:"-" url:"name,omitempty"`
+	Disabled   *bool                     `json:"-" url:"disabled,omitempty"`
+	DisabledAt *time.Time                `json:"-" url:"disabled_at,omitempty"`
+	OrderBy    *SourceListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir        *SourceListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit      *int                      `json:"-" url:"limit,omitempty"`
+	Next       *string                   `json:"-" url:"next,omitempty"`
+	Prev       *string                   `json:"-" url:"prev,omitempty"`
 }
 
 type SourceRetrieveRequest struct {
-	Include *string `json:"-"`
+	Include *string `json:"-" url:"include,omitempty"`
 }
 
 type SourceDeleteResponse struct {
 	// ID of the source
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (s *SourceDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *SourceDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SourceDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SourceDeleteResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SourceDeleteResponse) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type SourceListRequestDir string
@@ -82,20 +120,20 @@ func (s SourceListRequestOrderBy) Ptr() *SourceListRequestOrderBy {
 
 type SourceUpdateRequest struct {
 	// A unique name for the source
-	Name *core.Optional[string] `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty" url:"-"`
 	// Description for the source
-	Description        *core.Optional[string]                  `json:"description,omitempty"`
-	AllowedHttpMethods *core.Optional[SourceAllowedHttpMethod] `json:"allowed_http_methods,omitempty"`
-	CustomResponse     *core.Optional[SourceCustomResponse]    `json:"custom_response,omitempty"`
-	Verification       *core.Optional[VerificationConfig]      `json:"verification,omitempty"`
+	Description        *core.Optional[string]                  `json:"description,omitempty" url:"-"`
+	AllowedHttpMethods *core.Optional[SourceAllowedHttpMethod] `json:"allowed_http_methods,omitempty" url:"-"`
+	CustomResponse     *core.Optional[SourceCustomResponse]    `json:"custom_response,omitempty" url:"-"`
+	Verification       *core.Optional[VerificationConfig]      `json:"verification,omitempty" url:"-"`
 }
 
 type SourceUpsertRequest struct {
 	// A unique name for the source
-	Name string `json:"name"`
+	Name string `json:"name" url:"-"`
 	// Description for the source
-	Description        *core.Optional[string]                  `json:"description,omitempty"`
-	AllowedHttpMethods *core.Optional[SourceAllowedHttpMethod] `json:"allowed_http_methods,omitempty"`
-	CustomResponse     *core.Optional[SourceCustomResponse]    `json:"custom_response,omitempty"`
-	Verification       *core.Optional[VerificationConfig]      `json:"verification,omitempty"`
+	Description        *core.Optional[string]                  `json:"description,omitempty" url:"-"`
+	AllowedHttpMethods *core.Optional[SourceAllowedHttpMethod] `json:"allowed_http_methods,omitempty" url:"-"`
+	CustomResponse     *core.Optional[SourceCustomResponse]    `json:"custom_response,omitempty" url:"-"`
+	Verification       *core.Optional[VerificationConfig]      `json:"verification,omitempty" url:"-"`
 }

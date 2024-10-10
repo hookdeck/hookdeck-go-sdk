@@ -7,77 +7,58 @@ import (
 	context "context"
 	json "encoding/json"
 	errors "errors"
-	fmt "fmt"
 	hookdeckgosdk "github.com/hookdeck/hookdeck-go-sdk"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
+	option "github.com/hookdeck/hookdeck-go-sdk/option"
 	io "io"
 	http "net/http"
-	url "net/url"
-	time "time"
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:    options.BaseURL,
-		httpClient: options.HTTPClient,
-		header:     options.ToHeader(),
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) List(ctx context.Context, request *hookdeckgosdk.BookmarkListRequest) (*hookdeckgosdk.BookmarkPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) List(
+	ctx context.Context,
+	request *hookdeckgosdk.BookmarkListRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.BookmarkPaginatedResult, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "bookmarks"
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := baseURL + "/bookmarks"
 
-	queryParams := make(url.Values)
-	for _, value := range request.Id {
-		queryParams.Add("id", fmt.Sprintf("%v", *value))
-	}
-	for _, value := range request.Name {
-		queryParams.Add("name", fmt.Sprintf("%v", *value))
-	}
-	for _, value := range request.WebhookId {
-		queryParams.Add("webhook_id", fmt.Sprintf("%v", *value))
-	}
-	for _, value := range request.EventDataId {
-		queryParams.Add("event_data_id", fmt.Sprintf("%v", *value))
-	}
-	for _, value := range request.Label {
-		queryParams.Add("label", fmt.Sprintf("%v", *value))
-	}
-	if request.LastUsedAt != nil {
-		queryParams.Add("last_used_at", fmt.Sprintf("%v", request.LastUsedAt.Format(time.RFC3339)))
-	}
-	if request.OrderBy != nil {
-		queryParams.Add("order_by", fmt.Sprintf("%v", *request.OrderBy))
-	}
-	if request.Dir != nil {
-		queryParams.Add("dir", fmt.Sprintf("%v", *request.Dir))
-	}
-	if request.Limit != nil {
-		queryParams.Add("limit", fmt.Sprintf("%v", *request.Limit))
-	}
-	if request.Next != nil {
-		queryParams.Add("next", fmt.Sprintf("%v", *request.Next))
-	}
-	if request.Prev != nil {
-		queryParams.Add("prev", fmt.Sprintf("%v", *request.Prev))
+	queryParams, err := core.QueryValues(request)
+	if err != nil {
+		return nil, err
 	}
 	if len(queryParams) > 0 {
 		endpointURL += "?" + queryParams.Encode()
 	}
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -106,28 +87,43 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.BookmarkListRe
 	}
 
 	var response *hookdeckgosdk.BookmarkPaginatedResult
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.BookmarkCreateRequest) (*hookdeckgosdk.Bookmark, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Create(
+	ctx context.Context,
+	request *hookdeckgosdk.BookmarkCreateRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Bookmark, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "bookmarks"
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := baseURL + "/bookmarks"
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -156,28 +152,43 @@ func (c *Client) Create(ctx context.Context, request *hookdeckgosdk.BookmarkCrea
 	}
 
 	var response *hookdeckgosdk.Bookmark
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Bookmark, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Retrieve(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Bookmark, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/bookmarks/%v", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -199,28 +210,44 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Bookma
 	}
 
 	var response *hookdeckgosdk.Bookmark
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.BookmarkUpdateRequest) (*hookdeckgosdk.Bookmark, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Update(
+	ctx context.Context,
+	id string,
+	request *hookdeckgosdk.BookmarkUpdateRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Bookmark, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/bookmarks/%v", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -256,28 +283,43 @@ func (c *Client) Update(ctx context.Context, id string, request *hookdeckgosdk.B
 	}
 
 	var response *hookdeckgosdk.Bookmark
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPut,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPut,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.DeletedBookmarkResponse, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Delete(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.DeletedBookmarkResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/bookmarks/%v", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -299,28 +341,42 @@ func (c *Client) Delete(ctx context.Context, id string) (*hookdeckgosdk.DeletedB
 	}
 
 	var response *hookdeckgosdk.DeletedBookmarkResponse
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodDelete,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodDelete,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) RetrieveBody(ctx context.Context, id string) (*hookdeckgosdk.RawBody, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) RetrieveBody(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.RawBody, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v/raw_body", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/bookmarks/%v/raw_body", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -342,28 +398,44 @@ func (c *Client) RetrieveBody(ctx context.Context, id string) (*hookdeckgosdk.Ra
 	}
 
 	var response *hookdeckgosdk.RawBody
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Trigger(ctx context.Context, id string, request *hookdeckgosdk.BookmarkTriggerRequest) (hookdeckgosdk.EventArray, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Trigger(
+	ctx context.Context,
+	id string,
+	request *hookdeckgosdk.BookmarkTriggerRequest,
+	opts ...option.RequestOption,
+) (hookdeckgosdk.EventArray, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"bookmarks/%v/trigger", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/bookmarks/%v/trigger", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -399,18 +471,22 @@ func (c *Client) Trigger(ctx context.Context, id string, request *hookdeckgosdk.
 	}
 
 	var response hookdeckgosdk.EventArray
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }

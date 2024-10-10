@@ -7,12 +7,12 @@ import (
 )
 
 type AttemptListRequest struct {
-	EventId []*string                  `json:"-"`
-	OrderBy *AttemptListRequestOrderBy `json:"-"`
-	Dir     *AttemptListRequestDir     `json:"-"`
-	Limit   *int                       `json:"-"`
-	Next    *string                    `json:"-"`
-	Prev    *string                    `json:"-"`
+	EventId []*string                  `json:"-" url:"event_id,omitempty"`
+	OrderBy *AttemptListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir     *AttemptListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit   *int                       `json:"-" url:"limit,omitempty"`
+	Next    *string                    `json:"-" url:"next,omitempty"`
+	Prev    *string                    `json:"-" url:"prev,omitempty"`
 }
 
 type AttemptListRequestDir string

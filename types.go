@@ -5,35 +5,220 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
+	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
 )
 
 type AddCustomHostname struct {
 	// The custom hostname to attach to the project
-	Hostname string `json:"hostname"`
+	Hostname string `json:"hostname" url:"hostname"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AddCustomHostname) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AddCustomHostname) UnmarshalJSON(data []byte) error {
+	type unmarshaler AddCustomHostname
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AddCustomHostname(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AddCustomHostname) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 // Error response model
 type ApiErrorResponse struct {
 	// Error code
-	Code string `json:"code"`
+	Code string `json:"code" url:"code"`
 	// Status code
-	Status float64 `json:"status"`
+	Status float64 `json:"status" url:"status"`
 	// Error description
-	Message string                `json:"message"`
-	Data    *ApiErrorResponseData `json:"data,omitempty"`
+	Message string                `json:"message" url:"message"`
+	Data    *ApiErrorResponseData `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *ApiErrorResponse) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *ApiErrorResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApiErrorResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ApiErrorResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ApiErrorResponse) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type ApiErrorResponseData struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *ApiErrorResponseData) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *ApiErrorResponseData) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApiErrorResponseData
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ApiErrorResponseData(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ApiErrorResponseData) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type ApiKeyIntegrationConfigs struct {
-	HeaderKey string `json:"header_key"`
-	ApiKey    string `json:"api_key"`
+	HeaderKey string `json:"header_key" url:"header_key"`
+	ApiKey    string `json:"api_key" url:"api_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *ApiKeyIntegrationConfigs) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *ApiKeyIntegrationConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler ApiKeyIntegrationConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = ApiKeyIntegrationConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *ApiKeyIntegrationConfigs) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type AttachedIntegrationToSource struct {
-	Success bool `json:"success"`
+	Success bool `json:"success" url:"success"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AttachedIntegrationToSource) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AttachedIntegrationToSource) UnmarshalJSON(data []byte) error {
+	type unmarshaler AttachedIntegrationToSource
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AttachedIntegrationToSource(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AttachedIntegrationToSource) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 // Error code of the delivery attempt
@@ -119,57 +304,20 @@ func (a AttemptErrorCodes) Ptr() *AttemptErrorCodes {
 	return &a
 }
 
-type AttemptState string
-
-const (
-	AttemptStateDelivering AttemptState = "DELIVERING"
-	AttemptStateQueued     AttemptState = "QUEUED"
-	AttemptStatePending    AttemptState = "PENDING"
-	AttemptStateCompleted  AttemptState = "COMPLETED"
-	AttemptStateHold       AttemptState = "HOLD"
-)
-
-func NewAttemptStateFromString(s string) (AttemptState, error) {
-	switch s {
-	case "DELIVERING":
-		return AttemptStateDelivering, nil
-	case "QUEUED":
-		return AttemptStateQueued, nil
-	case "PENDING":
-		return AttemptStatePending, nil
-	case "COMPLETED":
-		return AttemptStateCompleted, nil
-	case "HOLD":
-		return AttemptStateHold, nil
-	}
-	var t AttemptState
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
-}
-
-func (a AttemptState) Ptr() *AttemptState {
-	return &a
-}
-
 // Attempt status
 type AttemptStatus string
 
 const (
-	AttemptStatusQueued     AttemptStatus = "QUEUED"
 	AttemptStatusFailed     AttemptStatus = "FAILED"
 	AttemptStatusSuccessful AttemptStatus = "SUCCESSFUL"
-	AttemptStatusHold       AttemptStatus = "HOLD"
 )
 
 func NewAttemptStatusFromString(s string) (AttemptStatus, error) {
 	switch s {
-	case "QUEUED":
-		return AttemptStatusQueued, nil
 	case "FAILED":
 		return AttemptStatusFailed, nil
 	case "SUCCESSFUL":
 		return AttemptStatusSuccessful, nil
-	case "HOLD":
-		return AttemptStatusHold, nil
 	}
 	var t AttemptStatus
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -213,112 +361,546 @@ func (a AttemptTrigger) Ptr() *AttemptTrigger {
 
 // API Key
 type AuthApiKey struct {
-	Config *DestinationAuthMethodApiKeyConfig `json:"config,omitempty"`
+	Config *DestinationAuthMethodApiKeyConfig `json:"config,omitempty" url:"config,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AuthApiKey) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthApiKey) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthApiKey
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthApiKey(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthApiKey) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 // AWS Signature
 type AuthAwsSignature struct {
-	Config *DestinationAuthMethodAwsSignatureConfig `json:"config,omitempty"`
+	Config *DestinationAuthMethodAwsSignatureConfig `json:"config,omitempty" url:"config,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AuthAwsSignature) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthAwsSignature) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthAwsSignature
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthAwsSignature(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthAwsSignature) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 // Basic Auth
 type AuthBasicAuth struct {
-	Config *DestinationAuthMethodBasicAuthConfig `json:"config,omitempty"`
+	Config *DestinationAuthMethodBasicAuthConfig `json:"config,omitempty" url:"config,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AuthBasicAuth) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthBasicAuth) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthBasicAuth
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthBasicAuth(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthBasicAuth) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 // Bearer Token
 type AuthBearerToken struct {
-	Config *DestinationAuthMethodBearerTokenConfig `json:"config,omitempty"`
+	Config *DestinationAuthMethodBearerTokenConfig `json:"config,omitempty" url:"config,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AuthBearerToken) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthBearerToken) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthBearerToken
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthBearerToken(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthBearerToken) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 // Custom Signature
 type AuthCustomSignature struct {
-	Config *DestinationAuthMethodCustomSignatureConfig `json:"config,omitempty"`
+	Config *DestinationAuthMethodCustomSignatureConfig `json:"config,omitempty" url:"config,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AuthCustomSignature) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthCustomSignature) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthCustomSignature
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthCustomSignature(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthCustomSignature) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 // Hookdeck Signature
 type AuthHookdeckSignature struct {
-	Config *DestinationAuthMethodSignatureConfig `json:"config,omitempty"`
+	Config *DestinationAuthMethodSignatureConfig `json:"config,omitempty" url:"config,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AuthHookdeckSignature) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthHookdeckSignature) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthHookdeckSignature
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthHookdeckSignature(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthHookdeckSignature) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 // OAuth2 Authorization Code
 type AuthOAuth2AuthorizationCode struct {
-	Config *DestinationAuthMethodOAuth2AuthorizationCodeConfig `json:"config,omitempty"`
+	Config *DestinationAuthMethodOAuth2AuthorizationCodeConfig `json:"config,omitempty" url:"config,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AuthOAuth2AuthorizationCode) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthOAuth2AuthorizationCode) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthOAuth2AuthorizationCode
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthOAuth2AuthorizationCode(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthOAuth2AuthorizationCode) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 // OAuth2 Client Credentials
 type AuthOAuth2ClientCredentials struct {
-	Config *DestinationAuthMethodOAuth2ClientCredentialsConfig `json:"config,omitempty"`
+	Config *DestinationAuthMethodOAuth2ClientCredentialsConfig `json:"config,omitempty" url:"config,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (a *AuthOAuth2ClientCredentials) GetExtraProperties() map[string]interface{} {
+	return a.extraProperties
+}
+
+func (a *AuthOAuth2ClientCredentials) UnmarshalJSON(data []byte) error {
+	type unmarshaler AuthOAuth2ClientCredentials
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*a = AuthOAuth2ClientCredentials(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *a)
+	if err != nil {
+		return err
+	}
+	a.extraProperties = extraProperties
+
+	a._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (a *AuthOAuth2ClientCredentials) String() string {
+	if len(a._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(a._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(a); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", a)
 }
 
 type BasicAuthIntegrationConfigs struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" url:"username"`
+	Password string `json:"password" url:"password"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (b *BasicAuthIntegrationConfigs) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BasicAuthIntegrationConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler BasicAuthIntegrationConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BasicAuthIntegrationConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+
+	b._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BasicAuthIntegrationConfigs) String() string {
+	if len(b._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
 }
 
 type BatchOperation struct {
 	// ID of the bulk retry
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string `json:"team_id"`
+	TeamId string `json:"team_id" url:"team_id"`
 	// Query object to filter records
-	Query *BatchOperationQuery `json:"query,omitempty"`
+	Query *BatchOperationQuery `json:"query,omitempty" url:"query,omitempty"`
 	// Date the bulk retry was created
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
 	// Last time the bulk retry was updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the bulk retry was cancelled
-	CancelledAt *time.Time `json:"cancelled_at,omitempty"`
+	CancelledAt *time.Time `json:"cancelled_at,omitempty" url:"cancelled_at,omitempty"`
 	// Date the bulk retry was completed
-	CompletedAt *time.Time `json:"completed_at,omitempty"`
+	CompletedAt *time.Time `json:"completed_at,omitempty" url:"completed_at,omitempty"`
 	// Number of batches required to complete the bulk retry
-	EstimatedBatch *int `json:"estimated_batch,omitempty"`
+	EstimatedBatch *int `json:"estimated_batch,omitempty" url:"estimated_batch,omitempty"`
 	// Number of estimated events to be retried
-	EstimatedCount *int `json:"estimated_count,omitempty"`
+	EstimatedCount *int `json:"estimated_count,omitempty" url:"estimated_count,omitempty"`
 	// Number of batches currently processed
-	ProcessedBatch *int `json:"processed_batch,omitempty"`
+	ProcessedBatch *int `json:"processed_batch,omitempty" url:"processed_batch,omitempty"`
 	// Number of events that were successfully delivered
-	CompletedCount *int `json:"completed_count,omitempty"`
+	CompletedCount *int `json:"completed_count,omitempty" url:"completed_count,omitempty"`
 	// Indicates if the bulk retry is currently in progress
-	InProgress bool `json:"in_progress"`
+	InProgress bool `json:"in_progress" url:"in_progress"`
 	// Progression of the batch operations, values 0 - 1
-	Progress *float64 `json:"progress,omitempty"`
+	Progress *float64 `json:"progress,omitempty" url:"progress,omitempty"`
 	// Number of events that failed to be delivered
-	FailedCount *int     `json:"failed_count,omitempty"`
-	Number      *float64 `json:"number,omitempty"`
+	FailedCount *int     `json:"failed_count,omitempty" url:"failed_count,omitempty"`
+	Number      *float64 `json:"number,omitempty" url:"number,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (b *BatchOperation) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BatchOperation) UnmarshalJSON(data []byte) error {
+	type embed BatchOperation
+	var unmarshaler = struct {
+		embed
+		CreatedAt   *core.DateTime `json:"created_at"`
+		UpdatedAt   *core.DateTime `json:"updated_at"`
+		CancelledAt *core.DateTime `json:"cancelled_at,omitempty"`
+		CompletedAt *core.DateTime `json:"completed_at,omitempty"`
+	}{
+		embed: embed(*b),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*b = BatchOperation(unmarshaler.embed)
+	b.CreatedAt = unmarshaler.CreatedAt.Time()
+	b.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	b.CancelledAt = unmarshaler.CancelledAt.TimePtr()
+	b.CompletedAt = unmarshaler.CompletedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+
+	b._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BatchOperation) MarshalJSON() ([]byte, error) {
+	type embed BatchOperation
+	var marshaler = struct {
+		embed
+		CreatedAt   *core.DateTime `json:"created_at"`
+		UpdatedAt   *core.DateTime `json:"updated_at"`
+		CancelledAt *core.DateTime `json:"cancelled_at,omitempty"`
+		CompletedAt *core.DateTime `json:"completed_at,omitempty"`
+	}{
+		embed:       embed(*b),
+		CreatedAt:   core.NewDateTime(b.CreatedAt),
+		UpdatedAt:   core.NewDateTime(b.UpdatedAt),
+		CancelledAt: core.NewOptionalDateTime(b.CancelledAt),
+		CompletedAt: core.NewOptionalDateTime(b.CompletedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (b *BatchOperation) String() string {
+	if len(b._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
 }
 
 type BatchOperationPaginatedResult struct {
-	Pagination *SeekPagination   `json:"pagination,omitempty"`
-	Count      *int              `json:"count,omitempty"`
-	Models     []*BatchOperation `json:"models,omitempty"`
+	Pagination *SeekPagination   `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int              `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*BatchOperation `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (b *BatchOperationPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BatchOperationPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler BatchOperationPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BatchOperationPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+
+	b._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BatchOperationPaginatedResult) String() string {
+	if len(b._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
 }
 
 // Query object to filter records
 type BatchOperationQuery struct {
-	typeName         string
 	StringUnknownMap map[string]interface{}
 	StringOptional   *string
 }
 
 func NewBatchOperationQueryFromStringUnknownMap(value map[string]interface{}) *BatchOperationQuery {
-	return &BatchOperationQuery{typeName: "stringUnknownMap", StringUnknownMap: value}
+	return &BatchOperationQuery{StringUnknownMap: value}
 }
 
 func NewBatchOperationQueryFromStringOptional(value *string) *BatchOperationQuery {
-	return &BatchOperationQuery{typeName: "stringOptional", StringOptional: value}
+	return &BatchOperationQuery{StringOptional: value}
 }
 
 func (b *BatchOperationQuery) UnmarshalJSON(data []byte) error {
 	var valueStringUnknownMap map[string]interface{}
 	if err := json.Unmarshal(data, &valueStringUnknownMap); err == nil {
-		b.typeName = "stringUnknownMap"
 		b.StringUnknownMap = valueStringUnknownMap
 		return nil
 	}
 	var valueStringOptional *string
 	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		b.typeName = "stringOptional"
 		b.StringOptional = valueStringOptional
 		return nil
 	}
@@ -326,14 +908,13 @@ func (b *BatchOperationQuery) UnmarshalJSON(data []byte) error {
 }
 
 func (b BatchOperationQuery) MarshalJSON() ([]byte, error) {
-	switch b.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", b.typeName, b)
-	case "stringUnknownMap":
+	if b.StringUnknownMap != nil {
 		return json.Marshal(b.StringUnknownMap)
-	case "stringOptional":
+	}
+	if b.StringOptional != nil {
 		return json.Marshal(b.StringOptional)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", b)
 }
 
 type BatchOperationQueryVisitor interface {
@@ -342,78 +923,318 @@ type BatchOperationQueryVisitor interface {
 }
 
 func (b *BatchOperationQuery) Accept(visitor BatchOperationQueryVisitor) error {
-	switch b.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", b.typeName, b)
-	case "stringUnknownMap":
+	if b.StringUnknownMap != nil {
 		return visitor.VisitStringUnknownMap(b.StringUnknownMap)
-	case "stringOptional":
+	}
+	if b.StringOptional != nil {
 		return visitor.VisitStringOptional(b.StringOptional)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", b)
 }
 
 type Bookmark struct {
 	// ID of the bookmark
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string `json:"team_id"`
+	TeamId string `json:"team_id" url:"team_id"`
 	// ID of the associated connection
-	WebhookId string `json:"webhook_id"`
+	WebhookId string `json:"webhook_id" url:"webhook_id"`
 	// ID of the bookmarked event data
-	EventDataId string `json:"event_data_id"`
+	EventDataId string `json:"event_data_id" url:"event_data_id"`
 	// Descriptive name of the bookmark
-	Label string `json:"label"`
+	Label string `json:"label" url:"label"`
 	// Alternate alias for the bookmark
-	Alias *string         `json:"alias,omitempty"`
-	Data  *ShortEventData `json:"data,omitempty"`
+	Alias *string         `json:"alias,omitempty" url:"alias,omitempty"`
+	Data  *ShortEventData `json:"data,omitempty" url:"data,omitempty"`
 	// Date the bookmark was last manually triggered
-	LastUsedAt *time.Time `json:"last_used_at,omitempty"`
+	LastUsedAt *time.Time `json:"last_used_at,omitempty" url:"last_used_at,omitempty"`
 	// Date the bookmark was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the bookmark was created
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (b *Bookmark) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *Bookmark) UnmarshalJSON(data []byte) error {
+	type embed Bookmark
+	var unmarshaler = struct {
+		embed
+		LastUsedAt *core.DateTime `json:"last_used_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*b),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*b = Bookmark(unmarshaler.embed)
+	b.LastUsedAt = unmarshaler.LastUsedAt.TimePtr()
+	b.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	b.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+
+	b._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *Bookmark) MarshalJSON() ([]byte, error) {
+	type embed Bookmark
+	var marshaler = struct {
+		embed
+		LastUsedAt *core.DateTime `json:"last_used_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed:      embed(*b),
+		LastUsedAt: core.NewOptionalDateTime(b.LastUsedAt),
+		UpdatedAt:  core.NewDateTime(b.UpdatedAt),
+		CreatedAt:  core.NewDateTime(b.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (b *Bookmark) String() string {
+	if len(b._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
 }
 
 type BookmarkPaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*Bookmark     `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*Bookmark     `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (b *BookmarkPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return b.extraProperties
+}
+
+func (b *BookmarkPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler BookmarkPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*b = BookmarkPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *b)
+	if err != nil {
+		return err
+	}
+	b.extraProperties = extraProperties
+
+	b._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (b *BookmarkPaginatedResult) String() string {
+	if len(b._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(b._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(b); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", b)
 }
 
 type Connection struct {
 	// ID of the connection
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// Unique name of the connection for this source
-	Name *string `json:"name,omitempty"`
+	Name *string `json:"name,omitempty" url:"name,omitempty"`
 	// Full name of the connection concatenated from source, connection and desitnation name
-	FullName *string `json:"full_name,omitempty"`
+	FullName *string `json:"full_name,omitempty" url:"full_name,omitempty"`
 	// Description of the connection
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
 	// ID of the project
-	TeamId      string       `json:"team_id"`
-	Destination *Destination `json:"destination,omitempty"`
-	Source      *Source      `json:"source,omitempty"`
+	TeamId      string       `json:"team_id" url:"team_id"`
+	Destination *Destination `json:"destination,omitempty" url:"destination,omitempty"`
+	Source      *Source      `json:"source,omitempty" url:"source,omitempty"`
 	// Array of rules configured on the connection
-	Rules []*Rule `json:"rules,omitempty"`
+	Rules []*Rule `json:"rules,omitempty" url:"rules,omitempty"`
 	// Date the connection was disabled
-	DisabledAt *time.Time `json:"disabled_at,omitempty"`
+	DisabledAt *time.Time `json:"disabled_at,omitempty" url:"disabled_at,omitempty"`
 	// Date the connection was paused
-	PausedAt *time.Time `json:"paused_at,omitempty"`
+	PausedAt *time.Time `json:"paused_at,omitempty" url:"paused_at,omitempty"`
 	// Date the connection was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the connection was created
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *Connection) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *Connection) UnmarshalJSON(data []byte) error {
+	type embed Connection
+	var unmarshaler = struct {
+		embed
+		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
+		PausedAt   *core.DateTime `json:"paused_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*c),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*c = Connection(unmarshaler.embed)
+	c.DisabledAt = unmarshaler.DisabledAt.TimePtr()
+	c.PausedAt = unmarshaler.PausedAt.TimePtr()
+	c.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	c.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *Connection) MarshalJSON() ([]byte, error) {
+	type embed Connection
+	var marshaler = struct {
+		embed
+		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
+		PausedAt   *core.DateTime `json:"paused_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed:      embed(*c),
+		DisabledAt: core.NewOptionalDateTime(c.DisabledAt),
+		PausedAt:   core.NewOptionalDateTime(c.PausedAt),
+		UpdatedAt:  core.NewDateTime(c.UpdatedAt),
+		CreatedAt:  core.NewDateTime(c.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (c *Connection) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConnectionPaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*Connection   `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*Connection   `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *ConnectionPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConnectionPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConnectionPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConnectionPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConnectionPaginatedResult) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConsoleLine struct {
-	Type    ConsoleLineType `json:"type,omitempty"`
-	Message string          `json:"message"`
+	Type    ConsoleLineType `json:"type" url:"type"`
+	Message string          `json:"message" url:"message"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (c *ConsoleLine) GetExtraProperties() map[string]interface{} {
+	return c.extraProperties
+}
+
+func (c *ConsoleLine) UnmarshalJSON(data []byte) error {
+	type unmarshaler ConsoleLine
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*c = ConsoleLine(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *c)
+	if err != nil {
+		return err
+	}
+	c.extraProperties = extraProperties
+
+	c._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (c *ConsoleLine) String() string {
+	if len(c._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(c._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(c); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", c)
 }
 
 type ConsoleLineType string
@@ -449,137 +1270,675 @@ func (c ConsoleLineType) Ptr() *ConsoleLineType {
 
 type DelayRule struct {
 	// Delay to introduce in MS
-	Delay int `json:"delay"`
+	Delay int `json:"delay" url:"delay"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DelayRule) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DelayRule) UnmarshalJSON(data []byte) error {
+	type unmarshaler DelayRule
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DelayRule(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DelayRule) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DeleteCustomDomainSchema struct {
 	// The custom hostname ID
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DeleteCustomDomainSchema) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeleteCustomDomainSchema) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeleteCustomDomainSchema
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeleteCustomDomainSchema(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeleteCustomDomainSchema) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DeletedBookmarkResponse struct {
 	// Bookmark ID
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DeletedBookmarkResponse) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeletedBookmarkResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeletedBookmarkResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeletedBookmarkResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeletedBookmarkResponse) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DeletedIntegration struct {
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DeletedIntegration) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeletedIntegration) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeletedIntegration
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeletedIntegration(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeletedIntegration) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type DeletedIssueTriggerResponse struct {
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DeletedIssueTriggerResponse) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeletedIssueTriggerResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeletedIssueTriggerResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeletedIssueTriggerResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeletedIssueTriggerResponse) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Delivery issue
 type DeliveryIssue struct {
 	// Issue ID
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string      `json:"team_id"`
-	Status IssueStatus `json:"status,omitempty"`
+	TeamId string      `json:"team_id" url:"team_id"`
+	Status IssueStatus `json:"status" url:"status"`
 	// ISO timestamp for when the issue was last opened
-	OpenedAt time.Time `json:"opened_at"`
+	OpenedAt time.Time `json:"opened_at" url:"opened_at"`
 	// ISO timestamp for when the issue was first opened
-	FirstSeenAt time.Time `json:"first_seen_at"`
+	FirstSeenAt time.Time `json:"first_seen_at" url:"first_seen_at"`
 	// ISO timestamp for when the issue last occured
-	LastSeenAt time.Time `json:"last_seen_at"`
+	LastSeenAt time.Time `json:"last_seen_at" url:"last_seen_at"`
 	// Deprecated, will always be set to null
-	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
+	LastUpdatedBy *string `json:"last_updated_by,omitempty" url:"last_updated_by,omitempty"`
 	// ISO timestamp for when the issue was dismissed
-	DismissedAt    *time.Time `json:"dismissed_at,omitempty"`
-	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty"`
-	MergedWith     *string    `json:"merged_with,omitempty"`
+	DismissedAt    *time.Time `json:"dismissed_at,omitempty" url:"dismissed_at,omitempty"`
+	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty" url:"auto_resolved_at,omitempty"`
+	MergedWith     *string    `json:"merged_with,omitempty" url:"merged_with,omitempty"`
 	// ISO timestamp for when the issue was last updated
-	UpdatedAt string `json:"updated_at"`
+	UpdatedAt string `json:"updated_at" url:"updated_at"`
 	// ISO timestamp for when the issue was created
-	CreatedAt       string                        `json:"created_at"`
-	AggregationKeys *DeliveryIssueAggregationKeys `json:"aggregation_keys,omitempty"`
-	Reference       *DeliveryIssueReference       `json:"reference,omitempty"`
+	CreatedAt       string                        `json:"created_at" url:"created_at"`
+	AggregationKeys *DeliveryIssueAggregationKeys `json:"aggregation_keys,omitempty" url:"aggregation_keys,omitempty"`
+	Reference       *DeliveryIssueReference       `json:"reference,omitempty" url:"reference,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DeliveryIssue) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeliveryIssue) UnmarshalJSON(data []byte) error {
+	type embed DeliveryIssue
+	var unmarshaler = struct {
+		embed
+		OpenedAt       *core.DateTime `json:"opened_at"`
+		FirstSeenAt    *core.DateTime `json:"first_seen_at"`
+		LastSeenAt     *core.DateTime `json:"last_seen_at"`
+		DismissedAt    *core.DateTime `json:"dismissed_at,omitempty"`
+		AutoResolvedAt *core.DateTime `json:"auto_resolved_at,omitempty"`
+	}{
+		embed: embed(*d),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*d = DeliveryIssue(unmarshaler.embed)
+	d.OpenedAt = unmarshaler.OpenedAt.Time()
+	d.FirstSeenAt = unmarshaler.FirstSeenAt.Time()
+	d.LastSeenAt = unmarshaler.LastSeenAt.Time()
+	d.DismissedAt = unmarshaler.DismissedAt.TimePtr()
+	d.AutoResolvedAt = unmarshaler.AutoResolvedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeliveryIssue) MarshalJSON() ([]byte, error) {
+	type embed DeliveryIssue
+	var marshaler = struct {
+		embed
+		OpenedAt       *core.DateTime `json:"opened_at"`
+		FirstSeenAt    *core.DateTime `json:"first_seen_at"`
+		LastSeenAt     *core.DateTime `json:"last_seen_at"`
+		DismissedAt    *core.DateTime `json:"dismissed_at,omitempty"`
+		AutoResolvedAt *core.DateTime `json:"auto_resolved_at,omitempty"`
+	}{
+		embed:          embed(*d),
+		OpenedAt:       core.NewDateTime(d.OpenedAt),
+		FirstSeenAt:    core.NewDateTime(d.FirstSeenAt),
+		LastSeenAt:     core.NewDateTime(d.LastSeenAt),
+		DismissedAt:    core.NewOptionalDateTime(d.DismissedAt),
+		AutoResolvedAt: core.NewOptionalDateTime(d.AutoResolvedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (d *DeliveryIssue) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Keys used as the aggregation keys a 'delivery' type issue
 type DeliveryIssueAggregationKeys struct {
-	WebhookId      []string            `json:"webhook_id,omitempty"`
-	ResponseStatus []float64           `json:"response_status,omitempty"`
-	ErrorCode      []AttemptErrorCodes `json:"error_code,omitempty"`
+	WebhookId      []string            `json:"webhook_id,omitempty" url:"webhook_id,omitempty"`
+	ResponseStatus []float64           `json:"response_status,omitempty" url:"response_status,omitempty"`
+	ErrorCode      []AttemptErrorCodes `json:"error_code,omitempty" url:"error_code,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DeliveryIssueAggregationKeys) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeliveryIssueAggregationKeys) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeliveryIssueAggregationKeys
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeliveryIssueAggregationKeys(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeliveryIssueAggregationKeys) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Delivery issue data
 type DeliveryIssueData struct {
-	TriggerEvent   *Event        `json:"trigger_event,omitempty"`
-	TriggerAttempt *EventAttempt `json:"trigger_attempt,omitempty"`
+	TriggerEvent   *Event        `json:"trigger_event,omitempty" url:"trigger_event,omitempty"`
+	TriggerAttempt *EventAttempt `json:"trigger_attempt,omitempty" url:"trigger_attempt,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DeliveryIssueData) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeliveryIssueData) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeliveryIssueData
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeliveryIssueData(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeliveryIssueData) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Reference to the event and attempt an issue is being created for.
 type DeliveryIssueReference struct {
-	EventId   string `json:"event_id"`
-	AttemptId string `json:"attempt_id"`
+	EventId   string `json:"event_id" url:"event_id"`
+	AttemptId string `json:"attempt_id" url:"attempt_id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DeliveryIssueReference) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeliveryIssueReference) UnmarshalJSON(data []byte) error {
+	type unmarshaler DeliveryIssueReference
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DeliveryIssueReference(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeliveryIssueReference) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Delivery issue
 type DeliveryIssueWithData struct {
 	// Issue ID
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string      `json:"team_id"`
-	Status IssueStatus `json:"status,omitempty"`
+	TeamId string      `json:"team_id" url:"team_id"`
+	Status IssueStatus `json:"status" url:"status"`
 	// ISO timestamp for when the issue was last opened
-	OpenedAt time.Time `json:"opened_at"`
+	OpenedAt time.Time `json:"opened_at" url:"opened_at"`
 	// ISO timestamp for when the issue was first opened
-	FirstSeenAt time.Time `json:"first_seen_at"`
+	FirstSeenAt time.Time `json:"first_seen_at" url:"first_seen_at"`
 	// ISO timestamp for when the issue last occured
-	LastSeenAt time.Time `json:"last_seen_at"`
+	LastSeenAt time.Time `json:"last_seen_at" url:"last_seen_at"`
 	// Deprecated, will always be set to null
-	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
+	LastUpdatedBy *string `json:"last_updated_by,omitempty" url:"last_updated_by,omitempty"`
 	// ISO timestamp for when the issue was dismissed
-	DismissedAt    *time.Time `json:"dismissed_at,omitempty"`
-	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty"`
-	MergedWith     *string    `json:"merged_with,omitempty"`
+	DismissedAt    *time.Time `json:"dismissed_at,omitempty" url:"dismissed_at,omitempty"`
+	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty" url:"auto_resolved_at,omitempty"`
+	MergedWith     *string    `json:"merged_with,omitempty" url:"merged_with,omitempty"`
 	// ISO timestamp for when the issue was last updated
-	UpdatedAt string `json:"updated_at"`
+	UpdatedAt string `json:"updated_at" url:"updated_at"`
 	// ISO timestamp for when the issue was created
-	CreatedAt       string                        `json:"created_at"`
-	AggregationKeys *DeliveryIssueAggregationKeys `json:"aggregation_keys,omitempty"`
-	Reference       *DeliveryIssueReference       `json:"reference,omitempty"`
-	Data            *DeliveryIssueData            `json:"data,omitempty"`
+	CreatedAt       string                        `json:"created_at" url:"created_at"`
+	AggregationKeys *DeliveryIssueAggregationKeys `json:"aggregation_keys,omitempty" url:"aggregation_keys,omitempty"`
+	Reference       *DeliveryIssueReference       `json:"reference,omitempty" url:"reference,omitempty"`
+	Data            *DeliveryIssueData            `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DeliveryIssueWithData) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DeliveryIssueWithData) UnmarshalJSON(data []byte) error {
+	type embed DeliveryIssueWithData
+	var unmarshaler = struct {
+		embed
+		OpenedAt       *core.DateTime `json:"opened_at"`
+		FirstSeenAt    *core.DateTime `json:"first_seen_at"`
+		LastSeenAt     *core.DateTime `json:"last_seen_at"`
+		DismissedAt    *core.DateTime `json:"dismissed_at,omitempty"`
+		AutoResolvedAt *core.DateTime `json:"auto_resolved_at,omitempty"`
+	}{
+		embed: embed(*d),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*d = DeliveryIssueWithData(unmarshaler.embed)
+	d.OpenedAt = unmarshaler.OpenedAt.Time()
+	d.FirstSeenAt = unmarshaler.FirstSeenAt.Time()
+	d.LastSeenAt = unmarshaler.LastSeenAt.Time()
+	d.DismissedAt = unmarshaler.DismissedAt.TimePtr()
+	d.AutoResolvedAt = unmarshaler.AutoResolvedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DeliveryIssueWithData) MarshalJSON() ([]byte, error) {
+	type embed DeliveryIssueWithData
+	var marshaler = struct {
+		embed
+		OpenedAt       *core.DateTime `json:"opened_at"`
+		FirstSeenAt    *core.DateTime `json:"first_seen_at"`
+		LastSeenAt     *core.DateTime `json:"last_seen_at"`
+		DismissedAt    *core.DateTime `json:"dismissed_at,omitempty"`
+		AutoResolvedAt *core.DateTime `json:"auto_resolved_at,omitempty"`
+	}{
+		embed:          embed(*d),
+		OpenedAt:       core.NewDateTime(d.OpenedAt),
+		FirstSeenAt:    core.NewDateTime(d.FirstSeenAt),
+		LastSeenAt:     core.NewDateTime(d.LastSeenAt),
+		DismissedAt:    core.NewOptionalDateTime(d.DismissedAt),
+		AutoResolvedAt: core.NewOptionalDateTime(d.AutoResolvedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (d *DeliveryIssueWithData) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Associated [Destination](#destination-object) object
 type Destination struct {
 	// ID of the destination
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// A unique, human-friendly name for the destination
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// Description of the destination
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
 	// ID of the project
-	TeamId                 string `json:"team_id"`
-	PathForwardingDisabled *bool  `json:"path_forwarding_disabled,omitempty"`
+	TeamId                 string `json:"team_id" url:"team_id"`
+	PathForwardingDisabled *bool  `json:"path_forwarding_disabled,omitempty" url:"path_forwarding_disabled,omitempty"`
 	// HTTP endpoint of the destination
-	Url *string `json:"url,omitempty"`
+	Url *string `json:"url,omitempty" url:"url,omitempty"`
 	// Path for the CLI destination
-	CliPath *string `json:"cli_path,omitempty"`
-	// Limit delivery rate of event attempts to receive per period.
-	RateLimit       *int                         `json:"rate_limit,omitempty"`
-	RateLimitPeriod *DestinationRateLimitPeriod  `json:"rate_limit_period,omitempty"`
-	HttpMethod      *DestinationHttpMethod       `json:"http_method,omitempty"`
-	AuthMethod      *DestinationAuthMethodConfig `json:"auth_method,omitempty"`
+	CliPath *string `json:"cli_path,omitempty" url:"cli_path,omitempty"`
+	// Limit of events to receive per period. Refered as Delivery Rate limit in the dashboard and documentation.
+	RateLimit       *int                         `json:"rate_limit,omitempty" url:"rate_limit,omitempty"`
+	RateLimitPeriod *DestinationRateLimitPeriod  `json:"rate_limit_period,omitempty" url:"rate_limit_period,omitempty"`
+	HttpMethod      *DestinationHttpMethod       `json:"http_method,omitempty" url:"http_method,omitempty"`
+	AuthMethod      *DestinationAuthMethodConfig `json:"auth_method,omitempty" url:"auth_method,omitempty"`
 	// Date the destination was disabled
-	DisabledAt *time.Time `json:"disabled_at,omitempty"`
+	DisabledAt *time.Time `json:"disabled_at,omitempty" url:"disabled_at,omitempty"`
 	// Date the destination was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the destination was created
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *Destination) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *Destination) UnmarshalJSON(data []byte) error {
+	type embed Destination
+	var unmarshaler = struct {
+		embed
+		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*d),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*d = Destination(unmarshaler.embed)
+	d.DisabledAt = unmarshaler.DisabledAt.TimePtr()
+	d.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	d.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *Destination) MarshalJSON() ([]byte, error) {
+	type embed Destination
+	var marshaler = struct {
+		embed
+		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed:      embed(*d),
+		DisabledAt: core.NewOptionalDateTime(d.DisabledAt),
+		UpdatedAt:  core.NewDateTime(d.UpdatedAt),
+		CreatedAt:  core.NewDateTime(d.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (d *Destination) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // API key config for the destination's auth method
 type DestinationAuthMethodApiKeyConfig struct {
 	// Key for the API key auth
-	Key string `json:"key"`
+	Key string `json:"key" url:"key"`
 	// API key for the API key auth
-	ApiKey string `json:"api_key"`
+	ApiKey string `json:"api_key" url:"api_key"`
 	// Whether the API key should be sent as a header or a query parameter
-	To *DestinationAuthMethodApiKeyConfigTo `json:"to,omitempty"`
+	To *DestinationAuthMethodApiKeyConfigTo `json:"to,omitempty" url:"to,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DestinationAuthMethodApiKeyConfig) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DestinationAuthMethodApiKeyConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler DestinationAuthMethodApiKeyConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DestinationAuthMethodApiKeyConfig(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DestinationAuthMethodApiKeyConfig) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Whether the API key should be sent as a header or a query parameter
@@ -608,23 +1967,138 @@ func (d DestinationAuthMethodApiKeyConfigTo) Ptr() *DestinationAuthMethodApiKeyC
 // AWS Signature config for the destination's auth method
 type DestinationAuthMethodAwsSignatureConfig struct {
 	// AWS access key id
-	AccessKeyId string `json:"access_key_id"`
+	AccessKeyId string `json:"access_key_id" url:"access_key_id"`
 	// AWS secret access key
-	SecretAccessKey string `json:"secret_access_key"`
+	SecretAccessKey string `json:"secret_access_key" url:"secret_access_key"`
+	// AWS region
+	Region *string `json:"region,omitempty" url:"region,omitempty"`
+	// AWS service
+	Service *string `json:"service,omitempty" url:"service,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DestinationAuthMethodAwsSignatureConfig) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DestinationAuthMethodAwsSignatureConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler DestinationAuthMethodAwsSignatureConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DestinationAuthMethodAwsSignatureConfig(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DestinationAuthMethodAwsSignatureConfig) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Basic auth config for the destination's auth method
 type DestinationAuthMethodBasicAuthConfig struct {
 	// Username for basic auth
-	Username string `json:"username"`
+	Username string `json:"username" url:"username"`
 	// Password for basic auth
-	Password string `json:"password"`
+	Password string `json:"password" url:"password"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DestinationAuthMethodBasicAuthConfig) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DestinationAuthMethodBasicAuthConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler DestinationAuthMethodBasicAuthConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DestinationAuthMethodBasicAuthConfig(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DestinationAuthMethodBasicAuthConfig) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Bearer token config for the destination's auth method
 type DestinationAuthMethodBearerTokenConfig struct {
 	// Token for the bearer token auth
-	Token string `json:"token"`
+	Token string `json:"token" url:"token"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DestinationAuthMethodBearerTokenConfig) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DestinationAuthMethodBearerTokenConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler DestinationAuthMethodBearerTokenConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DestinationAuthMethodBearerTokenConfig(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DestinationAuthMethodBearerTokenConfig) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // Config for the destination's auth method
@@ -680,6 +2154,9 @@ func (d *DestinationAuthMethodConfig) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	d.Type = unmarshaler.Type
+	if unmarshaler.Type == "" {
+		return fmt.Errorf("%T did not include discriminant type", d)
+	}
 	switch unmarshaler.Type {
 	case "HOOKDECK_SIGNATURE":
 		value := new(AuthHookdeckSignature)
@@ -738,77 +2215,21 @@ func (d DestinationAuthMethodConfig) MarshalJSON() ([]byte, error) {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", d.Type, d)
 	case "HOOKDECK_SIGNATURE":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*AuthHookdeckSignature
-		}{
-			Type:                  d.Type,
-			AuthHookdeckSignature: d.HookdeckSignature,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(d.HookdeckSignature, "type", "HOOKDECK_SIGNATURE")
 	case "BASIC_AUTH":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*AuthBasicAuth
-		}{
-			Type:          d.Type,
-			AuthBasicAuth: d.BasicAuth,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(d.BasicAuth, "type", "BASIC_AUTH")
 	case "API_KEY":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*AuthApiKey
-		}{
-			Type:       d.Type,
-			AuthApiKey: d.ApiKey,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(d.ApiKey, "type", "API_KEY")
 	case "BEARER_TOKEN":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*AuthBearerToken
-		}{
-			Type:            d.Type,
-			AuthBearerToken: d.BearerToken,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(d.BearerToken, "type", "BEARER_TOKEN")
 	case "OAUTH2_CLIENT_CREDENTIALS":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*AuthOAuth2ClientCredentials
-		}{
-			Type:                        d.Type,
-			AuthOAuth2ClientCredentials: d.Oauth2ClientCredentials,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(d.Oauth2ClientCredentials, "type", "OAUTH2_CLIENT_CREDENTIALS")
 	case "OAUTH2_AUTHORIZATION_CODE":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*AuthOAuth2AuthorizationCode
-		}{
-			Type:                        d.Type,
-			AuthOAuth2AuthorizationCode: d.Oauth2AuthorizationCode,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(d.Oauth2AuthorizationCode, "type", "OAUTH2_AUTHORIZATION_CODE")
 	case "CUSTOM_SIGNATURE":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*AuthCustomSignature
-		}{
-			Type:                d.Type,
-			AuthCustomSignature: d.CustomSignature,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(d.CustomSignature, "type", "CUSTOM_SIGNATURE")
 	case "AWS_SIGNATURE":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*AuthAwsSignature
-		}{
-			Type:             d.Type,
-			AuthAwsSignature: d.AwsSignature,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(d.AwsSignature, "type", "AWS_SIGNATURE")
 	}
 }
 
@@ -849,45 +2270,157 @@ func (d *DestinationAuthMethodConfig) Accept(visitor DestinationAuthMethodConfig
 // Custom signature config for the destination's auth method
 type DestinationAuthMethodCustomSignatureConfig struct {
 	// Key for the custom signature auth
-	Key string `json:"key"`
+	Key string `json:"key" url:"key"`
 	// Signing secret for the custom signature auth. If left empty a secret will be generated for you.
-	SigningSecret *string `json:"signing_secret,omitempty"`
+	SigningSecret *string `json:"signing_secret,omitempty" url:"signing_secret,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DestinationAuthMethodCustomSignatureConfig) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DestinationAuthMethodCustomSignatureConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler DestinationAuthMethodCustomSignatureConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DestinationAuthMethodCustomSignatureConfig(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DestinationAuthMethodCustomSignatureConfig) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // OAuth2 Authorization Code config for the destination's auth method
 type DestinationAuthMethodOAuth2AuthorizationCodeConfig struct {
 	// Client id in the auth server
-	ClientId string `json:"client_id"`
+	ClientId string `json:"client_id" url:"client_id"`
 	// Client secret in the auth server
-	ClientSecret string `json:"client_secret"`
+	ClientSecret string `json:"client_secret" url:"client_secret"`
 	// Refresh token already returned by the auth server
-	RefreshToken string `json:"refresh_token"`
+	RefreshToken string `json:"refresh_token" url:"refresh_token"`
 	// Scope to access
-	Scope *string `json:"scope,omitempty"`
+	Scope *string `json:"scope,omitempty" url:"scope,omitempty"`
 	// URL of the auth server
-	AuthServer string `json:"auth_server"`
+	AuthServer string `json:"auth_server" url:"auth_server"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DestinationAuthMethodOAuth2AuthorizationCodeConfig) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DestinationAuthMethodOAuth2AuthorizationCodeConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler DestinationAuthMethodOAuth2AuthorizationCodeConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DestinationAuthMethodOAuth2AuthorizationCodeConfig(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DestinationAuthMethodOAuth2AuthorizationCodeConfig) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // OAuth2 Client Credentials config for the destination's auth method
 type DestinationAuthMethodOAuth2ClientCredentialsConfig struct {
 	// Client id in the auth server
-	ClientId string `json:"client_id"`
+	ClientId string `json:"client_id" url:"client_id"`
 	// Client secret in the auth server
-	ClientSecret string `json:"client_secret"`
+	ClientSecret string `json:"client_secret" url:"client_secret"`
 	// Scope to access
-	Scope *string `json:"scope,omitempty"`
+	Scope *string `json:"scope,omitempty" url:"scope,omitempty"`
 	// URL of the auth server
-	AuthServer string `json:"auth_server"`
-	// Basic (default) or Bearer Authentication
-	AuthenticationType *DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType `json:"authentication_type,omitempty"`
+	AuthServer string `json:"auth_server" url:"auth_server"`
+	// Basic (default), Bearer Authentication or x-www-form-urlencoded
+	AuthenticationType *DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType `json:"authentication_type,omitempty" url:"authentication_type,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
 }
 
-// Basic (default) or Bearer Authentication
+func (d *DestinationAuthMethodOAuth2ClientCredentialsConfig) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DestinationAuthMethodOAuth2ClientCredentialsConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler DestinationAuthMethodOAuth2ClientCredentialsConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DestinationAuthMethodOAuth2ClientCredentialsConfig(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DestinationAuthMethodOAuth2ClientCredentialsConfig) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+// Basic (default), Bearer Authentication or x-www-form-urlencoded
 type DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType string
 
 const (
-	DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBasic  DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType = "basic"
-	DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBearer DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType = "bearer"
+	DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBasic              DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType = "basic"
+	DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBearer             DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType = "bearer"
+	DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeXWwwFormUrlencoded DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType = "x-www-form-urlencoded"
 )
 
 func NewDestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeFromString(s string) (DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType, error) {
@@ -896,6 +2429,8 @@ func NewDestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeFrom
 		return DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBasic, nil
 	case "bearer":
 		return DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeBearer, nil
+	case "x-www-form-urlencoded":
+		return DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationTypeXWwwFormUrlencoded, nil
 	}
 	var t DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -907,6 +2442,42 @@ func (d DestinationAuthMethodOAuth2ClientCredentialsConfigAuthenticationType) Pt
 
 // Empty config for the destination's auth method
 type DestinationAuthMethodSignatureConfig struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DestinationAuthMethodSignatureConfig) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DestinationAuthMethodSignatureConfig) UnmarshalJSON(data []byte) error {
+	type unmarshaler DestinationAuthMethodSignatureConfig
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DestinationAuthMethodSignatureConfig(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DestinationAuthMethodSignatureConfig) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 // HTTP method used on requests sent to the destination, overrides the method used on requests sent to the source.
@@ -942,12 +2513,49 @@ func (d DestinationHttpMethod) Ptr() *DestinationHttpMethod {
 }
 
 type DestinationPaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*Destination  `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*Destination  `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
 }
 
-// Period to rate limit attempts
+func (d *DestinationPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DestinationPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler DestinationPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DestinationPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DestinationPaginatedResult) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
+}
+
+// Period to rate limit events by. Refered as Delivery Rate period in the dashboard and documentation.
 type DestinationRateLimitPeriod string
 
 const (
@@ -977,87 +2585,264 @@ func (d DestinationRateLimitPeriod) Ptr() *DestinationRateLimitPeriod {
 }
 
 type DetachedIntegrationFromSource struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (d *DetachedIntegrationFromSource) GetExtraProperties() map[string]interface{} {
+	return d.extraProperties
+}
+
+func (d *DetachedIntegrationFromSource) UnmarshalJSON(data []byte) error {
+	type unmarshaler DetachedIntegrationFromSource
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*d = DetachedIntegrationFromSource(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *d)
+	if err != nil {
+		return err
+	}
+	d.extraProperties = extraProperties
+
+	d._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (d *DetachedIntegrationFromSource) String() string {
+	if len(d._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(d._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(d); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", d)
 }
 
 type Event struct {
 	// ID of the event
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string `json:"team_id"`
+	TeamId string `json:"team_id" url:"team_id"`
 	// ID of the associated connection
-	WebhookId string `json:"webhook_id"`
+	WebhookId string `json:"webhook_id" url:"webhook_id"`
 	// ID of the associated source
-	SourceId string `json:"source_id"`
+	SourceId string `json:"source_id" url:"source_id"`
 	// ID of the associated destination
-	DestinationId string `json:"destination_id"`
+	DestinationId string `json:"destination_id" url:"destination_id"`
 	// ID of the event data
-	EventDataId string `json:"event_data_id"`
+	EventDataId string `json:"event_data_id" url:"event_data_id"`
 	// ID of the request that created the event
-	RequestId string `json:"request_id"`
+	RequestId string `json:"request_id" url:"request_id"`
 	// Number of delivery attempts made
-	Attempts int `json:"attempts"`
+	Attempts int `json:"attempts" url:"attempts"`
 	// Date of the most recently attempted retry
-	LastAttemptAt *time.Time `json:"last_attempt_at,omitempty"`
+	LastAttemptAt *time.Time `json:"last_attempt_at,omitempty" url:"last_attempt_at,omitempty"`
 	// Date of the next scheduled retry
-	NextAttemptAt *time.Time `json:"next_attempt_at,omitempty"`
+	NextAttemptAt *time.Time `json:"next_attempt_at,omitempty" url:"next_attempt_at,omitempty"`
 	// Event status
-	ResponseStatus *int               `json:"response_status,omitempty"`
-	ErrorCode      *AttemptErrorCodes `json:"error_code,omitempty"`
-	Status         EventStatus        `json:"status,omitempty"`
+	ResponseStatus *int               `json:"response_status,omitempty" url:"response_status,omitempty"`
+	ErrorCode      *AttemptErrorCodes `json:"error_code,omitempty" url:"error_code,omitempty"`
+	Status         EventStatus        `json:"status" url:"status"`
 	// Date of the latest successful attempt
-	SuccessfulAt *time.Time `json:"successful_at,omitempty"`
+	SuccessfulAt *time.Time `json:"successful_at,omitempty" url:"successful_at,omitempty"`
 	// ID of the CLI the event is sent to
-	CliId *string `json:"cli_id,omitempty"`
+	CliId *string `json:"cli_id,omitempty" url:"cli_id,omitempty"`
 	// Date the event was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the event was created
-	CreatedAt time.Time       `json:"created_at"`
-	Data      *ShortEventData `json:"data,omitempty"`
+	CreatedAt time.Time       `json:"created_at" url:"created_at"`
+	Data      *ShortEventData `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *Event) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *Event) UnmarshalJSON(data []byte) error {
+	type embed Event
+	var unmarshaler = struct {
+		embed
+		LastAttemptAt *core.DateTime `json:"last_attempt_at,omitempty"`
+		NextAttemptAt *core.DateTime `json:"next_attempt_at,omitempty"`
+		SuccessfulAt  *core.DateTime `json:"successful_at,omitempty"`
+		UpdatedAt     *core.DateTime `json:"updated_at"`
+		CreatedAt     *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*e = Event(unmarshaler.embed)
+	e.LastAttemptAt = unmarshaler.LastAttemptAt.TimePtr()
+	e.NextAttemptAt = unmarshaler.NextAttemptAt.TimePtr()
+	e.SuccessfulAt = unmarshaler.SuccessfulAt.TimePtr()
+	e.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *Event) MarshalJSON() ([]byte, error) {
+	type embed Event
+	var marshaler = struct {
+		embed
+		LastAttemptAt *core.DateTime `json:"last_attempt_at,omitempty"`
+		NextAttemptAt *core.DateTime `json:"next_attempt_at,omitempty"`
+		SuccessfulAt  *core.DateTime `json:"successful_at,omitempty"`
+		UpdatedAt     *core.DateTime `json:"updated_at"`
+		CreatedAt     *core.DateTime `json:"created_at"`
+	}{
+		embed:         embed(*e),
+		LastAttemptAt: core.NewOptionalDateTime(e.LastAttemptAt),
+		NextAttemptAt: core.NewOptionalDateTime(e.NextAttemptAt),
+		SuccessfulAt:  core.NewOptionalDateTime(e.SuccessfulAt),
+		UpdatedAt:     core.NewDateTime(e.UpdatedAt),
+		CreatedAt:     core.NewDateTime(e.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (e *Event) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EventArray = []*Event
 
 type EventAttempt struct {
 	// Attempt ID
-	Id string `json:"id"`
-	// Team ID
-	TeamId string `json:"team_id"`
+	Id string `json:"id" url:"id"`
+	// ID of the project
+	TeamId string `json:"team_id" url:"team_id"`
 	// Event ID
-	EventId string `json:"event_id"`
+	EventId string `json:"event_id" url:"event_id"`
+	// Destination ID
+	DestinationId string `json:"destination_id" url:"destination_id"`
 	// Attempt's HTTP response code
-	ResponseStatus *int `json:"response_status,omitempty"`
+	ResponseStatus *int `json:"response_status,omitempty" url:"response_status,omitempty"`
 	// Sequential number of attempts (up to and including this one) made for the associated event
-	AttemptNumber *int               `json:"attempt_number,omitempty"`
-	Trigger       *AttemptTrigger    `json:"trigger,omitempty"`
-	ErrorCode     *AttemptErrorCodes `json:"error_code,omitempty"`
-	Body          *EventAttemptBody  `json:"body,omitempty"`
+	AttemptNumber *int               `json:"attempt_number,omitempty" url:"attempt_number,omitempty"`
+	Trigger       *AttemptTrigger    `json:"trigger,omitempty" url:"trigger,omitempty"`
+	ErrorCode     *AttemptErrorCodes `json:"error_code,omitempty" url:"error_code,omitempty"`
+	Body          *EventAttemptBody  `json:"body,omitempty" url:"body,omitempty"`
 	// URL of the destination where delivery was attempted
-	RequestedUrl *string `json:"requested_url,omitempty"`
+	RequestedUrl *string `json:"requested_url,omitempty" url:"requested_url,omitempty"`
 	// HTTP method used to deliver the attempt
-	HttpMethod *EventAttemptHttpMethod `json:"http_method,omitempty"`
+	HttpMethod *EventAttemptHttpMethod `json:"http_method,omitempty" url:"http_method,omitempty"`
 	// ID of associated bulk retry
-	BulkRetryId *string       `json:"bulk_retry_id,omitempty"`
-	Status      AttemptStatus `json:"status,omitempty"`
+	BulkRetryId *string       `json:"bulk_retry_id,omitempty" url:"bulk_retry_id,omitempty"`
+	Status      AttemptStatus `json:"status" url:"status"`
 	// Date the attempt was successful
-	SuccessfulAt *time.Time `json:"successful_at,omitempty"`
+	SuccessfulAt *time.Time `json:"successful_at,omitempty" url:"successful_at,omitempty"`
 	// Date the attempt was delivered
-	DeliveredAt *time.Time `json:"delivered_at,omitempty"`
+	DeliveredAt *time.Time `json:"delivered_at,omitempty" url:"delivered_at,omitempty"`
 	// Date the destination responded to this attempt
-	RespondedAt *time.Time `json:"responded_at,omitempty"`
+	RespondedAt *time.Time `json:"responded_at,omitempty" url:"responded_at,omitempty"`
 	// Time elapsed between attempt initiation and final delivery (in ms)
-	DeliveryLatency *int `json:"delivery_latency,omitempty"`
+	DeliveryLatency *int `json:"delivery_latency,omitempty" url:"delivery_latency,omitempty"`
 	// Time elapsed between attempt initiation and a response from the destination (in ms)
-	ResponseLatency *int `json:"response_latency,omitempty"`
+	ResponseLatency *int `json:"response_latency,omitempty" url:"response_latency,omitempty"`
 	// Date the attempt was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the attempt was created
-	CreatedAt     time.Time     `json:"created_at"`
-	State         *AttemptState `json:"state,omitempty"`
-	DestinationId *string       `json:"destination_id,omitempty"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventAttempt) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventAttempt) UnmarshalJSON(data []byte) error {
+	type embed EventAttempt
+	var unmarshaler = struct {
+		embed
+		SuccessfulAt *core.DateTime `json:"successful_at,omitempty"`
+		DeliveredAt  *core.DateTime `json:"delivered_at,omitempty"`
+		RespondedAt  *core.DateTime `json:"responded_at,omitempty"`
+		UpdatedAt    *core.DateTime `json:"updated_at"`
+		CreatedAt    *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*e),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*e = EventAttempt(unmarshaler.embed)
+	e.SuccessfulAt = unmarshaler.SuccessfulAt.TimePtr()
+	e.DeliveredAt = unmarshaler.DeliveredAt.TimePtr()
+	e.RespondedAt = unmarshaler.RespondedAt.TimePtr()
+	e.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	e.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventAttempt) MarshalJSON() ([]byte, error) {
+	type embed EventAttempt
+	var marshaler = struct {
+		embed
+		SuccessfulAt *core.DateTime `json:"successful_at,omitempty"`
+		DeliveredAt  *core.DateTime `json:"delivered_at,omitempty"`
+		RespondedAt  *core.DateTime `json:"responded_at,omitempty"`
+		UpdatedAt    *core.DateTime `json:"updated_at"`
+		CreatedAt    *core.DateTime `json:"created_at"`
+	}{
+		embed:        embed(*e),
+		SuccessfulAt: core.NewOptionalDateTime(e.SuccessfulAt),
+		DeliveredAt:  core.NewOptionalDateTime(e.DeliveredAt),
+		RespondedAt:  core.NewOptionalDateTime(e.RespondedAt),
+		UpdatedAt:    core.NewDateTime(e.UpdatedAt),
+		CreatedAt:    core.NewDateTime(e.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (e *EventAttempt) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EventAttemptBody struct {
-	typeName string
 	// Response body from the destination
 	EventAttemptBodyZeroOptional *EventAttemptBodyZero
 	// Response body from the destination
@@ -1065,23 +2850,21 @@ type EventAttemptBody struct {
 }
 
 func NewEventAttemptBodyFromEventAttemptBodyZeroOptional(value *EventAttemptBodyZero) *EventAttemptBody {
-	return &EventAttemptBody{typeName: "eventAttemptBodyZeroOptional", EventAttemptBodyZeroOptional: value}
+	return &EventAttemptBody{EventAttemptBodyZeroOptional: value}
 }
 
 func NewEventAttemptBodyFromStringOptional(value *string) *EventAttemptBody {
-	return &EventAttemptBody{typeName: "stringOptional", StringOptional: value}
+	return &EventAttemptBody{StringOptional: value}
 }
 
 func (e *EventAttemptBody) UnmarshalJSON(data []byte) error {
 	var valueEventAttemptBodyZeroOptional *EventAttemptBodyZero
 	if err := json.Unmarshal(data, &valueEventAttemptBodyZeroOptional); err == nil {
-		e.typeName = "eventAttemptBodyZeroOptional"
 		e.EventAttemptBodyZeroOptional = valueEventAttemptBodyZeroOptional
 		return nil
 	}
 	var valueStringOptional *string
 	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		e.typeName = "stringOptional"
 		e.StringOptional = valueStringOptional
 		return nil
 	}
@@ -1089,14 +2872,13 @@ func (e *EventAttemptBody) UnmarshalJSON(data []byte) error {
 }
 
 func (e EventAttemptBody) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "eventAttemptBodyZeroOptional":
+	if e.EventAttemptBodyZeroOptional != nil {
 		return json.Marshal(e.EventAttemptBodyZeroOptional)
-	case "stringOptional":
+	}
+	if e.StringOptional != nil {
 		return json.Marshal(e.StringOptional)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventAttemptBodyVisitor interface {
@@ -1105,18 +2887,53 @@ type EventAttemptBodyVisitor interface {
 }
 
 func (e *EventAttemptBody) Accept(visitor EventAttemptBodyVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "eventAttemptBodyZeroOptional":
+	if e.EventAttemptBodyZeroOptional != nil {
 		return visitor.VisitEventAttemptBodyZeroOptional(e.EventAttemptBodyZeroOptional)
-	case "stringOptional":
+	}
+	if e.StringOptional != nil {
 		return visitor.VisitStringOptional(e.StringOptional)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Response body from the destination
 type EventAttemptBodyZero struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventAttemptBodyZero) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventAttemptBodyZero) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventAttemptBodyZero
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventAttemptBodyZero(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventAttemptBodyZero) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 // HTTP method used to deliver the attempt
@@ -1152,15 +2969,89 @@ func (e EventAttemptHttpMethod) Ptr() *EventAttemptHttpMethod {
 }
 
 type EventAttemptPaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*EventAttempt `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*EventAttempt `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventAttemptPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventAttemptPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventAttemptPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventAttemptPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventAttemptPaginatedResult) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EventPaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*Event        `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*Event        `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventPaginatedResult) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EventStatus string
@@ -1195,15 +3086,51 @@ func (e EventStatus) Ptr() *EventStatus {
 }
 
 type FilterRule struct {
-	Headers *FilterRuleProperty `json:"headers,omitempty"`
-	Body    *FilterRuleProperty `json:"body,omitempty"`
-	Query   *FilterRuleProperty `json:"query,omitempty"`
-	Path    *FilterRuleProperty `json:"path,omitempty"`
+	Headers *FilterRuleProperty `json:"headers,omitempty" url:"headers,omitempty"`
+	Body    *FilterRuleProperty `json:"body,omitempty" url:"body,omitempty"`
+	Query   *FilterRuleProperty `json:"query,omitempty" url:"query,omitempty"`
+	Path    *FilterRuleProperty `json:"path,omitempty" url:"path,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (f *FilterRule) GetExtraProperties() map[string]interface{} {
+	return f.extraProperties
+}
+
+func (f *FilterRule) UnmarshalJSON(data []byte) error {
+	type unmarshaler FilterRule
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*f = FilterRule(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *f)
+	if err != nil {
+		return err
+	}
+	f.extraProperties = extraProperties
+
+	f._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (f *FilterRule) String() string {
+	if len(f._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(f._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(f); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", f)
 }
 
 // JSON using our filter syntax to filter on request headers
 type FilterRuleProperty struct {
-	typeName                 string
 	StringOptional           *string
 	DoubleOptional           *float64
 	BooleanOptional          *bool
@@ -1211,43 +3138,39 @@ type FilterRuleProperty struct {
 }
 
 func NewFilterRulePropertyFromStringOptional(value *string) *FilterRuleProperty {
-	return &FilterRuleProperty{typeName: "stringOptional", StringOptional: value}
+	return &FilterRuleProperty{StringOptional: value}
 }
 
 func NewFilterRulePropertyFromDoubleOptional(value *float64) *FilterRuleProperty {
-	return &FilterRuleProperty{typeName: "doubleOptional", DoubleOptional: value}
+	return &FilterRuleProperty{DoubleOptional: value}
 }
 
 func NewFilterRulePropertyFromBooleanOptional(value *bool) *FilterRuleProperty {
-	return &FilterRuleProperty{typeName: "booleanOptional", BooleanOptional: value}
+	return &FilterRuleProperty{BooleanOptional: value}
 }
 
 func NewFilterRulePropertyFromStringUnknownMapOptional(value map[string]interface{}) *FilterRuleProperty {
-	return &FilterRuleProperty{typeName: "stringUnknownMapOptional", StringUnknownMapOptional: value}
+	return &FilterRuleProperty{StringUnknownMapOptional: value}
 }
 
 func (f *FilterRuleProperty) UnmarshalJSON(data []byte) error {
 	var valueStringOptional *string
 	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		f.typeName = "stringOptional"
 		f.StringOptional = valueStringOptional
 		return nil
 	}
 	var valueDoubleOptional *float64
 	if err := json.Unmarshal(data, &valueDoubleOptional); err == nil {
-		f.typeName = "doubleOptional"
 		f.DoubleOptional = valueDoubleOptional
 		return nil
 	}
 	var valueBooleanOptional *bool
 	if err := json.Unmarshal(data, &valueBooleanOptional); err == nil {
-		f.typeName = "booleanOptional"
 		f.BooleanOptional = valueBooleanOptional
 		return nil
 	}
 	var valueStringUnknownMapOptional map[string]interface{}
 	if err := json.Unmarshal(data, &valueStringUnknownMapOptional); err == nil {
-		f.typeName = "stringUnknownMapOptional"
 		f.StringUnknownMapOptional = valueStringUnknownMapOptional
 		return nil
 	}
@@ -1255,18 +3178,19 @@ func (f *FilterRuleProperty) UnmarshalJSON(data []byte) error {
 }
 
 func (f FilterRuleProperty) MarshalJSON() ([]byte, error) {
-	switch f.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "stringOptional":
+	if f.StringOptional != nil {
 		return json.Marshal(f.StringOptional)
-	case "doubleOptional":
+	}
+	if f.DoubleOptional != nil {
 		return json.Marshal(f.DoubleOptional)
-	case "booleanOptional":
+	}
+	if f.BooleanOptional != nil {
 		return json.Marshal(f.BooleanOptional)
-	case "stringUnknownMapOptional":
+	}
+	if f.StringUnknownMapOptional != nil {
 		return json.Marshal(f.StringUnknownMapOptional)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", f)
 }
 
 type FilterRulePropertyVisitor interface {
@@ -1277,54 +3201,131 @@ type FilterRulePropertyVisitor interface {
 }
 
 func (f *FilterRuleProperty) Accept(visitor FilterRulePropertyVisitor) error {
-	switch f.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", f.typeName, f)
-	case "stringOptional":
+	if f.StringOptional != nil {
 		return visitor.VisitStringOptional(f.StringOptional)
-	case "doubleOptional":
+	}
+	if f.DoubleOptional != nil {
 		return visitor.VisitDoubleOptional(f.DoubleOptional)
-	case "booleanOptional":
+	}
+	if f.BooleanOptional != nil {
 		return visitor.VisitBooleanOptional(f.BooleanOptional)
-	case "stringUnknownMapOptional":
+	}
+	if f.StringUnknownMapOptional != nil {
 		return visitor.VisitStringUnknownMapOptional(f.StringUnknownMapOptional)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", f)
 }
 
-type FilteredMeta string
+type FilteredMeta = []FilteredMetaItem
+
+type FilteredMetaItem string
 
 const (
-	FilteredMetaBody    FilteredMeta = "body"
-	FilteredMetaHeaders FilteredMeta = "headers"
-	FilteredMetaPath    FilteredMeta = "path"
-	FilteredMetaQuery   FilteredMeta = "query"
+	FilteredMetaItemBody    FilteredMetaItem = "body"
+	FilteredMetaItemHeaders FilteredMetaItem = "headers"
+	FilteredMetaItemPath    FilteredMetaItem = "path"
+	FilteredMetaItemQuery   FilteredMetaItem = "query"
 )
 
-func NewFilteredMetaFromString(s string) (FilteredMeta, error) {
+func NewFilteredMetaItemFromString(s string) (FilteredMetaItem, error) {
 	switch s {
 	case "body":
-		return FilteredMetaBody, nil
+		return FilteredMetaItemBody, nil
 	case "headers":
-		return FilteredMetaHeaders, nil
+		return FilteredMetaItemHeaders, nil
 	case "path":
-		return FilteredMetaPath, nil
+		return FilteredMetaItemPath, nil
 	case "query":
-		return FilteredMetaQuery, nil
+		return FilteredMetaItemQuery, nil
 	}
-	var t FilteredMeta
+	var t FilteredMetaItem
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
 }
 
-func (f FilteredMeta) Ptr() *FilteredMeta {
+func (f FilteredMetaItem) Ptr() *FilteredMetaItem {
 	return &f
 }
 
 type HandledApiKeyIntegrationConfigs struct {
-	ApiKey string `json:"api_key"`
+	ApiKey string `json:"api_key" url:"api_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (h *HandledApiKeyIntegrationConfigs) GetExtraProperties() map[string]interface{} {
+	return h.extraProperties
+}
+
+func (h *HandledApiKeyIntegrationConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler HandledApiKeyIntegrationConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*h = HandledApiKeyIntegrationConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *h)
+	if err != nil {
+		return err
+	}
+	h.extraProperties = extraProperties
+
+	h._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (h *HandledApiKeyIntegrationConfigs) String() string {
+	if len(h._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(h._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(h); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", h)
 }
 
 type HandledHmacConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (h *HandledHmacConfigs) GetExtraProperties() map[string]interface{} {
+	return h.extraProperties
+}
+
+func (h *HandledHmacConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler HandledHmacConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*h = HandledHmacConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *h)
+	if err != nil {
+		return err
+	}
+	h.extraProperties = extraProperties
+
+	h._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (h *HandledHmacConfigs) String() string {
+	if len(h._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(h._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(h); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", h)
 }
 
 type HmacAlgorithms string
@@ -1356,10 +3357,47 @@ func (h HmacAlgorithms) Ptr() *HmacAlgorithms {
 }
 
 type HmacIntegrationConfigs struct {
-	WebhookSecretKey string                         `json:"webhook_secret_key"`
-	Algorithm        HmacAlgorithms                 `json:"algorithm,omitempty"`
-	HeaderKey        string                         `json:"header_key"`
-	Encoding         HmacIntegrationConfigsEncoding `json:"encoding,omitempty"`
+	WebhookSecretKey string                         `json:"webhook_secret_key" url:"webhook_secret_key"`
+	Algorithm        HmacAlgorithms                 `json:"algorithm" url:"algorithm"`
+	HeaderKey        string                         `json:"header_key" url:"header_key"`
+	Encoding         HmacIntegrationConfigsEncoding `json:"encoding" url:"encoding"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (h *HmacIntegrationConfigs) GetExtraProperties() map[string]interface{} {
+	return h.extraProperties
+}
+
+func (h *HmacIntegrationConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler HmacIntegrationConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*h = HmacIntegrationConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *h)
+	if err != nil {
+		return err
+	}
+	h.extraProperties = extraProperties
+
+	h._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (h *HmacIntegrationConfigs) String() string {
+	if len(h._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(h._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(h); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", h)
 }
 
 type HmacIntegrationConfigsEncoding string
@@ -1385,14 +3423,69 @@ func (h HmacIntegrationConfigsEncoding) Ptr() *HmacIntegrationConfigsEncoding {
 }
 
 type IgnoredEvent struct {
-	Id        string            `json:"id"`
-	TeamId    string            `json:"team_id"`
-	WebhookId string            `json:"webhook_id"`
-	Cause     IgnoredEventCause `json:"cause,omitempty"`
-	RequestId string            `json:"request_id"`
-	Meta      *IgnoredEventMeta `json:"meta,omitempty"`
-	UpdatedAt time.Time         `json:"updated_at"`
-	CreatedAt time.Time         `json:"created_at"`
+	Id string `json:"id" url:"id"`
+	// ID of the project
+	TeamId    string            `json:"team_id" url:"team_id"`
+	WebhookId string            `json:"webhook_id" url:"webhook_id"`
+	Cause     IgnoredEventCause `json:"cause" url:"cause"`
+	RequestId string            `json:"request_id" url:"request_id"`
+	Meta      *IgnoredEventMeta `json:"meta,omitempty" url:"meta,omitempty"`
+	CreatedAt time.Time         `json:"created_at" url:"created_at"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IgnoredEvent) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IgnoredEvent) UnmarshalJSON(data []byte) error {
+	type embed IgnoredEvent
+	var unmarshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*i),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*i = IgnoredEvent(unmarshaler.embed)
+	i.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IgnoredEvent) MarshalJSON() ([]byte, error) {
+	type embed IgnoredEvent
+	var marshaler = struct {
+		embed
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*i),
+		CreatedAt: core.NewDateTime(i.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (i *IgnoredEvent) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 type IgnoredEventCause string
@@ -1424,29 +3517,26 @@ func (i IgnoredEventCause) Ptr() *IgnoredEventCause {
 }
 
 type IgnoredEventMeta struct {
-	typeName                 string
 	FilteredMeta             FilteredMeta
 	TransformationFailedMeta *TransformationFailedMeta
 }
 
 func NewIgnoredEventMetaFromFilteredMeta(value FilteredMeta) *IgnoredEventMeta {
-	return &IgnoredEventMeta{typeName: "filteredMeta", FilteredMeta: value}
+	return &IgnoredEventMeta{FilteredMeta: value}
 }
 
 func NewIgnoredEventMetaFromTransformationFailedMeta(value *TransformationFailedMeta) *IgnoredEventMeta {
-	return &IgnoredEventMeta{typeName: "transformationFailedMeta", TransformationFailedMeta: value}
+	return &IgnoredEventMeta{TransformationFailedMeta: value}
 }
 
 func (i *IgnoredEventMeta) UnmarshalJSON(data []byte) error {
 	var valueFilteredMeta FilteredMeta
 	if err := json.Unmarshal(data, &valueFilteredMeta); err == nil {
-		i.typeName = "filteredMeta"
 		i.FilteredMeta = valueFilteredMeta
 		return nil
 	}
 	valueTransformationFailedMeta := new(TransformationFailedMeta)
 	if err := json.Unmarshal(data, &valueTransformationFailedMeta); err == nil {
-		i.typeName = "transformationFailedMeta"
 		i.TransformationFailedMeta = valueTransformationFailedMeta
 		return nil
 	}
@@ -1454,14 +3544,13 @@ func (i *IgnoredEventMeta) UnmarshalJSON(data []byte) error {
 }
 
 func (i IgnoredEventMeta) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "filteredMeta":
+	if i.FilteredMeta != nil {
 		return json.Marshal(i.FilteredMeta)
-	case "transformationFailedMeta":
+	}
+	if i.TransformationFailedMeta != nil {
 		return json.Marshal(i.TransformationFailedMeta)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IgnoredEventMetaVisitor interface {
@@ -1470,45 +3559,139 @@ type IgnoredEventMetaVisitor interface {
 }
 
 func (i *IgnoredEventMeta) Accept(visitor IgnoredEventMetaVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "filteredMeta":
+	if i.FilteredMeta != nil {
 		return visitor.VisitFilteredMeta(i.FilteredMeta)
-	case "transformationFailedMeta":
+	}
+	if i.TransformationFailedMeta != nil {
 		return visitor.VisitTransformationFailedMeta(i.TransformationFailedMeta)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IgnoredEventPaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*IgnoredEvent `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*IgnoredEvent `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IgnoredEventPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IgnoredEventPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler IgnoredEventPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IgnoredEventPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IgnoredEventPaginatedResult) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 type Integration struct {
 	// ID of the integration
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string `json:"team_id"`
+	TeamId string `json:"team_id" url:"team_id"`
 	// Label of the integration
-	Label    string              `json:"label"`
-	Provider IntegrationProvider `json:"provider,omitempty"`
+	Label    string              `json:"label" url:"label"`
+	Provider IntegrationProvider `json:"provider" url:"provider"`
 	// List of features to enable (see features list below)
-	Features []IntegrationFeature `json:"features,omitempty"`
+	Features []IntegrationFeature `json:"features,omitempty" url:"features,omitempty"`
 	// Decrypted Key/Value object of the associated configuration for that provider
-	Configs *IntegrationConfigs `json:"configs,omitempty"`
+	Configs *IntegrationConfigs `json:"configs,omitempty" url:"configs,omitempty"`
 	// List of source IDs the integration is attached to
-	Sources []string `json:"sources,omitempty"`
+	Sources []string `json:"sources,omitempty" url:"sources,omitempty"`
 	// Date the integration was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the integration was created
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *Integration) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *Integration) UnmarshalJSON(data []byte) error {
+	type embed Integration
+	var unmarshaler = struct {
+		embed
+		UpdatedAt *core.DateTime `json:"updated_at"`
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*i),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*i = Integration(unmarshaler.embed)
+	i.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	i.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *Integration) MarshalJSON() ([]byte, error) {
+	type embed Integration
+	var marshaler = struct {
+		embed
+		UpdatedAt *core.DateTime `json:"updated_at"`
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*i),
+		UpdatedAt: core.NewDateTime(i.UpdatedAt),
+		CreatedAt: core.NewDateTime(i.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (i *Integration) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // Decrypted Key/Value object of the associated configuration for that provider
 type IntegrationConfigs struct {
-	typeName                          string
 	HmacIntegrationConfigs            *HmacIntegrationConfigs
 	ApiKeyIntegrationConfigs          *ApiKeyIntegrationConfigs
 	HandledApiKeyIntegrationConfigs   *HandledApiKeyIntegrationConfigs
@@ -1520,83 +3703,75 @@ type IntegrationConfigs struct {
 }
 
 func NewIntegrationConfigsFromHmacIntegrationConfigs(value *HmacIntegrationConfigs) *IntegrationConfigs {
-	return &IntegrationConfigs{typeName: "hmacIntegrationConfigs", HmacIntegrationConfigs: value}
+	return &IntegrationConfigs{HmacIntegrationConfigs: value}
 }
 
 func NewIntegrationConfigsFromApiKeyIntegrationConfigs(value *ApiKeyIntegrationConfigs) *IntegrationConfigs {
-	return &IntegrationConfigs{typeName: "apiKeyIntegrationConfigs", ApiKeyIntegrationConfigs: value}
+	return &IntegrationConfigs{ApiKeyIntegrationConfigs: value}
 }
 
 func NewIntegrationConfigsFromHandledApiKeyIntegrationConfigs(value *HandledApiKeyIntegrationConfigs) *IntegrationConfigs {
-	return &IntegrationConfigs{typeName: "handledApiKeyIntegrationConfigs", HandledApiKeyIntegrationConfigs: value}
+	return &IntegrationConfigs{HandledApiKeyIntegrationConfigs: value}
 }
 
 func NewIntegrationConfigsFromHandledHmacConfigs(value *HandledHmacConfigs) *IntegrationConfigs {
-	return &IntegrationConfigs{typeName: "handledHmacConfigs", HandledHmacConfigs: value}
+	return &IntegrationConfigs{HandledHmacConfigs: value}
 }
 
 func NewIntegrationConfigsFromBasicAuthIntegrationConfigs(value *BasicAuthIntegrationConfigs) *IntegrationConfigs {
-	return &IntegrationConfigs{typeName: "basicAuthIntegrationConfigs", BasicAuthIntegrationConfigs: value}
+	return &IntegrationConfigs{BasicAuthIntegrationConfigs: value}
 }
 
 func NewIntegrationConfigsFromShopifyIntegrationConfigs(value *ShopifyIntegrationConfigs) *IntegrationConfigs {
-	return &IntegrationConfigs{typeName: "shopifyIntegrationConfigs", ShopifyIntegrationConfigs: value}
+	return &IntegrationConfigs{ShopifyIntegrationConfigs: value}
 }
 
 func NewIntegrationConfigsFromVercelLogDrainsIntegrationConfigs(value *VercelLogDrainsIntegrationConfigs) *IntegrationConfigs {
-	return &IntegrationConfigs{typeName: "vercelLogDrainsIntegrationConfigs", VercelLogDrainsIntegrationConfigs: value}
+	return &IntegrationConfigs{VercelLogDrainsIntegrationConfigs: value}
 }
 
 func NewIntegrationConfigsFromIntegrationConfigsSeven(value *IntegrationConfigsSeven) *IntegrationConfigs {
-	return &IntegrationConfigs{typeName: "integrationConfigsSeven", IntegrationConfigsSeven: value}
+	return &IntegrationConfigs{IntegrationConfigsSeven: value}
 }
 
 func (i *IntegrationConfigs) UnmarshalJSON(data []byte) error {
 	valueHmacIntegrationConfigs := new(HmacIntegrationConfigs)
 	if err := json.Unmarshal(data, &valueHmacIntegrationConfigs); err == nil {
-		i.typeName = "hmacIntegrationConfigs"
 		i.HmacIntegrationConfigs = valueHmacIntegrationConfigs
 		return nil
 	}
 	valueApiKeyIntegrationConfigs := new(ApiKeyIntegrationConfigs)
 	if err := json.Unmarshal(data, &valueApiKeyIntegrationConfigs); err == nil {
-		i.typeName = "apiKeyIntegrationConfigs"
 		i.ApiKeyIntegrationConfigs = valueApiKeyIntegrationConfigs
 		return nil
 	}
 	valueHandledApiKeyIntegrationConfigs := new(HandledApiKeyIntegrationConfigs)
 	if err := json.Unmarshal(data, &valueHandledApiKeyIntegrationConfigs); err == nil {
-		i.typeName = "handledApiKeyIntegrationConfigs"
 		i.HandledApiKeyIntegrationConfigs = valueHandledApiKeyIntegrationConfigs
 		return nil
 	}
 	valueHandledHmacConfigs := new(HandledHmacConfigs)
 	if err := json.Unmarshal(data, &valueHandledHmacConfigs); err == nil {
-		i.typeName = "handledHmacConfigs"
 		i.HandledHmacConfigs = valueHandledHmacConfigs
 		return nil
 	}
 	valueBasicAuthIntegrationConfigs := new(BasicAuthIntegrationConfigs)
 	if err := json.Unmarshal(data, &valueBasicAuthIntegrationConfigs); err == nil {
-		i.typeName = "basicAuthIntegrationConfigs"
 		i.BasicAuthIntegrationConfigs = valueBasicAuthIntegrationConfigs
 		return nil
 	}
 	valueShopifyIntegrationConfigs := new(ShopifyIntegrationConfigs)
 	if err := json.Unmarshal(data, &valueShopifyIntegrationConfigs); err == nil {
-		i.typeName = "shopifyIntegrationConfigs"
 		i.ShopifyIntegrationConfigs = valueShopifyIntegrationConfigs
 		return nil
 	}
 	valueVercelLogDrainsIntegrationConfigs := new(VercelLogDrainsIntegrationConfigs)
 	if err := json.Unmarshal(data, &valueVercelLogDrainsIntegrationConfigs); err == nil {
-		i.typeName = "vercelLogDrainsIntegrationConfigs"
 		i.VercelLogDrainsIntegrationConfigs = valueVercelLogDrainsIntegrationConfigs
 		return nil
 	}
 	valueIntegrationConfigsSeven := new(IntegrationConfigsSeven)
 	if err := json.Unmarshal(data, &valueIntegrationConfigsSeven); err == nil {
-		i.typeName = "integrationConfigsSeven"
 		i.IntegrationConfigsSeven = valueIntegrationConfigsSeven
 		return nil
 	}
@@ -1604,26 +3779,31 @@ func (i *IntegrationConfigs) UnmarshalJSON(data []byte) error {
 }
 
 func (i IntegrationConfigs) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "hmacIntegrationConfigs":
+	if i.HmacIntegrationConfigs != nil {
 		return json.Marshal(i.HmacIntegrationConfigs)
-	case "apiKeyIntegrationConfigs":
+	}
+	if i.ApiKeyIntegrationConfigs != nil {
 		return json.Marshal(i.ApiKeyIntegrationConfigs)
-	case "handledApiKeyIntegrationConfigs":
+	}
+	if i.HandledApiKeyIntegrationConfigs != nil {
 		return json.Marshal(i.HandledApiKeyIntegrationConfigs)
-	case "handledHmacConfigs":
+	}
+	if i.HandledHmacConfigs != nil {
 		return json.Marshal(i.HandledHmacConfigs)
-	case "basicAuthIntegrationConfigs":
+	}
+	if i.BasicAuthIntegrationConfigs != nil {
 		return json.Marshal(i.BasicAuthIntegrationConfigs)
-	case "shopifyIntegrationConfigs":
+	}
+	if i.ShopifyIntegrationConfigs != nil {
 		return json.Marshal(i.ShopifyIntegrationConfigs)
-	case "vercelLogDrainsIntegrationConfigs":
+	}
+	if i.VercelLogDrainsIntegrationConfigs != nil {
 		return json.Marshal(i.VercelLogDrainsIntegrationConfigs)
-	case "integrationConfigsSeven":
+	}
+	if i.IntegrationConfigsSeven != nil {
 		return json.Marshal(i.IntegrationConfigsSeven)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IntegrationConfigsVisitor interface {
@@ -1638,29 +3818,70 @@ type IntegrationConfigsVisitor interface {
 }
 
 func (i *IntegrationConfigs) Accept(visitor IntegrationConfigsVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "hmacIntegrationConfigs":
+	if i.HmacIntegrationConfigs != nil {
 		return visitor.VisitHmacIntegrationConfigs(i.HmacIntegrationConfigs)
-	case "apiKeyIntegrationConfigs":
+	}
+	if i.ApiKeyIntegrationConfigs != nil {
 		return visitor.VisitApiKeyIntegrationConfigs(i.ApiKeyIntegrationConfigs)
-	case "handledApiKeyIntegrationConfigs":
+	}
+	if i.HandledApiKeyIntegrationConfigs != nil {
 		return visitor.VisitHandledApiKeyIntegrationConfigs(i.HandledApiKeyIntegrationConfigs)
-	case "handledHmacConfigs":
+	}
+	if i.HandledHmacConfigs != nil {
 		return visitor.VisitHandledHmacConfigs(i.HandledHmacConfigs)
-	case "basicAuthIntegrationConfigs":
+	}
+	if i.BasicAuthIntegrationConfigs != nil {
 		return visitor.VisitBasicAuthIntegrationConfigs(i.BasicAuthIntegrationConfigs)
-	case "shopifyIntegrationConfigs":
+	}
+	if i.ShopifyIntegrationConfigs != nil {
 		return visitor.VisitShopifyIntegrationConfigs(i.ShopifyIntegrationConfigs)
-	case "vercelLogDrainsIntegrationConfigs":
+	}
+	if i.VercelLogDrainsIntegrationConfigs != nil {
 		return visitor.VisitVercelLogDrainsIntegrationConfigs(i.VercelLogDrainsIntegrationConfigs)
-	case "integrationConfigsSeven":
+	}
+	if i.IntegrationConfigsSeven != nil {
 		return visitor.VisitIntegrationConfigsSeven(i.IntegrationConfigsSeven)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IntegrationConfigsSeven struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IntegrationConfigsSeven) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IntegrationConfigsSeven) UnmarshalJSON(data []byte) error {
+	type unmarshaler IntegrationConfigsSeven
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IntegrationConfigsSeven(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IntegrationConfigsSeven) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 type IntegrationFeature string
@@ -1686,9 +3907,46 @@ func (i IntegrationFeature) Ptr() *IntegrationFeature {
 }
 
 type IntegrationPaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*Integration  `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*Integration  `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IntegrationPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IntegrationPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler IntegrationPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IntegrationPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IntegrationPaginatedResult) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 type IntegrationProvider string
@@ -1754,6 +4012,7 @@ const (
 	IntegrationProviderRazorpay        IntegrationProvider = "RAZORPAY"
 	IntegrationProviderMailchimp       IntegrationProvider = "MAILCHIMP"
 	IntegrationProviderPaddle          IntegrationProvider = "PADDLE"
+	IntegrationProviderPaypal          IntegrationProvider = "PAYPAL"
 )
 
 func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
@@ -1878,6 +4137,8 @@ func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
 		return IntegrationProviderMailchimp, nil
 	case "PADDLE":
 		return IntegrationProviderPaddle, nil
+	case "PAYPAL":
+		return IntegrationProviderPaypal, nil
 	}
 	var t IntegrationProvider
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -1910,6 +4171,9 @@ func (i *Issue) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	i.Type = unmarshaler.Type
+	if unmarshaler.Type == "" {
+		return fmt.Errorf("%T did not include discriminant type", i)
+	}
 	switch unmarshaler.Type {
 	case "delivery":
 		value := new(DeliveryIssue)
@@ -1932,23 +4196,9 @@ func (i Issue) MarshalJSON() ([]byte, error) {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", i.Type, i)
 	case "delivery":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*DeliveryIssue
-		}{
-			Type:          i.Type,
-			DeliveryIssue: i.Delivery,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(i.Delivery, "type", "delivery")
 	case "transformation":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*TransformationIssue
-		}{
-			Type:                i.Type,
-			TransformationIssue: i.Transformation,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(i.Transformation, "type", "transformation")
 	}
 }
 
@@ -1970,7 +4220,44 @@ func (i *Issue) Accept(visitor IssueVisitor) error {
 
 type IssueCount struct {
 	// Number of issues
-	Count int `json:"count"`
+	Count int `json:"count" url:"count"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueCount) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueCount) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueCount
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueCount(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueCount) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // Issue status
@@ -2004,56 +4291,157 @@ func (i IssueStatus) Ptr() *IssueStatus {
 
 type IssueTrigger struct {
 	// ID of the issue trigger
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId *string `json:"team_id,omitempty"`
+	TeamId *string `json:"team_id,omitempty" url:"team_id,omitempty"`
 	// Optional unique name to use as reference when using the API
-	Name     *string                `json:"name,omitempty"`
-	Type     IssueType              `json:"type,omitempty"`
-	Configs  *IssueTriggerReference `json:"configs,omitempty"`
-	Channels *IssueTriggerChannels  `json:"channels,omitempty"`
+	Name     *string                `json:"name,omitempty" url:"name,omitempty"`
+	Type     IssueType              `json:"type" url:"type"`
+	Configs  *IssueTriggerReference `json:"configs,omitempty" url:"configs,omitempty"`
+	Channels *IssueTriggerChannels  `json:"channels,omitempty" url:"channels,omitempty"`
 	// ISO timestamp for when the issue trigger was disabled
-	DisabledAt *time.Time `json:"disabled_at,omitempty"`
+	DisabledAt *time.Time `json:"disabled_at,omitempty" url:"disabled_at,omitempty"`
 	// ISO timestamp for when the issue trigger was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// ISO timestamp for when the issue trigger was created
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
 	// ISO timestamp for when the issue trigger was deleted
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty" url:"deleted_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueTrigger) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueTrigger) UnmarshalJSON(data []byte) error {
+	type embed IssueTrigger
+	var unmarshaler = struct {
+		embed
+		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+		DeletedAt  *core.DateTime `json:"deleted_at,omitempty"`
+	}{
+		embed: embed(*i),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*i = IssueTrigger(unmarshaler.embed)
+	i.DisabledAt = unmarshaler.DisabledAt.TimePtr()
+	i.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	i.CreatedAt = unmarshaler.CreatedAt.Time()
+	i.DeletedAt = unmarshaler.DeletedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueTrigger) MarshalJSON() ([]byte, error) {
+	type embed IssueTrigger
+	var marshaler = struct {
+		embed
+		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+		DeletedAt  *core.DateTime `json:"deleted_at,omitempty"`
+	}{
+		embed:      embed(*i),
+		DisabledAt: core.NewOptionalDateTime(i.DisabledAt),
+		UpdatedAt:  core.NewDateTime(i.UpdatedAt),
+		CreatedAt:  core.NewDateTime(i.CreatedAt),
+		DeletedAt:  core.NewOptionalDateTime(i.DeletedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (i *IssueTrigger) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // Configurations for a 'Backpressure' issue trigger
 type IssueTriggerBackpressureConfigs struct {
-	Delay IssueTriggerBackpressureDelay `json:"delay"`
+	Delay IssueTriggerBackpressureDelay `json:"delay" url:"delay"`
 	// A pattern to match on the destination name or array of destination IDs. Use `*` as wildcard.
-	Destinations *IssueTriggerBackpressureConfigsDestinations `json:"destinations,omitempty"`
+	Destinations *IssueTriggerBackpressureConfigsDestinations `json:"destinations,omitempty" url:"destinations,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueTriggerBackpressureConfigs) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueTriggerBackpressureConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueTriggerBackpressureConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueTriggerBackpressureConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueTriggerBackpressureConfigs) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // A pattern to match on the destination name or array of destination IDs. Use `*` as wildcard.
 type IssueTriggerBackpressureConfigsDestinations struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewIssueTriggerBackpressureConfigsDestinationsFromString(value string) *IssueTriggerBackpressureConfigsDestinations {
-	return &IssueTriggerBackpressureConfigsDestinations{typeName: "string", String: value}
+	return &IssueTriggerBackpressureConfigsDestinations{String: value}
 }
 
 func NewIssueTriggerBackpressureConfigsDestinationsFromStringList(value []string) *IssueTriggerBackpressureConfigsDestinations {
-	return &IssueTriggerBackpressureConfigsDestinations{typeName: "stringList", StringList: value}
+	return &IssueTriggerBackpressureConfigsDestinations{StringList: value}
 }
 
 func (i *IssueTriggerBackpressureConfigsDestinations) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		i.typeName = "string"
 		i.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		i.typeName = "stringList"
 		i.StringList = valueStringList
 		return nil
 	}
@@ -2061,14 +4449,13 @@ func (i *IssueTriggerBackpressureConfigsDestinations) UnmarshalJSON(data []byte)
 }
 
 func (i IssueTriggerBackpressureConfigsDestinations) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return json.Marshal(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return json.Marshal(i.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IssueTriggerBackpressureConfigsDestinationsVisitor interface {
@@ -2077,14 +4464,13 @@ type IssueTriggerBackpressureConfigsDestinationsVisitor interface {
 }
 
 func (i *IssueTriggerBackpressureConfigsDestinations) Accept(visitor IssueTriggerBackpressureConfigsDestinationsVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return visitor.VisitString(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return visitor.VisitStringList(i.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 // The minimum delay (backpressure) to open the issue for min of 1 minute (60000) and max of 1 day (86400000)
@@ -2092,43 +4478,114 @@ type IssueTriggerBackpressureDelay = int
 
 // Notification channels object for the specific channel type
 type IssueTriggerChannels struct {
-	Slack    *IssueTriggerSlackChannel       `json:"slack,omitempty"`
-	Opsgenie *IssueTriggerIntegrationChannel `json:"opsgenie,omitempty"`
-	Email    *IssueTriggerEmailChannel       `json:"email,omitempty"`
+	Slack    *IssueTriggerSlackChannel       `json:"slack,omitempty" url:"slack,omitempty"`
+	Opsgenie *IssueTriggerIntegrationChannel `json:"opsgenie,omitempty" url:"opsgenie,omitempty"`
+	Email    *IssueTriggerEmailChannel       `json:"email,omitempty" url:"email,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueTriggerChannels) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueTriggerChannels) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueTriggerChannels
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueTriggerChannels(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueTriggerChannels) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // Configurations for a 'delivery' issue trigger
 type IssueTriggerDeliveryConfigs struct {
-	Strategy IssueTriggerStrategy `json:"strategy,omitempty"`
+	Strategy IssueTriggerStrategy `json:"strategy" url:"strategy"`
 	// A pattern to match on the connection name or array of connection IDs. Use `*` as wildcard.
-	Connections *IssueTriggerDeliveryConfigsConnections `json:"connections,omitempty"`
+	Connections *IssueTriggerDeliveryConfigsConnections `json:"connections,omitempty" url:"connections,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueTriggerDeliveryConfigs) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueTriggerDeliveryConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueTriggerDeliveryConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueTriggerDeliveryConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueTriggerDeliveryConfigs) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // A pattern to match on the connection name or array of connection IDs. Use `*` as wildcard.
 type IssueTriggerDeliveryConfigsConnections struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewIssueTriggerDeliveryConfigsConnectionsFromString(value string) *IssueTriggerDeliveryConfigsConnections {
-	return &IssueTriggerDeliveryConfigsConnections{typeName: "string", String: value}
+	return &IssueTriggerDeliveryConfigsConnections{String: value}
 }
 
 func NewIssueTriggerDeliveryConfigsConnectionsFromStringList(value []string) *IssueTriggerDeliveryConfigsConnections {
-	return &IssueTriggerDeliveryConfigsConnections{typeName: "stringList", StringList: value}
+	return &IssueTriggerDeliveryConfigsConnections{StringList: value}
 }
 
 func (i *IssueTriggerDeliveryConfigsConnections) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		i.typeName = "string"
 		i.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		i.typeName = "stringList"
 		i.StringList = valueStringList
 		return nil
 	}
@@ -2136,14 +4593,13 @@ func (i *IssueTriggerDeliveryConfigsConnections) UnmarshalJSON(data []byte) erro
 }
 
 func (i IssueTriggerDeliveryConfigsConnections) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return json.Marshal(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return json.Marshal(i.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IssueTriggerDeliveryConfigsConnectionsVisitor interface {
@@ -2152,66 +4608,170 @@ type IssueTriggerDeliveryConfigsConnectionsVisitor interface {
 }
 
 func (i *IssueTriggerDeliveryConfigsConnections) Accept(visitor IssueTriggerDeliveryConfigsConnectionsVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return visitor.VisitString(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return visitor.VisitStringList(i.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 // Email channel for an issue trigger
 type IssueTriggerEmailChannel struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueTriggerEmailChannel) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueTriggerEmailChannel) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueTriggerEmailChannel
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueTriggerEmailChannel(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueTriggerEmailChannel) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // Integration channel for an issue trigger
 type IssueTriggerIntegrationChannel struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueTriggerIntegrationChannel) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueTriggerIntegrationChannel) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueTriggerIntegrationChannel
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueTriggerIntegrationChannel(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueTriggerIntegrationChannel) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 type IssueTriggerPaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*IssueTrigger `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*IssueTrigger `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueTriggerPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueTriggerPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueTriggerPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueTriggerPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueTriggerPaginatedResult) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // Configuration object for the specific issue type selected
 type IssueTriggerReference struct {
-	typeName                          string
 	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
 	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
 	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
 }
 
 func NewIssueTriggerReferenceFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *IssueTriggerReference {
-	return &IssueTriggerReference{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
+	return &IssueTriggerReference{IssueTriggerDeliveryConfigs: value}
 }
 
 func NewIssueTriggerReferenceFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *IssueTriggerReference {
-	return &IssueTriggerReference{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
+	return &IssueTriggerReference{IssueTriggerTransformationConfigs: value}
 }
 
 func NewIssueTriggerReferenceFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *IssueTriggerReference {
-	return &IssueTriggerReference{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
+	return &IssueTriggerReference{IssueTriggerBackpressureConfigs: value}
 }
 
 func (i *IssueTriggerReference) UnmarshalJSON(data []byte) error {
 	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
-		i.typeName = "issueTriggerDeliveryConfigs"
 		i.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
 		return nil
 	}
 	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
-		i.typeName = "issueTriggerTransformationConfigs"
 		i.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
 		return nil
 	}
 	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
-		i.typeName = "issueTriggerBackpressureConfigs"
 		i.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
 		return nil
 	}
@@ -2219,16 +4779,16 @@ func (i *IssueTriggerReference) UnmarshalJSON(data []byte) error {
 }
 
 func (i IssueTriggerReference) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "issueTriggerDeliveryConfigs":
+	if i.IssueTriggerDeliveryConfigs != nil {
 		return json.Marshal(i.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
+	}
+	if i.IssueTriggerTransformationConfigs != nil {
 		return json.Marshal(i.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
+	}
+	if i.IssueTriggerBackpressureConfigs != nil {
 		return json.Marshal(i.IssueTriggerBackpressureConfigs)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IssueTriggerReferenceVisitor interface {
@@ -2238,22 +4798,59 @@ type IssueTriggerReferenceVisitor interface {
 }
 
 func (i *IssueTriggerReference) Accept(visitor IssueTriggerReferenceVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "issueTriggerDeliveryConfigs":
+	if i.IssueTriggerDeliveryConfigs != nil {
 		return visitor.VisitIssueTriggerDeliveryConfigs(i.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
+	}
+	if i.IssueTriggerTransformationConfigs != nil {
 		return visitor.VisitIssueTriggerTransformationConfigs(i.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
+	}
+	if i.IssueTriggerBackpressureConfigs != nil {
 		return visitor.VisitIssueTriggerBackpressureConfigs(i.IssueTriggerBackpressureConfigs)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 // Slack channel for an issue trigger
 type IssueTriggerSlackChannel struct {
 	// Channel name
-	ChannelName string `json:"channel_name"`
+	ChannelName string `json:"channel_name" url:"channel_name"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueTriggerSlackChannel) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueTriggerSlackChannel) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueTriggerSlackChannel
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueTriggerSlackChannel(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueTriggerSlackChannel) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // The strategy uses to open the issue
@@ -2281,36 +4878,70 @@ func (i IssueTriggerStrategy) Ptr() *IssueTriggerStrategy {
 
 // Configurations for a 'Transformation' issue trigger
 type IssueTriggerTransformationConfigs struct {
-	LogLevel TransformationExecutionLogLevel `json:"log_level,omitempty"`
+	LogLevel TransformationExecutionLogLevel `json:"log_level" url:"log_level"`
 	// A pattern to match on the transformation name or array of transformation IDs. Use `*` as wildcard.
-	Transformations *IssueTriggerTransformationConfigsTransformations `json:"transformations,omitempty"`
+	Transformations *IssueTriggerTransformationConfigsTransformations `json:"transformations,omitempty" url:"transformations,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueTriggerTransformationConfigs) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueTriggerTransformationConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueTriggerTransformationConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueTriggerTransformationConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueTriggerTransformationConfigs) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 // A pattern to match on the transformation name or array of transformation IDs. Use `*` as wildcard.
 type IssueTriggerTransformationConfigsTransformations struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewIssueTriggerTransformationConfigsTransformationsFromString(value string) *IssueTriggerTransformationConfigsTransformations {
-	return &IssueTriggerTransformationConfigsTransformations{typeName: "string", String: value}
+	return &IssueTriggerTransformationConfigsTransformations{String: value}
 }
 
 func NewIssueTriggerTransformationConfigsTransformationsFromStringList(value []string) *IssueTriggerTransformationConfigsTransformations {
-	return &IssueTriggerTransformationConfigsTransformations{typeName: "stringList", StringList: value}
+	return &IssueTriggerTransformationConfigsTransformations{StringList: value}
 }
 
 func (i *IssueTriggerTransformationConfigsTransformations) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		i.typeName = "string"
 		i.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		i.typeName = "stringList"
 		i.StringList = valueStringList
 		return nil
 	}
@@ -2318,14 +4949,13 @@ func (i *IssueTriggerTransformationConfigsTransformations) UnmarshalJSON(data []
 }
 
 func (i IssueTriggerTransformationConfigsTransformations) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return json.Marshal(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return json.Marshal(i.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IssueTriggerTransformationConfigsTransformationsVisitor interface {
@@ -2334,14 +4964,13 @@ type IssueTriggerTransformationConfigsTransformationsVisitor interface {
 }
 
 func (i *IssueTriggerTransformationConfigsTransformations) Accept(visitor IssueTriggerTransformationConfigsTransformationsVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return visitor.VisitString(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return visitor.VisitStringList(i.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 // Issue type
@@ -2392,6 +5021,9 @@ func (i *IssueWithData) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	i.Type = unmarshaler.Type
+	if unmarshaler.Type == "" {
+		return fmt.Errorf("%T did not include discriminant type", i)
+	}
 	switch unmarshaler.Type {
 	case "delivery":
 		value := new(DeliveryIssueWithData)
@@ -2414,23 +5046,9 @@ func (i IssueWithData) MarshalJSON() ([]byte, error) {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", i.Type, i)
 	case "delivery":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*DeliveryIssueWithData
-		}{
-			Type:                  i.Type,
-			DeliveryIssueWithData: i.Delivery,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(i.Delivery, "type", "delivery")
 	case "transformation":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*TransformationIssueWithData
-		}{
-			Type:                        i.Type,
-			TransformationIssueWithData: i.Transformation,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(i.Transformation, "type", "transformation")
 	}
 }
 
@@ -2451,57 +5069,391 @@ func (i *IssueWithData) Accept(visitor IssueWithDataVisitor) error {
 }
 
 type IssueWithDataPaginatedResult struct {
-	Pagination *SeekPagination  `json:"pagination,omitempty"`
-	Count      *int             `json:"count,omitempty"`
-	Models     []*IssueWithData `json:"models,omitempty"`
+	Pagination *SeekPagination  `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int             `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*IssueWithData `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IssueWithDataPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IssueWithDataPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueWithDataPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IssueWithDataPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IssueWithDataPaginatedResult) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 type ListCustomDomainSchema = []*ListCustomDomainSchemaItem
 
 type ListCustomDomainSchemaItem struct {
-	Id                    *string                                          `json:"id,omitempty"`
-	Hostname              *string                                          `json:"hostname,omitempty"`
-	Status                *string                                          `json:"status,omitempty"`
-	Ssl                   *ListCustomDomainSchemaItemSsl                   `json:"ssl,omitempty"`
-	VerificationErrors    []string                                         `json:"verification_errors,omitempty"`
-	OwnershipVerification *ListCustomDomainSchemaItemOwnershipVerification `json:"ownership_verification,omitempty"`
-	CreatedAt             *string                                          `json:"created_at,omitempty"`
+	Id                    *string                                          `json:"id,omitempty" url:"id,omitempty"`
+	Hostname              *string                                          `json:"hostname,omitempty" url:"hostname,omitempty"`
+	Status                *string                                          `json:"status,omitempty" url:"status,omitempty"`
+	Ssl                   *ListCustomDomainSchemaItemSsl                   `json:"ssl,omitempty" url:"ssl,omitempty"`
+	VerificationErrors    []string                                         `json:"verification_errors,omitempty" url:"verification_errors,omitempty"`
+	OwnershipVerification *ListCustomDomainSchemaItemOwnershipVerification `json:"ownership_verification,omitempty" url:"ownership_verification,omitempty"`
+	CreatedAt             *string                                          `json:"created_at,omitempty" url:"created_at,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (l *ListCustomDomainSchemaItem) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
+}
+
+func (l *ListCustomDomainSchemaItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler ListCustomDomainSchemaItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = ListCustomDomainSchemaItem(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *ListCustomDomainSchemaItem) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 type ListCustomDomainSchemaItemOwnershipVerification struct {
-	Type  *string `json:"type,omitempty"`
-	Name  *string `json:"name,omitempty"`
-	Value *string `json:"value,omitempty"`
+	Type  *string `json:"type,omitempty" url:"type,omitempty"`
+	Name  *string `json:"name,omitempty" url:"name,omitempty"`
+	Value *string `json:"value,omitempty" url:"value,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (l *ListCustomDomainSchemaItemOwnershipVerification) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
+}
+
+func (l *ListCustomDomainSchemaItemOwnershipVerification) UnmarshalJSON(data []byte) error {
+	type unmarshaler ListCustomDomainSchemaItemOwnershipVerification
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = ListCustomDomainSchemaItemOwnershipVerification(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *ListCustomDomainSchemaItemOwnershipVerification) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 type ListCustomDomainSchemaItemSsl struct {
-	Id                   *string                                                  `json:"id,omitempty"`
-	Type                 *string                                                  `json:"type,omitempty"`
-	Method               *string                                                  `json:"method,omitempty"`
-	Status               *string                                                  `json:"status,omitempty"`
-	TxtName              *string                                                  `json:"txt_name,omitempty"`
-	TxtValue             *string                                                  `json:"txt_value,omitempty"`
-	ValidationRecords    []*ListCustomDomainSchemaItemSslValidationRecordsItem    `json:"validation_records,omitempty"`
-	DcvDelegationRecords []*ListCustomDomainSchemaItemSslDcvDelegationRecordsItem `json:"dcv_delegation_records,omitempty"`
-	Settings             *ListCustomDomainSchemaItemSslSettings                   `json:"settings,omitempty"`
-	BundleMethod         *string                                                  `json:"bundle_method,omitempty"`
-	Wildcard             *bool                                                    `json:"wildcard,omitempty"`
-	CertificateAuthority *string                                                  `json:"certificate_authority,omitempty"`
+	Id                   *string                                                  `json:"id,omitempty" url:"id,omitempty"`
+	Type                 *string                                                  `json:"type,omitempty" url:"type,omitempty"`
+	Method               *string                                                  `json:"method,omitempty" url:"method,omitempty"`
+	Status               *string                                                  `json:"status,omitempty" url:"status,omitempty"`
+	TxtName              *string                                                  `json:"txt_name,omitempty" url:"txt_name,omitempty"`
+	TxtValue             *string                                                  `json:"txt_value,omitempty" url:"txt_value,omitempty"`
+	ValidationRecords    []*ListCustomDomainSchemaItemSslValidationRecordsItem    `json:"validation_records,omitempty" url:"validation_records,omitempty"`
+	DcvDelegationRecords []*ListCustomDomainSchemaItemSslDcvDelegationRecordsItem `json:"dcv_delegation_records,omitempty" url:"dcv_delegation_records,omitempty"`
+	Settings             *ListCustomDomainSchemaItemSslSettings                   `json:"settings,omitempty" url:"settings,omitempty"`
+	BundleMethod         *string                                                  `json:"bundle_method,omitempty" url:"bundle_method,omitempty"`
+	Wildcard             *bool                                                    `json:"wildcard,omitempty" url:"wildcard,omitempty"`
+	CertificateAuthority *string                                                  `json:"certificate_authority,omitempty" url:"certificate_authority,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (l *ListCustomDomainSchemaItemSsl) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
+}
+
+func (l *ListCustomDomainSchemaItemSsl) UnmarshalJSON(data []byte) error {
+	type unmarshaler ListCustomDomainSchemaItemSsl
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = ListCustomDomainSchemaItemSsl(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *ListCustomDomainSchemaItemSsl) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 type ListCustomDomainSchemaItemSslDcvDelegationRecordsItem struct {
-	Cname       *string `json:"cname,omitempty"`
-	CnameTarget *string `json:"cname_target,omitempty"`
+	Cname       *string `json:"cname,omitempty" url:"cname,omitempty"`
+	CnameTarget *string `json:"cname_target,omitempty" url:"cname_target,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (l *ListCustomDomainSchemaItemSslDcvDelegationRecordsItem) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
+}
+
+func (l *ListCustomDomainSchemaItemSslDcvDelegationRecordsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler ListCustomDomainSchemaItemSslDcvDelegationRecordsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = ListCustomDomainSchemaItemSslDcvDelegationRecordsItem(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *ListCustomDomainSchemaItemSslDcvDelegationRecordsItem) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 type ListCustomDomainSchemaItemSslSettings struct {
-	MinTlsVersion *string `json:"min_tls_version,omitempty"`
+	MinTlsVersion *string `json:"min_tls_version,omitempty" url:"min_tls_version,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (l *ListCustomDomainSchemaItemSslSettings) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
+}
+
+func (l *ListCustomDomainSchemaItemSslSettings) UnmarshalJSON(data []byte) error {
+	type unmarshaler ListCustomDomainSchemaItemSslSettings
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = ListCustomDomainSchemaItemSslSettings(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *ListCustomDomainSchemaItemSslSettings) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
 }
 
 type ListCustomDomainSchemaItemSslValidationRecordsItem struct {
-	Status   *string `json:"status,omitempty"`
-	TxtName  *string `json:"txt_name,omitempty"`
-	TxtValue *string `json:"txt_value,omitempty"`
+	Status   *string `json:"status,omitempty" url:"status,omitempty"`
+	TxtName  *string `json:"txt_name,omitempty" url:"txt_name,omitempty"`
+	TxtValue *string `json:"txt_value,omitempty" url:"txt_value,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (l *ListCustomDomainSchemaItemSslValidationRecordsItem) GetExtraProperties() map[string]interface{} {
+	return l.extraProperties
+}
+
+func (l *ListCustomDomainSchemaItemSslValidationRecordsItem) UnmarshalJSON(data []byte) error {
+	type unmarshaler ListCustomDomainSchemaItemSslValidationRecordsItem
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*l = ListCustomDomainSchemaItemSslValidationRecordsItem(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *l)
+	if err != nil {
+		return err
+	}
+	l.extraProperties = extraProperties
+
+	l._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (l *ListCustomDomainSchemaItemSslValidationRecordsItem) String() string {
+	if len(l._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(l._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(l); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", l)
+}
+
+type Operators struct {
+	Gt  *time.Time `json:"gt,omitempty" url:"gt,omitempty"`
+	Gte *time.Time `json:"gte,omitempty" url:"gte,omitempty"`
+	Le  *time.Time `json:"le,omitempty" url:"le,omitempty"`
+	Lte *time.Time `json:"lte,omitempty" url:"lte,omitempty"`
+	Any *bool      `json:"any,omitempty" url:"any,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (o *Operators) GetExtraProperties() map[string]interface{} {
+	return o.extraProperties
+}
+
+func (o *Operators) UnmarshalJSON(data []byte) error {
+	type embed Operators
+	var unmarshaler = struct {
+		embed
+		Gt  *core.DateTime `json:"gt,omitempty"`
+		Gte *core.DateTime `json:"gte,omitempty"`
+		Le  *core.DateTime `json:"le,omitempty"`
+		Lte *core.DateTime `json:"lte,omitempty"`
+	}{
+		embed: embed(*o),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*o = Operators(unmarshaler.embed)
+	o.Gt = unmarshaler.Gt.TimePtr()
+	o.Gte = unmarshaler.Gte.TimePtr()
+	o.Le = unmarshaler.Le.TimePtr()
+	o.Lte = unmarshaler.Lte.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *o)
+	if err != nil {
+		return err
+	}
+	o.extraProperties = extraProperties
+
+	o._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (o *Operators) MarshalJSON() ([]byte, error) {
+	type embed Operators
+	var marshaler = struct {
+		embed
+		Gt  *core.DateTime `json:"gt,omitempty"`
+		Gte *core.DateTime `json:"gte,omitempty"`
+		Le  *core.DateTime `json:"le,omitempty"`
+		Lte *core.DateTime `json:"lte,omitempty"`
+	}{
+		embed: embed(*o),
+		Gt:    core.NewOptionalDateTime(o.Gt),
+		Gte:   core.NewOptionalDateTime(o.Gte),
+		Le:    core.NewOptionalDateTime(o.Le),
+		Lte:   core.NewOptionalDateTime(o.Lte),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (o *Operators) String() string {
+	if len(o._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(o._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(o); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", o)
 }
 
 type OrderByDirection string
@@ -2527,35 +5479,135 @@ func (o OrderByDirection) Ptr() *OrderByDirection {
 }
 
 type RawBody struct {
-	Body string `json:"body"`
+	Body string `json:"body" url:"body"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *RawBody) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RawBody) UnmarshalJSON(data []byte) error {
+	type unmarshaler RawBody
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RawBody(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RawBody) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 type Request struct {
 	// ID of the request
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string `json:"team_id"`
+	TeamId string `json:"team_id" url:"team_id"`
 	// Whether or not the request was verified when received
-	Verified *bool `json:"verified,omitempty"`
+	Verified *bool `json:"verified,omitempty" url:"verified,omitempty"`
 	// ID of the request data
-	OriginalEventDataId *string               `json:"original_event_data_id,omitempty"`
-	RejectionCause      RequestRejectionCause `json:"rejection_cause,omitempty"`
+	OriginalEventDataId *string               `json:"original_event_data_id,omitempty" url:"original_event_data_id,omitempty"`
+	RejectionCause      RequestRejectionCause `json:"rejection_cause" url:"rejection_cause"`
 	// The priority attributed to the request when received
-	IngestPriority *RequestIngestPriority `json:"ingest_priority,omitempty"`
+	IngestPriority *RequestIngestPriority `json:"ingest_priority,omitempty" url:"ingest_priority,omitempty"`
 	// The time the request was originally received
-	IngestedAt *time.Time `json:"ingested_at,omitempty"`
+	IngestedAt *time.Time `json:"ingested_at,omitempty" url:"ingested_at,omitempty"`
 	// ID of the associated source
-	SourceId string `json:"source_id"`
+	SourceId string `json:"source_id" url:"source_id"`
 	// The count of events created from this request (CLI events not included)
-	EventsCount *int `json:"events_count,omitempty"`
+	EventsCount *int `json:"events_count,omitempty" url:"events_count,omitempty"`
 	// The count of CLI events created from this request
-	CliEventsCount *int `json:"cli_events_count,omitempty"`
-	IgnoredCount   *int `json:"ignored_count,omitempty"`
+	CliEventsCount *int `json:"cli_events_count,omitempty" url:"cli_events_count,omitempty"`
+	IgnoredCount   *int `json:"ignored_count,omitempty" url:"ignored_count,omitempty"`
 	// Date the event was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the event was created
-	CreatedAt time.Time       `json:"created_at"`
-	Data      *ShortEventData `json:"data,omitempty"`
+	CreatedAt time.Time       `json:"created_at" url:"created_at"`
+	Data      *ShortEventData `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *Request) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *Request) UnmarshalJSON(data []byte) error {
+	type embed Request
+	var unmarshaler = struct {
+		embed
+		IngestedAt *core.DateTime `json:"ingested_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*r),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*r = Request(unmarshaler.embed)
+	r.IngestedAt = unmarshaler.IngestedAt.TimePtr()
+	r.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	r.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *Request) MarshalJSON() ([]byte, error) {
+	type embed Request
+	var marshaler = struct {
+		embed
+		IngestedAt *core.DateTime `json:"ingested_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed:      embed(*r),
+		IngestedAt: core.NewOptionalDateTime(r.IngestedAt),
+		UpdatedAt:  core.NewDateTime(r.UpdatedAt),
+		CreatedAt:  core.NewDateTime(r.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (r *Request) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 // The priority attributed to the request when received
@@ -2582,9 +5634,46 @@ func (r RequestIngestPriority) Ptr() *RequestIngestPriority {
 }
 
 type RequestPaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*Request      `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*Request      `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *RequestPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RequestPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler RequestPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RequestPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RequestPaginatedResult) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 type RequestRejectionCause string
@@ -2631,21 +5720,197 @@ func (r RequestRejectionCause) Ptr() *RequestRejectionCause {
 }
 
 type RetriedEvent struct {
-	Event   *Event        `json:"event,omitempty"`
-	Attempt *EventAttempt `json:"attempt,omitempty"`
+	// ID of the event
+	Id string `json:"id" url:"id"`
+	// ID of the project
+	TeamId string `json:"team_id" url:"team_id"`
+	// ID of the associated connection
+	WebhookId string `json:"webhook_id" url:"webhook_id"`
+	// ID of the associated source
+	SourceId string `json:"source_id" url:"source_id"`
+	// ID of the associated destination
+	DestinationId string `json:"destination_id" url:"destination_id"`
+	// ID of the event data
+	EventDataId string `json:"event_data_id" url:"event_data_id"`
+	// ID of the request that created the event
+	RequestId string `json:"request_id" url:"request_id"`
+	// Number of delivery attempts made
+	Attempts int `json:"attempts" url:"attempts"`
+	// Date of the most recently attempted retry
+	LastAttemptAt *time.Time `json:"last_attempt_at,omitempty" url:"last_attempt_at,omitempty"`
+	// Date of the next scheduled retry
+	NextAttemptAt *time.Time `json:"next_attempt_at,omitempty" url:"next_attempt_at,omitempty"`
+	// Event status
+	ResponseStatus *int               `json:"response_status,omitempty" url:"response_status,omitempty"`
+	ErrorCode      *AttemptErrorCodes `json:"error_code,omitempty" url:"error_code,omitempty"`
+	Status         EventStatus        `json:"status" url:"status"`
+	// Date of the latest successful attempt
+	SuccessfulAt *time.Time `json:"successful_at,omitempty" url:"successful_at,omitempty"`
+	// ID of the CLI the event is sent to
+	CliId *string `json:"cli_id,omitempty" url:"cli_id,omitempty"`
+	// Date the event was last updated
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
+	// Date the event was created
+	CreatedAt time.Time       `json:"created_at" url:"created_at"`
+	Data      *ShortEventData `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *RetriedEvent) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RetriedEvent) UnmarshalJSON(data []byte) error {
+	type embed RetriedEvent
+	var unmarshaler = struct {
+		embed
+		LastAttemptAt *core.DateTime `json:"last_attempt_at,omitempty"`
+		NextAttemptAt *core.DateTime `json:"next_attempt_at,omitempty"`
+		SuccessfulAt  *core.DateTime `json:"successful_at,omitempty"`
+		UpdatedAt     *core.DateTime `json:"updated_at"`
+		CreatedAt     *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*r),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*r = RetriedEvent(unmarshaler.embed)
+	r.LastAttemptAt = unmarshaler.LastAttemptAt.TimePtr()
+	r.NextAttemptAt = unmarshaler.NextAttemptAt.TimePtr()
+	r.SuccessfulAt = unmarshaler.SuccessfulAt.TimePtr()
+	r.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	r.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RetriedEvent) MarshalJSON() ([]byte, error) {
+	type embed RetriedEvent
+	var marshaler = struct {
+		embed
+		LastAttemptAt *core.DateTime `json:"last_attempt_at,omitempty"`
+		NextAttemptAt *core.DateTime `json:"next_attempt_at,omitempty"`
+		SuccessfulAt  *core.DateTime `json:"successful_at,omitempty"`
+		UpdatedAt     *core.DateTime `json:"updated_at"`
+		CreatedAt     *core.DateTime `json:"created_at"`
+	}{
+		embed:         embed(*r),
+		LastAttemptAt: core.NewOptionalDateTime(r.LastAttemptAt),
+		NextAttemptAt: core.NewOptionalDateTime(r.NextAttemptAt),
+		SuccessfulAt:  core.NewOptionalDateTime(r.SuccessfulAt),
+		UpdatedAt:     core.NewDateTime(r.UpdatedAt),
+		CreatedAt:     core.NewDateTime(r.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (r *RetriedEvent) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 type RetryRequest struct {
-	Request *Request `json:"request,omitempty"`
-	Events  []*Event `json:"events,omitempty"`
+	Request *Request `json:"request,omitempty" url:"request,omitempty"`
+	Events  []*Event `json:"events,omitempty" url:"events,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *RetryRequest) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RetryRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler RetryRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RetryRequest(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RetryRequest) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 type RetryRule struct {
-	Strategy RetryStrategy `json:"strategy,omitempty"`
+	Strategy RetryStrategy `json:"strategy" url:"strategy"`
 	// Time in MS between each retry
-	Interval *int `json:"interval,omitempty"`
+	Interval *int `json:"interval,omitempty" url:"interval,omitempty"`
 	// Maximum number of retries to attempt
-	Count *int `json:"count,omitempty"`
+	Count *int `json:"count,omitempty" url:"count,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *RetryRule) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RetryRule) UnmarshalJSON(data []byte) error {
+	type unmarshaler RetryRule
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RetryRule(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RetryRule) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 // Algorithm to use when calculating delay between retries
@@ -2703,6 +5968,9 @@ func (r *Rule) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	r.Type = unmarshaler.Type
+	if unmarshaler.Type == "" {
+		return fmt.Errorf("%T did not include discriminant type", r)
+	}
 	switch unmarshaler.Type {
 	case "retry":
 		value := new(RetryRule)
@@ -2737,41 +6005,13 @@ func (r Rule) MarshalJSON() ([]byte, error) {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", r.Type, r)
 	case "retry":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*RetryRule
-		}{
-			Type:      r.Type,
-			RetryRule: r.Retry,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(r.Retry, "type", "retry")
 	case "filter":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*FilterRule
-		}{
-			Type:       r.Type,
-			FilterRule: r.Filter,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(r.Filter, "type", "filter")
 	case "transform":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*TransformRule
-		}{
-			Type:          r.Type,
-			TransformRule: r.Transform,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(r.Transform, "type", "transform")
 	case "delay":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*DelayRule
-		}{
-			Type:      r.Type,
-			DelayRule: r.Delay,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(r.Delay, "type", "delay")
 	}
 }
 
@@ -2798,37 +6038,71 @@ func (r *Rule) Accept(visitor RuleVisitor) error {
 }
 
 type SeekPagination struct {
-	OrderBy *SeekPaginationOrderBy `json:"order_by,omitempty"`
-	Dir     *SeekPaginationDir     `json:"dir,omitempty"`
-	Limit   *int                   `json:"limit,omitempty"`
-	Prev    *string                `json:"prev,omitempty"`
-	Next    *string                `json:"next,omitempty"`
+	OrderBy *SeekPaginationOrderBy `json:"order_by,omitempty" url:"order_by,omitempty"`
+	Dir     *SeekPaginationDir     `json:"dir,omitempty" url:"dir,omitempty"`
+	Limit   *int                   `json:"limit,omitempty" url:"limit,omitempty"`
+	Prev    *string                `json:"prev,omitempty" url:"prev,omitempty"`
+	Next    *string                `json:"next,omitempty" url:"next,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (s *SeekPagination) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *SeekPagination) UnmarshalJSON(data []byte) error {
+	type unmarshaler SeekPagination
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SeekPagination(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SeekPagination) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 type SeekPaginationDir struct {
-	typeName             string
 	OrderByDirection     OrderByDirection
 	OrderByDirectionList []OrderByDirection
 }
 
 func NewSeekPaginationDirFromOrderByDirection(value OrderByDirection) *SeekPaginationDir {
-	return &SeekPaginationDir{typeName: "orderByDirection", OrderByDirection: value}
+	return &SeekPaginationDir{OrderByDirection: value}
 }
 
 func NewSeekPaginationDirFromOrderByDirectionList(value []OrderByDirection) *SeekPaginationDir {
-	return &SeekPaginationDir{typeName: "orderByDirectionList", OrderByDirectionList: value}
+	return &SeekPaginationDir{OrderByDirectionList: value}
 }
 
 func (s *SeekPaginationDir) UnmarshalJSON(data []byte) error {
 	var valueOrderByDirection OrderByDirection
 	if err := json.Unmarshal(data, &valueOrderByDirection); err == nil {
-		s.typeName = "orderByDirection"
 		s.OrderByDirection = valueOrderByDirection
 		return nil
 	}
 	var valueOrderByDirectionList []OrderByDirection
 	if err := json.Unmarshal(data, &valueOrderByDirectionList); err == nil {
-		s.typeName = "orderByDirectionList"
 		s.OrderByDirectionList = valueOrderByDirectionList
 		return nil
 	}
@@ -2836,14 +6110,13 @@ func (s *SeekPaginationDir) UnmarshalJSON(data []byte) error {
 }
 
 func (s SeekPaginationDir) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "orderByDirection":
+	if s.OrderByDirection != "" {
 		return json.Marshal(s.OrderByDirection)
-	case "orderByDirectionList":
+	}
+	if s.OrderByDirectionList != nil {
 		return json.Marshal(s.OrderByDirectionList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type SeekPaginationDirVisitor interface {
@@ -2852,40 +6125,36 @@ type SeekPaginationDirVisitor interface {
 }
 
 func (s *SeekPaginationDir) Accept(visitor SeekPaginationDirVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "orderByDirection":
+	if s.OrderByDirection != "" {
 		return visitor.VisitOrderByDirection(s.OrderByDirection)
-	case "orderByDirectionList":
+	}
+	if s.OrderByDirectionList != nil {
 		return visitor.VisitOrderByDirectionList(s.OrderByDirectionList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type SeekPaginationOrderBy struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewSeekPaginationOrderByFromString(value string) *SeekPaginationOrderBy {
-	return &SeekPaginationOrderBy{typeName: "string", String: value}
+	return &SeekPaginationOrderBy{String: value}
 }
 
 func NewSeekPaginationOrderByFromStringList(value []string) *SeekPaginationOrderBy {
-	return &SeekPaginationOrderBy{typeName: "stringList", StringList: value}
+	return &SeekPaginationOrderBy{StringList: value}
 }
 
 func (s *SeekPaginationOrderBy) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		s.typeName = "string"
 		s.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		s.typeName = "stringList"
 		s.StringList = valueStringList
 		return nil
 	}
@@ -2893,14 +6162,13 @@ func (s *SeekPaginationOrderBy) UnmarshalJSON(data []byte) error {
 }
 
 func (s SeekPaginationOrderBy) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
+	if s.String != "" {
 		return json.Marshal(s.String)
-	case "stringList":
+	}
+	if s.StringList != nil {
 		return json.Marshal(s.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type SeekPaginationOrderByVisitor interface {
@@ -2909,99 +6177,141 @@ type SeekPaginationOrderByVisitor interface {
 }
 
 func (s *SeekPaginationOrderBy) Accept(visitor SeekPaginationOrderByVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
+	if s.String != "" {
 		return visitor.VisitString(s.String)
-	case "stringList":
+	}
+	if s.StringList != nil {
 		return visitor.VisitStringList(s.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type ShopifyIntegrationConfigs struct {
-	WebhookSecretKey string                                    `json:"webhook_secret_key"`
-	RateLimitPeriod  *ShopifyIntegrationConfigsRateLimitPeriod `json:"rate_limit_period,omitempty"`
-	RateLimit        *float64                                  `json:"rate_limit,omitempty"`
-	ApiKey           *string                                   `json:"api_key,omitempty"`
-	ApiSecret        *string                                   `json:"api_secret,omitempty"`
-	Shop             *string                                   `json:"shop,omitempty"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
 }
 
-type ShopifyIntegrationConfigsRateLimitPeriod string
+func (s *ShopifyIntegrationConfigs) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
 
-const (
-	ShopifyIntegrationConfigsRateLimitPeriodMinute ShopifyIntegrationConfigsRateLimitPeriod = "minute"
-	ShopifyIntegrationConfigsRateLimitPeriodSecond ShopifyIntegrationConfigsRateLimitPeriod = "second"
-)
-
-func NewShopifyIntegrationConfigsRateLimitPeriodFromString(s string) (ShopifyIntegrationConfigsRateLimitPeriod, error) {
-	switch s {
-	case "minute":
-		return ShopifyIntegrationConfigsRateLimitPeriodMinute, nil
-	case "second":
-		return ShopifyIntegrationConfigsRateLimitPeriodSecond, nil
+func (s *ShopifyIntegrationConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler ShopifyIntegrationConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	var t ShopifyIntegrationConfigsRateLimitPeriod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+	*s = ShopifyIntegrationConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+
+	s._rawJSON = json.RawMessage(data)
+	return nil
 }
 
-func (s ShopifyIntegrationConfigsRateLimitPeriod) Ptr() *ShopifyIntegrationConfigsRateLimitPeriod {
-	return &s
+func (s *ShopifyIntegrationConfigs) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 // Request data
 type ShortEventData struct {
 	// Request path
-	Path string `json:"path"`
+	Path string `json:"path" url:"path"`
 	// Raw query param string
-	Query *string `json:"query,omitempty"`
+	Query *string `json:"query,omitempty" url:"query,omitempty"`
 	// JSON representation of query params
-	ParsedQuery *ShortEventDataParsedQuery `json:"parsed_query,omitempty"`
+	ParsedQuery *ShortEventDataParsedQuery `json:"parsed_query,omitempty" url:"parsed_query,omitempty"`
 	// JSON representation of the headers
-	Headers *ShortEventDataHeaders `json:"headers,omitempty"`
+	Headers *ShortEventDataHeaders `json:"headers,omitempty" url:"headers,omitempty"`
 	// JSON or string representation of the body
-	Body *ShortEventDataBody `json:"body,omitempty"`
+	Body *ShortEventDataBody `json:"body,omitempty" url:"body,omitempty"`
 	// Whether the payload is considered large payload and not searchable
-	IsLargePayload *bool `json:"is_large_payload,omitempty"`
+	IsLargePayload *bool `json:"is_large_payload,omitempty" url:"is_large_payload,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (s *ShortEventData) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *ShortEventData) UnmarshalJSON(data []byte) error {
+	type unmarshaler ShortEventData
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = ShortEventData(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *ShortEventData) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 // JSON or string representation of the body
 type ShortEventDataBody struct {
-	typeName              string
 	String                string
 	ShortEventDataBodyOne *ShortEventDataBodyOne
 	UnknownList           []interface{}
 }
 
 func NewShortEventDataBodyFromString(value string) *ShortEventDataBody {
-	return &ShortEventDataBody{typeName: "string", String: value}
+	return &ShortEventDataBody{String: value}
 }
 
 func NewShortEventDataBodyFromShortEventDataBodyOne(value *ShortEventDataBodyOne) *ShortEventDataBody {
-	return &ShortEventDataBody{typeName: "shortEventDataBodyOne", ShortEventDataBodyOne: value}
+	return &ShortEventDataBody{ShortEventDataBodyOne: value}
 }
 
 func NewShortEventDataBodyFromUnknownList(value []interface{}) *ShortEventDataBody {
-	return &ShortEventDataBody{typeName: "unknownList", UnknownList: value}
+	return &ShortEventDataBody{UnknownList: value}
 }
 
 func (s *ShortEventDataBody) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		s.typeName = "string"
 		s.String = valueString
 		return nil
 	}
 	valueShortEventDataBodyOne := new(ShortEventDataBodyOne)
 	if err := json.Unmarshal(data, &valueShortEventDataBodyOne); err == nil {
-		s.typeName = "shortEventDataBodyOne"
 		s.ShortEventDataBodyOne = valueShortEventDataBodyOne
 		return nil
 	}
 	var valueUnknownList []interface{}
 	if err := json.Unmarshal(data, &valueUnknownList); err == nil {
-		s.typeName = "unknownList"
 		s.UnknownList = valueUnknownList
 		return nil
 	}
@@ -3009,16 +6319,16 @@ func (s *ShortEventDataBody) UnmarshalJSON(data []byte) error {
 }
 
 func (s ShortEventDataBody) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
+	if s.String != "" {
 		return json.Marshal(s.String)
-	case "shortEventDataBodyOne":
+	}
+	if s.ShortEventDataBodyOne != nil {
 		return json.Marshal(s.ShortEventDataBodyOne)
-	case "unknownList":
+	}
+	if s.UnknownList != nil {
 		return json.Marshal(s.UnknownList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type ShortEventDataBodyVisitor interface {
@@ -3028,46 +6338,79 @@ type ShortEventDataBodyVisitor interface {
 }
 
 func (s *ShortEventDataBody) Accept(visitor ShortEventDataBodyVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
+	if s.String != "" {
 		return visitor.VisitString(s.String)
-	case "shortEventDataBodyOne":
+	}
+	if s.ShortEventDataBodyOne != nil {
 		return visitor.VisitShortEventDataBodyOne(s.ShortEventDataBodyOne)
-	case "unknownList":
+	}
+	if s.UnknownList != nil {
 		return visitor.VisitUnknownList(s.UnknownList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type ShortEventDataBodyOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (s *ShortEventDataBodyOne) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *ShortEventDataBodyOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler ShortEventDataBodyOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = ShortEventDataBodyOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *ShortEventDataBodyOne) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 // JSON representation of the headers
 type ShortEventDataHeaders struct {
-	typeName                string
 	String                  string
 	StringStringOptionalMap map[string]*string
 }
 
 func NewShortEventDataHeadersFromString(value string) *ShortEventDataHeaders {
-	return &ShortEventDataHeaders{typeName: "string", String: value}
+	return &ShortEventDataHeaders{String: value}
 }
 
 func NewShortEventDataHeadersFromStringStringOptionalMap(value map[string]*string) *ShortEventDataHeaders {
-	return &ShortEventDataHeaders{typeName: "stringStringOptionalMap", StringStringOptionalMap: value}
+	return &ShortEventDataHeaders{StringStringOptionalMap: value}
 }
 
 func (s *ShortEventDataHeaders) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		s.typeName = "string"
 		s.String = valueString
 		return nil
 	}
 	var valueStringStringOptionalMap map[string]*string
 	if err := json.Unmarshal(data, &valueStringStringOptionalMap); err == nil {
-		s.typeName = "stringStringOptionalMap"
 		s.StringStringOptionalMap = valueStringStringOptionalMap
 		return nil
 	}
@@ -3075,14 +6418,13 @@ func (s *ShortEventDataHeaders) UnmarshalJSON(data []byte) error {
 }
 
 func (s ShortEventDataHeaders) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
+	if s.String != "" {
 		return json.Marshal(s.String)
-	case "stringStringOptionalMap":
+	}
+	if s.StringStringOptionalMap != nil {
 		return json.Marshal(s.StringStringOptionalMap)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type ShortEventDataHeadersVisitor interface {
@@ -3091,41 +6433,37 @@ type ShortEventDataHeadersVisitor interface {
 }
 
 func (s *ShortEventDataHeaders) Accept(visitor ShortEventDataHeadersVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "string":
+	if s.String != "" {
 		return visitor.VisitString(s.String)
-	case "stringStringOptionalMap":
+	}
+	if s.StringStringOptionalMap != nil {
 		return visitor.VisitStringStringOptionalMap(s.StringStringOptionalMap)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 // JSON representation of query params
 type ShortEventDataParsedQuery struct {
-	typeName                     string
 	StringOptional               *string
 	ShortEventDataParsedQueryOne *ShortEventDataParsedQueryOne
 }
 
 func NewShortEventDataParsedQueryFromStringOptional(value *string) *ShortEventDataParsedQuery {
-	return &ShortEventDataParsedQuery{typeName: "stringOptional", StringOptional: value}
+	return &ShortEventDataParsedQuery{StringOptional: value}
 }
 
 func NewShortEventDataParsedQueryFromShortEventDataParsedQueryOne(value *ShortEventDataParsedQueryOne) *ShortEventDataParsedQuery {
-	return &ShortEventDataParsedQuery{typeName: "shortEventDataParsedQueryOne", ShortEventDataParsedQueryOne: value}
+	return &ShortEventDataParsedQuery{ShortEventDataParsedQueryOne: value}
 }
 
 func (s *ShortEventDataParsedQuery) UnmarshalJSON(data []byte) error {
 	var valueStringOptional *string
 	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		s.typeName = "stringOptional"
 		s.StringOptional = valueStringOptional
 		return nil
 	}
 	valueShortEventDataParsedQueryOne := new(ShortEventDataParsedQueryOne)
 	if err := json.Unmarshal(data, &valueShortEventDataParsedQueryOne); err == nil {
-		s.typeName = "shortEventDataParsedQueryOne"
 		s.ShortEventDataParsedQueryOne = valueShortEventDataParsedQueryOne
 		return nil
 	}
@@ -3133,14 +6471,13 @@ func (s *ShortEventDataParsedQuery) UnmarshalJSON(data []byte) error {
 }
 
 func (s ShortEventDataParsedQuery) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "stringOptional":
+	if s.StringOptional != nil {
 		return json.Marshal(s.StringOptional)
-	case "shortEventDataParsedQueryOne":
+	}
+	if s.ShortEventDataParsedQueryOne != nil {
 		return json.Marshal(s.ShortEventDataParsedQueryOne)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type ShortEventDataParsedQueryVisitor interface {
@@ -3149,40 +6486,138 @@ type ShortEventDataParsedQueryVisitor interface {
 }
 
 func (s *ShortEventDataParsedQuery) Accept(visitor ShortEventDataParsedQueryVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "stringOptional":
+	if s.StringOptional != nil {
 		return visitor.VisitStringOptional(s.StringOptional)
-	case "shortEventDataParsedQueryOne":
+	}
+	if s.ShortEventDataParsedQueryOne != nil {
 		return visitor.VisitShortEventDataParsedQueryOne(s.ShortEventDataParsedQueryOne)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", s)
 }
 
 type ShortEventDataParsedQueryOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (s *ShortEventDataParsedQueryOne) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *ShortEventDataParsedQueryOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler ShortEventDataParsedQueryOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = ShortEventDataParsedQueryOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *ShortEventDataParsedQueryOne) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 // Associated [Source](#source-object) object
 type Source struct {
 	// ID of the source
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// Name for the source
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// Description of the source
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitempty" url:"description,omitempty"`
 	// ID of the project
-	TeamId string `json:"team_id"`
+	TeamId string `json:"team_id" url:"team_id"`
 	// A unique URL that must be supplied to your webhook's provider
-	Url                string                   `json:"url"`
-	Verification       *SourceVerification      `json:"verification,omitempty"`
-	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty"`
-	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty"`
+	Url                string                   `json:"url" url:"url"`
+	Verification       *VerificationConfig      `json:"verification,omitempty" url:"verification,omitempty"`
+	AllowedHttpMethods *SourceAllowedHttpMethod `json:"allowed_http_methods,omitempty" url:"allowed_http_methods,omitempty"`
+	CustomResponse     *SourceCustomResponse    `json:"custom_response,omitempty" url:"custom_response,omitempty"`
 	// Date the source was disabled
-	DisabledAt *time.Time `json:"disabled_at,omitempty"`
+	DisabledAt *time.Time `json:"disabled_at,omitempty" url:"disabled_at,omitempty"`
 	// Date the source was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the source was created
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (s *Source) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *Source) UnmarshalJSON(data []byte) error {
+	type embed Source
+	var unmarshaler = struct {
+		embed
+		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*s),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*s = Source(unmarshaler.embed)
+	s.DisabledAt = unmarshaler.DisabledAt.TimePtr()
+	s.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	s.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *Source) MarshalJSON() ([]byte, error) {
+	type embed Source
+	var marshaler = struct {
+		embed
+		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
+		UpdatedAt  *core.DateTime `json:"updated_at"`
+		CreatedAt  *core.DateTime `json:"created_at"`
+	}{
+		embed:      embed(*s),
+		DisabledAt: core.NewOptionalDateTime(s.DisabledAt),
+		UpdatedAt:  core.NewDateTime(s.UpdatedAt),
+		CreatedAt:  core.NewDateTime(s.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (s *Source) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 // List of allowed HTTP methods. Defaults to PUT, POST, PATCH, DELETE.
@@ -3221,9 +6656,46 @@ func (s SourceAllowedHttpMethodItem) Ptr() *SourceAllowedHttpMethodItem {
 
 // Custom response object
 type SourceCustomResponse struct {
-	ContentType SourceCustomResponseContentType `json:"content_type,omitempty"`
+	ContentType SourceCustomResponseContentType `json:"content_type" url:"content_type"`
 	// Body of the custom response
-	Body string `json:"body"`
+	Body string `json:"body" url:"body"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (s *SourceCustomResponse) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
+}
+
+func (s *SourceCustomResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler SourceCustomResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*s = SourceCustomResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
+	}
+	s.extraProperties = extraProperties
+
+	s._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (s *SourceCustomResponse) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", s)
 }
 
 // Content type of the custom response
@@ -3253,75 +6725,89 @@ func (s SourceCustomResponseContentType) Ptr() *SourceCustomResponseContentType 
 }
 
 type SourcePaginatedResult struct {
-	Pagination *SeekPagination `json:"pagination,omitempty"`
-	Count      *int            `json:"count,omitempty"`
-	Models     []*Source       `json:"models,omitempty"`
+	Pagination *SeekPagination `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int            `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*Source       `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
 }
 
-type SourceVerification struct {
-	typeName              string
-	VerificationConfig    *VerificationConfig
-	SourceVerificationOne *SourceVerificationOne
+func (s *SourcePaginatedResult) GetExtraProperties() map[string]interface{} {
+	return s.extraProperties
 }
 
-func NewSourceVerificationFromVerificationConfig(value *VerificationConfig) *SourceVerification {
-	return &SourceVerification{typeName: "verificationConfig", VerificationConfig: value}
-}
-
-func NewSourceVerificationFromSourceVerificationOne(value *SourceVerificationOne) *SourceVerification {
-	return &SourceVerification{typeName: "sourceVerificationOne", SourceVerificationOne: value}
-}
-
-func (s *SourceVerification) UnmarshalJSON(data []byte) error {
-	valueVerificationConfig := new(VerificationConfig)
-	if err := json.Unmarshal(data, &valueVerificationConfig); err == nil {
-		s.typeName = "verificationConfig"
-		s.VerificationConfig = valueVerificationConfig
-		return nil
+func (s *SourcePaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler SourcePaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	valueSourceVerificationOne := new(SourceVerificationOne)
-	if err := json.Unmarshal(data, &valueSourceVerificationOne); err == nil {
-		s.typeName = "sourceVerificationOne"
-		s.SourceVerificationOne = valueSourceVerificationOne
-		return nil
+	*s = SourcePaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *s)
+	if err != nil {
+		return err
 	}
-	return fmt.Errorf("%s cannot be deserialized as a %T", data, s)
+	s.extraProperties = extraProperties
+
+	s._rawJSON = json.RawMessage(data)
+	return nil
 }
 
-func (s SourceVerification) MarshalJSON() ([]byte, error) {
-	switch s.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "verificationConfig":
-		return json.Marshal(s.VerificationConfig)
-	case "sourceVerificationOne":
-		return json.Marshal(s.SourceVerificationOne)
+func (s *SourcePaginatedResult) String() string {
+	if len(s._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(s._rawJSON); err == nil {
+			return value
+		}
 	}
-}
-
-type SourceVerificationVisitor interface {
-	VisitVerificationConfig(*VerificationConfig) error
-	VisitSourceVerificationOne(*SourceVerificationOne) error
-}
-
-func (s *SourceVerification) Accept(visitor SourceVerificationVisitor) error {
-	switch s.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", s.typeName, s)
-	case "verificationConfig":
-		return visitor.VisitVerificationConfig(s.VerificationConfig)
-	case "sourceVerificationOne":
-		return visitor.VisitSourceVerificationOne(s.SourceVerificationOne)
+	if value, err := core.StringifyJSON(s); err == nil {
+		return value
 	}
-}
-
-type SourceVerificationOne struct {
+	return fmt.Sprintf("%#v", s)
 }
 
 type ToggleWebhookNotifications struct {
-	Enabled  bool          `json:"enabled"`
-	Topics   []TopicsValue `json:"topics,omitempty"`
-	SourceId string        `json:"source_id"`
+	Enabled  bool          `json:"enabled" url:"enabled"`
+	Topics   []TopicsValue `json:"topics,omitempty" url:"topics,omitempty"`
+	SourceId string        `json:"source_id" url:"source_id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *ToggleWebhookNotifications) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *ToggleWebhookNotifications) UnmarshalJSON(data []byte) error {
+	type unmarshaler ToggleWebhookNotifications
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = ToggleWebhookNotifications(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *ToggleWebhookNotifications) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 // Supported topics
@@ -3355,54 +6841,247 @@ func (t TopicsValue) Ptr() *TopicsValue {
 
 type TransformRule struct {
 	// ID of the attached transformation object. Optional input, always set once the rule is defined
-	TransformationId *string `json:"transformation_id,omitempty"`
+	TransformationId *string `json:"transformation_id,omitempty" url:"transformation_id,omitempty"`
 	// You can optionally define a new transformation while creating a transform rule
-	Transformation *TransformRuleTransformation `json:"transformation,omitempty"`
+	Transformation *TransformRuleTransformation `json:"transformation,omitempty" url:"transformation,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformRule) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformRule) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformRule
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformRule(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformRule) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 // You can optionally define a new transformation while creating a transform rule
 type TransformRuleTransformation struct {
 	// The unique name of the transformation
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// A string representation of your JavaScript (ES6) code to run
-	Code string `json:"code"`
+	Code string `json:"code" url:"code"`
 	// A key-value object of environment variables to encrypt and expose to your transformation code
-	Env map[string]*string `json:"env,omitempty"`
+	Env map[string]*string `json:"env,omitempty" url:"env,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformRuleTransformation) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformRuleTransformation) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformRuleTransformation
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformRuleTransformation(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformRuleTransformation) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type Transformation struct {
 	// ID of the transformation
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string `json:"team_id"`
+	TeamId string `json:"team_id" url:"team_id"`
 	// A unique, human-friendly name for the transformation
-	Name string `json:"name"`
+	Name string `json:"name" url:"name"`
 	// JavaScript code to be executed
-	Code         string  `json:"code"`
-	EncryptedEnv *string `json:"encrypted_env,omitempty"`
-	Iv           *string `json:"iv,omitempty"`
+	Code         string  `json:"code" url:"code"`
+	EncryptedEnv *string `json:"encrypted_env,omitempty" url:"encrypted_env,omitempty"`
+	Iv           *string `json:"iv,omitempty" url:"iv,omitempty"`
 	// Key-value environment variables to be passed to the transformation
-	Env map[string]*string `json:"env,omitempty"`
+	Env map[string]*string `json:"env,omitempty" url:"env,omitempty"`
 	// Date the transformation was last updated
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at" url:"updated_at"`
 	// Date the transformation was created
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" url:"created_at"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *Transformation) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *Transformation) UnmarshalJSON(data []byte) error {
+	type embed Transformation
+	var unmarshaler = struct {
+		embed
+		UpdatedAt *core.DateTime `json:"updated_at"`
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*t),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*t = Transformation(unmarshaler.embed)
+	t.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	t.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *Transformation) MarshalJSON() ([]byte, error) {
+	type embed Transformation
+	var marshaler = struct {
+		embed
+		UpdatedAt *core.DateTime `json:"updated_at"`
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*t),
+		UpdatedAt: core.NewDateTime(t.UpdatedAt),
+		CreatedAt: core.NewDateTime(t.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (t *Transformation) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type TransformationExecution struct {
-	Id                     string                          `json:"id"`
-	TransformedEventDataId string                          `json:"transformed_event_data_id"`
-	OriginalEventDataId    string                          `json:"original_event_data_id"`
-	TransformationId       string                          `json:"transformation_id"`
-	TeamId                 string                          `json:"team_id"`
-	WebhookId              string                          `json:"webhook_id"`
-	LogLevel               TransformationExecutionLogLevel `json:"log_level,omitempty"`
-	Logs                   []*ConsoleLine                  `json:"logs,omitempty"`
-	UpdatedAt              time.Time                       `json:"updated_at"`
-	CreatedAt              time.Time                       `json:"created_at"`
-	OriginalEventData      *ShortEventData                 `json:"original_event_data,omitempty"`
-	TransformedEventData   *ShortEventData                 `json:"transformed_event_data,omitempty"`
-	IssueId                *string                         `json:"issue_id,omitempty"`
+	Id                     string `json:"id" url:"id"`
+	TransformedEventDataId string `json:"transformed_event_data_id" url:"transformed_event_data_id"`
+	OriginalEventDataId    string `json:"original_event_data_id" url:"original_event_data_id"`
+	TransformationId       string `json:"transformation_id" url:"transformation_id"`
+	// ID of the project
+	TeamId               string                          `json:"team_id" url:"team_id"`
+	WebhookId            string                          `json:"webhook_id" url:"webhook_id"`
+	LogLevel             TransformationExecutionLogLevel `json:"log_level" url:"log_level"`
+	Logs                 []*ConsoleLine                  `json:"logs,omitempty" url:"logs,omitempty"`
+	UpdatedAt            time.Time                       `json:"updated_at" url:"updated_at"`
+	CreatedAt            time.Time                       `json:"created_at" url:"created_at"`
+	OriginalEventData    *ShortEventData                 `json:"original_event_data,omitempty" url:"original_event_data,omitempty"`
+	TransformedEventData *ShortEventData                 `json:"transformed_event_data,omitempty" url:"transformed_event_data,omitempty"`
+	IssueId              *string                         `json:"issue_id,omitempty" url:"issue_id,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationExecution) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationExecution) UnmarshalJSON(data []byte) error {
+	type embed TransformationExecution
+	var unmarshaler = struct {
+		embed
+		UpdatedAt *core.DateTime `json:"updated_at"`
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed: embed(*t),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*t = TransformationExecution(unmarshaler.embed)
+	t.UpdatedAt = unmarshaler.UpdatedAt.Time()
+	t.CreatedAt = unmarshaler.CreatedAt.Time()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationExecution) MarshalJSON() ([]byte, error) {
+	type embed TransformationExecution
+	var marshaler = struct {
+		embed
+		UpdatedAt *core.DateTime `json:"updated_at"`
+		CreatedAt *core.DateTime `json:"created_at"`
+	}{
+		embed:     embed(*t),
+		UpdatedAt: core.NewDateTime(t.UpdatedAt),
+		CreatedAt: core.NewDateTime(t.CreatedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (t *TransformationExecution) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 // The minimum log level to open the issue on
@@ -3438,52 +7117,160 @@ func (t TransformationExecutionLogLevel) Ptr() *TransformationExecutionLogLevel 
 }
 
 type TransformationExecutionPaginatedResult struct {
-	Pagination *SeekPagination            `json:"pagination,omitempty"`
-	Count      *int                       `json:"count,omitempty"`
-	Models     []*TransformationExecution `json:"models,omitempty"`
+	Pagination *SeekPagination            `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int                       `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*TransformationExecution `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationExecutionPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationExecutionPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationExecutionPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationExecutionPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationExecutionPaginatedResult) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type TransformationExecutorOutput struct {
-	RequestId        *string                              `json:"request_id,omitempty"`
-	TransformationId *string                              `json:"transformation_id,omitempty"`
-	ExecutionId      *string                              `json:"execution_id,omitempty"`
-	LogLevel         TransformationExecutionLogLevel      `json:"log_level,omitempty"`
-	Request          *TransformationExecutorOutputRequest `json:"request,omitempty"`
-	Console          []*ConsoleLine                       `json:"console,omitempty"`
+	RequestId        *string                              `json:"request_id,omitempty" url:"request_id,omitempty"`
+	TransformationId *string                              `json:"transformation_id,omitempty" url:"transformation_id,omitempty"`
+	ExecutionId      *string                              `json:"execution_id,omitempty" url:"execution_id,omitempty"`
+	LogLevel         TransformationExecutionLogLevel      `json:"log_level" url:"log_level"`
+	Request          *TransformationExecutorOutputRequest `json:"request,omitempty" url:"request,omitempty"`
+	Console          []*ConsoleLine                       `json:"console,omitempty" url:"console,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationExecutorOutput) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationExecutorOutput) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationExecutorOutput
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationExecutorOutput(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationExecutorOutput) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type TransformationExecutorOutputRequest struct {
-	Headers     *TransformationExecutorOutputRequestHeaders     `json:"headers,omitempty"`
-	Path        string                                          `json:"path"`
-	Query       *TransformationExecutorOutputRequestQuery       `json:"query,omitempty"`
-	ParsedQuery *TransformationExecutorOutputRequestParsedQuery `json:"parsed_query,omitempty"`
-	Body        *TransformationExecutorOutputRequestBody        `json:"body,omitempty"`
+	Headers     *TransformationExecutorOutputRequestHeaders     `json:"headers,omitempty" url:"headers,omitempty"`
+	Path        string                                          `json:"path" url:"path"`
+	Query       *TransformationExecutorOutputRequestQuery       `json:"query,omitempty" url:"query,omitempty"`
+	ParsedQuery *TransformationExecutorOutputRequestParsedQuery `json:"parsed_query,omitempty" url:"parsed_query,omitempty"`
+	Body        *TransformationExecutorOutputRequestBody        `json:"body,omitempty" url:"body,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationExecutorOutputRequest) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationExecutorOutputRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationExecutorOutputRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationExecutorOutputRequest(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationExecutorOutputRequest) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type TransformationExecutorOutputRequestBody struct {
-	typeName                                   string
 	StringOptional                             *string
 	TransformationExecutorOutputRequestBodyOne *TransformationExecutorOutputRequestBodyOne
 }
 
 func NewTransformationExecutorOutputRequestBodyFromStringOptional(value *string) *TransformationExecutorOutputRequestBody {
-	return &TransformationExecutorOutputRequestBody{typeName: "stringOptional", StringOptional: value}
+	return &TransformationExecutorOutputRequestBody{StringOptional: value}
 }
 
 func NewTransformationExecutorOutputRequestBodyFromTransformationExecutorOutputRequestBodyOne(value *TransformationExecutorOutputRequestBodyOne) *TransformationExecutorOutputRequestBody {
-	return &TransformationExecutorOutputRequestBody{typeName: "transformationExecutorOutputRequestBodyOne", TransformationExecutorOutputRequestBodyOne: value}
+	return &TransformationExecutorOutputRequestBody{TransformationExecutorOutputRequestBodyOne: value}
 }
 
 func (t *TransformationExecutorOutputRequestBody) UnmarshalJSON(data []byte) error {
 	var valueStringOptional *string
 	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		t.typeName = "stringOptional"
 		t.StringOptional = valueStringOptional
 		return nil
 	}
 	valueTransformationExecutorOutputRequestBodyOne := new(TransformationExecutorOutputRequestBodyOne)
 	if err := json.Unmarshal(data, &valueTransformationExecutorOutputRequestBodyOne); err == nil {
-		t.typeName = "transformationExecutorOutputRequestBodyOne"
 		t.TransformationExecutorOutputRequestBodyOne = valueTransformationExecutorOutputRequestBodyOne
 		return nil
 	}
@@ -3491,14 +7278,13 @@ func (t *TransformationExecutorOutputRequestBody) UnmarshalJSON(data []byte) err
 }
 
 func (t TransformationExecutorOutputRequestBody) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "stringOptional":
+	if t.StringOptional != nil {
 		return json.Marshal(t.StringOptional)
-	case "transformationExecutorOutputRequestBodyOne":
+	}
+	if t.TransformationExecutorOutputRequestBodyOne != nil {
 		return json.Marshal(t.TransformationExecutorOutputRequestBodyOne)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationExecutorOutputRequestBodyVisitor interface {
@@ -3507,43 +7293,75 @@ type TransformationExecutorOutputRequestBodyVisitor interface {
 }
 
 func (t *TransformationExecutorOutputRequestBody) Accept(visitor TransformationExecutorOutputRequestBodyVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "stringOptional":
+	if t.StringOptional != nil {
 		return visitor.VisitStringOptional(t.StringOptional)
-	case "transformationExecutorOutputRequestBodyOne":
+	}
+	if t.TransformationExecutorOutputRequestBodyOne != nil {
 		return visitor.VisitTransformationExecutorOutputRequestBodyOne(t.TransformationExecutorOutputRequestBodyOne)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationExecutorOutputRequestBodyOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationExecutorOutputRequestBodyOne) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationExecutorOutputRequestBodyOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationExecutorOutputRequestBodyOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationExecutorOutputRequestBodyOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationExecutorOutputRequestBodyOne) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type TransformationExecutorOutputRequestHeaders struct {
-	typeName         string
 	String           string
 	StringUnknownMap map[string]interface{}
 }
 
 func NewTransformationExecutorOutputRequestHeadersFromString(value string) *TransformationExecutorOutputRequestHeaders {
-	return &TransformationExecutorOutputRequestHeaders{typeName: "string", String: value}
+	return &TransformationExecutorOutputRequestHeaders{String: value}
 }
 
 func NewTransformationExecutorOutputRequestHeadersFromStringUnknownMap(value map[string]interface{}) *TransformationExecutorOutputRequestHeaders {
-	return &TransformationExecutorOutputRequestHeaders{typeName: "stringUnknownMap", StringUnknownMap: value}
+	return &TransformationExecutorOutputRequestHeaders{StringUnknownMap: value}
 }
 
 func (t *TransformationExecutorOutputRequestHeaders) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		t.typeName = "string"
 		t.String = valueString
 		return nil
 	}
 	var valueStringUnknownMap map[string]interface{}
 	if err := json.Unmarshal(data, &valueStringUnknownMap); err == nil {
-		t.typeName = "stringUnknownMap"
 		t.StringUnknownMap = valueStringUnknownMap
 		return nil
 	}
@@ -3551,14 +7369,13 @@ func (t *TransformationExecutorOutputRequestHeaders) UnmarshalJSON(data []byte) 
 }
 
 func (t TransformationExecutorOutputRequestHeaders) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
+	if t.String != "" {
 		return json.Marshal(t.String)
-	case "stringUnknownMap":
+	}
+	if t.StringUnknownMap != nil {
 		return json.Marshal(t.StringUnknownMap)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationExecutorOutputRequestHeadersVisitor interface {
@@ -3567,40 +7384,36 @@ type TransformationExecutorOutputRequestHeadersVisitor interface {
 }
 
 func (t *TransformationExecutorOutputRequestHeaders) Accept(visitor TransformationExecutorOutputRequestHeadersVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "string":
+	if t.String != "" {
 		return visitor.VisitString(t.String)
-	case "stringUnknownMap":
+	}
+	if t.StringUnknownMap != nil {
 		return visitor.VisitStringUnknownMap(t.StringUnknownMap)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationExecutorOutputRequestParsedQuery struct {
-	typeName                                          string
 	StringOptional                                    *string
 	TransformationExecutorOutputRequestParsedQueryOne *TransformationExecutorOutputRequestParsedQueryOne
 }
 
 func NewTransformationExecutorOutputRequestParsedQueryFromStringOptional(value *string) *TransformationExecutorOutputRequestParsedQuery {
-	return &TransformationExecutorOutputRequestParsedQuery{typeName: "stringOptional", StringOptional: value}
+	return &TransformationExecutorOutputRequestParsedQuery{StringOptional: value}
 }
 
 func NewTransformationExecutorOutputRequestParsedQueryFromTransformationExecutorOutputRequestParsedQueryOne(value *TransformationExecutorOutputRequestParsedQueryOne) *TransformationExecutorOutputRequestParsedQuery {
-	return &TransformationExecutorOutputRequestParsedQuery{typeName: "transformationExecutorOutputRequestParsedQueryOne", TransformationExecutorOutputRequestParsedQueryOne: value}
+	return &TransformationExecutorOutputRequestParsedQuery{TransformationExecutorOutputRequestParsedQueryOne: value}
 }
 
 func (t *TransformationExecutorOutputRequestParsedQuery) UnmarshalJSON(data []byte) error {
 	var valueStringOptional *string
 	if err := json.Unmarshal(data, &valueStringOptional); err == nil {
-		t.typeName = "stringOptional"
 		t.StringOptional = valueStringOptional
 		return nil
 	}
 	valueTransformationExecutorOutputRequestParsedQueryOne := new(TransformationExecutorOutputRequestParsedQueryOne)
 	if err := json.Unmarshal(data, &valueTransformationExecutorOutputRequestParsedQueryOne); err == nil {
-		t.typeName = "transformationExecutorOutputRequestParsedQueryOne"
 		t.TransformationExecutorOutputRequestParsedQueryOne = valueTransformationExecutorOutputRequestParsedQueryOne
 		return nil
 	}
@@ -3608,14 +7421,13 @@ func (t *TransformationExecutorOutputRequestParsedQuery) UnmarshalJSON(data []by
 }
 
 func (t TransformationExecutorOutputRequestParsedQuery) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "stringOptional":
+	if t.StringOptional != nil {
 		return json.Marshal(t.StringOptional)
-	case "transformationExecutorOutputRequestParsedQueryOne":
+	}
+	if t.TransformationExecutorOutputRequestParsedQueryOne != nil {
 		return json.Marshal(t.TransformationExecutorOutputRequestParsedQueryOne)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationExecutorOutputRequestParsedQueryVisitor interface {
@@ -3624,43 +7436,75 @@ type TransformationExecutorOutputRequestParsedQueryVisitor interface {
 }
 
 func (t *TransformationExecutorOutputRequestParsedQuery) Accept(visitor TransformationExecutorOutputRequestParsedQueryVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "stringOptional":
+	if t.StringOptional != nil {
 		return visitor.VisitStringOptional(t.StringOptional)
-	case "transformationExecutorOutputRequestParsedQueryOne":
+	}
+	if t.TransformationExecutorOutputRequestParsedQueryOne != nil {
 		return visitor.VisitTransformationExecutorOutputRequestParsedQueryOne(t.TransformationExecutorOutputRequestParsedQueryOne)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationExecutorOutputRequestParsedQueryOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationExecutorOutputRequestParsedQueryOne) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationExecutorOutputRequestParsedQueryOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationExecutorOutputRequestParsedQueryOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationExecutorOutputRequestParsedQueryOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationExecutorOutputRequestParsedQueryOne) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type TransformationExecutorOutputRequestQuery struct {
-	typeName                                             string
 	TransformationExecutorOutputRequestQueryZeroOptional *TransformationExecutorOutputRequestQueryZero
 	String                                               string
 }
 
 func NewTransformationExecutorOutputRequestQueryFromTransformationExecutorOutputRequestQueryZeroOptional(value *TransformationExecutorOutputRequestQueryZero) *TransformationExecutorOutputRequestQuery {
-	return &TransformationExecutorOutputRequestQuery{typeName: "transformationExecutorOutputRequestQueryZeroOptional", TransformationExecutorOutputRequestQueryZeroOptional: value}
+	return &TransformationExecutorOutputRequestQuery{TransformationExecutorOutputRequestQueryZeroOptional: value}
 }
 
 func NewTransformationExecutorOutputRequestQueryFromString(value string) *TransformationExecutorOutputRequestQuery {
-	return &TransformationExecutorOutputRequestQuery{typeName: "string", String: value}
+	return &TransformationExecutorOutputRequestQuery{String: value}
 }
 
 func (t *TransformationExecutorOutputRequestQuery) UnmarshalJSON(data []byte) error {
 	var valueTransformationExecutorOutputRequestQueryZeroOptional *TransformationExecutorOutputRequestQueryZero
 	if err := json.Unmarshal(data, &valueTransformationExecutorOutputRequestQueryZeroOptional); err == nil {
-		t.typeName = "transformationExecutorOutputRequestQueryZeroOptional"
 		t.TransformationExecutorOutputRequestQueryZeroOptional = valueTransformationExecutorOutputRequestQueryZeroOptional
 		return nil
 	}
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		t.typeName = "string"
 		t.String = valueString
 		return nil
 	}
@@ -3668,14 +7512,13 @@ func (t *TransformationExecutorOutputRequestQuery) UnmarshalJSON(data []byte) er
 }
 
 func (t TransformationExecutorOutputRequestQuery) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "transformationExecutorOutputRequestQueryZeroOptional":
+	if t.TransformationExecutorOutputRequestQueryZeroOptional != nil {
 		return json.Marshal(t.TransformationExecutorOutputRequestQueryZeroOptional)
-	case "string":
+	}
+	if t.String != "" {
 		return json.Marshal(t.String)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationExecutorOutputRequestQueryVisitor interface {
@@ -3684,188 +7527,1252 @@ type TransformationExecutorOutputRequestQueryVisitor interface {
 }
 
 func (t *TransformationExecutorOutputRequestQuery) Accept(visitor TransformationExecutorOutputRequestQueryVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "transformationExecutorOutputRequestQueryZeroOptional":
+	if t.TransformationExecutorOutputRequestQueryZeroOptional != nil {
 		return visitor.VisitTransformationExecutorOutputRequestQueryZeroOptional(t.TransformationExecutorOutputRequestQueryZeroOptional)
-	case "string":
+	}
+	if t.String != "" {
 		return visitor.VisitString(t.String)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationExecutorOutputRequestQueryZero struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationExecutorOutputRequestQueryZero) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationExecutorOutputRequestQueryZero) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationExecutorOutputRequestQueryZero
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationExecutorOutputRequestQueryZero(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationExecutorOutputRequestQueryZero) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type TransformationFailedMeta struct {
-	TransformationId string `json:"transformation_id"`
+	TransformationId string `json:"transformation_id" url:"transformation_id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationFailedMeta) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationFailedMeta) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationFailedMeta
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationFailedMeta(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationFailedMeta) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 // Transformation issue
 type TransformationIssue struct {
 	// Issue ID
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string      `json:"team_id"`
-	Status IssueStatus `json:"status,omitempty"`
+	TeamId string      `json:"team_id" url:"team_id"`
+	Status IssueStatus `json:"status" url:"status"`
 	// ISO timestamp for when the issue was last opened
-	OpenedAt time.Time `json:"opened_at"`
+	OpenedAt time.Time `json:"opened_at" url:"opened_at"`
 	// ISO timestamp for when the issue was first opened
-	FirstSeenAt time.Time `json:"first_seen_at"`
+	FirstSeenAt time.Time `json:"first_seen_at" url:"first_seen_at"`
 	// ISO timestamp for when the issue last occured
-	LastSeenAt time.Time `json:"last_seen_at"`
+	LastSeenAt time.Time `json:"last_seen_at" url:"last_seen_at"`
 	// Deprecated, will always be set to null
-	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
+	LastUpdatedBy *string `json:"last_updated_by,omitempty" url:"last_updated_by,omitempty"`
 	// ISO timestamp for when the issue was dismissed
-	DismissedAt    *time.Time `json:"dismissed_at,omitempty"`
-	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty"`
-	MergedWith     *string    `json:"merged_with,omitempty"`
+	DismissedAt    *time.Time `json:"dismissed_at,omitempty" url:"dismissed_at,omitempty"`
+	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty" url:"auto_resolved_at,omitempty"`
+	MergedWith     *string    `json:"merged_with,omitempty" url:"merged_with,omitempty"`
 	// ISO timestamp for when the issue was last updated
-	UpdatedAt string `json:"updated_at"`
+	UpdatedAt string `json:"updated_at" url:"updated_at"`
 	// ISO timestamp for when the issue was created
-	CreatedAt       string                              `json:"created_at"`
-	AggregationKeys *TransformationIssueAggregationKeys `json:"aggregation_keys,omitempty"`
-	Reference       *TransformationIssueReference       `json:"reference,omitempty"`
+	CreatedAt       string                              `json:"created_at" url:"created_at"`
+	AggregationKeys *TransformationIssueAggregationKeys `json:"aggregation_keys,omitempty" url:"aggregation_keys,omitempty"`
+	Reference       *TransformationIssueReference       `json:"reference,omitempty" url:"reference,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationIssue) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationIssue) UnmarshalJSON(data []byte) error {
+	type embed TransformationIssue
+	var unmarshaler = struct {
+		embed
+		OpenedAt       *core.DateTime `json:"opened_at"`
+		FirstSeenAt    *core.DateTime `json:"first_seen_at"`
+		LastSeenAt     *core.DateTime `json:"last_seen_at"`
+		DismissedAt    *core.DateTime `json:"dismissed_at,omitempty"`
+		AutoResolvedAt *core.DateTime `json:"auto_resolved_at,omitempty"`
+	}{
+		embed: embed(*t),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*t = TransformationIssue(unmarshaler.embed)
+	t.OpenedAt = unmarshaler.OpenedAt.Time()
+	t.FirstSeenAt = unmarshaler.FirstSeenAt.Time()
+	t.LastSeenAt = unmarshaler.LastSeenAt.Time()
+	t.DismissedAt = unmarshaler.DismissedAt.TimePtr()
+	t.AutoResolvedAt = unmarshaler.AutoResolvedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationIssue) MarshalJSON() ([]byte, error) {
+	type embed TransformationIssue
+	var marshaler = struct {
+		embed
+		OpenedAt       *core.DateTime `json:"opened_at"`
+		FirstSeenAt    *core.DateTime `json:"first_seen_at"`
+		LastSeenAt     *core.DateTime `json:"last_seen_at"`
+		DismissedAt    *core.DateTime `json:"dismissed_at,omitempty"`
+		AutoResolvedAt *core.DateTime `json:"auto_resolved_at,omitempty"`
+	}{
+		embed:          embed(*t),
+		OpenedAt:       core.NewDateTime(t.OpenedAt),
+		FirstSeenAt:    core.NewDateTime(t.FirstSeenAt),
+		LastSeenAt:     core.NewDateTime(t.LastSeenAt),
+		DismissedAt:    core.NewOptionalDateTime(t.DismissedAt),
+		AutoResolvedAt: core.NewOptionalDateTime(t.AutoResolvedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (t *TransformationIssue) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 // Keys used as the aggregation keys a 'transformation' type issue
 type TransformationIssueAggregationKeys struct {
-	TransformationId []string                        `json:"transformation_id,omitempty"`
-	LogLevel         TransformationExecutionLogLevel `json:"log_level,omitempty"`
+	TransformationId []string                        `json:"transformation_id,omitempty" url:"transformation_id,omitempty"`
+	LogLevel         TransformationExecutionLogLevel `json:"log_level" url:"log_level"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationIssueAggregationKeys) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationIssueAggregationKeys) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationIssueAggregationKeys
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationIssueAggregationKeys(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationIssueAggregationKeys) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 // Transformation issue data
 type TransformationIssueData struct {
-	TransformationExecution *TransformationExecution `json:"transformation_execution,omitempty"`
-	TriggerAttempt          *EventAttempt            `json:"trigger_attempt,omitempty"`
+	TransformationExecution *TransformationExecution `json:"transformation_execution,omitempty" url:"transformation_execution,omitempty"`
+	TriggerAttempt          *EventAttempt            `json:"trigger_attempt,omitempty" url:"trigger_attempt,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationIssueData) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationIssueData) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationIssueData
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationIssueData(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationIssueData) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 // Reference to the event request transformation an issue is being created for.
 type TransformationIssueReference struct {
-	TransformationExecutionId string `json:"transformation_execution_id"`
+	TransformationExecutionId string `json:"transformation_execution_id" url:"transformation_execution_id"`
 	// Deprecated but still found on historical issues
-	TriggerEventRequestTransformationId *string `json:"trigger_event_request_transformation_id,omitempty"`
+	TriggerEventRequestTransformationId *string `json:"trigger_event_request_transformation_id,omitempty" url:"trigger_event_request_transformation_id,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationIssueReference) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationIssueReference) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationIssueReference
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationIssueReference(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationIssueReference) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 // Transformation issue
 type TransformationIssueWithData struct {
 	// Issue ID
-	Id string `json:"id"`
+	Id string `json:"id" url:"id"`
 	// ID of the project
-	TeamId string      `json:"team_id"`
-	Status IssueStatus `json:"status,omitempty"`
+	TeamId string      `json:"team_id" url:"team_id"`
+	Status IssueStatus `json:"status" url:"status"`
 	// ISO timestamp for when the issue was last opened
-	OpenedAt time.Time `json:"opened_at"`
+	OpenedAt time.Time `json:"opened_at" url:"opened_at"`
 	// ISO timestamp for when the issue was first opened
-	FirstSeenAt time.Time `json:"first_seen_at"`
+	FirstSeenAt time.Time `json:"first_seen_at" url:"first_seen_at"`
 	// ISO timestamp for when the issue last occured
-	LastSeenAt time.Time `json:"last_seen_at"`
+	LastSeenAt time.Time `json:"last_seen_at" url:"last_seen_at"`
 	// Deprecated, will always be set to null
-	LastUpdatedBy *string `json:"last_updated_by,omitempty"`
+	LastUpdatedBy *string `json:"last_updated_by,omitempty" url:"last_updated_by,omitempty"`
 	// ISO timestamp for when the issue was dismissed
-	DismissedAt    *time.Time `json:"dismissed_at,omitempty"`
-	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty"`
-	MergedWith     *string    `json:"merged_with,omitempty"`
+	DismissedAt    *time.Time `json:"dismissed_at,omitempty" url:"dismissed_at,omitempty"`
+	AutoResolvedAt *time.Time `json:"auto_resolved_at,omitempty" url:"auto_resolved_at,omitempty"`
+	MergedWith     *string    `json:"merged_with,omitempty" url:"merged_with,omitempty"`
 	// ISO timestamp for when the issue was last updated
-	UpdatedAt string `json:"updated_at"`
+	UpdatedAt string `json:"updated_at" url:"updated_at"`
 	// ISO timestamp for when the issue was created
-	CreatedAt       string                              `json:"created_at"`
-	AggregationKeys *TransformationIssueAggregationKeys `json:"aggregation_keys,omitempty"`
-	Reference       *TransformationIssueReference       `json:"reference,omitempty"`
-	Data            *TransformationIssueData            `json:"data,omitempty"`
+	CreatedAt       string                              `json:"created_at" url:"created_at"`
+	AggregationKeys *TransformationIssueAggregationKeys `json:"aggregation_keys,omitempty" url:"aggregation_keys,omitempty"`
+	Reference       *TransformationIssueReference       `json:"reference,omitempty" url:"reference,omitempty"`
+	Data            *TransformationIssueData            `json:"data,omitempty" url:"data,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationIssueWithData) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationIssueWithData) UnmarshalJSON(data []byte) error {
+	type embed TransformationIssueWithData
+	var unmarshaler = struct {
+		embed
+		OpenedAt       *core.DateTime `json:"opened_at"`
+		FirstSeenAt    *core.DateTime `json:"first_seen_at"`
+		LastSeenAt     *core.DateTime `json:"last_seen_at"`
+		DismissedAt    *core.DateTime `json:"dismissed_at,omitempty"`
+		AutoResolvedAt *core.DateTime `json:"auto_resolved_at,omitempty"`
+	}{
+		embed: embed(*t),
+	}
+	if err := json.Unmarshal(data, &unmarshaler); err != nil {
+		return err
+	}
+	*t = TransformationIssueWithData(unmarshaler.embed)
+	t.OpenedAt = unmarshaler.OpenedAt.Time()
+	t.FirstSeenAt = unmarshaler.FirstSeenAt.Time()
+	t.LastSeenAt = unmarshaler.LastSeenAt.Time()
+	t.DismissedAt = unmarshaler.DismissedAt.TimePtr()
+	t.AutoResolvedAt = unmarshaler.AutoResolvedAt.TimePtr()
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationIssueWithData) MarshalJSON() ([]byte, error) {
+	type embed TransformationIssueWithData
+	var marshaler = struct {
+		embed
+		OpenedAt       *core.DateTime `json:"opened_at"`
+		FirstSeenAt    *core.DateTime `json:"first_seen_at"`
+		LastSeenAt     *core.DateTime `json:"last_seen_at"`
+		DismissedAt    *core.DateTime `json:"dismissed_at,omitempty"`
+		AutoResolvedAt *core.DateTime `json:"auto_resolved_at,omitempty"`
+	}{
+		embed:          embed(*t),
+		OpenedAt:       core.NewDateTime(t.OpenedAt),
+		FirstSeenAt:    core.NewDateTime(t.FirstSeenAt),
+		LastSeenAt:     core.NewDateTime(t.LastSeenAt),
+		DismissedAt:    core.NewOptionalDateTime(t.DismissedAt),
+		AutoResolvedAt: core.NewOptionalDateTime(t.AutoResolvedAt),
+	}
+	return json.Marshal(marshaler)
+}
+
+func (t *TransformationIssueWithData) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type TransformationPaginatedResult struct {
-	Pagination *SeekPagination   `json:"pagination,omitempty"`
-	Count      *int              `json:"count,omitempty"`
-	Models     []*Transformation `json:"models,omitempty"`
+	Pagination *SeekPagination   `json:"pagination,omitempty" url:"pagination,omitempty"`
+	Count      *int              `json:"count,omitempty" url:"count,omitempty"`
+	Models     []*Transformation `json:"models,omitempty" url:"models,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationPaginatedResult) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationPaginatedResult) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationPaginatedResult
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationPaginatedResult(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationPaginatedResult) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type VercelLogDrainsIntegrationConfigs struct {
-	WebhookSecretKey      *string `json:"webhook_secret_key,omitempty"`
-	VercelLogDrainsSecret string  `json:"vercel_log_drains_secret"`
+	WebhookSecretKey      *string `json:"webhook_secret_key,omitempty" url:"webhook_secret_key,omitempty"`
+	VercelLogDrainsSecret string  `json:"vercel_log_drains_secret" url:"vercel_log_drains_secret"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VercelLogDrainsIntegrationConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VercelLogDrainsIntegrationConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VercelLogDrainsIntegrationConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VercelLogDrainsIntegrationConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VercelLogDrainsIntegrationConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type Verification3DEye struct {
-	Configs *Verification3DEyeConfigs `json:"configs,omitempty"`
+	Configs *Verification3DEyeConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *Verification3DEye) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *Verification3DEye) UnmarshalJSON(data []byte) error {
+	type unmarshaler Verification3DEye
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = Verification3DEye(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *Verification3DEye) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for 3dEye. Only included if the ?include=verification.configs query param is present
 type Verification3DEyeConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *Verification3DEyeConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *Verification3DEyeConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler Verification3DEyeConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = Verification3DEyeConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *Verification3DEyeConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationAdyen struct {
-	Configs *VerificationAdyenConfigs `json:"configs,omitempty"`
+	Configs *VerificationAdyenConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationAdyen) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationAdyen) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationAdyen
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationAdyen(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationAdyen) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Adyen. Only included if the ?include=verification.configs query param is present
 type VerificationAdyenConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationAdyenConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationAdyenConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationAdyenConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationAdyenConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationAdyenConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationAkeneo struct {
-	Configs *VerificationAkeneoConfigs `json:"configs,omitempty"`
+	Configs *VerificationAkeneoConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationAkeneo) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationAkeneo) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationAkeneo
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationAkeneo(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationAkeneo) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Akeneo. Only included if the ?include=verification.configs query param is present
 type VerificationAkeneoConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationAkeneoConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationAkeneoConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationAkeneoConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationAkeneoConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationAkeneoConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationApiKey struct {
-	Configs *VerificationApiKeyConfigs `json:"configs,omitempty"`
+	Configs *VerificationApiKeyConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationApiKey) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationApiKey) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationApiKey
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationApiKey(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationApiKey) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for API Key. Only included if the ?include=verification.configs query param is present
 type VerificationApiKeyConfigs struct {
-	HeaderKey string `json:"header_key"`
-	ApiKey    string `json:"api_key"`
+	HeaderKey string `json:"header_key" url:"header_key"`
+	ApiKey    string `json:"api_key" url:"api_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationApiKeyConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationApiKeyConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationApiKeyConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationApiKeyConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationApiKeyConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationAwssns struct {
-	Configs *VerificationAwssnsConfigs `json:"configs,omitempty"`
+	Configs *VerificationAwssnsConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationAwssns) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationAwssns) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationAwssns
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationAwssns(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationAwssns) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for AWS SNS. Only included if the ?include=verification.configs query param is present
 type VerificationAwssnsConfigs struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationAwssnsConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationAwssnsConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationAwssnsConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationAwssnsConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationAwssnsConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationBasicAuth struct {
-	Configs *VerificationBasicAuthConfigs `json:"configs,omitempty"`
+	Configs *VerificationBasicAuthConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationBasicAuth) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationBasicAuth) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationBasicAuth
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationBasicAuth(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationBasicAuth) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Basic Auth. Only included if the ?include=verification.configs query param is present
 type VerificationBasicAuthConfigs struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" url:"username"`
+	Password string `json:"password" url:"password"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationBasicAuthConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationBasicAuthConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationBasicAuthConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationBasicAuthConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationBasicAuthConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationBondsmith struct {
-	Configs *VerificationBondsmithConfigs `json:"configs,omitempty"`
+	Configs *VerificationBondsmithConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationBondsmith) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationBondsmith) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationBondsmith
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationBondsmith(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationBondsmith) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Bondsmith. Only included if the ?include=verification.configs query param is present
 type VerificationBondsmithConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationBondsmithConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationBondsmithConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationBondsmithConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationBondsmithConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationBondsmithConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationCloudSignal struct {
-	Configs *VerificationCloudSignalConfigs `json:"configs,omitempty"`
+	Configs *VerificationCloudSignalConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationCloudSignal) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationCloudSignal) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationCloudSignal
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationCloudSignal(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationCloudSignal) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Cloud Signal. Only included if the ?include=verification.configs query param is present
 type VerificationCloudSignalConfigs struct {
-	ApiKey string `json:"api_key"`
+	ApiKey string `json:"api_key" url:"api_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationCloudSignalConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationCloudSignalConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationCloudSignalConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationCloudSignalConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationCloudSignalConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationCommercelayer struct {
-	Configs *VerificationCommercelayerConfigs `json:"configs,omitempty"`
+	Configs *VerificationCommercelayerConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationCommercelayer) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationCommercelayer) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationCommercelayer
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationCommercelayer(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationCommercelayer) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Commercelayer. Only included if the ?include=verification.configs query param is present
 type VerificationCommercelayerConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationCommercelayerConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationCommercelayerConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationCommercelayerConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationCommercelayerConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationCommercelayerConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for the specified verification type
@@ -3931,6 +8838,7 @@ type VerificationConfig struct {
 	Razorpay        *VerificationRazorpay
 	Mailchimp       *VerificationMailchimp
 	Paddle          *VerificationPaddle
+	Paypal          *VerificationPaypal
 }
 
 func NewVerificationConfigFromHmac(value *VerificationHmac) *VerificationConfig {
@@ -4173,6 +9081,10 @@ func NewVerificationConfigFromPaddle(value *VerificationPaddle) *VerificationCon
 	return &VerificationConfig{Type: "paddle", Paddle: value}
 }
 
+func NewVerificationConfigFromPaypal(value *VerificationPaypal) *VerificationConfig {
+	return &VerificationConfig{Type: "paypal", Paypal: value}
+}
+
 func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 	var unmarshaler struct {
 		Type string `json:"type"`
@@ -4181,6 +9093,9 @@ func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	v.Type = unmarshaler.Type
+	if unmarshaler.Type == "" {
+		return fmt.Errorf("%T did not include discriminant type", v)
+	}
 	switch unmarshaler.Type {
 	case "hmac":
 		value := new(VerificationHmac)
@@ -4542,6 +9457,12 @@ func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		v.Paddle = value
+	case "paypal":
+		value := new(VerificationPaypal)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Paypal = value
 	}
 	return nil
 }
@@ -4551,545 +9472,127 @@ func (v VerificationConfig) MarshalJSON() ([]byte, error) {
 	default:
 		return nil, fmt.Errorf("invalid type %s in %T", v.Type, v)
 	case "hmac":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationHmac
-		}{
-			Type:             v.Type,
-			VerificationHmac: v.Hmac,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Hmac, "type", "hmac")
 	case "basic_auth":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationBasicAuth
-		}{
-			Type:                  v.Type,
-			VerificationBasicAuth: v.BasicAuth,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.BasicAuth, "type", "basic_auth")
 	case "api_key":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationApiKey
-		}{
-			Type:               v.Type,
-			VerificationApiKey: v.ApiKey,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.ApiKey, "type", "api_key")
 	case "cloudsignal":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationCloudSignal
-		}{
-			Type:                    v.Type,
-			VerificationCloudSignal: v.Cloudsignal,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Cloudsignal, "type", "cloudsignal")
 	case "courier":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationCourier
-		}{
-			Type:                v.Type,
-			VerificationCourier: v.Courier,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Courier, "type", "courier")
 	case "frontapp":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationFrontApp
-		}{
-			Type:                 v.Type,
-			VerificationFrontApp: v.Frontapp,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Frontapp, "type", "frontapp")
 	case "twitter":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationTwitter
-		}{
-			Type:                v.Type,
-			VerificationTwitter: v.Twitter,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Twitter, "type", "twitter")
 	case "stripe":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationStripe
-		}{
-			Type:               v.Type,
-			VerificationStripe: v.Stripe,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Stripe, "type", "stripe")
 	case "recharge":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationRecharge
-		}{
-			Type:                 v.Type,
-			VerificationRecharge: v.Recharge,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Recharge, "type", "recharge")
 	case "twilio":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationTwilio
-		}{
-			Type:               v.Type,
-			VerificationTwilio: v.Twilio,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Twilio, "type", "twilio")
 	case "github":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationGitHub
-		}{
-			Type:               v.Type,
-			VerificationGitHub: v.Github,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Github, "type", "github")
 	case "shopify":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationShopify
-		}{
-			Type:                v.Type,
-			VerificationShopify: v.Shopify,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Shopify, "type", "shopify")
 	case "postmark":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationPostmark
-		}{
-			Type:                 v.Type,
-			VerificationPostmark: v.Postmark,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Postmark, "type", "postmark")
 	case "typeform":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationTypeform
-		}{
-			Type:                 v.Type,
-			VerificationTypeform: v.Typeform,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Typeform, "type", "typeform")
 	case "xero":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationXero
-		}{
-			Type:             v.Type,
-			VerificationXero: v.Xero,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Xero, "type", "xero")
 	case "svix":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationSvix
-		}{
-			Type:             v.Type,
-			VerificationSvix: v.Svix,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Svix, "type", "svix")
 	case "zoom":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationZoom
-		}{
-			Type:             v.Type,
-			VerificationZoom: v.Zoom,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Zoom, "type", "zoom")
 	case "akeneo":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationAkeneo
-		}{
-			Type:               v.Type,
-			VerificationAkeneo: v.Akeneo,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Akeneo, "type", "akeneo")
 	case "adyen":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationAdyen
-		}{
-			Type:              v.Type,
-			VerificationAdyen: v.Adyen,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Adyen, "type", "adyen")
 	case "gitlab":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationGitLab
-		}{
-			Type:               v.Type,
-			VerificationGitLab: v.Gitlab,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Gitlab, "type", "gitlab")
 	case "property-finder":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationPropertyFinder
-		}{
-			Type:                       v.Type,
-			VerificationPropertyFinder: v.PropertyFinder,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.PropertyFinder, "type", "property-finder")
 	case "woocommerce":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationWooCommerce
-		}{
-			Type:                    v.Type,
-			VerificationWooCommerce: v.Woocommerce,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Woocommerce, "type", "woocommerce")
 	case "oura":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationOura
-		}{
-			Type:             v.Type,
-			VerificationOura: v.Oura,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Oura, "type", "oura")
 	case "commercelayer":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationCommercelayer
-		}{
-			Type:                      v.Type,
-			VerificationCommercelayer: v.Commercelayer,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Commercelayer, "type", "commercelayer")
 	case "hubspot":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationHubspot
-		}{
-			Type:                v.Type,
-			VerificationHubspot: v.Hubspot,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Hubspot, "type", "hubspot")
 	case "mailgun":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationMailgun
-		}{
-			Type:                v.Type,
-			VerificationMailgun: v.Mailgun,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Mailgun, "type", "mailgun")
 	case "persona":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationPersona
-		}{
-			Type:                v.Type,
-			VerificationPersona: v.Persona,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Persona, "type", "persona")
 	case "pipedrive":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationPipedrive
-		}{
-			Type:                  v.Type,
-			VerificationPipedrive: v.Pipedrive,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Pipedrive, "type", "pipedrive")
 	case "sendgrid":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationSendGrid
-		}{
-			Type:                 v.Type,
-			VerificationSendGrid: v.Sendgrid,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Sendgrid, "type", "sendgrid")
 	case "workos":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationWorkOs
-		}{
-			Type:               v.Type,
-			VerificationWorkOs: v.Workos,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Workos, "type", "workos")
 	case "synctera":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationSynctera
-		}{
-			Type:                 v.Type,
-			VerificationSynctera: v.Synctera,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Synctera, "type", "synctera")
 	case "aws_sns":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationAwssns
-		}{
-			Type:               v.Type,
-			VerificationAwssns: v.AwsSns,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.AwsSns, "type", "aws_sns")
 	case "three_d_eye":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*Verification3DEye
-		}{
-			Type:              v.Type,
-			Verification3DEye: v.ThreeDEye,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.ThreeDEye, "type", "three_d_eye")
 	case "twitch":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationTwitch
-		}{
-			Type:               v.Type,
-			VerificationTwitch: v.Twitch,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Twitch, "type", "twitch")
 	case "enode":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationEnode
-		}{
-			Type:              v.Type,
-			VerificationEnode: v.Enode,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Enode, "type", "enode")
 	case "favro":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationFavro
-		}{
-			Type:              v.Type,
-			VerificationFavro: v.Favro,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Favro, "type", "favro")
 	case "linear":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationLinear
-		}{
-			Type:               v.Type,
-			VerificationLinear: v.Linear,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Linear, "type", "linear")
 	case "shopline":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationShopline
-		}{
-			Type:                 v.Type,
-			VerificationShopline: v.Shopline,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Shopline, "type", "shopline")
 	case "wix":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationWix
-		}{
-			Type:            v.Type,
-			VerificationWix: v.Wix,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Wix, "type", "wix")
 	case "nmi":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationNmiPaymentGateway
-		}{
-			Type:                          v.Type,
-			VerificationNmiPaymentGateway: v.Nmi,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Nmi, "type", "nmi")
 	case "orb":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationOrb
-		}{
-			Type:            v.Type,
-			VerificationOrb: v.Orb,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Orb, "type", "orb")
 	case "pylon":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationPylon
-		}{
-			Type:              v.Type,
-			VerificationPylon: v.Pylon,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Pylon, "type", "pylon")
 	case "repay":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationRepay
-		}{
-			Type:              v.Type,
-			VerificationRepay: v.Repay,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Repay, "type", "repay")
 	case "square":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationSquare
-		}{
-			Type:               v.Type,
-			VerificationSquare: v.Square,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Square, "type", "square")
 	case "solidgate":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationSolidGate
-		}{
-			Type:                  v.Type,
-			VerificationSolidGate: v.Solidgate,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Solidgate, "type", "solidgate")
 	case "trello":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationTrello
-		}{
-			Type:               v.Type,
-			VerificationTrello: v.Trello,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Trello, "type", "trello")
 	case "sanity":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationSanity
-		}{
-			Type:               v.Type,
-			VerificationSanity: v.Sanity,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Sanity, "type", "sanity")
 	case "ebay":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationEbay
-		}{
-			Type:             v.Type,
-			VerificationEbay: v.Ebay,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Ebay, "type", "ebay")
 	case "telnyx":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationTelnyx
-		}{
-			Type:               v.Type,
-			VerificationTelnyx: v.Telnyx,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Telnyx, "type", "telnyx")
 	case "discord":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationDiscord
-		}{
-			Type:                v.Type,
-			VerificationDiscord: v.Discord,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Discord, "type", "discord")
 	case "tokenio":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationTokenIo
-		}{
-			Type:                v.Type,
-			VerificationTokenIo: v.Tokenio,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Tokenio, "type", "tokenio")
 	case "fiserv":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationFiserv
-		}{
-			Type:               v.Type,
-			VerificationFiserv: v.Fiserv,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Fiserv, "type", "fiserv")
 	case "bondsmith":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationBondsmith
-		}{
-			Type:                  v.Type,
-			VerificationBondsmith: v.Bondsmith,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Bondsmith, "type", "bondsmith")
 	case "vercel_log_drains":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationVercelLogDrains
-		}{
-			Type:                        v.Type,
-			VerificationVercelLogDrains: v.VercelLogDrains,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.VercelLogDrains, "type", "vercel_log_drains")
 	case "vercel":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationVercel
-		}{
-			Type:               v.Type,
-			VerificationVercel: v.Vercel,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Vercel, "type", "vercel")
 	case "tebex":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationTebex
-		}{
-			Type:              v.Type,
-			VerificationTebex: v.Tebex,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Tebex, "type", "tebex")
 	case "slack":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationSlack
-		}{
-			Type:              v.Type,
-			VerificationSlack: v.Slack,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Slack, "type", "slack")
 	case "razorpay":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationRazorpay
-		}{
-			Type:                 v.Type,
-			VerificationRazorpay: v.Razorpay,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Razorpay, "type", "razorpay")
 	case "mailchimp":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationMailchimp
-		}{
-			Type:                  v.Type,
-			VerificationMailchimp: v.Mailchimp,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Mailchimp, "type", "mailchimp")
 	case "paddle":
-		var marshaler = struct {
-			Type string `json:"type"`
-			*VerificationPaddle
-		}{
-			Type:               v.Type,
-			VerificationPaddle: v.Paddle,
-		}
-		return json.Marshal(marshaler)
+		return core.MarshalJSONWithExtraProperty(v.Paddle, "type", "paddle")
+	case "paypal":
+		return core.MarshalJSONWithExtraProperty(v.Paypal, "type", "paypal")
 	}
 }
 
@@ -5154,6 +9657,7 @@ type VerificationConfigVisitor interface {
 	VisitRazorpay(*VerificationRazorpay) error
 	VisitMailchimp(*VerificationMailchimp) error
 	VisitPaddle(*VerificationPaddle) error
+	VisitPaypal(*VerificationPaypal) error
 }
 
 func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
@@ -5280,104 +9784,846 @@ func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
 		return visitor.VisitMailchimp(v.Mailchimp)
 	case "paddle":
 		return visitor.VisitPaddle(v.Paddle)
+	case "paypal":
+		return visitor.VisitPaypal(v.Paypal)
 	}
 }
 
 type VerificationCourier struct {
-	Configs *VerificationCourierConfigs `json:"configs,omitempty"`
+	Configs *VerificationCourierConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationCourier) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationCourier) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationCourier
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationCourier(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationCourier) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Courier. Only included if the ?include=verification.configs query param is present
 type VerificationCourierConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationCourierConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationCourierConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationCourierConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationCourierConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationCourierConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationDiscord struct {
-	Configs *VerificationDiscordConfigs `json:"configs,omitempty"`
+	Configs *VerificationDiscordConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationDiscord) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationDiscord) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationDiscord
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationDiscord(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationDiscord) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Discord. Only included if the ?include=verification.configs query param is present
 type VerificationDiscordConfigs struct {
-	PublicKey string `json:"public_key"`
+	PublicKey string `json:"public_key" url:"public_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationDiscordConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationDiscordConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationDiscordConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationDiscordConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationDiscordConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationEbay struct {
-	Configs *VerificationEbayConfigs `json:"configs,omitempty"`
+	Configs *VerificationEbayConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationEbay) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationEbay) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationEbay
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationEbay(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationEbay) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Ebay. Only included if the ?include=verification.configs query param is present
 type VerificationEbayConfigs struct {
-	Environment       string `json:"environment"`
-	ClientId          string `json:"client_id"`
-	ClientSecret      string `json:"client_secret"`
-	DevId             string `json:"dev_id"`
-	VerificationToken string `json:"verification_token"`
+	Environment       string `json:"environment" url:"environment"`
+	ClientId          string `json:"client_id" url:"client_id"`
+	ClientSecret      string `json:"client_secret" url:"client_secret"`
+	DevId             string `json:"dev_id" url:"dev_id"`
+	VerificationToken string `json:"verification_token" url:"verification_token"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationEbayConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationEbayConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationEbayConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationEbayConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationEbayConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationEnode struct {
-	Configs *VerificationEnodeConfigs `json:"configs,omitempty"`
+	Configs *VerificationEnodeConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationEnode) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationEnode) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationEnode
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationEnode(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationEnode) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Enode. Only included if the ?include=verification.configs query param is present
 type VerificationEnodeConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationEnodeConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationEnodeConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationEnodeConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationEnodeConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationEnodeConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationFavro struct {
-	Configs *VerificationFavroConfigs `json:"configs,omitempty"`
+	Configs *VerificationFavroConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationFavro) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationFavro) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationFavro
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationFavro(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationFavro) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Favro. Only included if the ?include=verification.configs query param is present
 type VerificationFavroConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationFavroConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationFavroConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationFavroConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationFavroConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationFavroConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationFiserv struct {
-	Configs *VerificationFiservConfigs `json:"configs,omitempty"`
+	Configs *VerificationFiservConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationFiserv) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationFiserv) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationFiserv
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationFiserv(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationFiserv) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Fiserv. Only included if the ?include=verification.configs query param is present
 type VerificationFiservConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationFiservConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationFiservConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationFiservConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationFiservConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationFiservConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationFrontApp struct {
-	Configs *VerificationFrontAppConfigs `json:"configs,omitempty"`
+	Configs *VerificationFrontAppConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationFrontApp) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationFrontApp) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationFrontApp
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationFrontApp(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationFrontApp) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for FrontApp. Only included if the ?include=verification.configs query param is present
 type VerificationFrontAppConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationFrontAppConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationFrontAppConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationFrontAppConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationFrontAppConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationFrontAppConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationGitHub struct {
-	Configs *VerificationGitHubConfigs `json:"configs,omitempty"`
+	Configs *VerificationGitHubConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationGitHub) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationGitHub) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationGitHub
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationGitHub(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationGitHub) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for GitHub. Only included if the ?include=verification.configs query param is present
 type VerificationGitHubConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationGitHubConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationGitHubConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationGitHubConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationGitHubConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationGitHubConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationGitLab struct {
-	Configs *VerificationGitLabConfigs `json:"configs,omitempty"`
+	Configs *VerificationGitLabConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationGitLab) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationGitLab) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationGitLab
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationGitLab(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationGitLab) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for GitLab. Only included if the ?include=verification.configs query param is present
 type VerificationGitLabConfigs struct {
-	ApiKey string `json:"api_key"`
+	ApiKey string `json:"api_key" url:"api_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationGitLabConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationGitLabConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationGitLabConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationGitLabConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationGitLabConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationHmac struct {
-	Configs *VerificationHmacConfigs `json:"configs,omitempty"`
+	Configs *VerificationHmacConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationHmac) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationHmac) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationHmac
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationHmac(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationHmac) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for HMAC. Only included if the ?include=verification.configs query param is present
 type VerificationHmacConfigs struct {
-	WebhookSecretKey string                          `json:"webhook_secret_key"`
-	Algorithm        HmacAlgorithms                  `json:"algorithm,omitempty"`
-	HeaderKey        string                          `json:"header_key"`
-	Encoding         VerificationHmacConfigsEncoding `json:"encoding,omitempty"`
+	WebhookSecretKey string                          `json:"webhook_secret_key" url:"webhook_secret_key"`
+	Algorithm        HmacAlgorithms                  `json:"algorithm" url:"algorithm"`
+	HeaderKey        string                          `json:"header_key" url:"header_key"`
+	Encoding         VerificationHmacConfigsEncoding `json:"encoding" url:"encoding"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationHmacConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationHmacConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationHmacConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationHmacConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationHmacConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationHmacConfigsEncoding string
@@ -5406,433 +10652,3495 @@ func (v VerificationHmacConfigsEncoding) Ptr() *VerificationHmacConfigsEncoding 
 }
 
 type VerificationHubspot struct {
-	Configs *VerificationHubspotConfigs `json:"configs,omitempty"`
+	Configs *VerificationHubspotConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationHubspot) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationHubspot) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationHubspot
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationHubspot(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationHubspot) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Hubspot. Only included if the ?include=verification.configs query param is present
 type VerificationHubspotConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationHubspotConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationHubspotConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationHubspotConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationHubspotConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationHubspotConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationLinear struct {
-	Configs *VerificationLinearConfigs `json:"configs,omitempty"`
+	Configs *VerificationLinearConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationLinear) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationLinear) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationLinear
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationLinear(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationLinear) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Linear. Only included if the ?include=verification.configs query param is present
 type VerificationLinearConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationLinearConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationLinearConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationLinearConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationLinearConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationLinearConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationMailchimp struct {
-	Configs *VerificationMailchimpConfigs `json:"configs,omitempty"`
+	Configs *VerificationMailchimpConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationMailchimp) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationMailchimp) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationMailchimp
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationMailchimp(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationMailchimp) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Mailchimp. Only included if the ?include=verification.configs query param is present
 type VerificationMailchimpConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationMailchimpConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationMailchimpConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationMailchimpConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationMailchimpConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationMailchimpConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationMailgun struct {
-	Configs *VerificationMailgunConfigs `json:"configs,omitempty"`
+	Configs *VerificationMailgunConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationMailgun) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationMailgun) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationMailgun
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationMailgun(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationMailgun) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Mailgun. Only included if the ?include=verification.configs query param is present
 type VerificationMailgunConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationMailgunConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationMailgunConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationMailgunConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationMailgunConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationMailgunConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationNmiPaymentGateway struct {
-	Configs *VerificationNmiPaymentGatewayConfigs `json:"configs,omitempty"`
+	Configs *VerificationNmiPaymentGatewayConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationNmiPaymentGateway) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationNmiPaymentGateway) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationNmiPaymentGateway
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationNmiPaymentGateway(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationNmiPaymentGateway) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for NMI Payment Gateway. Only included if the ?include=verification.configs query param is present
 type VerificationNmiPaymentGatewayConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationNmiPaymentGatewayConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationNmiPaymentGatewayConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationNmiPaymentGatewayConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationNmiPaymentGatewayConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationNmiPaymentGatewayConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationOrb struct {
-	Configs *VerificationOrbConfigs `json:"configs,omitempty"`
+	Configs *VerificationOrbConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationOrb) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationOrb) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationOrb
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationOrb(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationOrb) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Orb. Only included if the ?include=verification.configs query param is present
 type VerificationOrbConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationOrbConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationOrbConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationOrbConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationOrbConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationOrbConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationOura struct {
-	Configs *VerificationOuraConfigs `json:"configs,omitempty"`
+	Configs *VerificationOuraConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationOura) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationOura) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationOura
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationOura(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationOura) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Oura. Only included if the ?include=verification.configs query param is present
 type VerificationOuraConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationOuraConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationOuraConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationOuraConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationOuraConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationOuraConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationPaddle struct {
-	Configs *VerificationPaddleConfigs `json:"configs,omitempty"`
+	Configs *VerificationPaddleConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPaddle) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPaddle) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPaddle
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPaddle(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPaddle) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Paddle. Only included if the ?include=verification.configs query param is present
 type VerificationPaddleConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPaddleConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPaddleConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPaddleConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPaddleConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPaddleConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+type VerificationPaypal struct {
+	Configs *VerificationPaypalConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPaypal) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPaypal) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPaypal
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPaypal(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPaypal) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+// The verification configs for Paypal. Only included if the ?include=verification.configs query param is present
+type VerificationPaypalConfigs struct {
+	WebhookId string `json:"webhook_id" url:"webhook_id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPaypalConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPaypalConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPaypalConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPaypalConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPaypalConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationPersona struct {
-	Configs *VerificationPersonaConfigs `json:"configs,omitempty"`
+	Configs *VerificationPersonaConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPersona) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPersona) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPersona
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPersona(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPersona) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Persona. Only included if the ?include=verification.configs query param is present
 type VerificationPersonaConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPersonaConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPersonaConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPersonaConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPersonaConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPersonaConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationPipedrive struct {
-	Configs *VerificationPipedriveConfigs `json:"configs,omitempty"`
+	Configs *VerificationPipedriveConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPipedrive) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPipedrive) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPipedrive
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPipedrive(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPipedrive) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Pipedrive. Only included if the ?include=verification.configs query param is present
 type VerificationPipedriveConfigs struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" url:"username"`
+	Password string `json:"password" url:"password"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPipedriveConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPipedriveConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPipedriveConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPipedriveConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPipedriveConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationPostmark struct {
-	Configs *VerificationPostmarkConfigs `json:"configs,omitempty"`
+	Configs *VerificationPostmarkConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPostmark) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPostmark) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPostmark
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPostmark(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPostmark) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Postmark. Only included if the ?include=verification.configs query param is present
 type VerificationPostmarkConfigs struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" url:"username"`
+	Password string `json:"password" url:"password"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPostmarkConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPostmarkConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPostmarkConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPostmarkConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPostmarkConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationPropertyFinder struct {
-	Configs *VerificationPropertyFinderConfigs `json:"configs,omitempty"`
+	Configs *VerificationPropertyFinderConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPropertyFinder) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPropertyFinder) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPropertyFinder
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPropertyFinder(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPropertyFinder) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Property Finder. Only included if the ?include=verification.configs query param is present
 type VerificationPropertyFinderConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPropertyFinderConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPropertyFinderConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPropertyFinderConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPropertyFinderConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPropertyFinderConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationPylon struct {
-	Configs *VerificationPylonConfigs `json:"configs,omitempty"`
+	Configs *VerificationPylonConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPylon) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPylon) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPylon
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPylon(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPylon) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Pylon. Only included if the ?include=verification.configs query param is present
 type VerificationPylonConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPylonConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPylonConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPylonConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPylonConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPylonConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationRazorpay struct {
-	Configs *VerificationRazorpayConfigs `json:"configs,omitempty"`
+	Configs *VerificationRazorpayConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationRazorpay) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationRazorpay) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationRazorpay
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationRazorpay(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationRazorpay) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Razorpay. Only included if the ?include=verification.configs query param is present
 type VerificationRazorpayConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationRazorpayConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationRazorpayConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationRazorpayConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationRazorpayConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationRazorpayConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationRecharge struct {
-	Configs *VerificationRechargeConfigs `json:"configs,omitempty"`
+	Configs *VerificationRechargeConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationRecharge) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationRecharge) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationRecharge
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationRecharge(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationRecharge) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Recharge. Only included if the ?include=verification.configs query param is present
 type VerificationRechargeConfigs struct {
-	WebhookSecretKey string                              `json:"webhook_secret_key"`
-	Algorithm        HmacAlgorithms                      `json:"algorithm,omitempty"`
-	HeaderKey        string                              `json:"header_key"`
-	Encoding         VerificationRechargeConfigsEncoding `json:"encoding,omitempty"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
 }
 
-type VerificationRechargeConfigsEncoding string
+func (v *VerificationRechargeConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
 
-const (
-	VerificationRechargeConfigsEncodingBase64    VerificationRechargeConfigsEncoding = "base64"
-	VerificationRechargeConfigsEncodingBase64Url VerificationRechargeConfigsEncoding = "base64url"
-	VerificationRechargeConfigsEncodingHex       VerificationRechargeConfigsEncoding = "hex"
-)
-
-func NewVerificationRechargeConfigsEncodingFromString(s string) (VerificationRechargeConfigsEncoding, error) {
-	switch s {
-	case "base64":
-		return VerificationRechargeConfigsEncodingBase64, nil
-	case "base64url":
-		return VerificationRechargeConfigsEncodingBase64Url, nil
-	case "hex":
-		return VerificationRechargeConfigsEncodingHex, nil
+func (v *VerificationRechargeConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationRechargeConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	var t VerificationRechargeConfigsEncoding
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+	*v = VerificationRechargeConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
 }
 
-func (v VerificationRechargeConfigsEncoding) Ptr() *VerificationRechargeConfigsEncoding {
-	return &v
+func (v *VerificationRechargeConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationRepay struct {
-	Configs *VerificationRepayConfigs `json:"configs,omitempty"`
+	Configs *VerificationRepayConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationRepay) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationRepay) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationRepay
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationRepay(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationRepay) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Repay. Only included if the ?include=verification.configs query param is present
 type VerificationRepayConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationRepayConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationRepayConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationRepayConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationRepayConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationRepayConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationSanity struct {
-	Configs *VerificationSanityConfigs `json:"configs,omitempty"`
+	Configs *VerificationSanityConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSanity) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSanity) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSanity
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSanity(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSanity) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Sanity. Only included if the ?include=verification.configs query param is present
 type VerificationSanityConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSanityConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSanityConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSanityConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSanityConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSanityConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationSendGrid struct {
-	Configs *VerificationSendGridConfigs `json:"configs,omitempty"`
+	Configs *VerificationSendGridConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSendGrid) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSendGrid) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSendGrid
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSendGrid(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSendGrid) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for SendGrid. Only included if the ?include=verification.configs query param is present
 type VerificationSendGridConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSendGridConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSendGridConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSendGridConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSendGridConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSendGridConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationShopify struct {
-	Configs *VerificationShopifyConfigs `json:"configs,omitempty"`
+	Configs *VerificationShopifyConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationShopify) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationShopify) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationShopify
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationShopify(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationShopify) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Shopify. Only included if the ?include=verification.configs query param is present
 type VerificationShopifyConfigs struct {
-	WebhookSecretKey string                                     `json:"webhook_secret_key"`
-	RateLimitPeriod  *VerificationShopifyConfigsRateLimitPeriod `json:"rate_limit_period,omitempty"`
-	RateLimit        *float64                                   `json:"rate_limit,omitempty"`
-	ApiKey           *string                                    `json:"api_key,omitempty"`
-	ApiSecret        *string                                    `json:"api_secret,omitempty"`
-	Shop             *string                                    `json:"shop,omitempty"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
 }
 
-type VerificationShopifyConfigsRateLimitPeriod string
+func (v *VerificationShopifyConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
 
-const (
-	VerificationShopifyConfigsRateLimitPeriodMinute VerificationShopifyConfigsRateLimitPeriod = "minute"
-	VerificationShopifyConfigsRateLimitPeriodSecond VerificationShopifyConfigsRateLimitPeriod = "second"
-)
-
-func NewVerificationShopifyConfigsRateLimitPeriodFromString(s string) (VerificationShopifyConfigsRateLimitPeriod, error) {
-	switch s {
-	case "minute":
-		return VerificationShopifyConfigsRateLimitPeriodMinute, nil
-	case "second":
-		return VerificationShopifyConfigsRateLimitPeriodSecond, nil
+func (v *VerificationShopifyConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationShopifyConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
 	}
-	var t VerificationShopifyConfigsRateLimitPeriod
-	return "", fmt.Errorf("%s is not a valid %T", s, t)
+	*v = VerificationShopifyConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
 }
 
-func (v VerificationShopifyConfigsRateLimitPeriod) Ptr() *VerificationShopifyConfigsRateLimitPeriod {
-	return &v
+func (v *VerificationShopifyConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationShopline struct {
-	Configs *VerificationShoplineConfigs `json:"configs,omitempty"`
+	Configs *VerificationShoplineConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationShopline) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationShopline) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationShopline
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationShopline(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationShopline) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Shopline. Only included if the ?include=verification.configs query param is present
 type VerificationShoplineConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationShoplineConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationShoplineConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationShoplineConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationShoplineConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationShoplineConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationSlack struct {
-	Configs *VerificationSlackConfigs `json:"configs,omitempty"`
+	Configs *VerificationSlackConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSlack) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSlack) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSlack
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSlack(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSlack) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Slack. Only included if the ?include=verification.configs query param is present
 type VerificationSlackConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSlackConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSlackConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSlackConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSlackConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSlackConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationSolidGate struct {
-	Configs *VerificationSolidGateConfigs `json:"configs,omitempty"`
+	Configs *VerificationSolidGateConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSolidGate) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSolidGate) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSolidGate
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSolidGate(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSolidGate) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for SolidGate. Only included if the ?include=verification.configs query param is present
 type VerificationSolidGateConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSolidGateConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSolidGateConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSolidGateConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSolidGateConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSolidGateConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationSquare struct {
-	Configs *VerificationSquareConfigs `json:"configs,omitempty"`
+	Configs *VerificationSquareConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSquare) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSquare) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSquare
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSquare(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSquare) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Square. Only included if the ?include=verification.configs query param is present
 type VerificationSquareConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSquareConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSquareConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSquareConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSquareConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSquareConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationStripe struct {
-	Configs *VerificationStripeConfigs `json:"configs,omitempty"`
+	Configs *VerificationStripeConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationStripe) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationStripe) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationStripe
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationStripe(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationStripe) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Stripe. Only included if the ?include=verification.configs query param is present
 type VerificationStripeConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationStripeConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationStripeConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationStripeConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationStripeConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationStripeConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationSvix struct {
-	Configs *VerificationSvixConfigs `json:"configs,omitempty"`
+	Configs *VerificationSvixConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSvix) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSvix) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSvix
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSvix(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSvix) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Svix. Only included if the ?include=verification.configs query param is present
 type VerificationSvixConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSvixConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSvixConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSvixConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSvixConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSvixConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationSynctera struct {
-	Configs *VerificationSyncteraConfigs `json:"configs,omitempty"`
+	Configs *VerificationSyncteraConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSynctera) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSynctera) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSynctera
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSynctera(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSynctera) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Synctera. Only included if the ?include=verification.configs query param is present
 type VerificationSyncteraConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationSyncteraConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationSyncteraConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationSyncteraConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationSyncteraConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationSyncteraConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationTebex struct {
-	Configs *VerificationTebexConfigs `json:"configs,omitempty"`
+	Configs *VerificationTebexConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTebex) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTebex) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTebex
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTebex(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTebex) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Tebex. Only included if the ?include=verification.configs query param is present
 type VerificationTebexConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTebexConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTebexConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTebexConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTebexConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTebexConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationTelnyx struct {
-	Configs *VerificationTelnyxConfigs `json:"configs,omitempty"`
+	Configs *VerificationTelnyxConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTelnyx) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTelnyx) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTelnyx
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTelnyx(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTelnyx) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Telnyx. Only included if the ?include=verification.configs query param is present
 type VerificationTelnyxConfigs struct {
-	PublicKey string `json:"public_key"`
+	PublicKey string `json:"public_key" url:"public_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTelnyxConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTelnyxConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTelnyxConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTelnyxConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTelnyxConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationTokenIo struct {
-	Configs *VerificationTokenIoConfigs `json:"configs,omitempty"`
+	Configs *VerificationTokenIoConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTokenIo) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTokenIo) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTokenIo
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTokenIo(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTokenIo) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for TokenIO. Only included if the ?include=verification.configs query param is present
 type VerificationTokenIoConfigs struct {
-	PublicKey string `json:"public_key"`
+	PublicKey string `json:"public_key" url:"public_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTokenIoConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTokenIoConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTokenIoConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTokenIoConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTokenIoConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationTrello struct {
-	Configs *VerificationTrelloConfigs `json:"configs,omitempty"`
+	Configs *VerificationTrelloConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTrello) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTrello) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTrello
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTrello(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTrello) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Trello. Only included if the ?include=verification.configs query param is present
 type VerificationTrelloConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTrelloConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTrelloConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTrelloConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTrelloConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTrelloConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationTwilio struct {
-	Configs *VerificationTwilioConfigs `json:"configs,omitempty"`
+	Configs *VerificationTwilioConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTwilio) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTwilio) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTwilio
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTwilio(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTwilio) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Twilio. Only included if the ?include=verification.configs query param is present
 type VerificationTwilioConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTwilioConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTwilioConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTwilioConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTwilioConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTwilioConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationTwitch struct {
-	Configs *VerificationTwitchConfigs `json:"configs,omitempty"`
+	Configs *VerificationTwitchConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTwitch) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTwitch) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTwitch
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTwitch(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTwitch) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Twitch. Only included if the ?include=verification.configs query param is present
 type VerificationTwitchConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTwitchConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTwitchConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTwitchConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTwitchConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTwitchConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationTwitter struct {
-	Configs *VerificationTwitterConfigs `json:"configs,omitempty"`
+	Configs *VerificationTwitterConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTwitter) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTwitter) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTwitter
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTwitter(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTwitter) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Twitter. Only included if the ?include=verification.configs query param is present
 type VerificationTwitterConfigs struct {
-	ApiKey string `json:"api_key"`
+	ApiKey string `json:"api_key" url:"api_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTwitterConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTwitterConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTwitterConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTwitterConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTwitterConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationTypeform struct {
-	Configs *VerificationTypeformConfigs `json:"configs,omitempty"`
+	Configs *VerificationTypeformConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTypeform) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTypeform) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTypeform
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTypeform(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTypeform) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Typeform. Only included if the ?include=verification.configs query param is present
 type VerificationTypeformConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTypeformConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTypeformConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTypeformConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTypeformConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTypeformConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationVercel struct {
-	Configs *VerificationVercelConfigs `json:"configs,omitempty"`
+	Configs *VerificationVercelConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationVercel) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationVercel) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationVercel
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationVercel(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationVercel) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Vercel. Only included if the ?include=verification.configs query param is present
 type VerificationVercelConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationVercelConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationVercelConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationVercelConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationVercelConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationVercelConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationVercelLogDrains struct {
-	Configs *VerificationVercelLogDrainsConfigs `json:"configs,omitempty"`
+	Configs *VerificationVercelLogDrainsConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationVercelLogDrains) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationVercelLogDrains) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationVercelLogDrains
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationVercelLogDrains(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationVercelLogDrains) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Vercel Log Drains. Only included if the ?include=verification.configs query param is present
 type VerificationVercelLogDrainsConfigs struct {
-	WebhookSecretKey      *string `json:"webhook_secret_key,omitempty"`
-	VercelLogDrainsSecret string  `json:"vercel_log_drains_secret"`
+	WebhookSecretKey      *string `json:"webhook_secret_key,omitempty" url:"webhook_secret_key,omitempty"`
+	VercelLogDrainsSecret string  `json:"vercel_log_drains_secret" url:"vercel_log_drains_secret"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationVercelLogDrainsConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationVercelLogDrainsConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationVercelLogDrainsConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationVercelLogDrainsConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationVercelLogDrainsConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationWix struct {
-	Configs *VerificationWixConfigs `json:"configs,omitempty"`
+	Configs *VerificationWixConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationWix) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationWix) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationWix
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationWix(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationWix) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Wix. Only included if the ?include=verification.configs query param is present
 type VerificationWixConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationWixConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationWixConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationWixConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationWixConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationWixConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationWooCommerce struct {
-	Configs *VerificationWooCommerceConfigs `json:"configs,omitempty"`
+	Configs *VerificationWooCommerceConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationWooCommerce) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationWooCommerce) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationWooCommerce
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationWooCommerce(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationWooCommerce) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for WooCommerce. Only included if the ?include=verification.configs query param is present
 type VerificationWooCommerceConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationWooCommerceConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationWooCommerceConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationWooCommerceConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationWooCommerceConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationWooCommerceConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationWorkOs struct {
-	Configs *VerificationWorkOsConfigs `json:"configs,omitempty"`
+	Configs *VerificationWorkOsConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationWorkOs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationWorkOs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationWorkOs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationWorkOs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationWorkOs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for WorkOS. Only included if the ?include=verification.configs query param is present
 type VerificationWorkOsConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationWorkOsConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationWorkOsConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationWorkOsConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationWorkOsConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationWorkOsConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationXero struct {
-	Configs *VerificationXeroConfigs `json:"configs,omitempty"`
+	Configs *VerificationXeroConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationXero) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationXero) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationXero
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationXero(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationXero) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Xero. Only included if the ?include=verification.configs query param is present
 type VerificationXeroConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationXeroConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationXeroConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationXeroConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationXeroConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationXeroConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 type VerificationZoom struct {
-	Configs *VerificationZoomConfigs `json:"configs,omitempty"`
+	Configs *VerificationZoomConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationZoom) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationZoom) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationZoom
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationZoom(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationZoom) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
 }
 
 // The verification configs for Zoom. Only included if the ?include=verification.configs query param is present
 type VerificationZoomConfigs struct {
-	WebhookSecretKey string `json:"webhook_secret_key"`
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
 }
 
-// Period to rate limit attempts
+func (v *VerificationZoomConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationZoomConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationZoomConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationZoomConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationZoomConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+// Period to rate limit events by. Refered as Delivery Rate period in the dashboard and documentation.
 type ConnectionCreateRequestDestinationRateLimitPeriod string
 
 const (
@@ -5861,7 +14169,7 @@ func (c ConnectionCreateRequestDestinationRateLimitPeriod) Ptr() *ConnectionCrea
 	return &c
 }
 
-// Period to rate limit attempts
+// Period to rate limit events by. Refered as Delivery Rate period in the dashboard and documentation.
 type ConnectionUpsertRequestDestinationRateLimitPeriod string
 
 const (
@@ -5892,97 +14200,79 @@ func (c ConnectionUpsertRequestDestinationRateLimitPeriod) Ptr() *ConnectionUpse
 
 // Filter by number of attempts
 type EventBulkRetryCreateRequestQueryAttempts struct {
-	typeName                                    string
-	Integer                                     int
-	EventBulkRetryCreateRequestQueryAttemptsAll *EventBulkRetryCreateRequestQueryAttemptsAll
+	Integer   int
+	Operators *Operators
 }
 
 func NewEventBulkRetryCreateRequestQueryAttemptsFromInteger(value int) *EventBulkRetryCreateRequestQueryAttempts {
-	return &EventBulkRetryCreateRequestQueryAttempts{typeName: "integer", Integer: value}
+	return &EventBulkRetryCreateRequestQueryAttempts{Integer: value}
 }
 
-func NewEventBulkRetryCreateRequestQueryAttemptsFromEventBulkRetryCreateRequestQueryAttemptsAll(value *EventBulkRetryCreateRequestQueryAttemptsAll) *EventBulkRetryCreateRequestQueryAttempts {
-	return &EventBulkRetryCreateRequestQueryAttempts{typeName: "eventBulkRetryCreateRequestQueryAttemptsAll", EventBulkRetryCreateRequestQueryAttemptsAll: value}
+func NewEventBulkRetryCreateRequestQueryAttemptsFromOperators(value *Operators) *EventBulkRetryCreateRequestQueryAttempts {
+	return &EventBulkRetryCreateRequestQueryAttempts{Operators: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryAttempts) UnmarshalJSON(data []byte) error {
 	var valueInteger int
 	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		e.typeName = "integer"
 		e.Integer = valueInteger
 		return nil
 	}
-	valueEventBulkRetryCreateRequestQueryAttemptsAll := new(EventBulkRetryCreateRequestQueryAttemptsAll)
-	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryAttemptsAll); err == nil {
-		e.typeName = "eventBulkRetryCreateRequestQueryAttemptsAll"
-		e.EventBulkRetryCreateRequestQueryAttemptsAll = valueEventBulkRetryCreateRequestQueryAttemptsAll
+	valueOperators := new(Operators)
+	if err := json.Unmarshal(data, &valueOperators); err == nil {
+		e.Operators = valueOperators
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
 }
 
 func (e EventBulkRetryCreateRequestQueryAttempts) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "integer":
+	if e.Integer != 0 {
 		return json.Marshal(e.Integer)
-	case "eventBulkRetryCreateRequestQueryAttemptsAll":
-		return json.Marshal(e.EventBulkRetryCreateRequestQueryAttemptsAll)
 	}
+	if e.Operators != nil {
+		return json.Marshal(e.Operators)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryAttemptsVisitor interface {
 	VisitInteger(int) error
-	VisitEventBulkRetryCreateRequestQueryAttemptsAll(*EventBulkRetryCreateRequestQueryAttemptsAll) error
+	VisitOperators(*Operators) error
 }
 
 func (e *EventBulkRetryCreateRequestQueryAttempts) Accept(visitor EventBulkRetryCreateRequestQueryAttemptsVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "integer":
+	if e.Integer != 0 {
 		return visitor.VisitInteger(e.Integer)
-	case "eventBulkRetryCreateRequestQueryAttemptsAll":
-		return visitor.VisitEventBulkRetryCreateRequestQueryAttemptsAll(e.EventBulkRetryCreateRequestQueryAttemptsAll)
 	}
-}
-
-type EventBulkRetryCreateRequestQueryAttemptsAll struct {
-	Gt       *int  `json:"gt,omitempty"`
-	Gte      *int  `json:"gte,omitempty"`
-	Le       *int  `json:"le,omitempty"`
-	Lte      *int  `json:"lte,omitempty"`
-	Any      *bool `json:"any,omitempty"`
-	All      *bool `json:"all,omitempty"`
-	Contains *int  `json:"contains,omitempty"`
+	if e.Operators != nil {
+		return visitor.VisitOperators(e.Operators)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // URL Encoded string of the JSON to match to the data body
 type EventBulkRetryCreateRequestQueryBody struct {
-	typeName                                string
 	String                                  string
 	EventBulkRetryCreateRequestQueryBodyOne *EventBulkRetryCreateRequestQueryBodyOne
 }
 
 func NewEventBulkRetryCreateRequestQueryBodyFromString(value string) *EventBulkRetryCreateRequestQueryBody {
-	return &EventBulkRetryCreateRequestQueryBody{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryBody{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryBodyFromEventBulkRetryCreateRequestQueryBodyOne(value *EventBulkRetryCreateRequestQueryBodyOne) *EventBulkRetryCreateRequestQueryBody {
-	return &EventBulkRetryCreateRequestQueryBody{typeName: "eventBulkRetryCreateRequestQueryBodyOne", EventBulkRetryCreateRequestQueryBodyOne: value}
+	return &EventBulkRetryCreateRequestQueryBody{EventBulkRetryCreateRequestQueryBodyOne: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryBody) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	valueEventBulkRetryCreateRequestQueryBodyOne := new(EventBulkRetryCreateRequestQueryBodyOne)
 	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryBodyOne); err == nil {
-		e.typeName = "eventBulkRetryCreateRequestQueryBodyOne"
 		e.EventBulkRetryCreateRequestQueryBodyOne = valueEventBulkRetryCreateRequestQueryBodyOne
 		return nil
 	}
@@ -5990,14 +14280,13 @@ func (e *EventBulkRetryCreateRequestQueryBody) UnmarshalJSON(data []byte) error 
 }
 
 func (e EventBulkRetryCreateRequestQueryBody) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "eventBulkRetryCreateRequestQueryBodyOne":
+	}
+	if e.EventBulkRetryCreateRequestQueryBodyOne != nil {
 		return json.Marshal(e.EventBulkRetryCreateRequestQueryBodyOne)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryBodyVisitor interface {
@@ -6006,43 +14295,75 @@ type EventBulkRetryCreateRequestQueryBodyVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryBody) Accept(visitor EventBulkRetryCreateRequestQueryBodyVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "eventBulkRetryCreateRequestQueryBodyOne":
+	}
+	if e.EventBulkRetryCreateRequestQueryBodyOne != nil {
 		return visitor.VisitEventBulkRetryCreateRequestQueryBodyOne(e.EventBulkRetryCreateRequestQueryBodyOne)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryBodyOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventBulkRetryCreateRequestQueryBodyOne) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventBulkRetryCreateRequestQueryBodyOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventBulkRetryCreateRequestQueryBodyOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventBulkRetryCreateRequestQueryBodyOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventBulkRetryCreateRequestQueryBodyOne) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EventBulkRetryCreateRequestQueryBulkRetryId struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewEventBulkRetryCreateRequestQueryBulkRetryIdFromString(value string) *EventBulkRetryCreateRequestQueryBulkRetryId {
-	return &EventBulkRetryCreateRequestQueryBulkRetryId{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryBulkRetryId{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryBulkRetryIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryBulkRetryId {
-	return &EventBulkRetryCreateRequestQueryBulkRetryId{typeName: "stringList", StringList: value}
+	return &EventBulkRetryCreateRequestQueryBulkRetryId{StringList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryBulkRetryId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		e.typeName = "stringList"
 		e.StringList = valueStringList
 		return nil
 	}
@@ -6050,14 +14371,13 @@ func (e *EventBulkRetryCreateRequestQueryBulkRetryId) UnmarshalJSON(data []byte)
 }
 
 func (e EventBulkRetryCreateRequestQueryBulkRetryId) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return json.Marshal(e.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryBulkRetryIdVisitor interface {
@@ -6066,52 +14386,47 @@ type EventBulkRetryCreateRequestQueryBulkRetryIdVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryBulkRetryId) Accept(visitor EventBulkRetryCreateRequestQueryBulkRetryIdVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return visitor.VisitStringList(e.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Filter by CLI IDs. `?[any]=true` operator for any CLI.
 type EventBulkRetryCreateRequestQueryCliId struct {
-	typeName                                 string
 	String                                   string
 	EventBulkRetryCreateRequestQueryCliIdAll *EventBulkRetryCreateRequestQueryCliIdAll
 	StringList                               []string
 }
 
 func NewEventBulkRetryCreateRequestQueryCliIdFromString(value string) *EventBulkRetryCreateRequestQueryCliId {
-	return &EventBulkRetryCreateRequestQueryCliId{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryCliId{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryCliIdFromEventBulkRetryCreateRequestQueryCliIdAll(value *EventBulkRetryCreateRequestQueryCliIdAll) *EventBulkRetryCreateRequestQueryCliId {
-	return &EventBulkRetryCreateRequestQueryCliId{typeName: "eventBulkRetryCreateRequestQueryCliIdAll", EventBulkRetryCreateRequestQueryCliIdAll: value}
+	return &EventBulkRetryCreateRequestQueryCliId{EventBulkRetryCreateRequestQueryCliIdAll: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryCliIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryCliId {
-	return &EventBulkRetryCreateRequestQueryCliId{typeName: "stringList", StringList: value}
+	return &EventBulkRetryCreateRequestQueryCliId{StringList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryCliId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	valueEventBulkRetryCreateRequestQueryCliIdAll := new(EventBulkRetryCreateRequestQueryCliIdAll)
 	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryCliIdAll); err == nil {
-		e.typeName = "eventBulkRetryCreateRequestQueryCliIdAll"
 		e.EventBulkRetryCreateRequestQueryCliIdAll = valueEventBulkRetryCreateRequestQueryCliIdAll
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		e.typeName = "stringList"
 		e.StringList = valueStringList
 		return nil
 	}
@@ -6119,16 +14434,16 @@ func (e *EventBulkRetryCreateRequestQueryCliId) UnmarshalJSON(data []byte) error
 }
 
 func (e EventBulkRetryCreateRequestQueryCliId) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "eventBulkRetryCreateRequestQueryCliIdAll":
+	}
+	if e.EventBulkRetryCreateRequestQueryCliIdAll != nil {
 		return json.Marshal(e.EventBulkRetryCreateRequestQueryCliIdAll)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return json.Marshal(e.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryCliIdVisitor interface {
@@ -6138,47 +14453,81 @@ type EventBulkRetryCreateRequestQueryCliIdVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryCliId) Accept(visitor EventBulkRetryCreateRequestQueryCliIdVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "eventBulkRetryCreateRequestQueryCliIdAll":
+	}
+	if e.EventBulkRetryCreateRequestQueryCliIdAll != nil {
 		return visitor.VisitEventBulkRetryCreateRequestQueryCliIdAll(e.EventBulkRetryCreateRequestQueryCliIdAll)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return visitor.VisitStringList(e.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryCliIdAll struct {
-	Any *bool `json:"any,omitempty"`
-	All *bool `json:"all,omitempty"`
+	Any *bool `json:"any,omitempty" url:"any,omitempty"`
+	All *bool `json:"all,omitempty" url:"all,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliIdAll) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliIdAll) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventBulkRetryCreateRequestQueryCliIdAll
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventBulkRetryCreateRequestQueryCliIdAll(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventBulkRetryCreateRequestQueryCliIdAll) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EventBulkRetryCreateRequestQueryCliUserId struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewEventBulkRetryCreateRequestQueryCliUserIdFromString(value string) *EventBulkRetryCreateRequestQueryCliUserId {
-	return &EventBulkRetryCreateRequestQueryCliUserId{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryCliUserId{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryCliUserIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryCliUserId {
-	return &EventBulkRetryCreateRequestQueryCliUserId{typeName: "stringList", StringList: value}
+	return &EventBulkRetryCreateRequestQueryCliUserId{StringList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryCliUserId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		e.typeName = "stringList"
 		e.StringList = valueStringList
 		return nil
 	}
@@ -6186,14 +14535,13 @@ func (e *EventBulkRetryCreateRequestQueryCliUserId) UnmarshalJSON(data []byte) e
 }
 
 func (e EventBulkRetryCreateRequestQueryCliUserId) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return json.Marshal(e.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryCliUserIdVisitor interface {
@@ -6202,108 +14550,91 @@ type EventBulkRetryCreateRequestQueryCliUserIdVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryCliUserId) Accept(visitor EventBulkRetryCreateRequestQueryCliUserIdVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return visitor.VisitStringList(e.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Filter by `created_at` date using a date operator
 type EventBulkRetryCreateRequestQueryCreatedAt struct {
-	typeName                                     string
-	DateTime                                     time.Time
-	EventBulkRetryCreateRequestQueryCreatedAtAny *EventBulkRetryCreateRequestQueryCreatedAtAny
+	DateTime  time.Time
+	Operators *Operators
 }
 
 func NewEventBulkRetryCreateRequestQueryCreatedAtFromDateTime(value time.Time) *EventBulkRetryCreateRequestQueryCreatedAt {
-	return &EventBulkRetryCreateRequestQueryCreatedAt{typeName: "dateTime", DateTime: value}
+	return &EventBulkRetryCreateRequestQueryCreatedAt{DateTime: value}
 }
 
-func NewEventBulkRetryCreateRequestQueryCreatedAtFromEventBulkRetryCreateRequestQueryCreatedAtAny(value *EventBulkRetryCreateRequestQueryCreatedAtAny) *EventBulkRetryCreateRequestQueryCreatedAt {
-	return &EventBulkRetryCreateRequestQueryCreatedAt{typeName: "eventBulkRetryCreateRequestQueryCreatedAtAny", EventBulkRetryCreateRequestQueryCreatedAtAny: value}
+func NewEventBulkRetryCreateRequestQueryCreatedAtFromOperators(value *Operators) *EventBulkRetryCreateRequestQueryCreatedAt {
+	return &EventBulkRetryCreateRequestQueryCreatedAt{Operators: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryCreatedAt) UnmarshalJSON(data []byte) error {
-	var valueDateTime time.Time
+	var valueDateTime *core.DateTime
 	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		e.typeName = "dateTime"
-		e.DateTime = valueDateTime
+		e.DateTime = valueDateTime.Time()
 		return nil
 	}
-	valueEventBulkRetryCreateRequestQueryCreatedAtAny := new(EventBulkRetryCreateRequestQueryCreatedAtAny)
-	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryCreatedAtAny); err == nil {
-		e.typeName = "eventBulkRetryCreateRequestQueryCreatedAtAny"
-		e.EventBulkRetryCreateRequestQueryCreatedAtAny = valueEventBulkRetryCreateRequestQueryCreatedAtAny
+	valueOperators := new(Operators)
+	if err := json.Unmarshal(data, &valueOperators); err == nil {
+		e.Operators = valueOperators
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
 }
 
 func (e EventBulkRetryCreateRequestQueryCreatedAt) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "dateTime":
-		return json.Marshal(e.DateTime)
-	case "eventBulkRetryCreateRequestQueryCreatedAtAny":
-		return json.Marshal(e.EventBulkRetryCreateRequestQueryCreatedAtAny)
+	if !e.DateTime.IsZero() {
+		return json.Marshal(core.NewDateTime(e.DateTime))
 	}
+	if e.Operators != nil {
+		return json.Marshal(e.Operators)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryCreatedAtVisitor interface {
 	VisitDateTime(time.Time) error
-	VisitEventBulkRetryCreateRequestQueryCreatedAtAny(*EventBulkRetryCreateRequestQueryCreatedAtAny) error
+	VisitOperators(*Operators) error
 }
 
 func (e *EventBulkRetryCreateRequestQueryCreatedAt) Accept(visitor EventBulkRetryCreateRequestQueryCreatedAtVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "dateTime":
+	if !e.DateTime.IsZero() {
 		return visitor.VisitDateTime(e.DateTime)
-	case "eventBulkRetryCreateRequestQueryCreatedAtAny":
-		return visitor.VisitEventBulkRetryCreateRequestQueryCreatedAtAny(e.EventBulkRetryCreateRequestQueryCreatedAtAny)
 	}
-}
-
-type EventBulkRetryCreateRequestQueryCreatedAtAny struct {
-	Gt  *time.Time `json:"gt,omitempty"`
-	Gte *time.Time `json:"gte,omitempty"`
-	Le  *time.Time `json:"le,omitempty"`
-	Lte *time.Time `json:"lte,omitempty"`
-	Any *bool      `json:"any,omitempty"`
+	if e.Operators != nil {
+		return visitor.VisitOperators(e.Operators)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Filter by destination IDs
 type EventBulkRetryCreateRequestQueryDestinationId struct {
-	typeName string
 	// Destination ID
 	String     string
 	StringList []string
 }
 
 func NewEventBulkRetryCreateRequestQueryDestinationIdFromString(value string) *EventBulkRetryCreateRequestQueryDestinationId {
-	return &EventBulkRetryCreateRequestQueryDestinationId{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryDestinationId{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryDestinationIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryDestinationId {
-	return &EventBulkRetryCreateRequestQueryDestinationId{typeName: "stringList", StringList: value}
+	return &EventBulkRetryCreateRequestQueryDestinationId{StringList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryDestinationId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		e.typeName = "stringList"
 		e.StringList = valueStringList
 		return nil
 	}
@@ -6311,14 +14642,13 @@ func (e *EventBulkRetryCreateRequestQueryDestinationId) UnmarshalJSON(data []byt
 }
 
 func (e EventBulkRetryCreateRequestQueryDestinationId) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return json.Marshal(e.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryDestinationIdVisitor interface {
@@ -6327,41 +14657,37 @@ type EventBulkRetryCreateRequestQueryDestinationIdVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryDestinationId) Accept(visitor EventBulkRetryCreateRequestQueryDestinationIdVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return visitor.VisitStringList(e.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Filter by error code code
 type EventBulkRetryCreateRequestQueryErrorCode struct {
-	typeName              string
 	AttemptErrorCodes     AttemptErrorCodes
 	AttemptErrorCodesList []AttemptErrorCodes
 }
 
 func NewEventBulkRetryCreateRequestQueryErrorCodeFromAttemptErrorCodes(value AttemptErrorCodes) *EventBulkRetryCreateRequestQueryErrorCode {
-	return &EventBulkRetryCreateRequestQueryErrorCode{typeName: "attemptErrorCodes", AttemptErrorCodes: value}
+	return &EventBulkRetryCreateRequestQueryErrorCode{AttemptErrorCodes: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryErrorCodeFromAttemptErrorCodesList(value []AttemptErrorCodes) *EventBulkRetryCreateRequestQueryErrorCode {
-	return &EventBulkRetryCreateRequestQueryErrorCode{typeName: "attemptErrorCodesList", AttemptErrorCodesList: value}
+	return &EventBulkRetryCreateRequestQueryErrorCode{AttemptErrorCodesList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryErrorCode) UnmarshalJSON(data []byte) error {
 	var valueAttemptErrorCodes AttemptErrorCodes
 	if err := json.Unmarshal(data, &valueAttemptErrorCodes); err == nil {
-		e.typeName = "attemptErrorCodes"
 		e.AttemptErrorCodes = valueAttemptErrorCodes
 		return nil
 	}
 	var valueAttemptErrorCodesList []AttemptErrorCodes
 	if err := json.Unmarshal(data, &valueAttemptErrorCodesList); err == nil {
-		e.typeName = "attemptErrorCodesList"
 		e.AttemptErrorCodesList = valueAttemptErrorCodesList
 		return nil
 	}
@@ -6369,14 +14695,13 @@ func (e *EventBulkRetryCreateRequestQueryErrorCode) UnmarshalJSON(data []byte) e
 }
 
 func (e EventBulkRetryCreateRequestQueryErrorCode) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "attemptErrorCodes":
+	if e.AttemptErrorCodes != "" {
 		return json.Marshal(e.AttemptErrorCodes)
-	case "attemptErrorCodesList":
+	}
+	if e.AttemptErrorCodesList != nil {
 		return json.Marshal(e.AttemptErrorCodesList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryErrorCodeVisitor interface {
@@ -6385,40 +14710,36 @@ type EventBulkRetryCreateRequestQueryErrorCodeVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryErrorCode) Accept(visitor EventBulkRetryCreateRequestQueryErrorCodeVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "attemptErrorCodes":
+	if e.AttemptErrorCodes != "" {
 		return visitor.VisitAttemptErrorCodes(e.AttemptErrorCodes)
-	case "attemptErrorCodesList":
+	}
+	if e.AttemptErrorCodesList != nil {
 		return visitor.VisitAttemptErrorCodesList(e.AttemptErrorCodesList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryEventDataId struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewEventBulkRetryCreateRequestQueryEventDataIdFromString(value string) *EventBulkRetryCreateRequestQueryEventDataId {
-	return &EventBulkRetryCreateRequestQueryEventDataId{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryEventDataId{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryEventDataIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryEventDataId {
-	return &EventBulkRetryCreateRequestQueryEventDataId{typeName: "stringList", StringList: value}
+	return &EventBulkRetryCreateRequestQueryEventDataId{StringList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryEventDataId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		e.typeName = "stringList"
 		e.StringList = valueStringList
 		return nil
 	}
@@ -6426,14 +14747,13 @@ func (e *EventBulkRetryCreateRequestQueryEventDataId) UnmarshalJSON(data []byte)
 }
 
 func (e EventBulkRetryCreateRequestQueryEventDataId) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return json.Marshal(e.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryEventDataIdVisitor interface {
@@ -6442,41 +14762,37 @@ type EventBulkRetryCreateRequestQueryEventDataIdVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryEventDataId) Accept(visitor EventBulkRetryCreateRequestQueryEventDataIdVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return visitor.VisitStringList(e.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // URL Encoded string of the JSON to match to the data headers
 type EventBulkRetryCreateRequestQueryHeaders struct {
-	typeName                                   string
 	String                                     string
 	EventBulkRetryCreateRequestQueryHeadersOne *EventBulkRetryCreateRequestQueryHeadersOne
 }
 
 func NewEventBulkRetryCreateRequestQueryHeadersFromString(value string) *EventBulkRetryCreateRequestQueryHeaders {
-	return &EventBulkRetryCreateRequestQueryHeaders{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryHeaders{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryHeadersFromEventBulkRetryCreateRequestQueryHeadersOne(value *EventBulkRetryCreateRequestQueryHeadersOne) *EventBulkRetryCreateRequestQueryHeaders {
-	return &EventBulkRetryCreateRequestQueryHeaders{typeName: "eventBulkRetryCreateRequestQueryHeadersOne", EventBulkRetryCreateRequestQueryHeadersOne: value}
+	return &EventBulkRetryCreateRequestQueryHeaders{EventBulkRetryCreateRequestQueryHeadersOne: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryHeaders) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	valueEventBulkRetryCreateRequestQueryHeadersOne := new(EventBulkRetryCreateRequestQueryHeadersOne)
 	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryHeadersOne); err == nil {
-		e.typeName = "eventBulkRetryCreateRequestQueryHeadersOne"
 		e.EventBulkRetryCreateRequestQueryHeadersOne = valueEventBulkRetryCreateRequestQueryHeadersOne
 		return nil
 	}
@@ -6484,14 +14800,13 @@ func (e *EventBulkRetryCreateRequestQueryHeaders) UnmarshalJSON(data []byte) err
 }
 
 func (e EventBulkRetryCreateRequestQueryHeaders) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "eventBulkRetryCreateRequestQueryHeadersOne":
+	}
+	if e.EventBulkRetryCreateRequestQueryHeadersOne != nil {
 		return json.Marshal(e.EventBulkRetryCreateRequestQueryHeadersOne)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryHeadersVisitor interface {
@@ -6500,45 +14815,77 @@ type EventBulkRetryCreateRequestQueryHeadersVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryHeaders) Accept(visitor EventBulkRetryCreateRequestQueryHeadersVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "eventBulkRetryCreateRequestQueryHeadersOne":
+	}
+	if e.EventBulkRetryCreateRequestQueryHeadersOne != nil {
 		return visitor.VisitEventBulkRetryCreateRequestQueryHeadersOne(e.EventBulkRetryCreateRequestQueryHeadersOne)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryHeadersOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventBulkRetryCreateRequestQueryHeadersOne) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventBulkRetryCreateRequestQueryHeadersOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventBulkRetryCreateRequestQueryHeadersOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventBulkRetryCreateRequestQueryHeadersOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventBulkRetryCreateRequestQueryHeadersOne) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 // Filter by event IDs
 type EventBulkRetryCreateRequestQueryId struct {
-	typeName string
 	// Event ID
 	String     string
 	StringList []string
 }
 
 func NewEventBulkRetryCreateRequestQueryIdFromString(value string) *EventBulkRetryCreateRequestQueryId {
-	return &EventBulkRetryCreateRequestQueryId{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryId{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryId {
-	return &EventBulkRetryCreateRequestQueryId{typeName: "stringList", StringList: value}
+	return &EventBulkRetryCreateRequestQueryId{StringList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		e.typeName = "stringList"
 		e.StringList = valueStringList
 		return nil
 	}
@@ -6546,14 +14893,13 @@ func (e *EventBulkRetryCreateRequestQueryId) UnmarshalJSON(data []byte) error {
 }
 
 func (e EventBulkRetryCreateRequestQueryId) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return json.Marshal(e.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryIdVisitor interface {
@@ -6562,40 +14908,36 @@ type EventBulkRetryCreateRequestQueryIdVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryId) Accept(visitor EventBulkRetryCreateRequestQueryIdVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return visitor.VisitStringList(e.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryIssueId struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewEventBulkRetryCreateRequestQueryIssueIdFromString(value string) *EventBulkRetryCreateRequestQueryIssueId {
-	return &EventBulkRetryCreateRequestQueryIssueId{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryIssueId{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryIssueIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryIssueId {
-	return &EventBulkRetryCreateRequestQueryIssueId{typeName: "stringList", StringList: value}
+	return &EventBulkRetryCreateRequestQueryIssueId{StringList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryIssueId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		e.typeName = "stringList"
 		e.StringList = valueStringList
 		return nil
 	}
@@ -6603,14 +14945,13 @@ func (e *EventBulkRetryCreateRequestQueryIssueId) UnmarshalJSON(data []byte) err
 }
 
 func (e EventBulkRetryCreateRequestQueryIssueId) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return json.Marshal(e.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryIssueIdVisitor interface {
@@ -6619,107 +14960,90 @@ type EventBulkRetryCreateRequestQueryIssueIdVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryIssueId) Accept(visitor EventBulkRetryCreateRequestQueryIssueIdVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return visitor.VisitStringList(e.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Filter by `last_attempt_at` date using a date operator
 type EventBulkRetryCreateRequestQueryLastAttemptAt struct {
-	typeName                                         string
-	DateTime                                         time.Time
-	EventBulkRetryCreateRequestQueryLastAttemptAtAny *EventBulkRetryCreateRequestQueryLastAttemptAtAny
+	DateTime  time.Time
+	Operators *Operators
 }
 
 func NewEventBulkRetryCreateRequestQueryLastAttemptAtFromDateTime(value time.Time) *EventBulkRetryCreateRequestQueryLastAttemptAt {
-	return &EventBulkRetryCreateRequestQueryLastAttemptAt{typeName: "dateTime", DateTime: value}
+	return &EventBulkRetryCreateRequestQueryLastAttemptAt{DateTime: value}
 }
 
-func NewEventBulkRetryCreateRequestQueryLastAttemptAtFromEventBulkRetryCreateRequestQueryLastAttemptAtAny(value *EventBulkRetryCreateRequestQueryLastAttemptAtAny) *EventBulkRetryCreateRequestQueryLastAttemptAt {
-	return &EventBulkRetryCreateRequestQueryLastAttemptAt{typeName: "eventBulkRetryCreateRequestQueryLastAttemptAtAny", EventBulkRetryCreateRequestQueryLastAttemptAtAny: value}
+func NewEventBulkRetryCreateRequestQueryLastAttemptAtFromOperators(value *Operators) *EventBulkRetryCreateRequestQueryLastAttemptAt {
+	return &EventBulkRetryCreateRequestQueryLastAttemptAt{Operators: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryLastAttemptAt) UnmarshalJSON(data []byte) error {
-	var valueDateTime time.Time
+	var valueDateTime *core.DateTime
 	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		e.typeName = "dateTime"
-		e.DateTime = valueDateTime
+		e.DateTime = valueDateTime.Time()
 		return nil
 	}
-	valueEventBulkRetryCreateRequestQueryLastAttemptAtAny := new(EventBulkRetryCreateRequestQueryLastAttemptAtAny)
-	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryLastAttemptAtAny); err == nil {
-		e.typeName = "eventBulkRetryCreateRequestQueryLastAttemptAtAny"
-		e.EventBulkRetryCreateRequestQueryLastAttemptAtAny = valueEventBulkRetryCreateRequestQueryLastAttemptAtAny
+	valueOperators := new(Operators)
+	if err := json.Unmarshal(data, &valueOperators); err == nil {
+		e.Operators = valueOperators
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
 }
 
 func (e EventBulkRetryCreateRequestQueryLastAttemptAt) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "dateTime":
-		return json.Marshal(e.DateTime)
-	case "eventBulkRetryCreateRequestQueryLastAttemptAtAny":
-		return json.Marshal(e.EventBulkRetryCreateRequestQueryLastAttemptAtAny)
+	if !e.DateTime.IsZero() {
+		return json.Marshal(core.NewDateTime(e.DateTime))
 	}
+	if e.Operators != nil {
+		return json.Marshal(e.Operators)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryLastAttemptAtVisitor interface {
 	VisitDateTime(time.Time) error
-	VisitEventBulkRetryCreateRequestQueryLastAttemptAtAny(*EventBulkRetryCreateRequestQueryLastAttemptAtAny) error
+	VisitOperators(*Operators) error
 }
 
 func (e *EventBulkRetryCreateRequestQueryLastAttemptAt) Accept(visitor EventBulkRetryCreateRequestQueryLastAttemptAtVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "dateTime":
+	if !e.DateTime.IsZero() {
 		return visitor.VisitDateTime(e.DateTime)
-	case "eventBulkRetryCreateRequestQueryLastAttemptAtAny":
-		return visitor.VisitEventBulkRetryCreateRequestQueryLastAttemptAtAny(e.EventBulkRetryCreateRequestQueryLastAttemptAtAny)
 	}
-}
-
-type EventBulkRetryCreateRequestQueryLastAttemptAtAny struct {
-	Gt  *time.Time `json:"gt,omitempty"`
-	Gte *time.Time `json:"gte,omitempty"`
-	Le  *time.Time `json:"le,omitempty"`
-	Lte *time.Time `json:"lte,omitempty"`
-	Any *bool      `json:"any,omitempty"`
+	if e.Operators != nil {
+		return visitor.VisitOperators(e.Operators)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
 type EventBulkRetryCreateRequestQueryParsedQuery struct {
-	typeName                                       string
 	String                                         string
 	EventBulkRetryCreateRequestQueryParsedQueryOne *EventBulkRetryCreateRequestQueryParsedQueryOne
 }
 
 func NewEventBulkRetryCreateRequestQueryParsedQueryFromString(value string) *EventBulkRetryCreateRequestQueryParsedQuery {
-	return &EventBulkRetryCreateRequestQueryParsedQuery{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryParsedQuery{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryParsedQueryFromEventBulkRetryCreateRequestQueryParsedQueryOne(value *EventBulkRetryCreateRequestQueryParsedQueryOne) *EventBulkRetryCreateRequestQueryParsedQuery {
-	return &EventBulkRetryCreateRequestQueryParsedQuery{typeName: "eventBulkRetryCreateRequestQueryParsedQueryOne", EventBulkRetryCreateRequestQueryParsedQueryOne: value}
+	return &EventBulkRetryCreateRequestQueryParsedQuery{EventBulkRetryCreateRequestQueryParsedQueryOne: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryParsedQuery) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	valueEventBulkRetryCreateRequestQueryParsedQueryOne := new(EventBulkRetryCreateRequestQueryParsedQueryOne)
 	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryParsedQueryOne); err == nil {
-		e.typeName = "eventBulkRetryCreateRequestQueryParsedQueryOne"
 		e.EventBulkRetryCreateRequestQueryParsedQueryOne = valueEventBulkRetryCreateRequestQueryParsedQueryOne
 		return nil
 	}
@@ -6727,14 +15051,13 @@ func (e *EventBulkRetryCreateRequestQueryParsedQuery) UnmarshalJSON(data []byte)
 }
 
 func (e EventBulkRetryCreateRequestQueryParsedQuery) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "eventBulkRetryCreateRequestQueryParsedQueryOne":
+	}
+	if e.EventBulkRetryCreateRequestQueryParsedQueryOne != nil {
 		return json.Marshal(e.EventBulkRetryCreateRequestQueryParsedQueryOne)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryParsedQueryVisitor interface {
@@ -6743,55 +15066,86 @@ type EventBulkRetryCreateRequestQueryParsedQueryVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryParsedQuery) Accept(visitor EventBulkRetryCreateRequestQueryParsedQueryVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "eventBulkRetryCreateRequestQueryParsedQueryOne":
+	}
+	if e.EventBulkRetryCreateRequestQueryParsedQueryOne != nil {
 		return visitor.VisitEventBulkRetryCreateRequestQueryParsedQueryOne(e.EventBulkRetryCreateRequestQueryParsedQueryOne)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryParsedQueryOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventBulkRetryCreateRequestQueryParsedQueryOne) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventBulkRetryCreateRequestQueryParsedQueryOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventBulkRetryCreateRequestQueryParsedQueryOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventBulkRetryCreateRequestQueryParsedQueryOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventBulkRetryCreateRequestQueryParsedQueryOne) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 // Filter by HTTP response status code
 type EventBulkRetryCreateRequestQueryResponseStatus struct {
-	typeName                                          string
-	Integer                                           int
-	EventBulkRetryCreateRequestQueryResponseStatusAll *EventBulkRetryCreateRequestQueryResponseStatusAll
-	IntegerList                                       []int
+	Integer     int
+	Operators   *Operators
+	IntegerList []int
 }
 
 func NewEventBulkRetryCreateRequestQueryResponseStatusFromInteger(value int) *EventBulkRetryCreateRequestQueryResponseStatus {
-	return &EventBulkRetryCreateRequestQueryResponseStatus{typeName: "integer", Integer: value}
+	return &EventBulkRetryCreateRequestQueryResponseStatus{Integer: value}
 }
 
-func NewEventBulkRetryCreateRequestQueryResponseStatusFromEventBulkRetryCreateRequestQueryResponseStatusAll(value *EventBulkRetryCreateRequestQueryResponseStatusAll) *EventBulkRetryCreateRequestQueryResponseStatus {
-	return &EventBulkRetryCreateRequestQueryResponseStatus{typeName: "eventBulkRetryCreateRequestQueryResponseStatusAll", EventBulkRetryCreateRequestQueryResponseStatusAll: value}
+func NewEventBulkRetryCreateRequestQueryResponseStatusFromOperators(value *Operators) *EventBulkRetryCreateRequestQueryResponseStatus {
+	return &EventBulkRetryCreateRequestQueryResponseStatus{Operators: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryResponseStatusFromIntegerList(value []int) *EventBulkRetryCreateRequestQueryResponseStatus {
-	return &EventBulkRetryCreateRequestQueryResponseStatus{typeName: "integerList", IntegerList: value}
+	return &EventBulkRetryCreateRequestQueryResponseStatus{IntegerList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryResponseStatus) UnmarshalJSON(data []byte) error {
 	var valueInteger int
 	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		e.typeName = "integer"
 		e.Integer = valueInteger
 		return nil
 	}
-	valueEventBulkRetryCreateRequestQueryResponseStatusAll := new(EventBulkRetryCreateRequestQueryResponseStatusAll)
-	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQueryResponseStatusAll); err == nil {
-		e.typeName = "eventBulkRetryCreateRequestQueryResponseStatusAll"
-		e.EventBulkRetryCreateRequestQueryResponseStatusAll = valueEventBulkRetryCreateRequestQueryResponseStatusAll
+	valueOperators := new(Operators)
+	if err := json.Unmarshal(data, &valueOperators); err == nil {
+		e.Operators = valueOperators
 		return nil
 	}
 	var valueIntegerList []int
 	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
-		e.typeName = "integerList"
 		e.IntegerList = valueIntegerList
 		return nil
 	}
@@ -6799,73 +15153,60 @@ func (e *EventBulkRetryCreateRequestQueryResponseStatus) UnmarshalJSON(data []by
 }
 
 func (e EventBulkRetryCreateRequestQueryResponseStatus) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "integer":
+	if e.Integer != 0 {
 		return json.Marshal(e.Integer)
-	case "eventBulkRetryCreateRequestQueryResponseStatusAll":
-		return json.Marshal(e.EventBulkRetryCreateRequestQueryResponseStatusAll)
-	case "integerList":
+	}
+	if e.Operators != nil {
+		return json.Marshal(e.Operators)
+	}
+	if e.IntegerList != nil {
 		return json.Marshal(e.IntegerList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryResponseStatusVisitor interface {
 	VisitInteger(int) error
-	VisitEventBulkRetryCreateRequestQueryResponseStatusAll(*EventBulkRetryCreateRequestQueryResponseStatusAll) error
+	VisitOperators(*Operators) error
 	VisitIntegerList([]int) error
 }
 
 func (e *EventBulkRetryCreateRequestQueryResponseStatus) Accept(visitor EventBulkRetryCreateRequestQueryResponseStatusVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "integer":
+	if e.Integer != 0 {
 		return visitor.VisitInteger(e.Integer)
-	case "eventBulkRetryCreateRequestQueryResponseStatusAll":
-		return visitor.VisitEventBulkRetryCreateRequestQueryResponseStatusAll(e.EventBulkRetryCreateRequestQueryResponseStatusAll)
-	case "integerList":
+	}
+	if e.Operators != nil {
+		return visitor.VisitOperators(e.Operators)
+	}
+	if e.IntegerList != nil {
 		return visitor.VisitIntegerList(e.IntegerList)
 	}
-}
-
-type EventBulkRetryCreateRequestQueryResponseStatusAll struct {
-	Gt       *int  `json:"gt,omitempty"`
-	Gte      *int  `json:"gte,omitempty"`
-	Le       *int  `json:"le,omitempty"`
-	Lte      *int  `json:"lte,omitempty"`
-	Any      *bool `json:"any,omitempty"`
-	All      *bool `json:"all,omitempty"`
-	Contains *int  `json:"contains,omitempty"`
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Filter by source IDs
 type EventBulkRetryCreateRequestQuerySourceId struct {
-	typeName string
 	// Source ID
 	String     string
 	StringList []string
 }
 
 func NewEventBulkRetryCreateRequestQuerySourceIdFromString(value string) *EventBulkRetryCreateRequestQuerySourceId {
-	return &EventBulkRetryCreateRequestQuerySourceId{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQuerySourceId{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQuerySourceIdFromStringList(value []string) *EventBulkRetryCreateRequestQuerySourceId {
-	return &EventBulkRetryCreateRequestQuerySourceId{typeName: "stringList", StringList: value}
+	return &EventBulkRetryCreateRequestQuerySourceId{StringList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQuerySourceId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		e.typeName = "stringList"
 		e.StringList = valueStringList
 		return nil
 	}
@@ -6873,14 +15214,13 @@ func (e *EventBulkRetryCreateRequestQuerySourceId) UnmarshalJSON(data []byte) er
 }
 
 func (e EventBulkRetryCreateRequestQuerySourceId) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return json.Marshal(e.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQuerySourceIdVisitor interface {
@@ -6889,41 +15229,37 @@ type EventBulkRetryCreateRequestQuerySourceIdVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQuerySourceId) Accept(visitor EventBulkRetryCreateRequestQuerySourceIdVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return visitor.VisitStringList(e.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Lifecyle status of the event
 type EventBulkRetryCreateRequestQueryStatus struct {
-	typeName        string
 	EventStatus     EventStatus
 	EventStatusList []EventStatus
 }
 
 func NewEventBulkRetryCreateRequestQueryStatusFromEventStatus(value EventStatus) *EventBulkRetryCreateRequestQueryStatus {
-	return &EventBulkRetryCreateRequestQueryStatus{typeName: "eventStatus", EventStatus: value}
+	return &EventBulkRetryCreateRequestQueryStatus{EventStatus: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryStatusFromEventStatusList(value []EventStatus) *EventBulkRetryCreateRequestQueryStatus {
-	return &EventBulkRetryCreateRequestQueryStatus{typeName: "eventStatusList", EventStatusList: value}
+	return &EventBulkRetryCreateRequestQueryStatus{EventStatusList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryStatus) UnmarshalJSON(data []byte) error {
 	var valueEventStatus EventStatus
 	if err := json.Unmarshal(data, &valueEventStatus); err == nil {
-		e.typeName = "eventStatus"
 		e.EventStatus = valueEventStatus
 		return nil
 	}
 	var valueEventStatusList []EventStatus
 	if err := json.Unmarshal(data, &valueEventStatusList); err == nil {
-		e.typeName = "eventStatusList"
 		e.EventStatusList = valueEventStatusList
 		return nil
 	}
@@ -6931,14 +15267,13 @@ func (e *EventBulkRetryCreateRequestQueryStatus) UnmarshalJSON(data []byte) erro
 }
 
 func (e EventBulkRetryCreateRequestQueryStatus) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "eventStatus":
+	if e.EventStatus != "" {
 		return json.Marshal(e.EventStatus)
-	case "eventStatusList":
+	}
+	if e.EventStatusList != nil {
 		return json.Marshal(e.EventStatusList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryStatusVisitor interface {
@@ -6947,108 +15282,91 @@ type EventBulkRetryCreateRequestQueryStatusVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryStatus) Accept(visitor EventBulkRetryCreateRequestQueryStatusVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "eventStatus":
+	if e.EventStatus != "" {
 		return visitor.VisitEventStatus(e.EventStatus)
-	case "eventStatusList":
+	}
+	if e.EventStatusList != nil {
 		return visitor.VisitEventStatusList(e.EventStatusList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Filter by `successful_at` date using a date operator
 type EventBulkRetryCreateRequestQuerySuccessfulAt struct {
-	typeName                                        string
-	DateTime                                        time.Time
-	EventBulkRetryCreateRequestQuerySuccessfulAtAny *EventBulkRetryCreateRequestQuerySuccessfulAtAny
+	DateTime  time.Time
+	Operators *Operators
 }
 
 func NewEventBulkRetryCreateRequestQuerySuccessfulAtFromDateTime(value time.Time) *EventBulkRetryCreateRequestQuerySuccessfulAt {
-	return &EventBulkRetryCreateRequestQuerySuccessfulAt{typeName: "dateTime", DateTime: value}
+	return &EventBulkRetryCreateRequestQuerySuccessfulAt{DateTime: value}
 }
 
-func NewEventBulkRetryCreateRequestQuerySuccessfulAtFromEventBulkRetryCreateRequestQuerySuccessfulAtAny(value *EventBulkRetryCreateRequestQuerySuccessfulAtAny) *EventBulkRetryCreateRequestQuerySuccessfulAt {
-	return &EventBulkRetryCreateRequestQuerySuccessfulAt{typeName: "eventBulkRetryCreateRequestQuerySuccessfulAtAny", EventBulkRetryCreateRequestQuerySuccessfulAtAny: value}
+func NewEventBulkRetryCreateRequestQuerySuccessfulAtFromOperators(value *Operators) *EventBulkRetryCreateRequestQuerySuccessfulAt {
+	return &EventBulkRetryCreateRequestQuerySuccessfulAt{Operators: value}
 }
 
 func (e *EventBulkRetryCreateRequestQuerySuccessfulAt) UnmarshalJSON(data []byte) error {
-	var valueDateTime time.Time
+	var valueDateTime *core.DateTime
 	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		e.typeName = "dateTime"
-		e.DateTime = valueDateTime
+		e.DateTime = valueDateTime.Time()
 		return nil
 	}
-	valueEventBulkRetryCreateRequestQuerySuccessfulAtAny := new(EventBulkRetryCreateRequestQuerySuccessfulAtAny)
-	if err := json.Unmarshal(data, &valueEventBulkRetryCreateRequestQuerySuccessfulAtAny); err == nil {
-		e.typeName = "eventBulkRetryCreateRequestQuerySuccessfulAtAny"
-		e.EventBulkRetryCreateRequestQuerySuccessfulAtAny = valueEventBulkRetryCreateRequestQuerySuccessfulAtAny
+	valueOperators := new(Operators)
+	if err := json.Unmarshal(data, &valueOperators); err == nil {
+		e.Operators = valueOperators
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, e)
 }
 
 func (e EventBulkRetryCreateRequestQuerySuccessfulAt) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "dateTime":
-		return json.Marshal(e.DateTime)
-	case "eventBulkRetryCreateRequestQuerySuccessfulAtAny":
-		return json.Marshal(e.EventBulkRetryCreateRequestQuerySuccessfulAtAny)
+	if !e.DateTime.IsZero() {
+		return json.Marshal(core.NewDateTime(e.DateTime))
 	}
+	if e.Operators != nil {
+		return json.Marshal(e.Operators)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQuerySuccessfulAtVisitor interface {
 	VisitDateTime(time.Time) error
-	VisitEventBulkRetryCreateRequestQuerySuccessfulAtAny(*EventBulkRetryCreateRequestQuerySuccessfulAtAny) error
+	VisitOperators(*Operators) error
 }
 
 func (e *EventBulkRetryCreateRequestQuerySuccessfulAt) Accept(visitor EventBulkRetryCreateRequestQuerySuccessfulAtVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "dateTime":
+	if !e.DateTime.IsZero() {
 		return visitor.VisitDateTime(e.DateTime)
-	case "eventBulkRetryCreateRequestQuerySuccessfulAtAny":
-		return visitor.VisitEventBulkRetryCreateRequestQuerySuccessfulAtAny(e.EventBulkRetryCreateRequestQuerySuccessfulAtAny)
 	}
-}
-
-type EventBulkRetryCreateRequestQuerySuccessfulAtAny struct {
-	Gt  *time.Time `json:"gt,omitempty"`
-	Gte *time.Time `json:"gte,omitempty"`
-	Le  *time.Time `json:"le,omitempty"`
-	Lte *time.Time `json:"lte,omitempty"`
-	Any *bool      `json:"any,omitempty"`
+	if e.Operators != nil {
+		return visitor.VisitOperators(e.Operators)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // Filter by webhook connection IDs
 type EventBulkRetryCreateRequestQueryWebhookId struct {
-	typeName string
 	// Webhook ID
 	String     string
 	StringList []string
 }
 
 func NewEventBulkRetryCreateRequestQueryWebhookIdFromString(value string) *EventBulkRetryCreateRequestQueryWebhookId {
-	return &EventBulkRetryCreateRequestQueryWebhookId{typeName: "string", String: value}
+	return &EventBulkRetryCreateRequestQueryWebhookId{String: value}
 }
 
 func NewEventBulkRetryCreateRequestQueryWebhookIdFromStringList(value []string) *EventBulkRetryCreateRequestQueryWebhookId {
-	return &EventBulkRetryCreateRequestQueryWebhookId{typeName: "stringList", StringList: value}
+	return &EventBulkRetryCreateRequestQueryWebhookId{StringList: value}
 }
 
 func (e *EventBulkRetryCreateRequestQueryWebhookId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		e.typeName = "string"
 		e.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		e.typeName = "stringList"
 		e.StringList = valueStringList
 		return nil
 	}
@@ -7056,14 +15374,13 @@ func (e *EventBulkRetryCreateRequestQueryWebhookId) UnmarshalJSON(data []byte) e
 }
 
 func (e EventBulkRetryCreateRequestQueryWebhookId) MarshalJSON() ([]byte, error) {
-	switch e.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return json.Marshal(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return json.Marshal(e.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 type EventBulkRetryCreateRequestQueryWebhookIdVisitor interface {
@@ -7072,41 +15389,37 @@ type EventBulkRetryCreateRequestQueryWebhookIdVisitor interface {
 }
 
 func (e *EventBulkRetryCreateRequestQueryWebhookId) Accept(visitor EventBulkRetryCreateRequestQueryWebhookIdVisitor) error {
-	switch e.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", e.typeName, e)
-	case "string":
+	if e.String != "" {
 		return visitor.VisitString(e.String)
-	case "stringList":
+	}
+	if e.StringList != nil {
 		return visitor.VisitStringList(e.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", e)
 }
 
 // The cause of the ignored event
 type IgnoredEventBulkRetryCreateRequestQueryCause struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewIgnoredEventBulkRetryCreateRequestQueryCauseFromString(value string) *IgnoredEventBulkRetryCreateRequestQueryCause {
-	return &IgnoredEventBulkRetryCreateRequestQueryCause{typeName: "string", String: value}
+	return &IgnoredEventBulkRetryCreateRequestQueryCause{String: value}
 }
 
 func NewIgnoredEventBulkRetryCreateRequestQueryCauseFromStringList(value []string) *IgnoredEventBulkRetryCreateRequestQueryCause {
-	return &IgnoredEventBulkRetryCreateRequestQueryCause{typeName: "stringList", StringList: value}
+	return &IgnoredEventBulkRetryCreateRequestQueryCause{StringList: value}
 }
 
 func (i *IgnoredEventBulkRetryCreateRequestQueryCause) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		i.typeName = "string"
 		i.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		i.typeName = "stringList"
 		i.StringList = valueStringList
 		return nil
 	}
@@ -7114,14 +15427,13 @@ func (i *IgnoredEventBulkRetryCreateRequestQueryCause) UnmarshalJSON(data []byte
 }
 
 func (i IgnoredEventBulkRetryCreateRequestQueryCause) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return json.Marshal(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return json.Marshal(i.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IgnoredEventBulkRetryCreateRequestQueryCauseVisitor interface {
@@ -7130,41 +15442,37 @@ type IgnoredEventBulkRetryCreateRequestQueryCauseVisitor interface {
 }
 
 func (i *IgnoredEventBulkRetryCreateRequestQueryCause) Accept(visitor IgnoredEventBulkRetryCreateRequestQueryCauseVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return visitor.VisitString(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return visitor.VisitStringList(i.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 // Connection ID of the ignored event
 type IgnoredEventBulkRetryCreateRequestQueryWebhookId struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewIgnoredEventBulkRetryCreateRequestQueryWebhookIdFromString(value string) *IgnoredEventBulkRetryCreateRequestQueryWebhookId {
-	return &IgnoredEventBulkRetryCreateRequestQueryWebhookId{typeName: "string", String: value}
+	return &IgnoredEventBulkRetryCreateRequestQueryWebhookId{String: value}
 }
 
 func NewIgnoredEventBulkRetryCreateRequestQueryWebhookIdFromStringList(value []string) *IgnoredEventBulkRetryCreateRequestQueryWebhookId {
-	return &IgnoredEventBulkRetryCreateRequestQueryWebhookId{typeName: "stringList", StringList: value}
+	return &IgnoredEventBulkRetryCreateRequestQueryWebhookId{StringList: value}
 }
 
 func (i *IgnoredEventBulkRetryCreateRequestQueryWebhookId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		i.typeName = "string"
 		i.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		i.typeName = "stringList"
 		i.StringList = valueStringList
 		return nil
 	}
@@ -7172,14 +15480,13 @@ func (i *IgnoredEventBulkRetryCreateRequestQueryWebhookId) UnmarshalJSON(data []
 }
 
 func (i IgnoredEventBulkRetryCreateRequestQueryWebhookId) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return json.Marshal(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return json.Marshal(i.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IgnoredEventBulkRetryCreateRequestQueryWebhookIdVisitor interface {
@@ -7188,41 +15495,37 @@ type IgnoredEventBulkRetryCreateRequestQueryWebhookIdVisitor interface {
 }
 
 func (i *IgnoredEventBulkRetryCreateRequestQueryWebhookId) Accept(visitor IgnoredEventBulkRetryCreateRequestQueryWebhookIdVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "string":
+	if i.String != "" {
 		return visitor.VisitString(i.String)
-	case "stringList":
+	}
+	if i.StringList != nil {
 		return visitor.VisitStringList(i.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 // URL Encoded string of the JSON to match to the data body
 type RequestBulkRetryCreateRequestQueryBody struct {
-	typeName                                  string
 	String                                    string
 	RequestBulkRetryCreateRequestQueryBodyOne *RequestBulkRetryCreateRequestQueryBodyOne
 }
 
 func NewRequestBulkRetryCreateRequestQueryBodyFromString(value string) *RequestBulkRetryCreateRequestQueryBody {
-	return &RequestBulkRetryCreateRequestQueryBody{typeName: "string", String: value}
+	return &RequestBulkRetryCreateRequestQueryBody{String: value}
 }
 
 func NewRequestBulkRetryCreateRequestQueryBodyFromRequestBulkRetryCreateRequestQueryBodyOne(value *RequestBulkRetryCreateRequestQueryBodyOne) *RequestBulkRetryCreateRequestQueryBody {
-	return &RequestBulkRetryCreateRequestQueryBody{typeName: "requestBulkRetryCreateRequestQueryBodyOne", RequestBulkRetryCreateRequestQueryBodyOne: value}
+	return &RequestBulkRetryCreateRequestQueryBody{RequestBulkRetryCreateRequestQueryBodyOne: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQueryBody) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		r.typeName = "string"
 		r.String = valueString
 		return nil
 	}
 	valueRequestBulkRetryCreateRequestQueryBodyOne := new(RequestBulkRetryCreateRequestQueryBodyOne)
 	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryBodyOne); err == nil {
-		r.typeName = "requestBulkRetryCreateRequestQueryBodyOne"
 		r.RequestBulkRetryCreateRequestQueryBodyOne = valueRequestBulkRetryCreateRequestQueryBodyOne
 		return nil
 	}
@@ -7230,14 +15533,13 @@ func (r *RequestBulkRetryCreateRequestQueryBody) UnmarshalJSON(data []byte) erro
 }
 
 func (r RequestBulkRetryCreateRequestQueryBody) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return json.Marshal(r.String)
-	case "requestBulkRetryCreateRequestQueryBodyOne":
+	}
+	if r.RequestBulkRetryCreateRequestQueryBodyOne != nil {
 		return json.Marshal(r.RequestBulkRetryCreateRequestQueryBodyOne)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryBodyVisitor interface {
@@ -7246,43 +15548,75 @@ type RequestBulkRetryCreateRequestQueryBodyVisitor interface {
 }
 
 func (r *RequestBulkRetryCreateRequestQueryBody) Accept(visitor RequestBulkRetryCreateRequestQueryBodyVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return visitor.VisitString(r.String)
-	case "requestBulkRetryCreateRequestQueryBodyOne":
+	}
+	if r.RequestBulkRetryCreateRequestQueryBodyOne != nil {
 		return visitor.VisitRequestBulkRetryCreateRequestQueryBodyOne(r.RequestBulkRetryCreateRequestQueryBodyOne)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryBodyOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBodyOne) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBodyOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler RequestBulkRetryCreateRequestQueryBodyOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RequestBulkRetryCreateRequestQueryBodyOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RequestBulkRetryCreateRequestQueryBodyOne) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 type RequestBulkRetryCreateRequestQueryBulkRetryId struct {
-	typeName   string
 	String     string
 	StringList []string
 }
 
 func NewRequestBulkRetryCreateRequestQueryBulkRetryIdFromString(value string) *RequestBulkRetryCreateRequestQueryBulkRetryId {
-	return &RequestBulkRetryCreateRequestQueryBulkRetryId{typeName: "string", String: value}
+	return &RequestBulkRetryCreateRequestQueryBulkRetryId{String: value}
 }
 
 func NewRequestBulkRetryCreateRequestQueryBulkRetryIdFromStringList(value []string) *RequestBulkRetryCreateRequestQueryBulkRetryId {
-	return &RequestBulkRetryCreateRequestQueryBulkRetryId{typeName: "stringList", StringList: value}
+	return &RequestBulkRetryCreateRequestQueryBulkRetryId{StringList: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQueryBulkRetryId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		r.typeName = "string"
 		r.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		r.typeName = "stringList"
 		r.StringList = valueStringList
 		return nil
 	}
@@ -7290,14 +15624,13 @@ func (r *RequestBulkRetryCreateRequestQueryBulkRetryId) UnmarshalJSON(data []byt
 }
 
 func (r RequestBulkRetryCreateRequestQueryBulkRetryId) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return json.Marshal(r.String)
-	case "stringList":
+	}
+	if r.StringList != nil {
 		return json.Marshal(r.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryBulkRetryIdVisitor interface {
@@ -7306,52 +15639,47 @@ type RequestBulkRetryCreateRequestQueryBulkRetryIdVisitor interface {
 }
 
 func (r *RequestBulkRetryCreateRequestQueryBulkRetryId) Accept(visitor RequestBulkRetryCreateRequestQueryBulkRetryIdVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return visitor.VisitString(r.String)
-	case "stringList":
+	}
+	if r.StringList != nil {
 		return visitor.VisitStringList(r.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 // Filter by count of events
 type RequestBulkRetryCreateRequestQueryEventsCount struct {
-	typeName                                         string
-	Integer                                          int
-	RequestBulkRetryCreateRequestQueryEventsCountAll *RequestBulkRetryCreateRequestQueryEventsCountAll
-	IntegerList                                      []int
+	Integer     int
+	Operators   *Operators
+	IntegerList []int
 }
 
 func NewRequestBulkRetryCreateRequestQueryEventsCountFromInteger(value int) *RequestBulkRetryCreateRequestQueryEventsCount {
-	return &RequestBulkRetryCreateRequestQueryEventsCount{typeName: "integer", Integer: value}
+	return &RequestBulkRetryCreateRequestQueryEventsCount{Integer: value}
 }
 
-func NewRequestBulkRetryCreateRequestQueryEventsCountFromRequestBulkRetryCreateRequestQueryEventsCountAll(value *RequestBulkRetryCreateRequestQueryEventsCountAll) *RequestBulkRetryCreateRequestQueryEventsCount {
-	return &RequestBulkRetryCreateRequestQueryEventsCount{typeName: "requestBulkRetryCreateRequestQueryEventsCountAll", RequestBulkRetryCreateRequestQueryEventsCountAll: value}
+func NewRequestBulkRetryCreateRequestQueryEventsCountFromOperators(value *Operators) *RequestBulkRetryCreateRequestQueryEventsCount {
+	return &RequestBulkRetryCreateRequestQueryEventsCount{Operators: value}
 }
 
 func NewRequestBulkRetryCreateRequestQueryEventsCountFromIntegerList(value []int) *RequestBulkRetryCreateRequestQueryEventsCount {
-	return &RequestBulkRetryCreateRequestQueryEventsCount{typeName: "integerList", IntegerList: value}
+	return &RequestBulkRetryCreateRequestQueryEventsCount{IntegerList: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQueryEventsCount) UnmarshalJSON(data []byte) error {
 	var valueInteger int
 	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		r.typeName = "integer"
 		r.Integer = valueInteger
 		return nil
 	}
-	valueRequestBulkRetryCreateRequestQueryEventsCountAll := new(RequestBulkRetryCreateRequestQueryEventsCountAll)
-	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryEventsCountAll); err == nil {
-		r.typeName = "requestBulkRetryCreateRequestQueryEventsCountAll"
-		r.RequestBulkRetryCreateRequestQueryEventsCountAll = valueRequestBulkRetryCreateRequestQueryEventsCountAll
+	valueOperators := new(Operators)
+	if err := json.Unmarshal(data, &valueOperators); err == nil {
+		r.Operators = valueOperators
 		return nil
 	}
 	var valueIntegerList []int
 	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
-		r.typeName = "integerList"
 		r.IntegerList = valueIntegerList
 		return nil
 	}
@@ -7359,72 +15687,59 @@ func (r *RequestBulkRetryCreateRequestQueryEventsCount) UnmarshalJSON(data []byt
 }
 
 func (r RequestBulkRetryCreateRequestQueryEventsCount) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "integer":
+	if r.Integer != 0 {
 		return json.Marshal(r.Integer)
-	case "requestBulkRetryCreateRequestQueryEventsCountAll":
-		return json.Marshal(r.RequestBulkRetryCreateRequestQueryEventsCountAll)
-	case "integerList":
+	}
+	if r.Operators != nil {
+		return json.Marshal(r.Operators)
+	}
+	if r.IntegerList != nil {
 		return json.Marshal(r.IntegerList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryEventsCountVisitor interface {
 	VisitInteger(int) error
-	VisitRequestBulkRetryCreateRequestQueryEventsCountAll(*RequestBulkRetryCreateRequestQueryEventsCountAll) error
+	VisitOperators(*Operators) error
 	VisitIntegerList([]int) error
 }
 
 func (r *RequestBulkRetryCreateRequestQueryEventsCount) Accept(visitor RequestBulkRetryCreateRequestQueryEventsCountVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "integer":
+	if r.Integer != 0 {
 		return visitor.VisitInteger(r.Integer)
-	case "requestBulkRetryCreateRequestQueryEventsCountAll":
-		return visitor.VisitRequestBulkRetryCreateRequestQueryEventsCountAll(r.RequestBulkRetryCreateRequestQueryEventsCountAll)
-	case "integerList":
+	}
+	if r.Operators != nil {
+		return visitor.VisitOperators(r.Operators)
+	}
+	if r.IntegerList != nil {
 		return visitor.VisitIntegerList(r.IntegerList)
 	}
-}
-
-type RequestBulkRetryCreateRequestQueryEventsCountAll struct {
-	Gt       *int  `json:"gt,omitempty"`
-	Gte      *int  `json:"gte,omitempty"`
-	Le       *int  `json:"le,omitempty"`
-	Lte      *int  `json:"lte,omitempty"`
-	Any      *bool `json:"any,omitempty"`
-	All      *bool `json:"all,omitempty"`
-	Contains *int  `json:"contains,omitempty"`
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 // URL Encoded string of the JSON to match to the data headers
 type RequestBulkRetryCreateRequestQueryHeaders struct {
-	typeName                                     string
 	String                                       string
 	RequestBulkRetryCreateRequestQueryHeadersOne *RequestBulkRetryCreateRequestQueryHeadersOne
 }
 
 func NewRequestBulkRetryCreateRequestQueryHeadersFromString(value string) *RequestBulkRetryCreateRequestQueryHeaders {
-	return &RequestBulkRetryCreateRequestQueryHeaders{typeName: "string", String: value}
+	return &RequestBulkRetryCreateRequestQueryHeaders{String: value}
 }
 
 func NewRequestBulkRetryCreateRequestQueryHeadersFromRequestBulkRetryCreateRequestQueryHeadersOne(value *RequestBulkRetryCreateRequestQueryHeadersOne) *RequestBulkRetryCreateRequestQueryHeaders {
-	return &RequestBulkRetryCreateRequestQueryHeaders{typeName: "requestBulkRetryCreateRequestQueryHeadersOne", RequestBulkRetryCreateRequestQueryHeadersOne: value}
+	return &RequestBulkRetryCreateRequestQueryHeaders{RequestBulkRetryCreateRequestQueryHeadersOne: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQueryHeaders) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		r.typeName = "string"
 		r.String = valueString
 		return nil
 	}
 	valueRequestBulkRetryCreateRequestQueryHeadersOne := new(RequestBulkRetryCreateRequestQueryHeadersOne)
 	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryHeadersOne); err == nil {
-		r.typeName = "requestBulkRetryCreateRequestQueryHeadersOne"
 		r.RequestBulkRetryCreateRequestQueryHeadersOne = valueRequestBulkRetryCreateRequestQueryHeadersOne
 		return nil
 	}
@@ -7432,14 +15747,13 @@ func (r *RequestBulkRetryCreateRequestQueryHeaders) UnmarshalJSON(data []byte) e
 }
 
 func (r RequestBulkRetryCreateRequestQueryHeaders) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return json.Marshal(r.String)
-	case "requestBulkRetryCreateRequestQueryHeadersOne":
+	}
+	if r.RequestBulkRetryCreateRequestQueryHeadersOne != nil {
 		return json.Marshal(r.RequestBulkRetryCreateRequestQueryHeadersOne)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryHeadersVisitor interface {
@@ -7448,45 +15762,77 @@ type RequestBulkRetryCreateRequestQueryHeadersVisitor interface {
 }
 
 func (r *RequestBulkRetryCreateRequestQueryHeaders) Accept(visitor RequestBulkRetryCreateRequestQueryHeadersVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return visitor.VisitString(r.String)
-	case "requestBulkRetryCreateRequestQueryHeadersOne":
+	}
+	if r.RequestBulkRetryCreateRequestQueryHeadersOne != nil {
 		return visitor.VisitRequestBulkRetryCreateRequestQueryHeadersOne(r.RequestBulkRetryCreateRequestQueryHeadersOne)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryHeadersOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *RequestBulkRetryCreateRequestQueryHeadersOne) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RequestBulkRetryCreateRequestQueryHeadersOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler RequestBulkRetryCreateRequestQueryHeadersOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RequestBulkRetryCreateRequestQueryHeadersOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RequestBulkRetryCreateRequestQueryHeadersOne) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 // Filter by requests IDs
 type RequestBulkRetryCreateRequestQueryId struct {
-	typeName string
 	// Request ID
 	String     string
 	StringList []string
 }
 
 func NewRequestBulkRetryCreateRequestQueryIdFromString(value string) *RequestBulkRetryCreateRequestQueryId {
-	return &RequestBulkRetryCreateRequestQueryId{typeName: "string", String: value}
+	return &RequestBulkRetryCreateRequestQueryId{String: value}
 }
 
 func NewRequestBulkRetryCreateRequestQueryIdFromStringList(value []string) *RequestBulkRetryCreateRequestQueryId {
-	return &RequestBulkRetryCreateRequestQueryId{typeName: "stringList", StringList: value}
+	return &RequestBulkRetryCreateRequestQueryId{StringList: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQueryId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		r.typeName = "string"
 		r.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		r.typeName = "stringList"
 		r.StringList = valueStringList
 		return nil
 	}
@@ -7494,14 +15840,13 @@ func (r *RequestBulkRetryCreateRequestQueryId) UnmarshalJSON(data []byte) error 
 }
 
 func (r RequestBulkRetryCreateRequestQueryId) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return json.Marshal(r.String)
-	case "stringList":
+	}
+	if r.StringList != nil {
 		return json.Marshal(r.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryIdVisitor interface {
@@ -7510,52 +15855,47 @@ type RequestBulkRetryCreateRequestQueryIdVisitor interface {
 }
 
 func (r *RequestBulkRetryCreateRequestQueryId) Accept(visitor RequestBulkRetryCreateRequestQueryIdVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return visitor.VisitString(r.String)
-	case "stringList":
+	}
+	if r.StringList != nil {
 		return visitor.VisitStringList(r.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 // Filter by count of ignored events
 type RequestBulkRetryCreateRequestQueryIgnoredCount struct {
-	typeName                                          string
-	Integer                                           int
-	RequestBulkRetryCreateRequestQueryIgnoredCountAll *RequestBulkRetryCreateRequestQueryIgnoredCountAll
-	IntegerList                                       []int
+	Integer     int
+	Operators   *Operators
+	IntegerList []int
 }
 
 func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromInteger(value int) *RequestBulkRetryCreateRequestQueryIgnoredCount {
-	return &RequestBulkRetryCreateRequestQueryIgnoredCount{typeName: "integer", Integer: value}
+	return &RequestBulkRetryCreateRequestQueryIgnoredCount{Integer: value}
 }
 
-func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromRequestBulkRetryCreateRequestQueryIgnoredCountAll(value *RequestBulkRetryCreateRequestQueryIgnoredCountAll) *RequestBulkRetryCreateRequestQueryIgnoredCount {
-	return &RequestBulkRetryCreateRequestQueryIgnoredCount{typeName: "requestBulkRetryCreateRequestQueryIgnoredCountAll", RequestBulkRetryCreateRequestQueryIgnoredCountAll: value}
+func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromOperators(value *Operators) *RequestBulkRetryCreateRequestQueryIgnoredCount {
+	return &RequestBulkRetryCreateRequestQueryIgnoredCount{Operators: value}
 }
 
 func NewRequestBulkRetryCreateRequestQueryIgnoredCountFromIntegerList(value []int) *RequestBulkRetryCreateRequestQueryIgnoredCount {
-	return &RequestBulkRetryCreateRequestQueryIgnoredCount{typeName: "integerList", IntegerList: value}
+	return &RequestBulkRetryCreateRequestQueryIgnoredCount{IntegerList: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQueryIgnoredCount) UnmarshalJSON(data []byte) error {
 	var valueInteger int
 	if err := json.Unmarshal(data, &valueInteger); err == nil {
-		r.typeName = "integer"
 		r.Integer = valueInteger
 		return nil
 	}
-	valueRequestBulkRetryCreateRequestQueryIgnoredCountAll := new(RequestBulkRetryCreateRequestQueryIgnoredCountAll)
-	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryIgnoredCountAll); err == nil {
-		r.typeName = "requestBulkRetryCreateRequestQueryIgnoredCountAll"
-		r.RequestBulkRetryCreateRequestQueryIgnoredCountAll = valueRequestBulkRetryCreateRequestQueryIgnoredCountAll
+	valueOperators := new(Operators)
+	if err := json.Unmarshal(data, &valueOperators); err == nil {
+		r.Operators = valueOperators
 		return nil
 	}
 	var valueIntegerList []int
 	if err := json.Unmarshal(data, &valueIntegerList); err == nil {
-		r.typeName = "integerList"
 		r.IntegerList = valueIntegerList
 		return nil
 	}
@@ -7563,138 +15903,112 @@ func (r *RequestBulkRetryCreateRequestQueryIgnoredCount) UnmarshalJSON(data []by
 }
 
 func (r RequestBulkRetryCreateRequestQueryIgnoredCount) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "integer":
+	if r.Integer != 0 {
 		return json.Marshal(r.Integer)
-	case "requestBulkRetryCreateRequestQueryIgnoredCountAll":
-		return json.Marshal(r.RequestBulkRetryCreateRequestQueryIgnoredCountAll)
-	case "integerList":
+	}
+	if r.Operators != nil {
+		return json.Marshal(r.Operators)
+	}
+	if r.IntegerList != nil {
 		return json.Marshal(r.IntegerList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryIgnoredCountVisitor interface {
 	VisitInteger(int) error
-	VisitRequestBulkRetryCreateRequestQueryIgnoredCountAll(*RequestBulkRetryCreateRequestQueryIgnoredCountAll) error
+	VisitOperators(*Operators) error
 	VisitIntegerList([]int) error
 }
 
 func (r *RequestBulkRetryCreateRequestQueryIgnoredCount) Accept(visitor RequestBulkRetryCreateRequestQueryIgnoredCountVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "integer":
+	if r.Integer != 0 {
 		return visitor.VisitInteger(r.Integer)
-	case "requestBulkRetryCreateRequestQueryIgnoredCountAll":
-		return visitor.VisitRequestBulkRetryCreateRequestQueryIgnoredCountAll(r.RequestBulkRetryCreateRequestQueryIgnoredCountAll)
-	case "integerList":
+	}
+	if r.Operators != nil {
+		return visitor.VisitOperators(r.Operators)
+	}
+	if r.IntegerList != nil {
 		return visitor.VisitIntegerList(r.IntegerList)
 	}
-}
-
-type RequestBulkRetryCreateRequestQueryIgnoredCountAll struct {
-	Gt       *int  `json:"gt,omitempty"`
-	Gte      *int  `json:"gte,omitempty"`
-	Le       *int  `json:"le,omitempty"`
-	Lte      *int  `json:"lte,omitempty"`
-	Any      *bool `json:"any,omitempty"`
-	All      *bool `json:"all,omitempty"`
-	Contains *int  `json:"contains,omitempty"`
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 // Filter by event ingested date
 type RequestBulkRetryCreateRequestQueryIngestedAt struct {
-	typeName                                        string
-	DateTime                                        time.Time
-	RequestBulkRetryCreateRequestQueryIngestedAtAny *RequestBulkRetryCreateRequestQueryIngestedAtAny
+	DateTime  time.Time
+	Operators *Operators
 }
 
 func NewRequestBulkRetryCreateRequestQueryIngestedAtFromDateTime(value time.Time) *RequestBulkRetryCreateRequestQueryIngestedAt {
-	return &RequestBulkRetryCreateRequestQueryIngestedAt{typeName: "dateTime", DateTime: value}
+	return &RequestBulkRetryCreateRequestQueryIngestedAt{DateTime: value}
 }
 
-func NewRequestBulkRetryCreateRequestQueryIngestedAtFromRequestBulkRetryCreateRequestQueryIngestedAtAny(value *RequestBulkRetryCreateRequestQueryIngestedAtAny) *RequestBulkRetryCreateRequestQueryIngestedAt {
-	return &RequestBulkRetryCreateRequestQueryIngestedAt{typeName: "requestBulkRetryCreateRequestQueryIngestedAtAny", RequestBulkRetryCreateRequestQueryIngestedAtAny: value}
+func NewRequestBulkRetryCreateRequestQueryIngestedAtFromOperators(value *Operators) *RequestBulkRetryCreateRequestQueryIngestedAt {
+	return &RequestBulkRetryCreateRequestQueryIngestedAt{Operators: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQueryIngestedAt) UnmarshalJSON(data []byte) error {
-	var valueDateTime time.Time
+	var valueDateTime *core.DateTime
 	if err := json.Unmarshal(data, &valueDateTime); err == nil {
-		r.typeName = "dateTime"
-		r.DateTime = valueDateTime
+		r.DateTime = valueDateTime.Time()
 		return nil
 	}
-	valueRequestBulkRetryCreateRequestQueryIngestedAtAny := new(RequestBulkRetryCreateRequestQueryIngestedAtAny)
-	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryIngestedAtAny); err == nil {
-		r.typeName = "requestBulkRetryCreateRequestQueryIngestedAtAny"
-		r.RequestBulkRetryCreateRequestQueryIngestedAtAny = valueRequestBulkRetryCreateRequestQueryIngestedAtAny
+	valueOperators := new(Operators)
+	if err := json.Unmarshal(data, &valueOperators); err == nil {
+		r.Operators = valueOperators
 		return nil
 	}
 	return fmt.Errorf("%s cannot be deserialized as a %T", data, r)
 }
 
 func (r RequestBulkRetryCreateRequestQueryIngestedAt) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "dateTime":
-		return json.Marshal(r.DateTime)
-	case "requestBulkRetryCreateRequestQueryIngestedAtAny":
-		return json.Marshal(r.RequestBulkRetryCreateRequestQueryIngestedAtAny)
+	if !r.DateTime.IsZero() {
+		return json.Marshal(core.NewDateTime(r.DateTime))
 	}
+	if r.Operators != nil {
+		return json.Marshal(r.Operators)
+	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryIngestedAtVisitor interface {
 	VisitDateTime(time.Time) error
-	VisitRequestBulkRetryCreateRequestQueryIngestedAtAny(*RequestBulkRetryCreateRequestQueryIngestedAtAny) error
+	VisitOperators(*Operators) error
 }
 
 func (r *RequestBulkRetryCreateRequestQueryIngestedAt) Accept(visitor RequestBulkRetryCreateRequestQueryIngestedAtVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "dateTime":
+	if !r.DateTime.IsZero() {
 		return visitor.VisitDateTime(r.DateTime)
-	case "requestBulkRetryCreateRequestQueryIngestedAtAny":
-		return visitor.VisitRequestBulkRetryCreateRequestQueryIngestedAtAny(r.RequestBulkRetryCreateRequestQueryIngestedAtAny)
 	}
-}
-
-type RequestBulkRetryCreateRequestQueryIngestedAtAny struct {
-	Gt  *time.Time `json:"gt,omitempty"`
-	Gte *time.Time `json:"gte,omitempty"`
-	Le  *time.Time `json:"le,omitempty"`
-	Lte *time.Time `json:"lte,omitempty"`
-	Any *bool      `json:"any,omitempty"`
+	if r.Operators != nil {
+		return visitor.VisitOperators(r.Operators)
+	}
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 // URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
 type RequestBulkRetryCreateRequestQueryParsedQuery struct {
-	typeName                                         string
 	String                                           string
 	RequestBulkRetryCreateRequestQueryParsedQueryOne *RequestBulkRetryCreateRequestQueryParsedQueryOne
 }
 
 func NewRequestBulkRetryCreateRequestQueryParsedQueryFromString(value string) *RequestBulkRetryCreateRequestQueryParsedQuery {
-	return &RequestBulkRetryCreateRequestQueryParsedQuery{typeName: "string", String: value}
+	return &RequestBulkRetryCreateRequestQueryParsedQuery{String: value}
 }
 
 func NewRequestBulkRetryCreateRequestQueryParsedQueryFromRequestBulkRetryCreateRequestQueryParsedQueryOne(value *RequestBulkRetryCreateRequestQueryParsedQueryOne) *RequestBulkRetryCreateRequestQueryParsedQuery {
-	return &RequestBulkRetryCreateRequestQueryParsedQuery{typeName: "requestBulkRetryCreateRequestQueryParsedQueryOne", RequestBulkRetryCreateRequestQueryParsedQueryOne: value}
+	return &RequestBulkRetryCreateRequestQueryParsedQuery{RequestBulkRetryCreateRequestQueryParsedQueryOne: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQueryParsedQuery) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		r.typeName = "string"
 		r.String = valueString
 		return nil
 	}
 	valueRequestBulkRetryCreateRequestQueryParsedQueryOne := new(RequestBulkRetryCreateRequestQueryParsedQueryOne)
 	if err := json.Unmarshal(data, &valueRequestBulkRetryCreateRequestQueryParsedQueryOne); err == nil {
-		r.typeName = "requestBulkRetryCreateRequestQueryParsedQueryOne"
 		r.RequestBulkRetryCreateRequestQueryParsedQueryOne = valueRequestBulkRetryCreateRequestQueryParsedQueryOne
 		return nil
 	}
@@ -7702,14 +16016,13 @@ func (r *RequestBulkRetryCreateRequestQueryParsedQuery) UnmarshalJSON(data []byt
 }
 
 func (r RequestBulkRetryCreateRequestQueryParsedQuery) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return json.Marshal(r.String)
-	case "requestBulkRetryCreateRequestQueryParsedQueryOne":
+	}
+	if r.RequestBulkRetryCreateRequestQueryParsedQueryOne != nil {
 		return json.Marshal(r.RequestBulkRetryCreateRequestQueryParsedQueryOne)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryParsedQueryVisitor interface {
@@ -7718,44 +16031,76 @@ type RequestBulkRetryCreateRequestQueryParsedQueryVisitor interface {
 }
 
 func (r *RequestBulkRetryCreateRequestQueryParsedQuery) Accept(visitor RequestBulkRetryCreateRequestQueryParsedQueryVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return visitor.VisitString(r.String)
-	case "requestBulkRetryCreateRequestQueryParsedQueryOne":
+	}
+	if r.RequestBulkRetryCreateRequestQueryParsedQueryOne != nil {
 		return visitor.VisitRequestBulkRetryCreateRequestQueryParsedQueryOne(r.RequestBulkRetryCreateRequestQueryParsedQueryOne)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryParsedQueryOne struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (r *RequestBulkRetryCreateRequestQueryParsedQueryOne) GetExtraProperties() map[string]interface{} {
+	return r.extraProperties
+}
+
+func (r *RequestBulkRetryCreateRequestQueryParsedQueryOne) UnmarshalJSON(data []byte) error {
+	type unmarshaler RequestBulkRetryCreateRequestQueryParsedQueryOne
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*r = RequestBulkRetryCreateRequestQueryParsedQueryOne(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *r)
+	if err != nil {
+		return err
+	}
+	r.extraProperties = extraProperties
+
+	r._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (r *RequestBulkRetryCreateRequestQueryParsedQueryOne) String() string {
+	if len(r._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(r._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(r); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", r)
 }
 
 // Filter by rejection cause
 type RequestBulkRetryCreateRequestQueryRejectionCause struct {
-	typeName                  string
 	RequestRejectionCause     RequestRejectionCause
 	RequestRejectionCauseList []RequestRejectionCause
 }
 
 func NewRequestBulkRetryCreateRequestQueryRejectionCauseFromRequestRejectionCause(value RequestRejectionCause) *RequestBulkRetryCreateRequestQueryRejectionCause {
-	return &RequestBulkRetryCreateRequestQueryRejectionCause{typeName: "requestRejectionCause", RequestRejectionCause: value}
+	return &RequestBulkRetryCreateRequestQueryRejectionCause{RequestRejectionCause: value}
 }
 
 func NewRequestBulkRetryCreateRequestQueryRejectionCauseFromRequestRejectionCauseList(value []RequestRejectionCause) *RequestBulkRetryCreateRequestQueryRejectionCause {
-	return &RequestBulkRetryCreateRequestQueryRejectionCause{typeName: "requestRejectionCauseList", RequestRejectionCauseList: value}
+	return &RequestBulkRetryCreateRequestQueryRejectionCause{RequestRejectionCauseList: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQueryRejectionCause) UnmarshalJSON(data []byte) error {
 	var valueRequestRejectionCause RequestRejectionCause
 	if err := json.Unmarshal(data, &valueRequestRejectionCause); err == nil {
-		r.typeName = "requestRejectionCause"
 		r.RequestRejectionCause = valueRequestRejectionCause
 		return nil
 	}
 	var valueRequestRejectionCauseList []RequestRejectionCause
 	if err := json.Unmarshal(data, &valueRequestRejectionCauseList); err == nil {
-		r.typeName = "requestRejectionCauseList"
 		r.RequestRejectionCauseList = valueRequestRejectionCauseList
 		return nil
 	}
@@ -7763,14 +16108,13 @@ func (r *RequestBulkRetryCreateRequestQueryRejectionCause) UnmarshalJSON(data []
 }
 
 func (r RequestBulkRetryCreateRequestQueryRejectionCause) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "requestRejectionCause":
+	if r.RequestRejectionCause != "" {
 		return json.Marshal(r.RequestRejectionCause)
-	case "requestRejectionCauseList":
+	}
+	if r.RequestRejectionCauseList != nil {
 		return json.Marshal(r.RequestRejectionCauseList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQueryRejectionCauseVisitor interface {
@@ -7779,42 +16123,38 @@ type RequestBulkRetryCreateRequestQueryRejectionCauseVisitor interface {
 }
 
 func (r *RequestBulkRetryCreateRequestQueryRejectionCause) Accept(visitor RequestBulkRetryCreateRequestQueryRejectionCauseVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "requestRejectionCause":
+	if r.RequestRejectionCause != "" {
 		return visitor.VisitRequestRejectionCause(r.RequestRejectionCause)
-	case "requestRejectionCauseList":
+	}
+	if r.RequestRejectionCauseList != nil {
 		return visitor.VisitRequestRejectionCauseList(r.RequestRejectionCauseList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 // Filter by source IDs
 type RequestBulkRetryCreateRequestQuerySourceId struct {
-	typeName string
 	// Source ID
 	String     string
 	StringList []string
 }
 
 func NewRequestBulkRetryCreateRequestQuerySourceIdFromString(value string) *RequestBulkRetryCreateRequestQuerySourceId {
-	return &RequestBulkRetryCreateRequestQuerySourceId{typeName: "string", String: value}
+	return &RequestBulkRetryCreateRequestQuerySourceId{String: value}
 }
 
 func NewRequestBulkRetryCreateRequestQuerySourceIdFromStringList(value []string) *RequestBulkRetryCreateRequestQuerySourceId {
-	return &RequestBulkRetryCreateRequestQuerySourceId{typeName: "stringList", StringList: value}
+	return &RequestBulkRetryCreateRequestQuerySourceId{StringList: value}
 }
 
 func (r *RequestBulkRetryCreateRequestQuerySourceId) UnmarshalJSON(data []byte) error {
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		r.typeName = "string"
 		r.String = valueString
 		return nil
 	}
 	var valueStringList []string
 	if err := json.Unmarshal(data, &valueStringList); err == nil {
-		r.typeName = "stringList"
 		r.StringList = valueStringList
 		return nil
 	}
@@ -7822,14 +16162,13 @@ func (r *RequestBulkRetryCreateRequestQuerySourceId) UnmarshalJSON(data []byte) 
 }
 
 func (r RequestBulkRetryCreateRequestQuerySourceId) MarshalJSON() ([]byte, error) {
-	switch r.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return json.Marshal(r.String)
-	case "stringList":
+	}
+	if r.StringList != nil {
 		return json.Marshal(r.StringList)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 type RequestBulkRetryCreateRequestQuerySourceIdVisitor interface {
@@ -7838,14 +16177,13 @@ type RequestBulkRetryCreateRequestQuerySourceIdVisitor interface {
 }
 
 func (r *RequestBulkRetryCreateRequestQuerySourceId) Accept(visitor RequestBulkRetryCreateRequestQuerySourceIdVisitor) error {
-	switch r.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", r.typeName, r)
-	case "string":
+	if r.String != "" {
 		return visitor.VisitString(r.String)
-	case "stringList":
+	}
+	if r.StringList != nil {
 		return visitor.VisitStringList(r.StringList)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", r)
 }
 
 // Filter by status
@@ -7873,29 +16211,26 @@ func (r RequestBulkRetryCreateRequestQueryStatus) Ptr() *RequestBulkRetryCreateR
 
 // Body of the request
 type TransformationRunRequestRequestBody struct {
-	typeName                                string
 	TransformationRunRequestRequestBodyZero *TransformationRunRequestRequestBodyZero
 	String                                  string
 }
 
 func NewTransformationRunRequestRequestBodyFromTransformationRunRequestRequestBodyZero(value *TransformationRunRequestRequestBodyZero) *TransformationRunRequestRequestBody {
-	return &TransformationRunRequestRequestBody{typeName: "transformationRunRequestRequestBodyZero", TransformationRunRequestRequestBodyZero: value}
+	return &TransformationRunRequestRequestBody{TransformationRunRequestRequestBodyZero: value}
 }
 
 func NewTransformationRunRequestRequestBodyFromString(value string) *TransformationRunRequestRequestBody {
-	return &TransformationRunRequestRequestBody{typeName: "string", String: value}
+	return &TransformationRunRequestRequestBody{String: value}
 }
 
 func (t *TransformationRunRequestRequestBody) UnmarshalJSON(data []byte) error {
 	valueTransformationRunRequestRequestBodyZero := new(TransformationRunRequestRequestBodyZero)
 	if err := json.Unmarshal(data, &valueTransformationRunRequestRequestBodyZero); err == nil {
-		t.typeName = "transformationRunRequestRequestBodyZero"
 		t.TransformationRunRequestRequestBodyZero = valueTransformationRunRequestRequestBodyZero
 		return nil
 	}
 	var valueString string
 	if err := json.Unmarshal(data, &valueString); err == nil {
-		t.typeName = "string"
 		t.String = valueString
 		return nil
 	}
@@ -7903,14 +16238,13 @@ func (t *TransformationRunRequestRequestBody) UnmarshalJSON(data []byte) error {
 }
 
 func (t TransformationRunRequestRequestBody) MarshalJSON() ([]byte, error) {
-	switch t.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "transformationRunRequestRequestBodyZero":
+	if t.TransformationRunRequestRequestBodyZero != nil {
 		return json.Marshal(t.TransformationRunRequestRequestBodyZero)
-	case "string":
+	}
+	if t.String != "" {
 		return json.Marshal(t.String)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationRunRequestRequestBodyVisitor interface {
@@ -7919,19 +16253,90 @@ type TransformationRunRequestRequestBodyVisitor interface {
 }
 
 func (t *TransformationRunRequestRequestBody) Accept(visitor TransformationRunRequestRequestBodyVisitor) error {
-	switch t.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", t.typeName, t)
-	case "transformationRunRequestRequestBodyZero":
+	if t.TransformationRunRequestRequestBodyZero != nil {
 		return visitor.VisitTransformationRunRequestRequestBodyZero(t.TransformationRunRequestRequestBodyZero)
-	case "string":
+	}
+	if t.String != "" {
 		return visitor.VisitString(t.String)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", t)
 }
 
 type TransformationRunRequestRequestBodyZero struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationRunRequestRequestBodyZero) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationRunRequestRequestBodyZero) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationRunRequestRequestBodyZero
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationRunRequestRequestBodyZero(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationRunRequestRequestBodyZero) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 // JSON representation of the query params
 type TransformationRunRequestRequestParsedQuery struct {
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationRunRequestRequestParsedQuery) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationRunRequestRequestParsedQuery) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationRunRequestRequestParsedQuery
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationRunRequestRequestParsedQuery(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationRunRequestRequestParsedQuery) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }

@@ -3,6 +3,7 @@
 package api
 
 import (
+	json "encoding/json"
 	fmt "fmt"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
@@ -10,47 +11,47 @@ import (
 
 type TransformationCreateRequest struct {
 	// A unique, human-friendly name for the transformation
-	Name string `json:"name"`
+	Name string `json:"name" url:"-"`
 	// JavaScript code to be executed as string
-	Code string `json:"code"`
+	Code string `json:"code" url:"-"`
 	// Key-value environment variables to be passed to the transformation
-	Env *core.Optional[map[string]string] `json:"env,omitempty"`
+	Env *core.Optional[map[string]string] `json:"env,omitempty" url:"-"`
 }
 
 type TransformationListRequest struct {
-	Id      []*string                         `json:"-"`
-	Name    *string                           `json:"-"`
-	OrderBy *TransformationListRequestOrderBy `json:"-"`
-	Dir     *TransformationListRequestDir     `json:"-"`
-	Limit   *int                              `json:"-"`
-	Next    *string                           `json:"-"`
-	Prev    *string                           `json:"-"`
+	Id      []*string                         `json:"-" url:"id,omitempty"`
+	Name    *string                           `json:"-" url:"name,omitempty"`
+	OrderBy *TransformationListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir     *TransformationListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit   *int                              `json:"-" url:"limit,omitempty"`
+	Next    *string                           `json:"-" url:"next,omitempty"`
+	Prev    *string                           `json:"-" url:"prev,omitempty"`
 }
 
 type TransformationListExecutionRequest struct {
-	LogLevel  *TransformationListExecutionRequestLogLevel `json:"-"`
-	WebhookId []*string                                   `json:"-"`
-	IssueId   []*string                                   `json:"-"`
-	CreatedAt *time.Time                                  `json:"-"`
-	OrderBy   *TransformationListExecutionRequestOrderBy  `json:"-"`
-	Dir       *TransformationListExecutionRequestDir      `json:"-"`
-	Limit     *int                                        `json:"-"`
-	Next      *string                                     `json:"-"`
-	Prev      *string                                     `json:"-"`
+	LogLevel  *TransformationListExecutionRequestLogLevel `json:"-" url:"log_level,omitempty"`
+	WebhookId []*string                                   `json:"-" url:"webhook_id,omitempty"`
+	IssueId   []*string                                   `json:"-" url:"issue_id,omitempty"`
+	CreatedAt *time.Time                                  `json:"-" url:"created_at,omitempty"`
+	OrderBy   *TransformationListExecutionRequestOrderBy  `json:"-" url:"order_by,omitempty"`
+	Dir       *TransformationListExecutionRequestDir      `json:"-" url:"dir,omitempty"`
+	Limit     *int                                        `json:"-" url:"limit,omitempty"`
+	Next      *string                                     `json:"-" url:"next,omitempty"`
+	Prev      *string                                     `json:"-" url:"prev,omitempty"`
 }
 
 type TransformationRunRequest struct {
 	// Key-value environment variables to be passed to the transformation
-	Env *core.Optional[map[string]string] `json:"env,omitempty"`
+	Env *core.Optional[map[string]string] `json:"env,omitempty" url:"-"`
 	// ID of the connection to use for the execution `context`
-	WebhookId *core.Optional[string] `json:"webhook_id,omitempty"`
+	WebhookId *core.Optional[string] `json:"webhook_id,omitempty" url:"-"`
 	// JavaScript code to be executed
-	Code *core.Optional[string] `json:"code,omitempty"`
+	Code *core.Optional[string] `json:"code,omitempty" url:"-"`
 	// Transformation ID
-	TransformationId *core.Optional[string] `json:"transformation_id,omitempty"`
+	TransformationId *core.Optional[string] `json:"transformation_id,omitempty" url:"-"`
 	// Request input to use for the transformation execution
-	Request *core.Optional[TransformationRunRequestRequest] `json:"request,omitempty"`
-	EventId *core.Optional[string]                          `json:"event_id,omitempty"`
+	Request *core.Optional[TransformationRunRequestRequest] `json:"request,omitempty" url:"-"`
+	EventId *core.Optional[string]                          `json:"event_id,omitempty" url:"-"`
 }
 
 type TransformationListExecutionRequestDir string
@@ -169,31 +170,68 @@ func (t TransformationListRequestOrderBy) Ptr() *TransformationListRequestOrderB
 // Request input to use for the transformation execution
 type TransformationRunRequestRequest struct {
 	// Headers of the request
-	Headers map[string]string `json:"headers,omitempty"`
+	Headers map[string]string `json:"headers,omitempty" url:"headers,omitempty"`
 	// Body of the request
-	Body *TransformationRunRequestRequestBody `json:"body,omitempty"`
+	Body *TransformationRunRequestRequestBody `json:"body,omitempty" url:"body,omitempty"`
 	// Path of the request
-	Path *string `json:"path,omitempty"`
+	Path *string `json:"path,omitempty" url:"path,omitempty"`
 	// String representation of the query params of the request
-	Query *string `json:"query,omitempty"`
+	Query *string `json:"query,omitempty" url:"query,omitempty"`
 	// JSON representation of the query params
-	ParsedQuery *TransformationRunRequestRequestParsedQuery `json:"parsed_query,omitempty"`
+	ParsedQuery *TransformationRunRequestRequestParsedQuery `json:"parsed_query,omitempty" url:"parsed_query,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationRunRequestRequest) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationRunRequestRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationRunRequestRequest
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationRunRequestRequest(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationRunRequestRequest) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
 }
 
 type TransformationUpdateRequest struct {
 	// A unique, human-friendly name for the transformation
-	Name *core.Optional[string] `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty" url:"-"`
 	// JavaScript code to be executed
-	Code *core.Optional[string] `json:"code,omitempty"`
+	Code *core.Optional[string] `json:"code,omitempty" url:"-"`
 	// Key-value environment variables to be passed to the transformation
-	Env *core.Optional[map[string]string] `json:"env,omitempty"`
+	Env *core.Optional[map[string]string] `json:"env,omitempty" url:"-"`
 }
 
 type TransformationUpsertRequest struct {
 	// A unique, human-friendly name for the transformation
-	Name string `json:"name"`
+	Name string `json:"name" url:"-"`
 	// JavaScript code to be executed as string
-	Code string `json:"code"`
+	Code string `json:"code" url:"-"`
 	// Key-value environment variables to be passed to the transformation
-	Env *core.Optional[map[string]string] `json:"env,omitempty"`
+	Env *core.Optional[map[string]string] `json:"env,omitempty" url:"-"`
 }
