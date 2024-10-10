@@ -3,6 +3,7 @@
 package api
 
 import (
+	json "encoding/json"
 	fmt "fmt"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
@@ -10,31 +11,68 @@ import (
 
 type IgnoredEventBulkRetryCreateRequest struct {
 	// Filter by the bulk retry ignored event query object
-	Query *core.Optional[IgnoredEventBulkRetryCreateRequestQuery] `json:"query,omitempty"`
+	Query *core.Optional[IgnoredEventBulkRetryCreateRequestQuery] `json:"query,omitempty" url:"-"`
 }
 
 type IgnoredEventBulkRetryListRequest struct {
-	CancelledAt       *time.Time                               `json:"-"`
-	CompletedAt       *time.Time                               `json:"-"`
-	CreatedAt         *time.Time                               `json:"-"`
-	Id                []*string                                `json:"-"`
-	QueryPartialMatch *bool                                    `json:"-"`
-	InProgress        *bool                                    `json:"-"`
-	OrderBy           *IgnoredEventBulkRetryListRequestOrderBy `json:"-"`
-	Dir               *IgnoredEventBulkRetryListRequestDir     `json:"-"`
-	Limit             *int                                     `json:"-"`
-	Next              *string                                  `json:"-"`
-	Prev              *string                                  `json:"-"`
+	CancelledAt       *time.Time                               `json:"-" url:"cancelled_at,omitempty"`
+	CompletedAt       *time.Time                               `json:"-" url:"completed_at,omitempty"`
+	CreatedAt         *time.Time                               `json:"-" url:"created_at,omitempty"`
+	Id                []*string                                `json:"-" url:"id,omitempty"`
+	QueryPartialMatch *bool                                    `json:"-" url:"query_partial_match,omitempty"`
+	InProgress        *bool                                    `json:"-" url:"in_progress,omitempty"`
+	OrderBy           *IgnoredEventBulkRetryListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir               *IgnoredEventBulkRetryListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit             *int                                     `json:"-" url:"limit,omitempty"`
+	Next              *string                                  `json:"-" url:"next,omitempty"`
+	Prev              *string                                  `json:"-" url:"prev,omitempty"`
 }
 
 // Filter by the bulk retry ignored event query object
 type IgnoredEventBulkRetryCreateRequestQuery struct {
 	// The cause of the ignored event
-	Cause *IgnoredEventBulkRetryCreateRequestQueryCause `json:"cause,omitempty"`
+	Cause *IgnoredEventBulkRetryCreateRequestQueryCause `json:"cause,omitempty" url:"cause,omitempty"`
 	// Connection ID of the ignored event
-	WebhookId *IgnoredEventBulkRetryCreateRequestQueryWebhookId `json:"webhook_id,omitempty"`
+	WebhookId *IgnoredEventBulkRetryCreateRequestQueryWebhookId `json:"webhook_id,omitempty" url:"webhook_id,omitempty"`
 	// The associated transformation ID (only applicable to the cause `TRANSFORMATION_FAILED`)
-	TransformationId *string `json:"transformation_id,omitempty"`
+	TransformationId *string `json:"transformation_id,omitempty" url:"transformation_id,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQuery) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQuery) UnmarshalJSON(data []byte) error {
+	type unmarshaler IgnoredEventBulkRetryCreateRequestQuery
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IgnoredEventBulkRetryCreateRequestQuery(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IgnoredEventBulkRetryCreateRequestQuery) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }
 
 type IgnoredEventBulkRetryListRequestDir string
@@ -80,9 +118,46 @@ func (i IgnoredEventBulkRetryListRequestOrderBy) Ptr() *IgnoredEventBulkRetryLis
 
 type IgnoredEventBulkRetryPlanResponse struct {
 	// Number of batches required to complete the bulk retry
-	EstimatedBatch *int `json:"estimated_batch,omitempty"`
+	EstimatedBatch *int `json:"estimated_batch,omitempty" url:"estimated_batch,omitempty"`
 	// Number of estimated events to be retried
-	EstimatedCount *int `json:"estimated_count,omitempty"`
+	EstimatedCount *int `json:"estimated_count,omitempty" url:"estimated_count,omitempty"`
 	// Progression of the batch operations, values 0 - 1
-	Progress *float64 `json:"progress,omitempty"`
+	Progress *float64 `json:"progress,omitempty" url:"progress,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (i *IgnoredEventBulkRetryPlanResponse) GetExtraProperties() map[string]interface{} {
+	return i.extraProperties
+}
+
+func (i *IgnoredEventBulkRetryPlanResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler IgnoredEventBulkRetryPlanResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*i = IgnoredEventBulkRetryPlanResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *i)
+	if err != nil {
+		return err
+	}
+	i.extraProperties = extraProperties
+
+	i._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (i *IgnoredEventBulkRetryPlanResponse) String() string {
+	if len(i._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(i._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(i); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", i)
 }

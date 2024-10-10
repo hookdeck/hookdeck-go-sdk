@@ -10,32 +10,32 @@ import (
 
 type BookmarkCreateRequest struct {
 	// ID of the event data to bookmark
-	EventDataId string `json:"event_data_id"`
+	EventDataId string `json:"event_data_id" url:"-"`
 	// ID of the associated connection
-	WebhookId string `json:"webhook_id"`
+	WebhookId string `json:"webhook_id" url:"-"`
 	// Descriptive name of the bookmark
-	Label string `json:"label"`
+	Label string `json:"label" url:"-"`
 	// A unique, human-friendly name for the bookmark
-	Name *core.Optional[string] `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty" url:"-"`
 }
 
 type BookmarkListRequest struct {
-	Id          []*string                   `json:"-"`
-	Name        []*string                   `json:"-"`
-	WebhookId   []*string                   `json:"-"`
-	EventDataId []*string                   `json:"-"`
-	Label       []*string                   `json:"-"`
-	LastUsedAt  *time.Time                  `json:"-"`
-	OrderBy     *BookmarkListRequestOrderBy `json:"-"`
-	Dir         *BookmarkListRequestDir     `json:"-"`
-	Limit       *int                        `json:"-"`
-	Next        *string                     `json:"-"`
-	Prev        *string                     `json:"-"`
+	Id          []*string                   `json:"-" url:"id,omitempty"`
+	Name        []*string                   `json:"-" url:"name,omitempty"`
+	WebhookId   []*string                   `json:"-" url:"webhook_id,omitempty"`
+	EventDataId []*string                   `json:"-" url:"event_data_id,omitempty"`
+	Label       []*string                   `json:"-" url:"label,omitempty"`
+	LastUsedAt  *time.Time                  `json:"-" url:"last_used_at,omitempty"`
+	OrderBy     *BookmarkListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir         *BookmarkListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit       *int                        `json:"-" url:"limit,omitempty"`
+	Next        *string                     `json:"-" url:"next,omitempty"`
+	Prev        *string                     `json:"-" url:"prev,omitempty"`
 }
 
 type BookmarkTriggerRequest struct {
 	// Bookmark target
-	Target *core.Optional[BookmarkTriggerRequestTarget] `json:"target,omitempty"`
+	Target *core.Optional[BookmarkTriggerRequestTarget] `json:"target,omitempty" url:"-"`
 }
 
 type BookmarkListRequestDir string
@@ -104,11 +104,11 @@ func (b BookmarkTriggerRequestTarget) Ptr() *BookmarkTriggerRequestTarget {
 
 type BookmarkUpdateRequest struct {
 	// ID of the event data to bookmark
-	EventDataId *core.Optional[string] `json:"event_data_id,omitempty"`
+	EventDataId *core.Optional[string] `json:"event_data_id,omitempty" url:"-"`
 	// ID of the associated connection
-	WebhookId *core.Optional[string] `json:"webhook_id,omitempty"`
+	WebhookId *core.Optional[string] `json:"webhook_id,omitempty" url:"-"`
 	// Descriptive name of the bookmark
-	Label *core.Optional[string] `json:"label,omitempty"`
+	Label *core.Optional[string] `json:"label,omitempty" url:"-"`
 	// A unique, human-friendly name for the bookmark
-	Name *core.Optional[string] `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty" url:"-"`
 }

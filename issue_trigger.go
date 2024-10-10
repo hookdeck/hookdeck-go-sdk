@@ -10,61 +10,57 @@ import (
 )
 
 type IssueTriggerCreateRequest struct {
-	Type IssueType `json:"type,omitempty"`
+	Type IssueType `json:"type" url:"-"`
 	// Configuration object for the specific issue type selected
-	Configs  *core.Optional[IssueTriggerCreateRequestConfigs] `json:"configs,omitempty"`
-	Channels *core.Optional[IssueTriggerChannels]             `json:"channels,omitempty"`
+	Configs  *core.Optional[IssueTriggerCreateRequestConfigs] `json:"configs,omitempty" url:"-"`
+	Channels *core.Optional[IssueTriggerChannels]             `json:"channels,omitempty" url:"-"`
 	// Optional unique name to use as reference when using the API
-	Name *core.Optional[string] `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty" url:"-"`
 }
 
 type IssueTriggerListRequest struct {
-	Name       *string                         `json:"-"`
-	Type       *IssueType                      `json:"-"`
-	DisabledAt *time.Time                      `json:"-"`
-	OrderBy    *IssueTriggerListRequestOrderBy `json:"-"`
-	Dir        *IssueTriggerListRequestDir     `json:"-"`
-	Limit      *int                            `json:"-"`
-	Next       *string                         `json:"-"`
-	Prev       *string                         `json:"-"`
+	Name       *string                         `json:"-" url:"name,omitempty"`
+	Type       *IssueType                      `json:"-" url:"type,omitempty"`
+	DisabledAt *time.Time                      `json:"-" url:"disabled_at,omitempty"`
+	OrderBy    *IssueTriggerListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir        *IssueTriggerListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit      *int                            `json:"-" url:"limit,omitempty"`
+	Next       *string                         `json:"-" url:"next,omitempty"`
+	Prev       *string                         `json:"-" url:"prev,omitempty"`
 }
 
 // Configuration object for the specific issue type selected
 type IssueTriggerCreateRequestConfigs struct {
-	typeName                          string
 	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
 	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
 	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
 }
 
 func NewIssueTriggerCreateRequestConfigsFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *IssueTriggerCreateRequestConfigs {
-	return &IssueTriggerCreateRequestConfigs{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
+	return &IssueTriggerCreateRequestConfigs{IssueTriggerDeliveryConfigs: value}
 }
 
 func NewIssueTriggerCreateRequestConfigsFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *IssueTriggerCreateRequestConfigs {
-	return &IssueTriggerCreateRequestConfigs{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
+	return &IssueTriggerCreateRequestConfigs{IssueTriggerTransformationConfigs: value}
 }
 
 func NewIssueTriggerCreateRequestConfigsFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *IssueTriggerCreateRequestConfigs {
-	return &IssueTriggerCreateRequestConfigs{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
+	return &IssueTriggerCreateRequestConfigs{IssueTriggerBackpressureConfigs: value}
 }
 
 func (i *IssueTriggerCreateRequestConfigs) UnmarshalJSON(data []byte) error {
 	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
-		i.typeName = "issueTriggerDeliveryConfigs"
 		i.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
 		return nil
 	}
 	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
-		i.typeName = "issueTriggerTransformationConfigs"
 		i.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
 		return nil
 	}
 	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
-		i.typeName = "issueTriggerBackpressureConfigs"
 		i.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
 		return nil
 	}
@@ -72,16 +68,16 @@ func (i *IssueTriggerCreateRequestConfigs) UnmarshalJSON(data []byte) error {
 }
 
 func (i IssueTriggerCreateRequestConfigs) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "issueTriggerDeliveryConfigs":
+	if i.IssueTriggerDeliveryConfigs != nil {
 		return json.Marshal(i.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
+	}
+	if i.IssueTriggerTransformationConfigs != nil {
 		return json.Marshal(i.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
+	}
+	if i.IssueTriggerBackpressureConfigs != nil {
 		return json.Marshal(i.IssueTriggerBackpressureConfigs)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IssueTriggerCreateRequestConfigsVisitor interface {
@@ -91,16 +87,16 @@ type IssueTriggerCreateRequestConfigsVisitor interface {
 }
 
 func (i *IssueTriggerCreateRequestConfigs) Accept(visitor IssueTriggerCreateRequestConfigsVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "issueTriggerDeliveryConfigs":
+	if i.IssueTriggerDeliveryConfigs != nil {
 		return visitor.VisitIssueTriggerDeliveryConfigs(i.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
+	}
+	if i.IssueTriggerTransformationConfigs != nil {
 		return visitor.VisitIssueTriggerTransformationConfigs(i.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
+	}
+	if i.IssueTriggerBackpressureConfigs != nil {
 		return visitor.VisitIssueTriggerBackpressureConfigs(i.IssueTriggerBackpressureConfigs)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IssueTriggerListRequestDir string
@@ -149,40 +145,36 @@ func (i IssueTriggerListRequestOrderBy) Ptr() *IssueTriggerListRequestOrderBy {
 
 // Configuration object for the specific issue type selected
 type IssueTriggerUpdateRequestConfigs struct {
-	typeName                          string
 	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
 	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
 	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
 }
 
 func NewIssueTriggerUpdateRequestConfigsFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *IssueTriggerUpdateRequestConfigs {
-	return &IssueTriggerUpdateRequestConfigs{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
+	return &IssueTriggerUpdateRequestConfigs{IssueTriggerDeliveryConfigs: value}
 }
 
 func NewIssueTriggerUpdateRequestConfigsFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *IssueTriggerUpdateRequestConfigs {
-	return &IssueTriggerUpdateRequestConfigs{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
+	return &IssueTriggerUpdateRequestConfigs{IssueTriggerTransformationConfigs: value}
 }
 
 func NewIssueTriggerUpdateRequestConfigsFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *IssueTriggerUpdateRequestConfigs {
-	return &IssueTriggerUpdateRequestConfigs{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
+	return &IssueTriggerUpdateRequestConfigs{IssueTriggerBackpressureConfigs: value}
 }
 
 func (i *IssueTriggerUpdateRequestConfigs) UnmarshalJSON(data []byte) error {
 	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
-		i.typeName = "issueTriggerDeliveryConfigs"
 		i.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
 		return nil
 	}
 	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
-		i.typeName = "issueTriggerTransformationConfigs"
 		i.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
 		return nil
 	}
 	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
-		i.typeName = "issueTriggerBackpressureConfigs"
 		i.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
 		return nil
 	}
@@ -190,16 +182,16 @@ func (i *IssueTriggerUpdateRequestConfigs) UnmarshalJSON(data []byte) error {
 }
 
 func (i IssueTriggerUpdateRequestConfigs) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "issueTriggerDeliveryConfigs":
+	if i.IssueTriggerDeliveryConfigs != nil {
 		return json.Marshal(i.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
+	}
+	if i.IssueTriggerTransformationConfigs != nil {
 		return json.Marshal(i.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
+	}
+	if i.IssueTriggerBackpressureConfigs != nil {
 		return json.Marshal(i.IssueTriggerBackpressureConfigs)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IssueTriggerUpdateRequestConfigsVisitor interface {
@@ -209,54 +201,50 @@ type IssueTriggerUpdateRequestConfigsVisitor interface {
 }
 
 func (i *IssueTriggerUpdateRequestConfigs) Accept(visitor IssueTriggerUpdateRequestConfigsVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "issueTriggerDeliveryConfigs":
+	if i.IssueTriggerDeliveryConfigs != nil {
 		return visitor.VisitIssueTriggerDeliveryConfigs(i.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
+	}
+	if i.IssueTriggerTransformationConfigs != nil {
 		return visitor.VisitIssueTriggerTransformationConfigs(i.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
+	}
+	if i.IssueTriggerBackpressureConfigs != nil {
 		return visitor.VisitIssueTriggerBackpressureConfigs(i.IssueTriggerBackpressureConfigs)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 // Configuration object for the specific issue type selected
 type IssueTriggerUpsertRequestConfigs struct {
-	typeName                          string
 	IssueTriggerDeliveryConfigs       *IssueTriggerDeliveryConfigs
 	IssueTriggerTransformationConfigs *IssueTriggerTransformationConfigs
 	IssueTriggerBackpressureConfigs   *IssueTriggerBackpressureConfigs
 }
 
 func NewIssueTriggerUpsertRequestConfigsFromIssueTriggerDeliveryConfigs(value *IssueTriggerDeliveryConfigs) *IssueTriggerUpsertRequestConfigs {
-	return &IssueTriggerUpsertRequestConfigs{typeName: "issueTriggerDeliveryConfigs", IssueTriggerDeliveryConfigs: value}
+	return &IssueTriggerUpsertRequestConfigs{IssueTriggerDeliveryConfigs: value}
 }
 
 func NewIssueTriggerUpsertRequestConfigsFromIssueTriggerTransformationConfigs(value *IssueTriggerTransformationConfigs) *IssueTriggerUpsertRequestConfigs {
-	return &IssueTriggerUpsertRequestConfigs{typeName: "issueTriggerTransformationConfigs", IssueTriggerTransformationConfigs: value}
+	return &IssueTriggerUpsertRequestConfigs{IssueTriggerTransformationConfigs: value}
 }
 
 func NewIssueTriggerUpsertRequestConfigsFromIssueTriggerBackpressureConfigs(value *IssueTriggerBackpressureConfigs) *IssueTriggerUpsertRequestConfigs {
-	return &IssueTriggerUpsertRequestConfigs{typeName: "issueTriggerBackpressureConfigs", IssueTriggerBackpressureConfigs: value}
+	return &IssueTriggerUpsertRequestConfigs{IssueTriggerBackpressureConfigs: value}
 }
 
 func (i *IssueTriggerUpsertRequestConfigs) UnmarshalJSON(data []byte) error {
 	valueIssueTriggerDeliveryConfigs := new(IssueTriggerDeliveryConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerDeliveryConfigs); err == nil {
-		i.typeName = "issueTriggerDeliveryConfigs"
 		i.IssueTriggerDeliveryConfigs = valueIssueTriggerDeliveryConfigs
 		return nil
 	}
 	valueIssueTriggerTransformationConfigs := new(IssueTriggerTransformationConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerTransformationConfigs); err == nil {
-		i.typeName = "issueTriggerTransformationConfigs"
 		i.IssueTriggerTransformationConfigs = valueIssueTriggerTransformationConfigs
 		return nil
 	}
 	valueIssueTriggerBackpressureConfigs := new(IssueTriggerBackpressureConfigs)
 	if err := json.Unmarshal(data, &valueIssueTriggerBackpressureConfigs); err == nil {
-		i.typeName = "issueTriggerBackpressureConfigs"
 		i.IssueTriggerBackpressureConfigs = valueIssueTriggerBackpressureConfigs
 		return nil
 	}
@@ -264,16 +252,16 @@ func (i *IssueTriggerUpsertRequestConfigs) UnmarshalJSON(data []byte) error {
 }
 
 func (i IssueTriggerUpsertRequestConfigs) MarshalJSON() ([]byte, error) {
-	switch i.typeName {
-	default:
-		return nil, fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "issueTriggerDeliveryConfigs":
+	if i.IssueTriggerDeliveryConfigs != nil {
 		return json.Marshal(i.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
+	}
+	if i.IssueTriggerTransformationConfigs != nil {
 		return json.Marshal(i.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
+	}
+	if i.IssueTriggerBackpressureConfigs != nil {
 		return json.Marshal(i.IssueTriggerBackpressureConfigs)
 	}
+	return nil, fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IssueTriggerUpsertRequestConfigsVisitor interface {
@@ -283,33 +271,55 @@ type IssueTriggerUpsertRequestConfigsVisitor interface {
 }
 
 func (i *IssueTriggerUpsertRequestConfigs) Accept(visitor IssueTriggerUpsertRequestConfigsVisitor) error {
-	switch i.typeName {
-	default:
-		return fmt.Errorf("invalid type %s in %T", i.typeName, i)
-	case "issueTriggerDeliveryConfigs":
+	if i.IssueTriggerDeliveryConfigs != nil {
 		return visitor.VisitIssueTriggerDeliveryConfigs(i.IssueTriggerDeliveryConfigs)
-	case "issueTriggerTransformationConfigs":
+	}
+	if i.IssueTriggerTransformationConfigs != nil {
 		return visitor.VisitIssueTriggerTransformationConfigs(i.IssueTriggerTransformationConfigs)
-	case "issueTriggerBackpressureConfigs":
+	}
+	if i.IssueTriggerBackpressureConfigs != nil {
 		return visitor.VisitIssueTriggerBackpressureConfigs(i.IssueTriggerBackpressureConfigs)
 	}
+	return fmt.Errorf("type %T does not include a non-empty union type", i)
 }
 
 type IssueTriggerUpdateRequest struct {
 	// Configuration object for the specific issue type selected
-	Configs  *core.Optional[IssueTriggerUpdateRequestConfigs] `json:"configs,omitempty"`
-	Channels *core.Optional[IssueTriggerChannels]             `json:"channels,omitempty"`
+	Configs  *core.Optional[IssueTriggerUpdateRequestConfigs] `json:"configs,omitempty" url:"-"`
+	Channels *core.Optional[IssueTriggerChannels]             `json:"channels,omitempty" url:"-"`
 	// Date when the issue trigger was disabled
-	DisabledAt *core.Optional[time.Time] `json:"disabled_at,omitempty"`
+	DisabledAt *core.Optional[time.Time] `json:"disabled_at,omitempty" url:"-"`
 	// Optional unique name to use as reference when using the API
-	Name *core.Optional[string] `json:"name,omitempty"`
+	Name *core.Optional[string] `json:"name,omitempty" url:"-"`
+}
+
+func (i *IssueTriggerUpdateRequest) UnmarshalJSON(data []byte) error {
+	type unmarshaler IssueTriggerUpdateRequest
+	var body unmarshaler
+	if err := json.Unmarshal(data, &body); err != nil {
+		return err
+	}
+	*i = IssueTriggerUpdateRequest(body)
+	return nil
+}
+
+func (i *IssueTriggerUpdateRequest) MarshalJSON() ([]byte, error) {
+	type embed IssueTriggerUpdateRequest
+	var marshaler = struct {
+		embed
+		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
+	}{
+		embed:      embed(*i),
+		DisabledAt: core.NewOptionalDateTime(i.DisabledAt),
+	}
+	return json.Marshal(marshaler)
 }
 
 type IssueTriggerUpsertRequest struct {
-	Type IssueType `json:"type,omitempty"`
+	Type IssueType `json:"type" url:"-"`
 	// Configuration object for the specific issue type selected
-	Configs  *core.Optional[IssueTriggerUpsertRequestConfigs] `json:"configs,omitempty"`
-	Channels *core.Optional[IssueTriggerChannels]             `json:"channels,omitempty"`
+	Configs  *core.Optional[IssueTriggerUpsertRequestConfigs] `json:"configs,omitempty" url:"-"`
+	Channels *core.Optional[IssueTriggerChannels]             `json:"channels,omitempty" url:"-"`
 	// Required unique name to use as reference when using the API
-	Name string `json:"name"`
+	Name string `json:"name" url:"-"`
 }

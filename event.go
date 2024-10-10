@@ -8,33 +8,33 @@ import (
 )
 
 type EventListRequest struct {
-	Id             []*string                `json:"-"`
-	Status         *EventStatus             `json:"-"`
-	WebhookId      []*string                `json:"-"`
-	DestinationId  []*string                `json:"-"`
-	SourceId       []*string                `json:"-"`
-	Attempts       *int                     `json:"-"`
-	ResponseStatus *int                     `json:"-"`
-	SuccessfulAt   *time.Time               `json:"-"`
-	CreatedAt      *time.Time               `json:"-"`
-	ErrorCode      *AttemptErrorCodes       `json:"-"`
-	CliId          *string                  `json:"-"`
-	LastAttemptAt  *time.Time               `json:"-"`
-	SearchTerm     *string                  `json:"-"`
-	Headers        *string                  `json:"-"`
-	Body           *string                  `json:"-"`
-	ParsedQuery    *string                  `json:"-"`
-	Path           *string                  `json:"-"`
-	CliUserId      []*string                `json:"-"`
-	IssueId        []*string                `json:"-"`
-	EventDataId    []*string                `json:"-"`
-	BulkRetryId    []*string                `json:"-"`
-	Include        *string                  `json:"-"`
-	OrderBy        *EventListRequestOrderBy `json:"-"`
-	Dir            *EventListRequestDir     `json:"-"`
-	Limit          *int                     `json:"-"`
-	Next           *string                  `json:"-"`
-	Prev           *string                  `json:"-"`
+	Id             []*string                `json:"-" url:"id,omitempty"`
+	Status         *EventStatus             `json:"-" url:"status,omitempty"`
+	WebhookId      []*string                `json:"-" url:"webhook_id,omitempty"`
+	DestinationId  []*string                `json:"-" url:"destination_id,omitempty"`
+	SourceId       []*string                `json:"-" url:"source_id,omitempty"`
+	Attempts       *int                     `json:"-" url:"attempts,omitempty"`
+	ResponseStatus *int                     `json:"-" url:"response_status,omitempty"`
+	SuccessfulAt   *time.Time               `json:"-" url:"successful_at,omitempty"`
+	CreatedAt      *time.Time               `json:"-" url:"created_at,omitempty"`
+	ErrorCode      *AttemptErrorCodes       `json:"-" url:"error_code,omitempty"`
+	CliId          *string                  `json:"-" url:"cli_id,omitempty"`
+	LastAttemptAt  *time.Time               `json:"-" url:"last_attempt_at,omitempty"`
+	SearchTerm     *string                  `json:"-" url:"search_term,omitempty"`
+	Headers        *string                  `json:"-" url:"headers,omitempty"`
+	Body           *string                  `json:"-" url:"body,omitempty"`
+	ParsedQuery    *string                  `json:"-" url:"parsed_query,omitempty"`
+	Path           *string                  `json:"-" url:"path,omitempty"`
+	CliUserId      []*string                `json:"-" url:"cli_user_id,omitempty"`
+	IssueId        []*string                `json:"-" url:"issue_id,omitempty"`
+	EventDataId    []*string                `json:"-" url:"event_data_id,omitempty"`
+	BulkRetryId    []*string                `json:"-" url:"bulk_retry_id,omitempty"`
+	Include        *string                  `json:"-" url:"include,omitempty"`
+	OrderBy        *EventListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir            *EventListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit          *int                     `json:"-" url:"limit,omitempty"`
+	Next           *string                  `json:"-" url:"next,omitempty"`
+	Prev           *string                  `json:"-" url:"prev,omitempty"`
 }
 
 // Sort direction

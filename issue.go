@@ -8,37 +8,37 @@ import (
 )
 
 type IssueCountRequest struct {
-	Id             []*string                 `json:"-"`
-	IssueTriggerId []*string                 `json:"-"`
-	Type           *IssueCountRequestType    `json:"-"`
-	Status         *IssueCountRequestStatus  `json:"-"`
-	MergedWith     []*string                 `json:"-"`
-	CreatedAt      *time.Time                `json:"-"`
-	FirstSeenAt    *time.Time                `json:"-"`
-	LastSeenAt     *time.Time                `json:"-"`
-	DismissedAt    *time.Time                `json:"-"`
-	OrderBy        *IssueCountRequestOrderBy `json:"-"`
-	Dir            *IssueCountRequestDir     `json:"-"`
-	Limit          *int                      `json:"-"`
-	Next           *string                   `json:"-"`
-	Prev           *string                   `json:"-"`
+	Id             []*string                 `json:"-" url:"id,omitempty"`
+	IssueTriggerId []*string                 `json:"-" url:"issue_trigger_id,omitempty"`
+	Type           *IssueCountRequestType    `json:"-" url:"type,omitempty"`
+	Status         *IssueCountRequestStatus  `json:"-" url:"status,omitempty"`
+	MergedWith     []*string                 `json:"-" url:"merged_with,omitempty"`
+	CreatedAt      *time.Time                `json:"-" url:"created_at,omitempty"`
+	FirstSeenAt    *time.Time                `json:"-" url:"first_seen_at,omitempty"`
+	LastSeenAt     *time.Time                `json:"-" url:"last_seen_at,omitempty"`
+	DismissedAt    *time.Time                `json:"-" url:"dismissed_at,omitempty"`
+	OrderBy        *IssueCountRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir            *IssueCountRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit          *int                      `json:"-" url:"limit,omitempty"`
+	Next           *string                   `json:"-" url:"next,omitempty"`
+	Prev           *string                   `json:"-" url:"prev,omitempty"`
 }
 
 type IssueListRequest struct {
-	Id             []*string                `json:"-"`
-	IssueTriggerId []*string                `json:"-"`
-	Type           *IssueListRequestType    `json:"-"`
-	Status         *IssueListRequestStatus  `json:"-"`
-	MergedWith     []*string                `json:"-"`
-	CreatedAt      *time.Time               `json:"-"`
-	FirstSeenAt    *time.Time               `json:"-"`
-	LastSeenAt     *time.Time               `json:"-"`
-	DismissedAt    *time.Time               `json:"-"`
-	OrderBy        *IssueListRequestOrderBy `json:"-"`
-	Dir            *IssueListRequestDir     `json:"-"`
-	Limit          *int                     `json:"-"`
-	Next           *string                  `json:"-"`
-	Prev           *string                  `json:"-"`
+	Id             []*string                `json:"-" url:"id,omitempty"`
+	IssueTriggerId []*string                `json:"-" url:"issue_trigger_id,omitempty"`
+	Type           *IssueListRequestType    `json:"-" url:"type,omitempty"`
+	Status         *IssueListRequestStatus  `json:"-" url:"status,omitempty"`
+	MergedWith     []*string                `json:"-" url:"merged_with,omitempty"`
+	CreatedAt      *time.Time               `json:"-" url:"created_at,omitempty"`
+	FirstSeenAt    *time.Time               `json:"-" url:"first_seen_at,omitempty"`
+	LastSeenAt     *time.Time               `json:"-" url:"last_seen_at,omitempty"`
+	DismissedAt    *time.Time               `json:"-" url:"dismissed_at,omitempty"`
+	OrderBy        *IssueListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir            *IssueListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit          *int                     `json:"-" url:"limit,omitempty"`
+	Next           *string                  `json:"-" url:"next,omitempty"`
+	Prev           *string                  `json:"-" url:"prev,omitempty"`
 }
 
 type IssueCountRequestDir string
@@ -284,5 +284,5 @@ func (i IssueUpdateRequestStatus) Ptr() *IssueUpdateRequestStatus {
 
 type IssueUpdateRequest struct {
 	// New status
-	Status IssueUpdateRequestStatus `json:"status,omitempty"`
+	Status IssueUpdateRequestStatus `json:"status" url:"-"`
 }

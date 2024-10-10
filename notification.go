@@ -8,9 +8,9 @@ import (
 
 type NotificationUpdateRequest struct {
 	// Enable or disable webhook notifications on the project
-	Enabled *core.Optional[bool] `json:"enabled,omitempty"`
+	Enabled *core.Optional[bool] `json:"enabled,omitempty" url:"-"`
 	// List of topics to send notifications for
-	Topics *core.Optional[[]TopicsValue] `json:"topics,omitempty"`
+	Topics *core.Optional[[]TopicsValue] `json:"topics,omitempty" url:"-"`
 	// The Hookdeck Source to send the webhook to
-	SourceId *core.Optional[string] `json:"source_id,omitempty"`
+	SourceId *core.Optional[string] `json:"source_id,omitempty" url:"-"`
 }

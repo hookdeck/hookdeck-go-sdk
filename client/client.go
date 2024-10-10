@@ -15,6 +15,7 @@ import (
 	issue "github.com/hookdeck/hookdeck-go-sdk/issue"
 	issuetrigger "github.com/hookdeck/hookdeck-go-sdk/issuetrigger"
 	notification "github.com/hookdeck/hookdeck-go-sdk/notification"
+	option "github.com/hookdeck/hookdeck-go-sdk/option"
 	request "github.com/hookdeck/hookdeck-go-sdk/request"
 	requestbulkretry "github.com/hookdeck/hookdeck-go-sdk/requestbulkretry"
 	source "github.com/hookdeck/hookdeck-go-sdk/source"
@@ -23,9 +24,9 @@ import (
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 
 	IssueTrigger          *issuetrigger.Client
 	Attempt               *attempt.Client
@@ -44,14 +45,16 @@ type Client struct {
 	Connection            *connection.Client
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:               options.BaseURL,
-		httpClient:            options.HTTPClient,
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
 		header:                options.ToHeader(),
 		IssueTrigger:          issuetrigger.NewClient(opts...),
 		Attempt:               attempt.NewClient(opts...),

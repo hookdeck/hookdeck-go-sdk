@@ -3,6 +3,7 @@
 package api
 
 import (
+	json "encoding/json"
 	fmt "fmt"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
 	time "time"
@@ -10,63 +11,100 @@ import (
 
 type EventBulkRetryCreateRequest struct {
 	// Filter properties for the events to be included in the bulk retry
-	Query *core.Optional[EventBulkRetryCreateRequestQuery] `json:"query,omitempty"`
+	Query *core.Optional[EventBulkRetryCreateRequestQuery] `json:"query,omitempty" url:"-"`
 }
 
 type EventBulkRetryListRequest struct {
-	CancelledAt       *time.Time                        `json:"-"`
-	CompletedAt       *time.Time                        `json:"-"`
-	CreatedAt         *time.Time                        `json:"-"`
-	Id                []*string                         `json:"-"`
-	QueryPartialMatch *bool                             `json:"-"`
-	InProgress        *bool                             `json:"-"`
-	OrderBy           *EventBulkRetryListRequestOrderBy `json:"-"`
-	Dir               *EventBulkRetryListRequestDir     `json:"-"`
-	Limit             *int                              `json:"-"`
-	Next              *string                           `json:"-"`
-	Prev              *string                           `json:"-"`
+	CancelledAt       *time.Time                        `json:"-" url:"cancelled_at,omitempty"`
+	CompletedAt       *time.Time                        `json:"-" url:"completed_at,omitempty"`
+	CreatedAt         *time.Time                        `json:"-" url:"created_at,omitempty"`
+	Id                []*string                         `json:"-" url:"id,omitempty"`
+	QueryPartialMatch *bool                             `json:"-" url:"query_partial_match,omitempty"`
+	InProgress        *bool                             `json:"-" url:"in_progress,omitempty"`
+	OrderBy           *EventBulkRetryListRequestOrderBy `json:"-" url:"order_by,omitempty"`
+	Dir               *EventBulkRetryListRequestDir     `json:"-" url:"dir,omitempty"`
+	Limit             *int                              `json:"-" url:"limit,omitempty"`
+	Next              *string                           `json:"-" url:"next,omitempty"`
+	Prev              *string                           `json:"-" url:"prev,omitempty"`
 }
 
 // Filter properties for the events to be included in the bulk retry
 type EventBulkRetryCreateRequestQuery struct {
 	// Filter by event IDs
-	Id *EventBulkRetryCreateRequestQueryId `json:"id,omitempty"`
+	Id *EventBulkRetryCreateRequestQueryId `json:"id,omitempty" url:"id,omitempty"`
 	// Lifecyle status of the event
-	Status *EventBulkRetryCreateRequestQueryStatus `json:"status,omitempty"`
+	Status *EventBulkRetryCreateRequestQueryStatus `json:"status,omitempty" url:"status,omitempty"`
 	// Filter by webhook connection IDs
-	WebhookId *EventBulkRetryCreateRequestQueryWebhookId `json:"webhook_id,omitempty"`
+	WebhookId *EventBulkRetryCreateRequestQueryWebhookId `json:"webhook_id,omitempty" url:"webhook_id,omitempty"`
 	// Filter by destination IDs
-	DestinationId *EventBulkRetryCreateRequestQueryDestinationId `json:"destination_id,omitempty"`
+	DestinationId *EventBulkRetryCreateRequestQueryDestinationId `json:"destination_id,omitempty" url:"destination_id,omitempty"`
 	// Filter by source IDs
-	SourceId *EventBulkRetryCreateRequestQuerySourceId `json:"source_id,omitempty"`
+	SourceId *EventBulkRetryCreateRequestQuerySourceId `json:"source_id,omitempty" url:"source_id,omitempty"`
 	// Filter by number of attempts
-	Attempts *EventBulkRetryCreateRequestQueryAttempts `json:"attempts,omitempty"`
+	Attempts *EventBulkRetryCreateRequestQueryAttempts `json:"attempts,omitempty" url:"attempts,omitempty"`
 	// Filter by HTTP response status code
-	ResponseStatus *EventBulkRetryCreateRequestQueryResponseStatus `json:"response_status,omitempty"`
+	ResponseStatus *EventBulkRetryCreateRequestQueryResponseStatus `json:"response_status,omitempty" url:"response_status,omitempty"`
 	// Filter by `successful_at` date using a date operator
-	SuccessfulAt *EventBulkRetryCreateRequestQuerySuccessfulAt `json:"successful_at,omitempty"`
+	SuccessfulAt *EventBulkRetryCreateRequestQuerySuccessfulAt `json:"successful_at,omitempty" url:"successful_at,omitempty"`
 	// Filter by `created_at` date using a date operator
-	CreatedAt *EventBulkRetryCreateRequestQueryCreatedAt `json:"created_at,omitempty"`
+	CreatedAt *EventBulkRetryCreateRequestQueryCreatedAt `json:"created_at,omitempty" url:"created_at,omitempty"`
 	// Filter by error code code
-	ErrorCode *EventBulkRetryCreateRequestQueryErrorCode `json:"error_code,omitempty"`
+	ErrorCode *EventBulkRetryCreateRequestQueryErrorCode `json:"error_code,omitempty" url:"error_code,omitempty"`
 	// Filter by CLI IDs. `?[any]=true` operator for any CLI.
-	CliId *EventBulkRetryCreateRequestQueryCliId `json:"cli_id,omitempty"`
+	CliId *EventBulkRetryCreateRequestQueryCliId `json:"cli_id,omitempty" url:"cli_id,omitempty"`
 	// Filter by `last_attempt_at` date using a date operator
-	LastAttemptAt *EventBulkRetryCreateRequestQueryLastAttemptAt `json:"last_attempt_at,omitempty"`
+	LastAttemptAt *EventBulkRetryCreateRequestQueryLastAttemptAt `json:"last_attempt_at,omitempty" url:"last_attempt_at,omitempty"`
 	// URL Encoded string of the value to match partially to the body, headers, parsed_query or path
-	SearchTerm *string `json:"search_term,omitempty"`
+	SearchTerm *string `json:"search_term,omitempty" url:"search_term,omitempty"`
 	// URL Encoded string of the JSON to match to the data headers
-	Headers *EventBulkRetryCreateRequestQueryHeaders `json:"headers,omitempty"`
+	Headers *EventBulkRetryCreateRequestQueryHeaders `json:"headers,omitempty" url:"headers,omitempty"`
 	// URL Encoded string of the JSON to match to the data body
-	Body *EventBulkRetryCreateRequestQueryBody `json:"body,omitempty"`
+	Body *EventBulkRetryCreateRequestQueryBody `json:"body,omitempty" url:"body,omitempty"`
 	// URL Encoded string of the JSON to match to the parsed query (JSON representation of the query)
-	ParsedQuery *EventBulkRetryCreateRequestQueryParsedQuery `json:"parsed_query,omitempty"`
+	ParsedQuery *EventBulkRetryCreateRequestQueryParsedQuery `json:"parsed_query,omitempty" url:"parsed_query,omitempty"`
 	// URL Encoded string of the value to match partially to the path
-	Path        *string                                      `json:"path,omitempty"`
-	CliUserId   *EventBulkRetryCreateRequestQueryCliUserId   `json:"cli_user_id,omitempty"`
-	IssueId     *EventBulkRetryCreateRequestQueryIssueId     `json:"issue_id,omitempty"`
-	EventDataId *EventBulkRetryCreateRequestQueryEventDataId `json:"event_data_id,omitempty"`
-	BulkRetryId *EventBulkRetryCreateRequestQueryBulkRetryId `json:"bulk_retry_id,omitempty"`
+	Path        *string                                      `json:"path,omitempty" url:"path,omitempty"`
+	CliUserId   *EventBulkRetryCreateRequestQueryCliUserId   `json:"cli_user_id,omitempty" url:"cli_user_id,omitempty"`
+	IssueId     *EventBulkRetryCreateRequestQueryIssueId     `json:"issue_id,omitempty" url:"issue_id,omitempty"`
+	EventDataId *EventBulkRetryCreateRequestQueryEventDataId `json:"event_data_id,omitempty" url:"event_data_id,omitempty"`
+	BulkRetryId *EventBulkRetryCreateRequestQueryBulkRetryId `json:"bulk_retry_id,omitempty" url:"bulk_retry_id,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventBulkRetryCreateRequestQuery) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventBulkRetryCreateRequestQuery) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventBulkRetryCreateRequestQuery
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventBulkRetryCreateRequestQuery(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventBulkRetryCreateRequestQuery) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }
 
 type EventBulkRetryListRequestDir string
@@ -112,9 +150,46 @@ func (e EventBulkRetryListRequestOrderBy) Ptr() *EventBulkRetryListRequestOrderB
 
 type EventBulkRetryPlanResponse struct {
 	// Number of batches required to complete the bulk retry
-	EstimatedBatch *int `json:"estimated_batch,omitempty"`
+	EstimatedBatch *int `json:"estimated_batch,omitempty" url:"estimated_batch,omitempty"`
 	// Number of estimated events to be retried
-	EstimatedCount *int `json:"estimated_count,omitempty"`
+	EstimatedCount *int `json:"estimated_count,omitempty" url:"estimated_count,omitempty"`
 	// Progression of the batch operations, values 0 - 1
-	Progress *float64 `json:"progress,omitempty"`
+	Progress *float64 `json:"progress,omitempty" url:"progress,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (e *EventBulkRetryPlanResponse) GetExtraProperties() map[string]interface{} {
+	return e.extraProperties
+}
+
+func (e *EventBulkRetryPlanResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler EventBulkRetryPlanResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*e = EventBulkRetryPlanResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *e)
+	if err != nil {
+		return err
+	}
+	e.extraProperties = extraProperties
+
+	e._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (e *EventBulkRetryPlanResponse) String() string {
+	if len(e._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(e._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(e); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", e)
 }

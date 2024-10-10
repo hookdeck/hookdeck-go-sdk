@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strconv"
 	"testing"
 
@@ -21,11 +22,14 @@ type TestCase struct {
 	description string
 
 	// Server-side assertions.
+	givePathSuffix         string
 	giveMethod             string
 	giveResponseIsOptional bool
 	giveHeader             http.Header
 	giveErrorDecoder       ErrorDecoder
 	giveRequest            *Request
+	giveQueryParams        url.Values
+	giveBodyProperties     map[string]interface{}
 
 	// Client-side assertions.
 	wantResponse *Response
@@ -39,7 +43,9 @@ type Request struct {
 
 // Response a simple response body.
 type Response struct {
-	Id string `json:"id"`
+	Id                  string                 `json:"id"`
+	ExtraBodyProperties map[string]interface{} `json:"extraBodyProperties,omitempty"`
+	QueryParameters     url.Values             `json:"queryParameters,omitempty"`
 }
 
 // NotFoundError represents a 404.
@@ -49,7 +55,7 @@ type NotFoundError struct {
 	Message string `json:"message"`
 }
 
-func TestDoRequest(t *testing.T) {
+func TestCall(t *testing.T) {
 	tests := []*TestCase{
 		{
 			description: "GET success",
@@ -62,6 +68,23 @@ func TestDoRequest(t *testing.T) {
 			},
 			wantResponse: &Response{
 				Id: "123",
+			},
+		},
+		{
+			description:    "GET success with query",
+			givePathSuffix: "?limit=1",
+			giveMethod:     http.MethodGet,
+			giveHeader: http.Header{
+				"X-API-Status": []string{"success"},
+			},
+			giveRequest: &Request{
+				Id: "123",
+			},
+			wantResponse: &Response{
+				Id: "123",
+				QueryParameters: url.Values{
+					"limit": []string{"1"},
+				},
 			},
 		},
 		{
@@ -80,6 +103,18 @@ func TestDoRequest(t *testing.T) {
 					errors.New(`{"message":"ID \"404\" not found"}`),
 				),
 			},
+		},
+		{
+			description: "POST empty body",
+			giveMethod:  http.MethodPost,
+			giveHeader: http.Header{
+				"X-API-Status": []string{"fail"},
+			},
+			giveRequest: nil,
+			wantError: NewAPIError(
+				http.StatusBadRequest,
+				errors.New("invalid request"),
+			),
 		},
 		{
 			description: "POST optional response",
@@ -106,6 +141,62 @@ func TestDoRequest(t *testing.T) {
 				errors.New("failed to process request"),
 			),
 		},
+		{
+			description: "POST extra properties",
+			giveMethod:  http.MethodPost,
+			giveHeader: http.Header{
+				"X-API-Status": []string{"success"},
+			},
+			giveRequest: new(Request),
+			giveBodyProperties: map[string]interface{}{
+				"key": "value",
+			},
+			wantResponse: &Response{
+				ExtraBodyProperties: map[string]interface{}{
+					"key": "value",
+				},
+			},
+		},
+		{
+			description: "GET extra query parameters",
+			giveMethod:  http.MethodGet,
+			giveHeader: http.Header{
+				"X-API-Status": []string{"success"},
+			},
+			giveQueryParams: url.Values{
+				"extra": []string{"true"},
+			},
+			giveRequest: &Request{
+				Id: "123",
+			},
+			wantResponse: &Response{
+				Id: "123",
+				QueryParameters: url.Values{
+					"extra": []string{"true"},
+				},
+			},
+		},
+		{
+			description:    "GET merge extra query parameters",
+			givePathSuffix: "?limit=1",
+			giveMethod:     http.MethodGet,
+			giveHeader: http.Header{
+				"X-API-Status": []string{"success"},
+			},
+			giveRequest: &Request{
+				Id: "123",
+			},
+			giveQueryParams: url.Values{
+				"extra": []string{"true"},
+			},
+			wantResponse: &Response{
+				Id: "123",
+				QueryParameters: url.Values{
+					"limit": []string{"1"},
+					"extra": []string{"true"},
+				},
+			},
+		},
 	}
 	for _, test := range tests {
 		t.Run(test.description, func(t *testing.T) {
@@ -113,17 +204,25 @@ func TestDoRequest(t *testing.T) {
 				server = newTestServer(t, test)
 				client = server.Client()
 			)
+			caller := NewCaller(
+				&CallerParams{
+					Client: client,
+				},
+			)
 			var response *Response
-			err := DoRequest(
+			err := caller.Call(
 				context.Background(),
-				client,
-				server.URL,
-				test.giveMethod,
-				test.giveRequest,
-				&response,
-				test.giveResponseIsOptional,
-				test.giveHeader,
-				test.giveErrorDecoder,
+				&CallParams{
+					URL:                server.URL + test.givePathSuffix,
+					Method:             test.giveMethod,
+					Headers:            test.giveHeader,
+					BodyProperties:     test.giveBodyProperties,
+					QueryParameters:    test.giveQueryParams,
+					Request:            test.giveRequest,
+					Response:           &response,
+					ResponseIsOptional: test.giveResponseIsOptional,
+					ErrorDecoder:       test.giveErrorDecoder,
+				},
 			)
 			if test.wantError != nil {
 				assert.EqualError(t, err, test.wantError.Error())
@@ -133,6 +232,68 @@ func TestDoRequest(t *testing.T) {
 			assert.Equal(t, test.wantResponse, response)
 		})
 	}
+}
+
+func TestMergeHeaders(t *testing.T) {
+	t.Run("both empty", func(t *testing.T) {
+		merged := MergeHeaders(make(http.Header), make(http.Header))
+		assert.Empty(t, merged)
+	})
+
+	t.Run("empty left", func(t *testing.T) {
+		left := make(http.Header)
+
+		right := make(http.Header)
+		right.Set("X-API-Version", "0.0.1")
+
+		merged := MergeHeaders(left, right)
+		assert.Equal(t, "0.0.1", merged.Get("X-API-Version"))
+	})
+
+	t.Run("empty right", func(t *testing.T) {
+		left := make(http.Header)
+		left.Set("X-API-Version", "0.0.1")
+
+		right := make(http.Header)
+
+		merged := MergeHeaders(left, right)
+		assert.Equal(t, "0.0.1", merged.Get("X-API-Version"))
+	})
+
+	t.Run("single value override", func(t *testing.T) {
+		left := make(http.Header)
+		left.Set("X-API-Version", "0.0.0")
+
+		right := make(http.Header)
+		right.Set("X-API-Version", "0.0.1")
+
+		merged := MergeHeaders(left, right)
+		assert.Equal(t, []string{"0.0.1"}, merged.Values("X-API-Version"))
+	})
+
+	t.Run("multiple value override", func(t *testing.T) {
+		left := make(http.Header)
+		left.Set("X-API-Versions", "0.0.0")
+
+		right := make(http.Header)
+		right.Add("X-API-Versions", "0.0.1")
+		right.Add("X-API-Versions", "0.0.2")
+
+		merged := MergeHeaders(left, right)
+		assert.Equal(t, []string{"0.0.1", "0.0.2"}, merged.Values("X-API-Versions"))
+	})
+
+	t.Run("disjoint merge", func(t *testing.T) {
+		left := make(http.Header)
+		left.Set("X-API-Tenancy", "test")
+
+		right := make(http.Header)
+		right.Set("X-API-Version", "0.0.1")
+
+		merged := MergeHeaders(left, right)
+		assert.Equal(t, []string{"test"}, merged.Values("X-API-Tenancy"))
+		assert.Equal(t, []string{"0.0.1"}, merged.Values("X-API-Version"))
+	})
 }
 
 // newTestServer returns a new *httptest.Server configured with the
@@ -147,10 +308,17 @@ func newTestServer(t *testing.T, tc *TestCase) *httptest.Server {
 					assert.Equal(t, value, r.Header.Values(header))
 				}
 
-				bytes, err := io.ReadAll(r.Body)
-				require.NoError(t, err)
-
 				request := new(Request)
+
+				bytes, err := io.ReadAll(r.Body)
+				if tc.giveRequest == nil {
+					require.Empty(t, bytes)
+					w.WriteHeader(http.StatusBadRequest)
+					_, err = w.Write([]byte("invalid request"))
+					require.NoError(t, err)
+					return
+				}
+				require.NoError(t, err)
 				require.NoError(t, json.Unmarshal(bytes, request))
 
 				switch request.Id {
@@ -181,8 +349,14 @@ func newTestServer(t *testing.T, tc *TestCase) *httptest.Server {
 					return
 				}
 
+				extraBodyProperties := make(map[string]interface{})
+				require.NoError(t, json.Unmarshal(bytes, &extraBodyProperties))
+				delete(extraBodyProperties, "id")
+
 				response := &Response{
-					Id: request.Id,
+					Id:                  request.Id,
+					ExtraBodyProperties: extraBodyProperties,
+					QueryParameters:     r.URL.Query(),
 				}
 				bytes, err = json.Marshal(response)
 				require.NoError(t, err)
@@ -204,8 +378,7 @@ func newTestErrorDecoder(t *testing.T) func(int, io.Reader) error {
 			apiError = NewAPIError(statusCode, errors.New(string(raw)))
 			decoder  = json.NewDecoder(bytes.NewReader(raw))
 		)
-		switch statusCode {
-		case 404:
+		if statusCode == http.StatusNotFound {
 			value := new(NotFoundError)
 			value.APIError = apiError
 			require.NoError(t, decoder.Decode(value))

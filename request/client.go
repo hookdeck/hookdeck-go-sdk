@@ -7,104 +7,58 @@ import (
 	context "context"
 	json "encoding/json"
 	errors "errors"
-	fmt "fmt"
 	hookdeckgosdk "github.com/hookdeck/hookdeck-go-sdk"
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
+	option "github.com/hookdeck/hookdeck-go-sdk/option"
 	io "io"
 	http "net/http"
-	url "net/url"
-	time "time"
 )
 
 type Client struct {
-	baseURL    string
-	httpClient core.HTTPClient
-	header     http.Header
+	baseURL string
+	caller  *core.Caller
+	header  http.Header
 }
 
-func NewClient(opts ...core.ClientOption) *Client {
-	options := core.NewClientOptions()
-	for _, opt := range opts {
-		opt(options)
-	}
+func NewClient(opts ...option.RequestOption) *Client {
+	options := core.NewRequestOptions(opts...)
 	return &Client{
-		baseURL:    options.BaseURL,
-		httpClient: options.HTTPClient,
-		header:     options.ToHeader(),
+		baseURL: options.BaseURL,
+		caller: core.NewCaller(
+			&core.CallerParams{
+				Client:      options.HTTPClient,
+				MaxAttempts: options.MaxAttempts,
+			},
+		),
+		header: options.ToHeader(),
 	}
 }
 
-func (c *Client) List(ctx context.Context, request *hookdeckgosdk.RequestListRequest) (*hookdeckgosdk.RequestPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) List(
+	ctx context.Context,
+	request *hookdeckgosdk.RequestListRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.RequestPaginatedResult, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := baseURL + "/" + "requests"
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := baseURL + "/requests"
 
-	queryParams := make(url.Values)
-	for _, value := range request.Id {
-		queryParams.Add("id", fmt.Sprintf("%v", *value))
-	}
-	if request.Status != nil {
-		queryParams.Add("status", fmt.Sprintf("%v", *request.Status))
-	}
-	if request.RejectionCause != nil {
-		queryParams.Add("rejection_cause", fmt.Sprintf("%v", *request.RejectionCause))
-	}
-	for _, value := range request.SourceId {
-		queryParams.Add("source_id", fmt.Sprintf("%v", *value))
-	}
-	if request.Verified != nil {
-		queryParams.Add("verified", fmt.Sprintf("%v", *request.Verified))
-	}
-	if request.SearchTerm != nil {
-		queryParams.Add("search_term", fmt.Sprintf("%v", *request.SearchTerm))
-	}
-	if request.Headers != nil {
-		queryParams.Add("headers", fmt.Sprintf("%v", *request.Headers))
-	}
-	if request.Body != nil {
-		queryParams.Add("body", fmt.Sprintf("%v", *request.Body))
-	}
-	if request.ParsedQuery != nil {
-		queryParams.Add("parsed_query", fmt.Sprintf("%v", *request.ParsedQuery))
-	}
-	if request.Path != nil {
-		queryParams.Add("path", fmt.Sprintf("%v", *request.Path))
-	}
-	if request.IgnoredCount != nil {
-		queryParams.Add("ignored_count", fmt.Sprintf("%v", *request.IgnoredCount))
-	}
-	if request.EventsCount != nil {
-		queryParams.Add("events_count", fmt.Sprintf("%v", *request.EventsCount))
-	}
-	if request.IngestedAt != nil {
-		queryParams.Add("ingested_at", fmt.Sprintf("%v", request.IngestedAt.Format(time.RFC3339)))
-	}
-	for _, value := range request.BulkRetryId {
-		queryParams.Add("bulk_retry_id", fmt.Sprintf("%v", *value))
-	}
-	if request.Include != nil {
-		queryParams.Add("include", fmt.Sprintf("%v", *request.Include))
-	}
-	if request.OrderBy != nil {
-		queryParams.Add("order_by", fmt.Sprintf("%v", *request.OrderBy))
-	}
-	if request.Dir != nil {
-		queryParams.Add("dir", fmt.Sprintf("%v", *request.Dir))
-	}
-	if request.Limit != nil {
-		queryParams.Add("limit", fmt.Sprintf("%v", *request.Limit))
-	}
-	if request.Next != nil {
-		queryParams.Add("next", fmt.Sprintf("%v", *request.Next))
-	}
-	if request.Prev != nil {
-		queryParams.Add("prev", fmt.Sprintf("%v", *request.Prev))
+	queryParams, err := core.QueryValues(request)
+	if err != nil {
+		return nil, err
 	}
 	if len(queryParams) > 0 {
 		endpointURL += "?" + queryParams.Encode()
 	}
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -133,28 +87,42 @@ func (c *Client) List(ctx context.Context, request *hookdeckgosdk.RequestListReq
 	}
 
 	var response *hookdeckgosdk.RequestPaginatedResult
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Request, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Retrieve(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.Request, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"requests/%v", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/requests/%v", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -176,28 +144,42 @@ func (c *Client) Retrieve(ctx context.Context, id string) (*hookdeckgosdk.Reques
 	}
 
 	var response *hookdeckgosdk.Request
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) RetrieveBody(ctx context.Context, id string) (*hookdeckgosdk.RawBody, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) RetrieveBody(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.RawBody, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"requests/%v/raw_body", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/requests/%v/raw_body", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -219,28 +201,44 @@ func (c *Client) RetrieveBody(ctx context.Context, id string) (*hookdeckgosdk.Ra
 	}
 
 	var response *hookdeckgosdk.RawBody
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) Retry(ctx context.Context, id string, request *hookdeckgosdk.RequestRetryRequest) (*hookdeckgosdk.RetryRequest, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) Retry(
+	ctx context.Context,
+	id string,
+	request *hookdeckgosdk.RequestRetryRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.RetryRequest, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"requests/%v/retry", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/requests/%v/retry", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+	headers.Set("Content-Type", "application/json")
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -276,114 +274,52 @@ func (c *Client) Retry(ctx context.Context, id string, request *hookdeckgosdk.Re
 	}
 
 	var response *hookdeckgosdk.RetryRequest
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodPost,
-		request,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodPost,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Request:         request,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) ListEvent(ctx context.Context, id string, request *hookdeckgosdk.RequestListEventRequest) (*hookdeckgosdk.EventPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) ListEvent(
+	ctx context.Context,
+	id string,
+	request *hookdeckgosdk.RequestListEventRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.EventPaginatedResult, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"requests/%v/events", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/requests/%v/events", id)
 
-	queryParams := make(url.Values)
-	for _, value := range request.Id {
-		queryParams.Add("id", fmt.Sprintf("%v", *value))
-	}
-	if request.Status != nil {
-		queryParams.Add("status", fmt.Sprintf("%v", *request.Status))
-	}
-	for _, value := range request.WebhookId {
-		queryParams.Add("webhook_id", fmt.Sprintf("%v", *value))
-	}
-	for _, value := range request.DestinationId {
-		queryParams.Add("destination_id", fmt.Sprintf("%v", *value))
-	}
-	for _, value := range request.SourceId {
-		queryParams.Add("source_id", fmt.Sprintf("%v", *value))
-	}
-	if request.Attempts != nil {
-		queryParams.Add("attempts", fmt.Sprintf("%v", *request.Attempts))
-	}
-	if request.ResponseStatus != nil {
-		queryParams.Add("response_status", fmt.Sprintf("%v", *request.ResponseStatus))
-	}
-	if request.SuccessfulAt != nil {
-		queryParams.Add("successful_at", fmt.Sprintf("%v", request.SuccessfulAt.Format(time.RFC3339)))
-	}
-	if request.CreatedAt != nil {
-		queryParams.Add("created_at", fmt.Sprintf("%v", request.CreatedAt.Format(time.RFC3339)))
-	}
-	if request.ErrorCode != nil {
-		queryParams.Add("error_code", fmt.Sprintf("%v", *request.ErrorCode))
-	}
-	if request.CliId != nil {
-		queryParams.Add("cli_id", fmt.Sprintf("%v", *request.CliId))
-	}
-	if request.LastAttemptAt != nil {
-		queryParams.Add("last_attempt_at", fmt.Sprintf("%v", request.LastAttemptAt.Format(time.RFC3339)))
-	}
-	if request.SearchTerm != nil {
-		queryParams.Add("search_term", fmt.Sprintf("%v", *request.SearchTerm))
-	}
-	if request.Headers != nil {
-		queryParams.Add("headers", fmt.Sprintf("%v", *request.Headers))
-	}
-	if request.Body != nil {
-		queryParams.Add("body", fmt.Sprintf("%v", *request.Body))
-	}
-	if request.ParsedQuery != nil {
-		queryParams.Add("parsed_query", fmt.Sprintf("%v", *request.ParsedQuery))
-	}
-	if request.Path != nil {
-		queryParams.Add("path", fmt.Sprintf("%v", *request.Path))
-	}
-	for _, value := range request.CliUserId {
-		queryParams.Add("cli_user_id", fmt.Sprintf("%v", *value))
-	}
-	for _, value := range request.IssueId {
-		queryParams.Add("issue_id", fmt.Sprintf("%v", *value))
-	}
-	for _, value := range request.EventDataId {
-		queryParams.Add("event_data_id", fmt.Sprintf("%v", *value))
-	}
-	for _, value := range request.BulkRetryId {
-		queryParams.Add("bulk_retry_id", fmt.Sprintf("%v", *value))
-	}
-	if request.Include != nil {
-		queryParams.Add("include", fmt.Sprintf("%v", *request.Include))
-	}
-	if request.OrderBy != nil {
-		queryParams.Add("order_by", fmt.Sprintf("%v", *request.OrderBy))
-	}
-	if request.Dir != nil {
-		queryParams.Add("dir", fmt.Sprintf("%v", *request.Dir))
-	}
-	if request.Limit != nil {
-		queryParams.Add("limit", fmt.Sprintf("%v", *request.Limit))
-	}
-	if request.Next != nil {
-		queryParams.Add("next", fmt.Sprintf("%v", *request.Next))
-	}
-	if request.Prev != nil {
-		queryParams.Add("prev", fmt.Sprintf("%v", *request.Prev))
+	queryParams, err := core.QueryValues(request)
+	if err != nil {
+		return nil, err
 	}
 	if len(queryParams) > 0 {
 		endpointURL += "?" + queryParams.Encode()
 	}
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -419,51 +355,51 @@ func (c *Client) ListEvent(ctx context.Context, id string, request *hookdeckgosd
 	}
 
 	var response *hookdeckgosdk.EventPaginatedResult
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
 
-func (c *Client) ListIgnoredEvent(ctx context.Context, id string, request *hookdeckgosdk.RequestListIgnoredEventRequest) (*hookdeckgosdk.IgnoredEventPaginatedResult, error) {
-	baseURL := "https://api.hookdeck.com/2024-03-01"
+func (c *Client) ListIgnoredEvent(
+	ctx context.Context,
+	id string,
+	request *hookdeckgosdk.RequestListIgnoredEventRequest,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.IgnoredEventPaginatedResult, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
 	if c.baseURL != "" {
 		baseURL = c.baseURL
 	}
-	endpointURL := fmt.Sprintf(baseURL+"/"+"requests/%v/ignored_events", id)
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/requests/%v/ignored_events", id)
 
-	queryParams := make(url.Values)
-	for _, value := range request.Id {
-		queryParams.Add("id", fmt.Sprintf("%v", *value))
-	}
-	if request.OrderBy != nil {
-		queryParams.Add("order_by", fmt.Sprintf("%v", *request.OrderBy))
-	}
-	if request.Dir != nil {
-		queryParams.Add("dir", fmt.Sprintf("%v", *request.Dir))
-	}
-	if request.Limit != nil {
-		queryParams.Add("limit", fmt.Sprintf("%v", *request.Limit))
-	}
-	if request.Next != nil {
-		queryParams.Add("next", fmt.Sprintf("%v", *request.Next))
-	}
-	if request.Prev != nil {
-		queryParams.Add("prev", fmt.Sprintf("%v", *request.Prev))
+	queryParams, err := core.QueryValues(request)
+	if err != nil {
+		return nil, err
 	}
 	if len(queryParams) > 0 {
 		endpointURL += "?" + queryParams.Encode()
 	}
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
 
 	errorDecoder := func(statusCode int, body io.Reader) error {
 		raw, err := io.ReadAll(body)
@@ -499,18 +435,21 @@ func (c *Client) ListIgnoredEvent(ctx context.Context, id string, request *hookd
 	}
 
 	var response *hookdeckgosdk.IgnoredEventPaginatedResult
-	if err := core.DoRequest(
+	if err := c.caller.Call(
 		ctx,
-		c.httpClient,
-		endpointURL,
-		http.MethodGet,
-		nil,
-		&response,
-		false,
-		c.header,
-		errorDecoder,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodGet,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
 	); err != nil {
-		return response, err
+		return nil, err
 	}
 	return response, nil
 }
