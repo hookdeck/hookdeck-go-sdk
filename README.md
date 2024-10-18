@@ -23,12 +23,12 @@ This module requires Go version >= 1.19.
 
 ```go
 import (
-  hookdeck "github.com/hookdeck/hookdeck-go-sdk"
   hookdeckclient "github.com/hookdeck/hookdeck-go-sdk/client"
+  hookdeckoption "github.com/hookdeck/hookdeck-go-sdk/option"
 )
 
 client := hookdeckclient.NewClient(
-  hookdeckclient.ClientWithAuthToken("<YOUR_AUTH_TOKEN>"),
+  hookdeckoption.WithToken("<YOUR_AUTH_TOKEN>"),
 )
 ```
 
@@ -43,10 +43,11 @@ import (
 
   hookdeck "github.com/hookdeck/hookdeck-go-sdk"
   hookdeckclient "github.com/hookdeck/hookdeck-go-sdk/client"
+  hookdeckoption "github.com/hookdeck/hookdeck-go-sdk/option"
 )
 
 client := hookdeckclient.NewClient(
-  hookdeckclient.ClientWithAuthToken("<YOUR_API_KEY>"),
+  hookdeckoption.WithToken("<YOUR_AUTH_TOKEN>"),
 )
 attempts, err := client.Attempts().GetAttempts(
   context.TODO(),
