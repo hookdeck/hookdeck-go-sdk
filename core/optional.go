@@ -3,7 +3,6 @@ package core
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 )
 
 // Optional is a wrapper used to distinguish zero values from
@@ -34,20 +33,4 @@ func (o *Optional[T]) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 	return json.Marshal(&o.Value)
-}
-
-// NewDateFromOptional returns a new *DateTime from the given optional.
-func NewDateFromOptional(optional *Optional[time.Time]) *Date {
-	if optional == nil {
-		return nil
-	}
-	return &Date{t: &optional.Value}
-}
-
-// NewDateTimeFromOptional returns a new *DateTime from the given optional.
-func NewDateTimeFromOptional(optional *Optional[time.Time]) *DateTime {
-	if optional == nil {
-		return nil
-	}
-	return &DateTime{t: &optional.Value}
 }
