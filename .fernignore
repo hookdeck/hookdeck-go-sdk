@@ -1,7 +1,3 @@
 # Specify files that shouldn't be modified by Fern
 README.md
 LICENSE
-
-# Temporarily ignored for the OptionalOrNull helper.
-optional.go
-optional_test.go
