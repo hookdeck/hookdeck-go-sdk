@@ -3,6 +3,8 @@
 package api
 
 import (
+	"time"
+
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
 )
 
@@ -11,6 +13,22 @@ func Optional[T any](value T) *core.Optional[T] {
 	return &core.Optional[T]{
 		Value: value,
 	}
+}
+
+// NewDateFromOptional returns a new *DateTime from the given optional.
+func NewDateFromOptional(optional *core.Optional[time.Time]) *core.Date {
+	if optional == nil {
+		return nil
+	}
+	return core.NewDate(optional.Value)
+}
+
+// NewDateTimeFromOptional returns a new *DateTime from the given optional.
+func NewDateTimeFromOptional(optional *core.Optional[time.Time]) *core.DateTime {
+	if optional == nil {
+		return nil
+	}
+	return core.NewDateTime(optional.Value)
 }
 
 // Null initializes an optional field that will be sent as
