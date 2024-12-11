@@ -2,7 +2,7 @@
 README.md
 LICENSE
 
-# Temporarily ignored for the OptionalOrNull helper.
+# Temporarily ignored for the OptionalOrNull and NewDateTimeFromOptional helpers.
 optional.go
 optional_test.go
 
