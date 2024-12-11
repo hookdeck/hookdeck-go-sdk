@@ -5,9 +5,8 @@ package api
 import (
 	json "encoding/json"
 	fmt "fmt"
-	time "time"
-
 	core "github.com/hookdeck/hookdeck-go-sdk/core"
+	time "time"
 )
 
 type IssueTriggerCreateRequest struct {
@@ -311,7 +310,7 @@ func (i *IssueTriggerUpdateRequest) MarshalJSON() ([]byte, error) {
 		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
 	}{
 		embed:      embed(*i),
-		DisabledAt: core.NewDateTimeFromOptional(i.DisabledAt),
+		DisabledAt: core.NewOptionalDateTime(i.DisabledAt),
 	}
 	return json.Marshal(marshaler)
 }
