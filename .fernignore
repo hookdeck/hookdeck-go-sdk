@@ -5,6 +5,3 @@ LICENSE
 # Temporarily ignored for the OptionalOrNull helper.
 optional.go
 optional_test.go
-
-# Temporarily ignored to fix core.Optional -> core.DateTime mapping.
-issue_trigger.go
