@@ -3955,6 +3955,7 @@ const (
 	IntegrationProviderHmac            IntegrationProvider = "HMAC"
 	IntegrationProviderBasicAuth       IntegrationProvider = "BASIC_AUTH"
 	IntegrationProviderApiKey          IntegrationProvider = "API_KEY"
+	IntegrationProviderBridge          IntegrationProvider = "BRIDGE"
 	IntegrationProviderCloudsignal     IntegrationProvider = "CLOUDSIGNAL"
 	IntegrationProviderCourier         IntegrationProvider = "COURIER"
 	IntegrationProviderFrontapp        IntegrationProvider = "FRONTAPP"
@@ -4013,6 +4014,8 @@ const (
 	IntegrationProviderMailchimp       IntegrationProvider = "MAILCHIMP"
 	IntegrationProviderPaddle          IntegrationProvider = "PADDLE"
 	IntegrationProviderPaypal          IntegrationProvider = "PAYPAL"
+	IntegrationProviderTreezor         IntegrationProvider = "TREEZOR"
+	IntegrationProviderPraxis          IntegrationProvider = "PRAXIS"
 )
 
 func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
@@ -4023,6 +4026,8 @@ func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
 		return IntegrationProviderBasicAuth, nil
 	case "API_KEY":
 		return IntegrationProviderApiKey, nil
+	case "BRIDGE":
+		return IntegrationProviderBridge, nil
 	case "CLOUDSIGNAL":
 		return IntegrationProviderCloudsignal, nil
 	case "COURIER":
@@ -4139,6 +4144,10 @@ func NewIntegrationProviderFromString(s string) (IntegrationProvider, error) {
 		return IntegrationProviderPaddle, nil
 	case "PAYPAL":
 		return IntegrationProviderPaypal, nil
+	case "TREEZOR":
+		return IntegrationProviderTreezor, nil
+	case "PRAXIS":
+		return IntegrationProviderPraxis, nil
 	}
 	var t IntegrationProvider
 	return "", fmt.Errorf("%s is not a valid %T", s, t)
@@ -5874,6 +5883,8 @@ type RetryRule struct {
 	Interval *int `json:"interval,omitempty" url:"interval,omitempty"`
 	// Maximum number of retries to attempt
 	Count *int `json:"count,omitempty" url:"count,omitempty"`
+	// HTTP codes to retry on. Accepts: range expressions (e.g., "400-499", ">400"), specific codes (e.g., 404), and exclusions (e.g., "!401"). Example: ["500-599", ">400", 404, "!401"]
+	ResponseStatusCodes []string `json:"response_status_codes,omitempty" url:"response_status_codes,omitempty"`
 
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
@@ -8609,6 +8620,89 @@ func (v *VerificationBondsmithConfigs) String() string {
 	return fmt.Sprintf("%#v", v)
 }
 
+type VerificationBridge struct {
+	Configs *VerificationBridgeConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationBridge) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationBridge) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationBridge
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationBridge(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationBridge) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+// The verification configs for Bridge. Only included if the ?include=verification.configs query param is present
+type VerificationBridgeConfigs struct {
+	PublicKey string `json:"public_key" url:"public_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationBridgeConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationBridgeConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationBridgeConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationBridgeConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationBridgeConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
 type VerificationCloudSignal struct {
 	Configs *VerificationCloudSignalConfigs `json:"configs,omitempty" url:"configs,omitempty"`
 
@@ -8781,6 +8875,7 @@ type VerificationConfig struct {
 	Hmac            *VerificationHmac
 	BasicAuth       *VerificationBasicAuth
 	ApiKey          *VerificationApiKey
+	Bridge          *VerificationBridge
 	Cloudsignal     *VerificationCloudSignal
 	Courier         *VerificationCourier
 	Frontapp        *VerificationFrontApp
@@ -8839,6 +8934,8 @@ type VerificationConfig struct {
 	Mailchimp       *VerificationMailchimp
 	Paddle          *VerificationPaddle
 	Paypal          *VerificationPaypal
+	Treezor         *VerificationTreezor
+	Praxis          *VerificationPraxis
 }
 
 func NewVerificationConfigFromHmac(value *VerificationHmac) *VerificationConfig {
@@ -8851,6 +8948,10 @@ func NewVerificationConfigFromBasicAuth(value *VerificationBasicAuth) *Verificat
 
 func NewVerificationConfigFromApiKey(value *VerificationApiKey) *VerificationConfig {
 	return &VerificationConfig{Type: "api_key", ApiKey: value}
+}
+
+func NewVerificationConfigFromBridge(value *VerificationBridge) *VerificationConfig {
+	return &VerificationConfig{Type: "bridge", Bridge: value}
 }
 
 func NewVerificationConfigFromCloudsignal(value *VerificationCloudSignal) *VerificationConfig {
@@ -9085,6 +9186,14 @@ func NewVerificationConfigFromPaypal(value *VerificationPaypal) *VerificationCon
 	return &VerificationConfig{Type: "paypal", Paypal: value}
 }
 
+func NewVerificationConfigFromTreezor(value *VerificationTreezor) *VerificationConfig {
+	return &VerificationConfig{Type: "treezor", Treezor: value}
+}
+
+func NewVerificationConfigFromPraxis(value *VerificationPraxis) *VerificationConfig {
+	return &VerificationConfig{Type: "praxis", Praxis: value}
+}
+
 func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 	var unmarshaler struct {
 		Type string `json:"type"`
@@ -9115,6 +9224,12 @@ func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		v.ApiKey = value
+	case "bridge":
+		value := new(VerificationBridge)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Bridge = value
 	case "cloudsignal":
 		value := new(VerificationCloudSignal)
 		if err := json.Unmarshal(data, &value); err != nil {
@@ -9463,6 +9578,18 @@ func (v *VerificationConfig) UnmarshalJSON(data []byte) error {
 			return err
 		}
 		v.Paypal = value
+	case "treezor":
+		value := new(VerificationTreezor)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Treezor = value
+	case "praxis":
+		value := new(VerificationPraxis)
+		if err := json.Unmarshal(data, &value); err != nil {
+			return err
+		}
+		v.Praxis = value
 	}
 	return nil
 }
@@ -9477,6 +9604,8 @@ func (v VerificationConfig) MarshalJSON() ([]byte, error) {
 		return core.MarshalJSONWithExtraProperty(v.BasicAuth, "type", "basic_auth")
 	case "api_key":
 		return core.MarshalJSONWithExtraProperty(v.ApiKey, "type", "api_key")
+	case "bridge":
+		return core.MarshalJSONWithExtraProperty(v.Bridge, "type", "bridge")
 	case "cloudsignal":
 		return core.MarshalJSONWithExtraProperty(v.Cloudsignal, "type", "cloudsignal")
 	case "courier":
@@ -9593,6 +9722,10 @@ func (v VerificationConfig) MarshalJSON() ([]byte, error) {
 		return core.MarshalJSONWithExtraProperty(v.Paddle, "type", "paddle")
 	case "paypal":
 		return core.MarshalJSONWithExtraProperty(v.Paypal, "type", "paypal")
+	case "treezor":
+		return core.MarshalJSONWithExtraProperty(v.Treezor, "type", "treezor")
+	case "praxis":
+		return core.MarshalJSONWithExtraProperty(v.Praxis, "type", "praxis")
 	}
 }
 
@@ -9600,6 +9733,7 @@ type VerificationConfigVisitor interface {
 	VisitHmac(*VerificationHmac) error
 	VisitBasicAuth(*VerificationBasicAuth) error
 	VisitApiKey(*VerificationApiKey) error
+	VisitBridge(*VerificationBridge) error
 	VisitCloudsignal(*VerificationCloudSignal) error
 	VisitCourier(*VerificationCourier) error
 	VisitFrontapp(*VerificationFrontApp) error
@@ -9658,6 +9792,8 @@ type VerificationConfigVisitor interface {
 	VisitMailchimp(*VerificationMailchimp) error
 	VisitPaddle(*VerificationPaddle) error
 	VisitPaypal(*VerificationPaypal) error
+	VisitTreezor(*VerificationTreezor) error
+	VisitPraxis(*VerificationPraxis) error
 }
 
 func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
@@ -9670,6 +9806,8 @@ func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
 		return visitor.VisitBasicAuth(v.BasicAuth)
 	case "api_key":
 		return visitor.VisitApiKey(v.ApiKey)
+	case "bridge":
+		return visitor.VisitBridge(v.Bridge)
 	case "cloudsignal":
 		return visitor.VisitCloudsignal(v.Cloudsignal)
 	case "courier":
@@ -9786,6 +9924,10 @@ func (v *VerificationConfig) Accept(visitor VerificationConfigVisitor) error {
 		return visitor.VisitPaddle(v.Paddle)
 	case "paypal":
 		return visitor.VisitPaypal(v.Paypal)
+	case "treezor":
+		return visitor.VisitTreezor(v.Treezor)
+	case "praxis":
+		return visitor.VisitPraxis(v.Praxis)
 	}
 }
 
@@ -11649,6 +11791,89 @@ func (v *VerificationPostmarkConfigs) String() string {
 	return fmt.Sprintf("%#v", v)
 }
 
+type VerificationPraxis struct {
+	Configs *VerificationPraxisConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPraxis) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPraxis) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPraxis
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPraxis(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPraxis) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+// The verification configs for Praxis. Only included if the ?include=verification.configs query param is present
+type VerificationPraxisConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationPraxisConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationPraxisConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationPraxisConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationPraxisConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationPraxisConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
 type VerificationPropertyFinder struct {
 	Configs *VerificationPropertyFinderConfigs `json:"configs,omitempty" url:"configs,omitempty"`
 
@@ -13132,6 +13357,89 @@ func (v *VerificationTokenIoConfigs) UnmarshalJSON(data []byte) error {
 }
 
 func (v *VerificationTokenIoConfigs) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+type VerificationTreezor struct {
+	Configs *VerificationTreezorConfigs `json:"configs,omitempty" url:"configs,omitempty"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTreezor) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTreezor) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTreezor
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTreezor(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTreezor) String() string {
+	if len(v._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(v); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", v)
+}
+
+// The verification configs for Treezor. Only included if the ?include=verification.configs query param is present
+type VerificationTreezorConfigs struct {
+	WebhookSecretKey string `json:"webhook_secret_key" url:"webhook_secret_key"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (v *VerificationTreezorConfigs) GetExtraProperties() map[string]interface{} {
+	return v.extraProperties
+}
+
+func (v *VerificationTreezorConfigs) UnmarshalJSON(data []byte) error {
+	type unmarshaler VerificationTreezorConfigs
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*v = VerificationTreezorConfigs(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *v)
+	if err != nil {
+		return err
+	}
+	v.extraProperties = extraProperties
+
+	v._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (v *VerificationTreezorConfigs) String() string {
 	if len(v._rawJSON) > 0 {
 		if value, err := core.StringifyJSON(v._rawJSON); err == nil {
 			return value
