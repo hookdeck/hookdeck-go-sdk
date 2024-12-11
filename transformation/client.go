@@ -369,6 +369,63 @@ func (c *Client) Update(
 	return response, nil
 }
 
+func (c *Client) Delete(
+	ctx context.Context,
+	id string,
+	opts ...option.RequestOption,
+) (*hookdeckgosdk.TransformationDeleteResponse, error) {
+	options := core.NewRequestOptions(opts...)
+
+	baseURL := "https://api.hookdeck.com/2024-09-01"
+	if c.baseURL != "" {
+		baseURL = c.baseURL
+	}
+	if options.BaseURL != "" {
+		baseURL = options.BaseURL
+	}
+	endpointURL := core.EncodeURL(baseURL+"/transformations/%v", id)
+
+	headers := core.MergeHeaders(c.header.Clone(), options.ToHeader())
+
+	errorDecoder := func(statusCode int, body io.Reader) error {
+		raw, err := io.ReadAll(body)
+		if err != nil {
+			return err
+		}
+		apiError := core.NewAPIError(statusCode, errors.New(string(raw)))
+		decoder := json.NewDecoder(bytes.NewReader(raw))
+		switch statusCode {
+		case 404:
+			value := new(hookdeckgosdk.NotFoundError)
+			value.APIError = apiError
+			if err := decoder.Decode(value); err != nil {
+				return apiError
+			}
+			return value
+		}
+		return apiError
+	}
+
+	var response *hookdeckgosdk.TransformationDeleteResponse
+	if err := c.caller.Call(
+		ctx,
+		&core.CallParams{
+			URL:             endpointURL,
+			Method:          http.MethodDelete,
+			MaxAttempts:     options.MaxAttempts,
+			Headers:         headers,
+			BodyProperties:  options.BodyProperties,
+			QueryParameters: options.QueryParameters,
+			Client:          options.HTTPClient,
+			Response:        &response,
+			ErrorDecoder:    errorDecoder,
+		},
+	); err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
 func (c *Client) Run(
 	ctx context.Context,
 	request *hookdeckgosdk.TransformationRunRequest,
