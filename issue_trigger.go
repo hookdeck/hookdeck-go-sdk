@@ -311,7 +311,7 @@ func (i *IssueTriggerUpdateRequest) MarshalJSON() ([]byte, error) {
 		DisabledAt *core.DateTime `json:"disabled_at,omitempty"`
 	}{
 		embed:      embed(*i),
-		DisabledAt: core.NewDateTimeFromOptional(i.DisabledAt),
+		DisabledAt: NewDateTimeFromOptional(i.DisabledAt),
 	}
 	return json.Marshal(marshaler)
 }
