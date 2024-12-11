@@ -54,6 +54,48 @@ type TransformationRunRequest struct {
 	EventId *core.Optional[string]                          `json:"event_id,omitempty" url:"-"`
 }
 
+type TransformationDeleteResponse struct {
+	// ID of the Transformation
+	Id string `json:"id" url:"id"`
+
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
+}
+
+func (t *TransformationDeleteResponse) GetExtraProperties() map[string]interface{} {
+	return t.extraProperties
+}
+
+func (t *TransformationDeleteResponse) UnmarshalJSON(data []byte) error {
+	type unmarshaler TransformationDeleteResponse
+	var value unmarshaler
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	*t = TransformationDeleteResponse(value)
+
+	extraProperties, err := core.ExtractExtraProperties(data, *t)
+	if err != nil {
+		return err
+	}
+	t.extraProperties = extraProperties
+
+	t._rawJSON = json.RawMessage(data)
+	return nil
+}
+
+func (t *TransformationDeleteResponse) String() string {
+	if len(t._rawJSON) > 0 {
+		if value, err := core.StringifyJSON(t._rawJSON); err == nil {
+			return value
+		}
+	}
+	if value, err := core.StringifyJSON(t); err == nil {
+		return value
+	}
+	return fmt.Sprintf("%#v", t)
+}
+
 type TransformationListExecutionRequestDir string
 
 const (
